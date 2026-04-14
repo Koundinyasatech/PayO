@@ -53,11 +53,16 @@ export default function RegisterMobileScreen({ navigation }) {
   return (
     <View style={styles.container}>
 
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.back}>←</Text>
-      </TouchableOpacity>
+     <View style={styles.header}>
+  <TouchableOpacity onPress={() => navigation.goBack()}>
+   <Text style={styles.back}>←</Text>
+{/* <Text style={styles.back}>{'<'}</Text> */}
+  </TouchableOpacity>
 
-      <Text style={styles.title}>Enter Your Mobile Number</Text>
+  <Text style={styles.titleCentered}>
+    Enter Your Mobile Number
+  </Text>
+</View>
 
       <Text style={styles.desc}>
         We will send a one time code to verify your number.
@@ -125,29 +130,37 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  back: {
-    fontSize: 22,
-    marginBottom: 20,
+ header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
   },
+back: {
+  fontSize: 20,
+  marginRight: 10,
+},
 
-  title: {
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-
+titleCentered: {
+  flex: 1,
+  textAlign: 'center',
+  fontSize: 22,
+  fontWeight: '700',
+  marginLeft: "2%", // balances arrow space
+},
   desc: {
     textAlign: 'center',
     color: '#555',
     marginTop: 10,
     marginBottom: 30,
-    fontSize: 13,
+    fontSize: 13,padding:10
   },
 
   label: {
     fontSize: 12,
     color: '#333',
     marginBottom: 6,
+    fontWeight:700,
+    padding:10,
   },
 
   inputRow: {
@@ -161,7 +174,7 @@ const styles = StyleSheet.create({
 
   codeBox: {
     padding: 12,
-    backgroundColor: '#eee',
+    backgroundColor: '#cfcdcd',
   },
 
   input: {
@@ -171,16 +184,21 @@ const styles = StyleSheet.create({
 
   terms: {
     fontSize: 12,
-    marginTop: 15,
+    marginTop: 30,
+    marginBottom: 15,
+       marginLeft: 15,
+        marginRight: 15,
     color: '#555',
+    padding:10
   },
 
-  link: {
-    color: '#5A00D1',
-  },
+link: {
+  color: '#4E00C2',
+  textDecorationLine: 'underline',
+},
 
   button: {
-    backgroundColor: '#5A00D1',
+    backgroundColor: '#4E00C2',
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
