@@ -9,41 +9,63 @@ import {
 
 export default function LoginScreen({ navigation }) {
 
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   return (
     <View style={styles.container}>
 
+      {/* BACK */}
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Text style={styles.back}>← Back</Text>
+      </TouchableOpacity>
+
       {/* TITLE */}
-      <Text style={styles.title}>Hello,</Text>
+      <Text style={styles.title}>Login to Payo</Text>
+      <Text style={styles.subtitle}>
+        Welcome back! Please enter your details.
+      </Text>
 
-      {/* FACE ID CIRCLE */}
-      <View style={styles.circle}>
-        <Text style={{ color: '#fff' }}>🔒</Text>
-      </View>
+      {/* EMAIL */}
+      <Text style={styles.label}>Email ID</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="your@email.com"
+        value={email}
+        onChangeText={setEmail}
+      />
 
-      {/* SUBTITLE */}
-      <Text style={styles.subtitle}>Or use password instead</Text>
-
-      {/* PASSWORD INPUT */}
-      <View style={styles.inputRow}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter password"
-          secureTextEntry
-          onChangeText={setPassword}
-        />
-
-        {/* LOGIN BUTTON */}
-        <TouchableOpacity style={styles.arrowBtn}>
-          <Text style={{ color: '#fff', fontSize: 18 }}>→</Text>
-        </TouchableOpacity>
-      </View>
+      {/* PASSWORD */}
+      <Text style={styles.label}>Password</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Your password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
 
       {/* FORGOT PASSWORD */}
-      <Text style={styles.forgot}>Forgot Password</Text>
+      <Text style={styles.forgot}>Forgot Password?</Text>
 
-      {/* REGISTER NAVIGATION */}
+      {/* SUBMIT BUTTON */}
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+
+      {/* OR LINE */}
+      <View style={styles.orRow}>
+        <View style={styles.line} />
+        <Text style={styles.or}>OR</Text>
+        <View style={styles.line} />
+      </View>
+
+      {/* OTP LOGIN */}
+      <TouchableOpacity style={styles.otpBtn}>
+        <Text style={styles.otpText}>Login with OTP</Text>
+      </TouchableOpacity>
+
+      {/* REGISTER */}
       <Text style={styles.registerText}>
         Don’t have an account?{' '}
         <Text
@@ -65,61 +87,92 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
-  title: {
-    fontSize: 24,
-    fontWeight: '600',
-    marginTop: 40,
+  back: {
+    marginTop: 10,
+    fontSize: 14,
+    color: '#333',
   },
 
-  circle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#5A00D1',
-    alignSelf: 'center',
-    marginVertical: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginTop: 20,
   },
 
   subtitle: {
-    textAlign: 'center',
-    marginBottom: 10,
-    color: '#555',
+    color: '#777',
+    marginBottom: 20,
   },
 
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  label: {
+    marginTop: 15,
+    marginBottom: 5,
+    fontSize: 13,
+    color: '#333',
   },
 
   input: {
-    flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
+    borderRadius: 10,
     padding: 12,
-    borderRadius: 8,
-  },
-
-  arrowBtn: {
-    backgroundColor: '#5A00D1',
-    width: 45,
-    height: 45,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
+    backgroundColor: '#fff',
   },
 
   forgot: {
-    marginTop: 10,
+    textAlign: 'right',
+    marginTop: 5,
     color: '#5A00D1',
     fontSize: 12,
   },
 
+  button: {
+    backgroundColor: '#5A00D1',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 25,
+  },
+
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+
+  orRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#ccc',
+  },
+
+  or: {
+    marginHorizontal: 10,
+    color: '#777',
+  },
+
+  otpBtn: {
+    borderWidth: 2,
+    borderColor: '#5A00D1',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
+  otpText: {
+    color: '#5A00D1',
+    fontWeight: '600',
+  },
+
   registerText: {
     textAlign: 'center',
-    marginTop: 30,
+    marginTop: 20,
+    color: '#555',
   },
 
   link: {

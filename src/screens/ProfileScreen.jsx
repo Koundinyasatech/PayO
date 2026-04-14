@@ -21,7 +21,6 @@ export default function ProfileScreen({ navigation }) {
   const [referral, setReferral] = useState('');
   const [faceId, setFaceId] = useState(true);
 
-  // 🔥 SUBMIT PROFILE
   const handleContinue = async () => {
 
     if (!name || !email || !password) {
@@ -39,18 +38,22 @@ export default function ProfileScreen({ navigation }) {
         name,
         email,
         password,
-        // referral
+        confirmpassword: confirmPassword,
+        referralCode: referral,
       });
 
-      console.log('PROFILE RESPONSE:', response.data);
-
       Alert.alert('Success', 'Profile created');
-
-      navigation.navigate('Login'); // ✅ go to login
+      navigation.navigate('TransactionPin');
 
     } catch (error) {
-      console.log(error.response?.data || error.message);
-      Alert.alert('Error', 'Failed to create profile');
+      console.log('FULL ERROR:', error);
+      console.log('ERROR DATA:', error.response?.data);
+      console.log('STATUS:', error.response?.status);
+
+      Alert.alert(
+        'Error',
+        JSON.stringify(error.response?.data) || 'Something went wrong'
+      );
     }
   };
 
@@ -109,20 +112,22 @@ export default function ProfileScreen({ navigation }) {
         onChangeText={setConfirmPassword}
       />
 
-      {/* ERROR TEXT */}
       {password !== confirmPassword && confirmPassword ? (
         <Text style={styles.errorText}>Invalid Password</Text>
       ) : null}
 
-      {/* REFERRAL
-      <Text style={styles.label}>Referral Code (Optional)</Text>
+      {/* 🔥 REFERRAL FIELD */}
+      <Text style={styles.label}>
+        Referral Code <Text style={styles.optional}>(Optional)</Text>
+      </Text>
       <TextInput
         style={styles.input}
         value={referral}
-        onChangeText={setReferral} */}
-      {/* /> */}
+        onChangeText={setReferral}
+        placeholder="Enter referral code"
+      />
 
-      {/* FACE ID */}
+      {/* SWITCHES */}
       <View style={styles.switchRow}>
         <Switch value={faceId} onValueChange={setFaceId} />
         <Text style={styles.switchText}>
@@ -149,7 +154,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#EAEAEA',
     padding: 20,
   },
 
@@ -159,27 +164,33 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
   },
 
   sub: {
     textAlign: 'center',
-    color: '#555',
+    color: '#777',
     marginBottom: 20,
   },
 
   label: {
     marginTop: 15,
     marginBottom: 5,
+    fontSize: 13,
+    color: '#333',
+  },
+
+  optional: {
+    color: '#999',
     fontSize: 12,
   },
 
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 12,
     backgroundColor: '#fff',
   },
@@ -208,7 +219,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#5A00D1',
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     marginTop: 30,
   },

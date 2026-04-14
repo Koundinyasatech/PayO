@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import api from '../api/axios';
+import * as Keychain from 'react-native-keychain';
 
 export default function OtpVerificationScreen({ route, navigation }) {
 
@@ -21,7 +22,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
     const inputs = useRef([]);
 
-    // ⏱ TIMER
     useEffect(() => {
         startTimer();
     }, []);
@@ -40,7 +40,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
         }, 1000);
     };
 
-    // 🔢 HANDLE OTP INPUT (AUTO MOVE)
     const handleChange = (text, index) => {
         const newOtp = [...otp];
         newOtp[index] = text;
@@ -51,14 +50,21 @@ export default function OtpVerificationScreen({ route, navigation }) {
         }
     };
 
-    // ⬅️ BACKSPACE SUPPORT
     const handleKeyPress = (e, index) => {
         if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
             inputs.current[index - 1].focus();
         }
     };
 
-    // 🔥 VERIFY OTP
+    const saveToken = async (token) => {
+        try {
+            await Keychain.setGenericPassword('user', token);
+            console.log("TOKEN SAVED:", token);
+        } catch (error) {
+            console.log('Keychain error:', error);
+        }
+    };
+
     const handleVerifyOTP = async () => {
 
         const finalOtp = otp.join('');
@@ -71,26 +77,36 @@ export default function OtpVerificationScreen({ route, navigation }) {
         try {
             setLoading(true);
 
-            console.log('VERIFY DATA:', { mobile, otp: finalOtp });
-
             const response = await api.post('/verify-otp', {
-                mobile: mobile, // or 'phone' if backend needs
+                mobile: mobile,
                 otp: finalOtp
             });
 
             console.log('VERIFY RESPONSE:', response.data);
 
-            if (response.data.success) {
+            if (response.data.token) {
+
+                const token = response.data.token;
+
+                if (token) {
+                    await saveToken(token);
+                }
+
+                // ✅ ONLY THIS — NO setTimeout
                 Alert.alert(
                     'Success',
                     'OTP Verified Successfully',
                     [
                         {
                             text: 'OK',
-                            onPress: () => navigation.navigate('Profile')
+                            onPress: () => {
+                                console.log("NAVIGATING...");
+                                navigation.replace('Profile');
+                            }
                         }
                     ]
                 );
+
             } else {
                 Alert.alert('Error', response.data.message || 'Invalid OTP');
             }
@@ -103,7 +119,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
         }
     };
 
-    // 🔁 RESEND OTP
     const handleResendOTP = async () => {
         try {
             await api.post('/send-otp', { mobile });
@@ -127,7 +142,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
                 Enter the 4 digit code sent to +91 ******{mobile.slice(-2)}
             </Text>
 
-            {/* OTP BOXES */}
             <View style={styles.otpContainer}>
                 {otp.map((digit, index) => (
                     <TextInput
@@ -143,12 +157,10 @@ export default function OtpVerificationScreen({ route, navigation }) {
                 ))}
             </View>
 
-            {/* TIMER */}
             <Text style={styles.timer}>
                 Code expires in : 00:{timer < 10 ? `0${timer}` : timer}
             </Text>
 
-            {/* RESEND */}
             <Text style={styles.resend}>
                 Didn’t receive code?{' '}
                 <Text style={styles.link} onPress={handleResendOTP}>
@@ -156,7 +168,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
                 </Text>
             </Text>
 
-            {/* VERIFY BUTTON */}
             <TouchableOpacity
                 style={styles.button}
                 onPress={handleVerifyOTP}
@@ -169,7 +180,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
                 )}
             </TouchableOpacity>
 
-            {/* LOGIN */}
             <Text style={styles.loginText}>
                 Already have an account?{' '}
                 <Text
@@ -180,7 +190,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
                 </Text>
             </Text>
 
-            {/* FOOTER */}
             <Text style={styles.footer}>
                 By Continuing, you agree to our{' '}
                 <Text style={styles.link}>Privacy Policy</Text>
@@ -197,24 +206,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 80,
     },
-
     title: {
         fontSize: 18,
         fontWeight: '700',
     },
-
     sub: {
         textAlign: 'center',
         marginTop: 10,
         color: '#555',
         paddingHorizontal: 20,
     },
-
     otpContainer: {
         flexDirection: 'row',
         marginTop: 30,
     },
-
     box: {
         width: 50,
         height: 50,
@@ -226,21 +231,17 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: '#fff',
     },
-
     timer: {
         marginTop: 20,
         color: '#555',
     },
-
     resend: {
         marginTop: 10,
         color: '#555',
     },
-
     link: {
         color: '#5A00D1',
     },
-
     button: {
         backgroundColor: '#5A00D1',
         padding: 14,
@@ -249,21 +250,17 @@ const styles = StyleSheet.create({
         width: '80%',
         alignItems: 'center',
     },
-
     buttonText: {
         color: '#fff',
         fontWeight: '600',
     },
-
     loginText: {
         marginTop: 20,
         color: '#555',
     },
-
     footer: {
         marginTop: 10,
         color: '#555',
         fontSize: 12,
     },
 });
-
