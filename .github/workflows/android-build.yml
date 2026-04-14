@@ -13,6 +13,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # 🔧 Node Setup
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -21,12 +22,14 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      # 🔧 Java Setup
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      # 🔧 Android Build
       - name: Grant Permission
         run: chmod +x android/gradlew
 
@@ -41,27 +44,27 @@ jobs:
           name: app-release
           path: android/app/build/outputs/apk/release/app-release.apk
 
-      # 🔥 Docker Login
+      # 🐳 Docker Login
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # 🔥 Build Docker Image
+      # 🐳 Build Image
       - name: Build Image
-        run: docker build -t umarsharief/payo-frontend .
+        run: docker build -t umarsharief/payo-frontend:latest .
 
-      # 🔥 Push Image
+      # 🐳 Push Image
       - name: Push Image
-        run: docker push umarsharief/payo-frontend
+        run: docker push umarsharief/payo-frontend:latest
 
-      # 🔥 Deploy to EC2
-      - name: Deploy to EC2
+      # 🚀 Deploy to FRONTEND EC2 (SAFE)
+      - name: Deploy to Frontend EC2
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.FRONTEND_EC2_HOST }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
           script: |
-            docker stop payo || true
-            docker rm payo || true
+            docker stop payo-frontend || true
+            docker rm payo-frontend || true
             docker pull umarsharief/payo-frontend:latest
-            docker run -d -p 3000:3000 --name payo umarsharief/payo-frontend:latest
+            docker run -d -p 3001:3000 --name payo-frontend umarsharief/payo-frontend:latest
