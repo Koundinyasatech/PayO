@@ -49,7 +49,10 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.forgot}>Forgot Password?</Text>
 
       {/* SUBMIT BUTTON */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.replace('Home')}
+      >
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
 
@@ -79,6 +82,8 @@ export default function LoginScreen({ navigation }) {
     </View>
   );
 }
+
+/* ================= STYLES ================= */
 
 const styles = StyleSheet.create({
   container: {
