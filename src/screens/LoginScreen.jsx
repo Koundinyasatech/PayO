@@ -15,14 +15,24 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
 
+       <View style={styles.header}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                     <Text style={styles.back}>←</Text>
+                  {/* <Text style={styles.back}>{'<'}</Text> */}
+                    </TouchableOpacity>
+                  
+                    <Text style={styles.titleCentered}>
+Login to Payo             </Text>
+                  </View>
+
       {/* BACK */}
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      {/* <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.back}>← Back</Text>
       </TouchableOpacity>
 
-      {/* TITLE */}
-      <Text style={styles.title}>Login to Payo</Text>
-      <Text style={styles.subtitle}>
+    
+      <Text style={styles.title}>Login to Payo</Text> */}
+      <Text style={styles.sub}>
         Welcome back! Please enter your details.
       </Text>
 
@@ -87,10 +97,27 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
+  // back: {
+  //   marginTop: 10,
+  //   fontSize: 14,
+  //   color: '#333',
+  // },
+    header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+
   back: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#333',
+    fontSize: 22,
+  },
+
+ titleCentered: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    marginLeft: "10%", // balance arrow
   },
 
   title: {
@@ -99,25 +126,31 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  subtitle: {
-    color: '#777',
-    marginBottom: 20,
+   sub: {
+    textAlign: 'center',
+    margin: 10,
+    color: '#666',
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom:30
   },
 
   label: {
-    marginTop: 15,
-    marginBottom: 5,
-    fontSize: 13,
+    fontSize: 12,
     color: '#333',
+    marginBottom: 5,
+    fontWeight:700,
+    padding:10,
   },
 
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 12,
+   input: {
     backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
+
 
   forgot: {
     textAlign: 'right',
