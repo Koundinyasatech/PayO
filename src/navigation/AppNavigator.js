@@ -15,7 +15,8 @@ import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/HomeScreen/HomeScreen';
+// import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 

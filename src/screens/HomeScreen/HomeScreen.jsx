@@ -130,7 +130,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
-import styles from '../styles/HomeStyles';
+import styles from './homeStlying';
  
 export default function HomeScreen({ navigate }) {
   const [balance, setBalance] = useState(20000);
