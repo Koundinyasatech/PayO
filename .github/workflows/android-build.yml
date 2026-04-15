@@ -1,19 +1,21 @@
-name: CI/CD Full Pipeline
+name: CI/CD Frontend Pipeline
 
 on:
   push:
     branches:
+      - main
       - sathwikaDev
 
 jobs:
-  build-and-deploy:
+
+  # 🔹 1. CI JOB (Build APK)
+  ci:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 🔧 Node Setup
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -22,14 +24,12 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # 🔧 Java Setup
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 🔧 Android Build
       - name: Grant Permission
         run: chmod +x android/gradlew
 
@@ -44,19 +44,32 @@ jobs:
           name: app-release
           path: android/app/build/outputs/apk/release/app-release.apk
 
-      # 🐳 Docker Login
+
+  # 🔹 2. DOCKER JOB
+  docker:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # 🐳 Build Image
-      - name: Build Image
+      - name: Build Docker Image
         run: docker build -t umarsharief/payo-frontend:latest .
 
-      # 🐳 Push Image
-      - name: Push Image
+      - name: Push Docker Image
         run: docker push umarsharief/payo-frontend:latest
 
-      # 🚀 Deploy to FRONTEND EC2 (SAFE)
+
+  # 🔹 3. DEPLOY JOB (Frontend EC2)
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Deploy to Frontend EC2
         uses: appleboy/ssh-action@v1
         with:
