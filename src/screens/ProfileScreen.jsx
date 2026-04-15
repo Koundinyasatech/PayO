@@ -232,7 +232,7 @@
 
 
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -252,8 +252,10 @@ export default function ProfileScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [referral, setReferral] = useState('');
   const [faceId, setFaceId] = useState(true);
+  const[message,setMessage]=useState("")
 
   const [errors, setErrors] = useState({});
+  const confirmPasswordTimer = useRef(null);
 
   const validate = () => {
     let err = {};
@@ -282,51 +284,61 @@ export default function ProfileScreen({ navigation }) {
     return Object.keys(err).length === 0;
   };
 
-  const handleContinue = async () => {
-    //  navigation.navigate('TransactionPin');
-    if (!validate()) return;
+const handleContinue = async () => {
+  if (!validate()) return;
 
-    try {
-      await api.post('/register', {
-        name,
-        email,
-        password,
-        confirmpassword: confirmPassword,
-        referralCode: referral,
-      });
+  try {
+    await api.post('/register', {
+      name,
+      email,
+      password,
+      confirmpassword: confirmPassword,
+      referralCode: referral,
+    });
 
-      navigation.navigate('TransactionPin');
-    } catch (error) {
-      console.log(error.response?.data);
-    }
-  };
+    navigation.navigate('TransactionPin');
+
+  } catch (error) {
+    console.log(error.response?.data?.message, "000");
+
+    setMessage(
+      error?.response?.data?.message || 
+      "Something went wrong. Please try again"
+    );
+  }
+};
 
   return (
     <ScrollView style={styles.container}>
-       <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                     <Text style={styles.back}>←</Text>
-                 
-                    </TouchableOpacity>
-                  
-                    <Text style={styles.titleCentered}>
-      Create your Profile             </Text>
-                  </View>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
 
-      
+        </TouchableOpacity>
+
+        <Text style={styles.titleCentered}>
+          Create your Profile             </Text>
+      </View>
+
+
       <Text style={styles.sub}>
         Tell us a little bit about yourself to get started
       </Text>
-
+{message ? (
+        <Text style={{ color: 'red', marginTop: 10, textAlign: 'center' }}>
+          {message}
+        </Text>
+      ) : null}
       {/* NAME */}
       <Text style={styles.label}>Full Name</Text>
       <TextInput
         style={[styles.input, errors.name && styles.errorInput]}
         value={name}
-       onChangeText={(text) => {
-  setName(text);
-  setErrors(prev => ({ ...prev, name: '' }));
-}}
+        onChangeText={(text) => {
+          setMessage("")
+          setName(text);
+          setErrors(prev => ({ ...prev, name: '' }));
+        }}
         placeholder="Raghav Mangu"
       />
       {errors.name && <Text style={styles.error}>{errors.name}</Text>}
@@ -336,10 +348,11 @@ export default function ProfileScreen({ navigation }) {
       <TextInput
         style={[styles.input, errors.email && styles.errorInput]}
         value={email}
-      onChangeText={(text) => {
-  setEmail(text);
-  setErrors(prev => ({ ...prev, email: '' }));
-}}
+        onChangeText={(text) => {
+           setMessage("")
+          setEmail(text);
+          setErrors(prev => ({ ...prev, email: '' }));
+        }}
         placeholder="Raghavmangu0223@gmail.com"
       />
       {errors.email && <Text style={styles.error}>{errors.email}</Text>}
@@ -351,17 +364,18 @@ export default function ProfileScreen({ navigation }) {
         secureTextEntry
         value={password}
         onChangeText={(text) => {
-  setPassword(text);
+          setPassword(text);
+           setMessage("")
 
-  setErrors(prev => ({
-    ...prev,
-    password: '',
-    confirmPassword:
-      confirmPassword && text !== confirmPassword
-        ? 'Invalid Password'
-        : ''
-  }));
-}}
+          setErrors(prev => ({
+            ...prev,
+            password: '',
+            confirmPassword:
+              confirmPassword && text !== confirmPassword
+                ? 'Invalid Password'
+                : ''
+          }));
+        }}
         placeholder="************"
       />
       {errors.password && <Text style={styles.error}>{errors.password}</Text>}
@@ -375,14 +389,33 @@ export default function ProfileScreen({ navigation }) {
         ]}
         secureTextEntry
         value={confirmPassword}
-      onChangeText={(text) => {
-  setConfirmPassword(text);
+        // onChangeText={(text) => {
+        //   setConfirmPassword(text);
 
-  setErrors(prev => ({
-    ...prev,
-    confirmPassword:
-      password !== text ? 'Invalid Password' : ''
-  }));
+        //   setErrors(prev => ({
+        //     ...prev,
+        //     confirmPassword:
+        //       password !== text ? 'Invalid Password' : ''
+        //   }));
+        // }}
+
+        onChangeText={(text) => {
+  setConfirmPassword(text);
+   setMessage("")
+
+  // Clear previous timer
+  if (confirmPasswordTimer.current) {
+    clearTimeout(confirmPasswordTimer.current);
+  }
+
+  // Set new timer (delay validation)
+  confirmPasswordTimer.current = setTimeout(() => {
+    setErrors(prev => ({
+      ...prev,
+      confirmPassword:
+        password !== text ? 'Invalid Password' : ''
+    }));
+  }, 1000); // ⏱ 1.5 seconds delay
 }}
         placeholder="************"
       />
@@ -413,6 +446,21 @@ export default function ProfileScreen({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={handleContinue}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
+
+       <Text style={styles.loginText}>
+                      Already have an account?{' '}
+                      <Text
+                          style={styles.link}
+                          onPress={() => navigation.navigate('Login')}
+                      >
+                          Login
+                      </Text>
+                  </Text>
+      
+                  <Text style={styles.footer}>
+                      By Continuing, you agree to our{' '}
+                      <Text style={styles.link}>Privacy Policy</Text>
+                  </Text>
     </ScrollView>
   );
 }
@@ -508,5 +556,21 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
     fontSize: 15,
+  },
+  link: {
+    color: '#5A00D1',
+    textDecorationLine: 'underline', // ✅ underline like UI
+  },
+  loginText: {
+    marginTop: 20,
+    textAlign: 'center', // ✅ center
+    color: '#555',
+  },
+
+  footer: {
+    marginTop: 10,
+    textAlign: 'center',
+    color: '#777',
+    fontSize: 12,
   },
 });

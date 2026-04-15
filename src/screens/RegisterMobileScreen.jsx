@@ -15,10 +15,15 @@ export default function RegisterMobileScreen({ navigation }) {
 
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
+  const isValidMobile = mobile?.length === 10;
 
   const handleSendOTP = async () => {
 
-    if (mobile.length < 10) {
+     if (mobile?.length == 0) {
+      Alert.alert('Error', 'Enter mobile number');
+      return;
+    }
+    if (mobile?.length < 10) {
       Alert.alert('Error', 'Enter valid mobile number');
       return;
     }
@@ -30,7 +35,7 @@ export default function RegisterMobileScreen({ navigation }) {
         mobile: mobile   // 🔥 FIXED (was phone before)
       });
 
-      console.log('API Response:', response.data);
+      console.log('API Response:', response?.data);
 
       // ✅ ALWAYS NAVIGATE (even if backend fails)
       navigation.navigate('OTP', { mobile });
@@ -40,10 +45,10 @@ export default function RegisterMobileScreen({ navigation }) {
       console.log('AXIOS ERROR:', error.response?.data || error.message);
 
       // ⚠️ Show warning but continue
-      Alert.alert('Warning', 'Server error, continuing to OTP screen');
+      Alert.alert('Warning', 'Server Issue, Please try after some time');
 
       // ✅ STILL NAVIGATE
-      navigation.navigate('OTP', { mobile });
+      // navigation.navigate('OTP', { mobile });
 
     } finally {
       setLoading(false);
@@ -76,14 +81,26 @@ export default function RegisterMobileScreen({ navigation }) {
           <Text>+91</Text>
         </View>
 
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           placeholder="9876543210"
           keyboardType="phone-pad"
           value={mobile}
           onChangeText={setMobile}
           maxLength={10}
-        />
+        /> */}
+
+        <TextInput
+  style={styles.input}
+  placeholder="9876543210"
+  keyboardType="phone-pad"
+  value={mobile}
+  onChangeText={(text) => {
+    const numeric = text.replace(/[^0-9]/g, '');
+    setMobile(numeric);
+  }}
+  maxLength={10}
+/>
       </View>
 
       <Text style={styles.terms}>
@@ -92,7 +109,7 @@ export default function RegisterMobileScreen({ navigation }) {
         <Text style={styles.link}>Privacy Policy</Text>
       </Text>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.button}
         onPress={handleSendOTP}
         disabled={loading}
@@ -102,7 +119,24 @@ export default function RegisterMobileScreen({ navigation }) {
         ) : (
           <Text style={styles.buttonText}>Send OTP</Text>
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity
+  style={[
+    styles.button,
+    { backgroundColor: isValidMobile ?'#4E00C2' : '#ccc' } // optional UI feedback
+  ]}
+  onPress={handleSendOTP}
+  disabled={!isValidMobile || loading}
+  
+>
+  {loading ? (
+    <ActivityIndicator color="#fff" />
+  ) : (
+    <Text style={styles.buttonText}>Send OTP</Text>
+    
+  )}
+</TouchableOpacity>
 
       <Text style={styles.loginText}>
         Already have an account?{' '}

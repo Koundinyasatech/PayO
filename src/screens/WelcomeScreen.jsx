@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     color: '#5A00D1',
     fontWeight: '700',
     letterSpacing: 2,
-    fontFamily: 'serif',
+    fontFamily: 'Limelight',
   },
 });
