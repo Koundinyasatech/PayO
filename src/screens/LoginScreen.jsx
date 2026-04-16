@@ -68,10 +68,12 @@ const validate = () => {
 // };
 
 const handleSubmit = async () => {
+  //  navigation.navigate('Home');
   if (!validate()) return;
 
+
   try {
-    const response = await api.post('/login', {
+    const response = await api.post('/api/auth/login', {
       email,
       password,
     });

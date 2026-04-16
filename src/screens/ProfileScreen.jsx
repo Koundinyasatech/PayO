@@ -288,7 +288,7 @@ const handleContinue = async () => {
   if (!validate()) return;
 
   try {
-    await api.post('/register', {
+    await api.post('/api/auth/register', {
       name,
       email,
       password,

@@ -31,7 +31,7 @@ export default function RegisterMobileScreen({ navigation }) {
     try {
       setLoading(true);
 
-      const response = await api.post('/send-otp', {
+      const response = await api.post('/api/auth/send-otp', {
         mobile: mobile   // 🔥 FIXED (was phone before)
       });
 
