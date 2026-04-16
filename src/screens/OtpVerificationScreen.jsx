@@ -145,7 +145,7 @@ const handleVerifyOTP = async () => {
         setLoading(true);
         setError(''); // clear old error
 
-        const response = await api.post('/verify-otp', {
+        const response = await api.post('/api/auth/verify-otp', {
             mobile: mobile,
             otp: finalOtp
         });
@@ -190,7 +190,7 @@ navigation.replace('Profile')
     }
 
     try {
-        await api.post('/send-otp', { mobile });
+        await api.post('/api/auth/send-otp', { mobile });
 
         Alert.alert('Success', 'OTP Resend Successfully');
 
