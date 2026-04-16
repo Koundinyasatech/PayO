@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 const api = axios.create({
-  baseURL: 'https://evacuative-idolisingly-cherie.ngrok-free.dev',
+  baseURL: 'http://13.204.47.143:3000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

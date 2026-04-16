@@ -12,9 +12,11 @@ import api from '../api/axios';
 export default function TransactionPinScreen({ navigation }) {
 
   const [pin, setPin] = useState('');
+   const [error, setError] = useState('');
 
   // ✅ ADD DIGIT (SAFE)
   const handlePress = (num) => {
+    setError("");
     setPin((prev) => {
       if (prev.length < 4) {
         return prev + num;   // string concat
@@ -34,14 +36,16 @@ export default function TransactionPinScreen({ navigation }) {
     //  navigation.replace('Login');
 
     if (pin.length !== 4) {
-      Alert.alert('Error', 'Enter 4 digit PIN');
+      // Alert.alert('Error', 'Enter 4 digit PIN');
+         setError('Enter 4 digit PIN');
+      
       return;
     }
 
     try {
       console.log("SENDING PIN:", pin); // 🔍 debug
 
-      const response = await api.post('/set-pin', {
+      const response = await api.post('/api/auth/set-pin', {
         pin: pin   // ✅ MUST BE STRING
       });
 
@@ -103,6 +107,11 @@ Set your Transaction Pin            </Text>
       </View>
 
       <Text style={styles.helper}>Enter 4 digits</Text>
+      {error ? (
+        <Text style={{ color: 'red', marginTop: 10, textAlign: 'center' }}>
+          {error}
+        </Text>
+      ) : null}
 
       {/* KEYPAD */}
       {/* <View style={styles.keypad}>
