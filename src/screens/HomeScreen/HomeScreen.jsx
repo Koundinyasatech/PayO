@@ -229,7 +229,7 @@ export default function HomeScreen({ navigate }) {
         {/* ACTION BUTTONS */}
         <View style={styles.actionsContainer}>
           
-          {/* <View style={styles.actions}>
+          <View style={styles.actions}>
            
           
             <TouchableOpacity
@@ -264,11 +264,11 @@ export default function HomeScreen({ navigate }) {
               <Text style={styles.actionLabel}>Refer</Text>
             </TouchableOpacity>
  
-          </View> */}
+          </View>
 
-           <View style={styles.actions}>
+           {/* <View style={styles.actions}>
 
-      {/* SEND */}
+     
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigate('EnterAddress')}
@@ -279,7 +279,7 @@ export default function HomeScreen({ navigate }) {
         <Text style={styles.label}>Send</Text>
       </TouchableOpacity>
 
-      {/* RECEIVE */}
+     
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigate('scan')}
@@ -290,7 +290,7 @@ export default function HomeScreen({ navigate }) {
         <Text style={styles.label}>Receive</Text>
       </TouchableOpacity>
 
-      {/* REFER */}
+    
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigate('home')}
@@ -301,7 +301,7 @@ export default function HomeScreen({ navigate }) {
         <Text style={styles.label}>Refer</Text>
       </TouchableOpacity>
 
-    </View>
+    </View> */}
         </View>
  
         {/* INCOME/OUTCOME */}
