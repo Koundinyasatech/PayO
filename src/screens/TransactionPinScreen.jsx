@@ -45,7 +45,7 @@ export default function TransactionPinScreen({ navigation }) {
     try {
       console.log("SENDING PIN:", pin); // 🔍 debug
 
-      const response = await api.post('/api/auth/set-pin', {
+      const response = await api.post('/set-pin', {
         pin: pin   // ✅ MUST BE STRING
       });
 
