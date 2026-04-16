@@ -128,9 +128,10 @@
 
 // });
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
-import styles from '../styles/HomeStyles';
+import styles from './homeStlying';
+import api from '../../api/axios';
  
 export default function HomeScreen({ navigate }) {
   const [balance, setBalance] = useState(20000);
@@ -145,6 +146,22 @@ export default function HomeScreen({ navigate }) {
     { id: '4', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
     { id: '5', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
   ];
+
+  // useEffect(()=>{
+  //    try {
+  //   const response = api.get('/api/wallet/transactions');
+
+  //   console.log(response?.data,"997")
+  // } catch (error) {
+  //   setMessage(
+  //     error?.response?.data?.message ||
+  //     error?.message ||
+  //     "Something went wrong"
+  //   );
+  // }
+
+  // },[transactions])
+  
  
   const getTransactionIcon = (type) => {
     switch (type) {
@@ -211,9 +228,10 @@ export default function HomeScreen({ navigate }) {
  
         {/* ACTION BUTTONS */}
         <View style={styles.actionsContainer}>
-          <View style={styles.actions}>
+          
+          {/* <View style={styles.actions}>
            
-            {/* ✅ SEND → FIXED HERE */}
+          
             <TouchableOpacity
               style={styles.actionWrapper}
               onPress={() => navigate('EnterAddress')}
@@ -224,7 +242,7 @@ export default function HomeScreen({ navigate }) {
               <Text style={styles.actionLabel}>Send</Text>
             </TouchableOpacity>
  
-            {/* RECEIVE */}
+        
             <TouchableOpacity
               style={styles.actionWrapper}
               onPress={() => navigate('scan')}
@@ -235,7 +253,7 @@ export default function HomeScreen({ navigate }) {
               <Text style={styles.actionLabel}>Receive</Text>
             </TouchableOpacity>
  
-            {/* REFER */}
+          
             <TouchableOpacity
               style={styles.actionWrapper}
               onPress={() => navigate('home')}
@@ -246,7 +264,44 @@ export default function HomeScreen({ navigate }) {
               <Text style={styles.actionLabel}>Refer</Text>
             </TouchableOpacity>
  
-          </View>
+          </View> */}
+
+           <View style={styles.actions}>
+
+      {/* SEND */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigate('EnterAddress')}
+      >
+        <View style={styles.iconCircle}>
+          <Icon name="arrow-up-right" size={16} color="#fff" />
+        </View>
+        <Text style={styles.label}>Send</Text>
+      </TouchableOpacity>
+
+      {/* RECEIVE */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigate('scan')}
+      >
+        <View style={styles.iconCircle}>
+          <Icon name="arrow-down-left" size={16} color="#fff" />
+        </View>
+        <Text style={styles.label}>Receive</Text>
+      </TouchableOpacity>
+
+      {/* REFER */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigate('home')}
+      >
+        <View style={styles.iconCircle}>
+          <Icon name="arrow-up-right" size={16} color="#fff" />
+        </View>
+        <Text style={styles.label}>Refer</Text>
+      </TouchableOpacity>
+
+    </View>
         </View>
  
         {/* INCOME/OUTCOME */}

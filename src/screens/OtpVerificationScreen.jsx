@@ -19,6 +19,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
     const [otp, setOtp] = useState(['', '', '', '']);
     const [timer, setTimer] = useState(30);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const inputs = useRef([]);
 
@@ -40,15 +41,27 @@ export default function OtpVerificationScreen({ route, navigation }) {
         }, 1000);
     };
 
-    const handleChange = (text, index) => {
-        const newOtp = [...otp];
-        newOtp[index] = text;
-        setOtp(newOtp);
+    // const handleChange = (text, index) => {
+    //     const newOtp = [...otp];
+    //     newOtp[index] = text;
+    //     setOtp(newOtp);
 
-        if (text && index < 3) {
-            inputs.current[index + 1].focus();
-        }
-    };
+    //     if (text && index < 3) {
+    //         inputs.current[index + 1].focus();
+    //     }
+    // };
+
+    const handleChange = (text, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = text;
+    setOtp(newOtp);
+
+    if (error) setError(''); // 🔥 clear error when user edits
+
+    if (text && index < 3) {
+        inputs.current[index + 1].focus();
+    }
+};
 
     const handleKeyPress = (e, index) => {
         if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
@@ -65,74 +78,129 @@ export default function OtpVerificationScreen({ route, navigation }) {
         }
     };
 
-    const handleVerifyOTP = async () => {
-// navigation.replace('Profile');
-        const finalOtp = otp.join('');
+//     const handleVerifyOTP = async () => {
+// // navigation.replace('Profile');
+//         const finalOtp = otp.join('');
 
-        if (finalOtp.length < 4) {
-            Alert.alert('Error', 'Enter valid OTP');
-            return;
-        }
+//         if (finalOtp.length < 4) {
+//             Alert.alert('Error', 'Enter valid OTP');
+//             return;
+//         }
 
-        try {
-            setLoading(true);
+//         try {
+//             setLoading(true);
 
-            const response = await api.post('/verify-otp', {
-                mobile: mobile,
-                otp: finalOtp
-            });
+//             const response = await api.post('/verify-otp', {
+//                 mobile: mobile,
+//                 otp: finalOtp
+//             });
 
-            console.log('VERIFY RESPONSE:', response.data);
+//             console.log('VERIFY RESPONSE:', response.data);
 
-            if (response.data.token) {
+//             if (response.data.token) {
 
-                const token = response.data.token;
+//                 const token = response.data.token;
 
-                if (token) {
-                    await saveToken(token);
-                }
+//                 if (token) {
+//                     await saveToken(token);
+//                 }
 
-                // ✅ ONLY THIS — NO setTimeout
-                Alert.alert(
-                    'Success',
-                    'OTP Verified Successfully',
-                    [
-                        {
-                            text: 'OK',
-                            onPress: () => {
-                                console.log("NAVIGATING...");
-                                navigation.replace('Profile');
-                            }
-                        }
-                    ]
-                );
+//                 // ✅ ONLY THIS — NO setTimeout
+//                 Alert.alert(
+//                     'Success',
+//                     'OTP Verified Successfully',
+//                     [
+//                         {
+//                             text: 'OK',
+//                             onPress: () => {
+//                                 console.log("NAVIGATING...");
+//                                 navigation.replace('Profile');
+//                             }
+//                         }
+//                     ]
+//                 );
 
-            } else {
-                Alert.alert('Error', response.data.message || 'Invalid OTP');
+//             } else {
+//                 Alert.alert('Error', response.data.message || 'Invalid OTP');
+//             }
+
+//         } catch (error) {
+//             console.log('VERIFY ERROR:', error.response?.data || error.message);
+//             Alert.alert('Error', 'Verification failed');
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+const handleVerifyOTP = async () => {
+
+    const finalOtp = otp.join('');
+
+    if (finalOtp.length < 4) {
+        setError('Enter valid OTP');
+        return;
+    }
+
+    try {
+        setLoading(true);
+        setError(''); // clear old error
+
+        const response = await api.post('/api/auth/verify-otp', {
+            mobile: mobile,
+            otp: finalOtp
+        });
+
+        if (response.data.token) {
+
+            const token = response.data.token;
+
+            if (token) {
+                await saveToken(token);
             }
+navigation.replace('Profile')
+            // Alert.alert(
+            //     'Success',
+            //     'OTP Verified Successfully',
+            //     [
+            //         {
+            //             text: 'OK',
+            //             onPress: () => navigation.replace('Profile')
+            //         }
+            //     ]
+            // );
 
-        } catch (error) {
-            console.log('VERIFY ERROR:', error.response?.data || error.message);
-            Alert.alert('Error', 'Verification failed');
-        } finally {
-            setLoading(false);
+        } else {
+            setError('Invalid OTP'); // ✅ instead of alert
         }
-    };
 
-    const handleResendOTP = async () => {
-        try {
-            await api.post('/send-otp', { mobile });
+    } catch (error) {
+        console.log('VERIFY ERROR:', error.response?.data || error.message);
+        setError('Enter the Valid OTP'); // ✅ instead of alert
+    } finally {
+        setLoading(false);
+    }
+};
+   const handleResendOTP = async () => {
+    setError('');
+    setOtp(['', '', '', '']);
 
-            Alert.alert('Success', 'OTP Resent');
+    // 👉 Move focus to first input
+    if (inputs.current[0]) {
+        inputs.current[0].focus();
+    }
 
-            startTimer();
+    try {
+        await api.post('/api/auth/send-otp', { mobile });
 
-        } catch (error) {
-            console.log('RESEND ERROR:', error);
-            Alert.alert('Error', 'Failed to resend OTP');
-        }
-    };
+        Alert.alert('Success', 'OTP Resend Successfully');
 
+        startTimer();
+
+    } catch (error) {
+        console.log('RESEND ERROR:', error);
+        Alert.alert('Error', 'Failed to resend OTP, Please try after some time');
+    }
+};
     return (
         <View style={styles.container}>
                <View style={styles.header}>
@@ -150,10 +218,10 @@ Verify Your Number              </Text>
 
 
             <Text style={styles.sub}>
-                Enter the 4 digit code sent to +91 ******{mobile.slice(-2)}
+                Enter the 4 digit code sent to +91 {mobile.slice(-10,-9)}*******{mobile.slice(-2)}
             </Text>
 
-            <View style={styles.otpContainer}>
+            {/* <View style={styles.otpContainer}>
                 {otp.map((digit, index) => (
                     <TextInput
                         key={index}
@@ -166,7 +234,29 @@ Verify Your Number              </Text>
                         onKeyPress={(e) => handleKeyPress(e, index)}
                     />
                 ))}
-            </View>
+            </View> */}
+
+            <View style={styles.otpContainer}>
+  {otp.map((digit, index) => (
+    <TextInput
+      key={index}
+      ref={(ref) => (inputs.current[index] = ref)}
+      style={styles.box}
+      keyboardType="number-pad"
+      maxLength={1}
+      value={digit}
+      onChangeText={(text) => handleChange(text, index)}
+      onKeyPress={(e) => handleKeyPress(e, index)}
+    />
+  ))}
+</View>
+
+{/* ✅ Error Text */}
+{error ? (
+  <Text style={{ color: 'red', marginTop: 10, textAlign: 'center' }}>
+    {error}
+  </Text>
+) : null}
 
             <Text style={styles.timer}>
                 Code expires in : 00:{timer < 10 ? `0${timer}` : timer}
