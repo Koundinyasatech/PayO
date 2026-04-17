@@ -1,0 +1,74 @@
+name: CI/CD Frontend Pipeline
+
+on:
+  push:
+    branches:
+      - sathwika   # ✅ only this branch triggers deployment
+
+jobs:
+
+  # 🔹 1. CI JOB
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant Permission
+        run: chmod +x android/gradlew
+
+      - name: Build APK
+        run: |
+          cd android
+          ./gradlew assembleRelease
+
+  # 🔹 2. DOCKER JOB
+  docker:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build Image
+        run: docker build -t umarsharief/payo-frontend:latest .
+
+      - name: Push Image
+        run: docker push umarsharief/payo-frontend:latest
+
+  # 🔹 3. DEPLOY JOB
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Frontend EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.FRONTEND_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.FRONTEND_EC2_SSH_KEY }}
+          script: |
+            docker stop payo-frontend || true
+            docker rm payo-frontend || true
+            docker pull umarsharief/payo-frontend:latest
+            docker run -d -p 3001:3000 --name payo-frontend umarsharief/payo-frontend:latest
