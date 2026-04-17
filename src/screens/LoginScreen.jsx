@@ -7,6 +7,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import api from '../api/axios';
+import * as Keychain from 'react-native-keychain';
 
 export default function LoginScreen({ navigation }) {
 
@@ -67,10 +68,37 @@ const validate = () => {
 //   }
 // };
 
-const handleSubmit = async () => {
-  //  navigation.navigate('Home');
-  if (!validate()) return;
+// const handleSubmit = async () => {
+//   //  navigation.navigate('Home');
+//   if (!validate()) return;
 
+
+//   try {
+//     const response = await api.post('/login', {
+//       email,
+//       password,
+//     });
+
+//     if (response?.data?.message === "Login success") {
+//       setMessage("");
+//       navigation.navigate('Home');
+//     } else {
+//       setMessage(response?.data?.message || "Login failed");
+//     }
+
+//   } catch (error) {
+//     setMessage(
+//       error?.response?.data?.message ||
+//       error?.message ||
+//       "Something went wrong"
+//     );
+//   }
+// };
+
+
+
+const handleSubmit = async () => {
+  if (!validate()) return;
 
   try {
     const response = await api.post('/login', {
@@ -79,6 +107,12 @@ const handleSubmit = async () => {
     });
 
     if (response?.data?.message === "Login success") {
+      const token = response?.data?.token;
+      console.log(token,"token1")
+
+      // ✅ Store token securely
+      await Keychain.setGenericPassword("userToken", token);
+
       setMessage("");
       navigation.navigate('Home');
     } else {

@@ -131,13 +131,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import styles from './homeStlying';
-import api from '../../api/axios';
+import api, { getToken } from '../../api/axios';
+import Header from '../components/header';
+import BottomNav from '../components/bottomNav';
  
-export default function HomeScreen({ navigate }) {
+export default function HomeScreen({ navigation }) {
   const [balance, setBalance] = useState(20000);
   const [income] = useState(20000);
   const [outcome] = useState(17000);
   const [balanceVisible, setBalanceVisible] = useState(false);
+  const [transactionsList,setTransactions]=useState(null);
+  let navigations;
+
  
   const transactions = [
     { id: '1', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
@@ -145,22 +150,27 @@ export default function HomeScreen({ navigate }) {
     { id: '3', name: 'Priya Mehta', time: 'today 9/10 Pm', amount: -500, type: 'pending', color: '#F59E0B' },
     { id: '4', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
     { id: '5', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
+        { id: '6', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
+    { id: '7', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
+    { id: '8', name: 'Priya Mehta', time: 'today 9/10 Pm', amount: -500, type: 'pending', color: '#F59E0B' },
+    { id: '9', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
+    { id: '10', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
   ];
 
-  // useEffect(()=>{
-  //    try {
-  //   const response = api.get('/api/wallet/transactions');
+  useEffect(()=>{
+     try {
+    const response = api.get('/transactions');
 
-  //   console.log(response?.data,"997")
-  // } catch (error) {
-  //   setMessage(
-  //     error?.response?.data?.message ||
-  //     error?.message ||
-  //     "Something went wrong"
-  //   );
-  // }
+    console.log(response?.data,"997")
+  } catch (error) {
+    setMessage(
+      error?.response?.data?.message ||
+      error?.message ||
+      "Something went wrong"
+    );
+  }
 
-  // },[transactions])
+  },[transactionsList])
   
  
   const getTransactionIcon = (type) => {
@@ -185,7 +195,7 @@ export default function HomeScreen({ navigate }) {
     <View style={styles.container}>
      
       {/* HEADER */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.menuIcon}>☰</Text>
         <View style={styles.headerRight}>
           <Text style={styles.notificationIcon}>🔔</Text>
@@ -193,7 +203,8 @@ export default function HomeScreen({ navigate }) {
             <Text>👤</Text>
           </View>
         </View>
-      </View>
+      </View> */}
+      <Header/>
  
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
        
@@ -218,7 +229,7 @@ export default function HomeScreen({ navigate }) {
  
           {/* WALLET BUTTON */}
           <View style={styles.cardFooter}>
-            <Text style={styles.walletLabel}>My Wallet</Text>
+            <Text style={styles.walletLabel}>My Wallets</Text>
             <TouchableOpacity style={styles.walletButton}>
               <Text style={styles.walletButtonText}>View All</Text>
               <Text style={styles.walletArrow}>→</Text>
@@ -229,12 +240,12 @@ export default function HomeScreen({ navigate }) {
         {/* ACTION BUTTONS */}
         <View style={styles.actionsContainer}>
           
-          <View style={styles.actions}>
+          {/* <View style={styles.actions}>
            
           
             <TouchableOpacity
               style={styles.actionWrapper}
-              onPress={() => navigate('EnterAddress')}
+              // onPress={() => navigate('EnterAddress')}
             >
               <View style={styles.actionButton}>
                 <Text style={styles.actionIcon}>📤</Text>
@@ -245,7 +256,7 @@ export default function HomeScreen({ navigate }) {
         
             <TouchableOpacity
               style={styles.actionWrapper}
-              onPress={() => navigate('scan')}
+              // onPress={() => navigate('scan')}
             >
               <View style={styles.actionButton}>
                 <Text style={styles.actionIcon}>📥</Text>
@@ -256,7 +267,7 @@ export default function HomeScreen({ navigate }) {
           
             <TouchableOpacity
               style={styles.actionWrapper}
-              onPress={() => navigate('home')}
+              // onPress={() => navigate('home')}
             >
               <View style={styles.actionButton}>
                 <Text style={styles.actionIcon}>🔗</Text>
@@ -264,44 +275,50 @@ export default function HomeScreen({ navigate }) {
               <Text style={styles.actionLabel}>Refer</Text>
             </TouchableOpacity>
  
-          </View>
+          </View> */}
 
-           {/* <View style={styles.actions}>
+<View style={styles.actions}>
 
-     
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigate('EnterAddress')}
-      >
-        <View style={styles.iconCircle}>
-          <Icon name="arrow-up-right" size={16} color="#fff" />
-        </View>
-        <Text style={styles.label}>Send</Text>
-      </TouchableOpacity>
+  {/* SEND */}
+  <TouchableOpacity style={styles.button}
+   onPress={() => navigation.navigate('enterAddress')}
+  >
+    <View style={styles.iconCircle}>
+      <Text style={{ color: '#fff' }}>
+        {/* ↗ */}
+        </Text>
+    </View>
+    <Text style={styles.label}>Send</Text>
+  </TouchableOpacity>
 
-     
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigate('scan')}
-      >
-        <View style={styles.iconCircle}>
-          <Icon name="arrow-down-left" size={16} color="#fff" />
-        </View>
-        <Text style={styles.label}>Receive</Text>
-      </TouchableOpacity>
+  {/* LINE */}
+  <View style={styles.connector} />
 
-    
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigate('home')}
-      >
-        <View style={styles.iconCircle}>
-          <Icon name="arrow-up-right" size={16} color="#fff" />
-        </View>
-        <Text style={styles.label}>Refer</Text>
-      </TouchableOpacity>
+  {/* RECEIVE */}
+  <TouchableOpacity style={styles.button}>
+    <View style={styles.iconCircle}>
+      <Text style={{ color: '#fff' }}>
+        {/* ↙ */}
+        </Text>
+    </View>
+    <Text style={styles.label}>Receive</Text>
+  </TouchableOpacity>
 
-    </View> */}
+  {/* LINE */}
+  <View style={styles.connector} />
+
+  {/* REFER */}
+  <TouchableOpacity style={styles.button}>
+    <View style={styles.iconCircle}>
+      <Text style={{ color: '#fff' }}>
+        {/* ↗ */}
+        </Text>
+    </View>
+    <Text style={styles.label}>Refer</Text>
+  </TouchableOpacity>
+
+</View>
+        
         </View>
  
         {/* INCOME/OUTCOME */}
@@ -358,7 +375,7 @@ export default function HomeScreen({ navigate }) {
       </ScrollView>
  
       {/* BOTTOM NAV */}
-      <View style={styles.bottomNav}>
+      {/* <View style={styles.bottomNav}>
         <TouchableOpacity style={styles.navItem}>
           <Text style={[styles.navIcon, styles.navActive]}>🏠</Text>
           <Text style={[styles.navLabel, styles.navActive]}>Home</Text>
@@ -371,7 +388,7 @@ export default function HomeScreen({ navigate }) {
  
         <TouchableOpacity
           style={styles.centerIcon}
-          onPress={() => navigate('scan')}
+          // onPress={() => navigate('scan')}
         >
           <Text style={{ fontSize: 28 }}>↔</Text>
         </TouchableOpacity>
@@ -385,7 +402,8 @@ export default function HomeScreen({ navigate }) {
           <Text style={[styles.navIcon, styles.navInactive]}>⚙️</Text>
           <Text style={[styles.navLabel, styles.navInactive]}>Profile</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
+      <BottomNav navigation={navigations} />
     </View>
   );
 }
