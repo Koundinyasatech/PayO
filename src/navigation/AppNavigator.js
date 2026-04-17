@@ -9,13 +9,18 @@ import Onboarding1 from '../screens/Onboarding1';
 import Onboarding2 from '../screens/Onboarding2';
 import Onboarding3 from '../screens/Onboarding3';
 
-
 import LoginScreen from '../screens/LoginScreen';
 import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
-import HomeScreen from '../screens/HomeScreen';
+
+/* ✅ IMPORT TABS */
+import BottomTabs from './BottomTabs';
+
+/* ✅ SCREENS */
+import ScanQRScreen from '../screens/ScanQRScreen';
+import Receive from '../screens/Receive';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +28,8 @@ export default function AppNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+        {/* AUTH FLOW */}
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Animation" component={AnimationScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -34,7 +41,14 @@ export default function AppNavigator() {
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+
+        {/* ✅ MAIN APP */}
+        <Stack.Screen name="Main" component={BottomTabs} />
+
+        {/* FEATURES */}
+        <Stack.Screen name="Scanner" component={ScanQRScreen} />
+        <Stack.Screen name="Receive" component={Receive} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
