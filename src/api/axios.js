@@ -9,6 +9,14 @@ const api = axios.create({
   },
 });
 
+export const getToken = () => {
+  const credentials = Keychain.getGenericPassword();
+  if (credentials) {
+    return credentials.password;
+  }
+  return null;
+};
+
 // ✅ CORRECT FOR YOUR BACKEND
 api.interceptors.request.use(
   async (config) => {
@@ -17,8 +25,6 @@ api.interceptors.request.use(
 
       if (credentials) {
         const token = credentials.password;
-
-        console.log('TOKEN SENT:', token); // 🔍 debug
 
         // ✅ NO Bearer
         config.headers.Authorization = token;

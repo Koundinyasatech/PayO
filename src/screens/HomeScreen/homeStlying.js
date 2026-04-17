@@ -313,38 +313,50 @@ export default StyleSheet.create({
     backgroundColor: '#2E1065', // deep purple base
   },
  
-   actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
+  //  actions: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 20,
+  //   marginTop: 20,
+  // },
+actions: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EDE68A', // light yellow
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    borderRadius: 30,
-  },
+button: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#FDE68A',
+  paddingHorizontal: 16,
+  paddingVertical: 10,
+  borderRadius: 30,
+  zIndex: 2, // keeps button above line
+},
 
-  iconCircle: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 8,
-  },
+label: {
+  marginLeft: 8,
+  fontWeight: '600',
+},
 
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#000',
-  },
+iconCircle: {
+  width: 28,
+  height: 28,
+  borderRadius: 14,
+  backgroundColor: '#000',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
 
+// 🔥 MAGIC LINE
+connector: {
+  height: 12,
+  width: 20, // adjust this for spacing
+  backgroundColor: '#FDE68A',
+  marginHorizontal: -2, // removes gap between button & line
+  zIndex: 1,
+},
 
 
 
