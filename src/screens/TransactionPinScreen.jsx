@@ -51,7 +51,7 @@ export default function TransactionPinScreen({ navigation }) {
         Alert.alert('Success', response.data.message);
 
         // ✅ navigate next
-        navigation.replace('Login'); // or Home
+        navigation.replace('Home'); // or Home
       }
 
     } catch (error) {
@@ -65,30 +65,30 @@ export default function TransactionPinScreen({ navigation }) {
   };
 
   const Key = ({ num, onPress }) => {
-  return (
-    <TouchableOpacity
-      style={styles.key}
-      onPress={() => onPress(num)}
-    >
-      <Text style={styles.keyText}>{num}</Text>
-    </TouchableOpacity>
-  );
-};
+    return (
+      <TouchableOpacity
+        style={styles.key}
+        onPress={() => onPress(num)}
+      >
+        <Text style={styles.keyText}>{num}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
 
       <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                     <Text style={styles.back}>←</Text>
-                  {/* <Text style={styles.back}>{'<'}</Text> */}
-                    </TouchableOpacity>
-                  
-                    <Text style={styles.titleCentered}>
-Set your Transaction Pin            </Text>
-                  </View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
+          {/* <Text style={styles.back}>{'<'}</Text> */}
+        </TouchableOpacity>
 
-  
+        <Text style={styles.titleCentered}>
+          Set your Transaction Pin            </Text>
+      </View>
+
+
       <Text style={styles.desc}>
         This 4-digit pin secures every payment. Keep it private.
       </Text>
@@ -139,35 +139,35 @@ Set your Transaction Pin            </Text>
 
       <View style={styles.keypad}>
 
-  {/* ROW 1 */}
-  <View style={styles.row}>
-    <Key num="1" onPress={handlePress} />
-    <Key num="2" onPress={handlePress} />
-    <Key num="3" onPress={handlePress} />
-  </View>
+        {/* ROW 1 */}
+        <View style={styles.row}>
+          <Key num="1" onPress={handlePress} />
+          <Key num="2" onPress={handlePress} />
+          <Key num="3" onPress={handlePress} />
+        </View>
 
-  {/* ROW 2 */}
-  <View style={styles.row}>
-    <Key num="4" onPress={handlePress} />
-    <Key num="5" onPress={handlePress} />
-    <Key num="6" onPress={handlePress} />
-  </View>
+        {/* ROW 2 */}
+        <View style={styles.row}>
+          <Key num="4" onPress={handlePress} />
+          <Key num="5" onPress={handlePress} />
+          <Key num="6" onPress={handlePress} />
+        </View>
 
-  {/* ROW 3 */}
-  <View style={styles.row}>
-    <Key num="7" onPress={handlePress} />
-    <Key num="8" onPress={handlePress} />
-    <Key num="9" onPress={handlePress} />
-  </View>
+        {/* ROW 3 */}
+        <View style={styles.row}>
+          <Key num="7" onPress={handlePress} />
+          <Key num="8" onPress={handlePress} />
+          <Key num="9" onPress={handlePress} />
+        </View>
 
-  {/* ROW 4 */}
-  <View style={styles.row}>
-    <View style={styles.emptyKey} />
-    <Key num="0" onPress={handlePress} />
-    <Key num="×" onPress={handleDelete} />
-  </View>
+        {/* ROW 4 */}
+        <View style={styles.row}>
+          <View style={styles.emptyKey} />
+          <Key num="0" onPress={handlePress} />
+          <Key num="×" onPress={handleDelete} />
+        </View>
 
-</View>
+      </View>
 
       {/* BUTTON */}
       <TouchableOpacity style={styles.button} onPress={handleContinue}>
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   //   alignSelf: 'flex-start',
   //   fontSize: 22,
   // },
-  
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
   },
 
- titleCentered: {
+  titleCentered: {
     flex: 1,
     textAlign: 'center',
     fontSize: 22,
@@ -249,30 +249,30 @@ const styles = StyleSheet.create({
     color: '#555'
   },
 
- keypad: {
-  marginTop: 30,
-  width: '100%',
-  alignItems: 'center',
-},
-row: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  width: '80%',   // controls spacing like screenshot
-  marginBottom: 20,
-},
+  keypad: {
+    marginTop: 30,
+    width: '100%',
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',   // controls spacing like screenshot
+    marginBottom: 20,
+  },
 
- key: {
-  width: 70,
-  height: 70,
-  borderRadius: 35,
-  backgroundColor: '#F2F2F2', // light gray like UI
-  justifyContent: 'center',
-  alignItems: 'center',
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  elevation: 3,
-},
+  key: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#F2F2F2', // light gray like UI
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
 
   emptyKey: {
     width: 70,

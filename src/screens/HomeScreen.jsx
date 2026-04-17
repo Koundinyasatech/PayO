@@ -3,127 +3,211 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Platform,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Feather';
 
-export default function HomeScreen() {
+const transactions = [
+  { id: '1', name: 'Priya Mehta', amount: '+1000.0' },
+  { id: '2', name: 'Priya Mehta', amount: '-250.0' },
+  { id: '3', name: 'Priya Mehta', amount: '-500.0' },
+];
 
+export default function HomeScreen({ navigation }) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content" backgroundColor="#6a11cb" />
 
-      {/* HEADER */}
-      <View style={styles.header}>
-        <Text style={styles.menu}>☰</Text>
-        <Text style={styles.title}>PAYO</Text>
-        <Text style={styles.profile}>👤</Text>
-      </View>
+      <LinearGradient colors={['#6a11cb', '#3a0ca3']} style={styles.container}>
 
-      {/* BALANCE CARD */}
-      <View style={styles.card}>
-        <Text style={styles.balanceLabel}>Total Balance</Text>
-        <Text style={styles.balance}>***** PAYO</Text>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Icon name="menu" size={24} color="white" />
+          <View style={styles.profile}>
+            <Icon name="user" size={18} color="white" />
+          </View>
+        </View>
 
-        <TouchableOpacity style={styles.walletBtn}>
-          <Text>My Wallet →</Text>
-        </TouchableOpacity>
-      </View>
+        {/* BALANCE CARD */}
+        <View style={styles.balanceCard}>
+          <Text style={styles.balanceTitle}>Total Balance</Text>
 
-      {/* ACTION BUTTONS */}
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Text>Send</Text>
-        </TouchableOpacity>
+          <View style={styles.balanceRow}>
+            <Text style={styles.balanceAmount}>*****</Text>
+            <Text style={styles.payo}> PAYO</Text>
+            <Icon name="eye-off" size={20} color="#ccc" style={styles.eyeIcon} />
+          </View>
 
-        <TouchableOpacity style={styles.actionBtn}>
-          <Text>Receive</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.walletRow}>
+            <Text style={styles.walletText}>My Wallet</Text>
+            <Icon name="arrow-right" size={18} color="black" />
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity style={styles.actionBtn}>
-          <Text>Refer</Text>
-        </TouchableOpacity>
-      </View>
+        {/* ACTION BUTTONS */}
+        <View style={styles.actionsWrapper}>
+          <ActionPill
+            icon="arrow-up-right"
+            text="Send"
+            onPress={() => navigation.navigate('Scanner')}
+          />
 
-      {/* BOTTOM NAV */}
-      <View style={styles.bottomNav}>
+          <View style={styles.connector} />
 
-        <Text style={styles.navItem}>Home</Text>
-        <Text style={styles.navItem}>Wallets</Text>
-        <Text style={styles.navItem}>Transactions</Text>
-        <Text style={styles.navItem}>Profile</Text>
+          <ActionPill
+            icon="arrow-down-left"
+            text="Receive"
+            onPress={() => navigation.navigate('Receive')}
+          />
 
-      </View>
+          <View style={styles.connector} />
 
-    </View>
+          <ActionPill icon="user-plus" text="Refer" />
+        </View>
+
+        {/* TRANSACTIONS */}
+        <Text style={styles.transTitle}>Recent Transactions</Text>
+
+        <FlatList
+          data={transactions}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 120 }}
+          renderItem={({ item }) => (
+            <View style={styles.transItem}>
+              <View style={styles.avatar} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.time}>Today</Text>
+              </View>
+              <Text
+                style={{
+                  color: item.amount.includes('+') ? '#00ff9f' : '#ff4d4d',
+                }}
+              >
+                {item.amount}
+              </Text>
+            </View>
+          )}
+        />
+
+      </LinearGradient>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+/* ACTION BUTTON */
+const ActionPill = ({ icon, text, onPress }) => (
+  <TouchableOpacity onPress={onPress} style={{ flex: 1 }}>
+    <LinearGradient
+      colors={['#f6d365', '#fda085']}
+      style={styles.actionPill}
+    >
+      <Icon name={icon} size={14} color="black" />
+      <Text style={styles.actionText}>{text}</Text>
+    </LinearGradient>
+  </TouchableOpacity>
+);
 
+/* STYLES */
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5A00D1',
-    paddingTop: 50,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 10,
   },
 
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    alignItems: 'center'
+    marginBottom: 20,
   },
 
-  menu: { color: '#fff', fontSize: 20 },
-  title: { color: '#fff', fontSize: 18, fontWeight: '700' },
-  profile: { color: '#fff' },
-
-  card: {
-    backgroundColor: '#222',
-    margin: 20,
-    borderRadius: 15,
-    padding: 20
+  profile: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#ffffff30',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  balanceLabel: {
-    color: '#aaa'
+  balanceCard: {
+    backgroundColor: '#1f1f1f',
+    padding: 20,
+    borderRadius: 20,
   },
 
-  balance: {
-    color: '#fff',
-    fontSize: 22,
-    marginVertical: 10
-  },
+  balanceTitle: { color: '#ccc' },
 
-  walletBtn: {
+  balanceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
+
+  balanceAmount: { color: 'white', fontSize: 28 },
+
+  payo: { color: '#7CFCB2', marginLeft: 5 },
+
+  eyeIcon: { position: 'absolute', right: 0 },
+
+  walletRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
     backgroundColor: '#fff',
     padding: 10,
     borderRadius: 10,
-    alignSelf: 'flex-start'
   },
 
-  actions: {
+  walletText: { color: 'black' },
+
+  actionsWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20
+    marginVertical: 20,
+    alignItems: 'center',
   },
 
-  actionBtn: {
-    backgroundColor: '#FFD700',
+  connector: {
+    width: 10,
+    height: 2,
+    backgroundColor: '#f6d365',
+  },
+
+  actionPill: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     padding: 12,
-    borderRadius: 20
+    borderRadius: 40,
   },
 
-  bottomNav: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
+  actionText: {
+    marginLeft: 5,
+    color: 'black',
+    fontWeight: '500',
+  },
+
+  transTitle: {
+    color: 'white',
+    marginBottom: 10,
+  },
+
+  transItem: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#3b0070',
-    padding: 15
+    alignItems: 'center',
+    marginTop: 10,
   },
 
-  navItem: {
-    color: '#fff'
-  }
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#ccc',
+    marginRight: 10,
+  },
 
+  name: { color: 'white' },
+  time: { color: '#aaa', fontSize: 12 },
 });

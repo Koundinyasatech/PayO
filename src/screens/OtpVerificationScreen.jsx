@@ -66,7 +66,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
     };
 
     const handleVerifyOTP = async () => {
-// navigation.replace('Profile');
+        // navigation.replace('Profile');
         const finalOtp = otp.join('');
 
         if (finalOtp.length < 4) {
@@ -135,14 +135,14 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-               <View style={styles.header}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-               <Text style={styles.back}>←</Text>
-            {/* <Text style={styles.back}>{'<'}</Text> */}
-              </TouchableOpacity>
-            
-              <Text style={styles.titleCentered}>
-Verify Your Number              </Text>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text style={styles.back}>←</Text>
+                    {/* <Text style={styles.back}>{'<'}</Text> */}
+                </TouchableOpacity>
+
+                <Text style={styles.titleCentered}>
+                    Verify Your Number              </Text>
             </View>
 
             {/* <Text style={styles.title}>Verify Your Number</Text> */}
@@ -210,98 +210,98 @@ Verify Your Number              </Text>
     );
 }
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F3F3',
-    padding: 20,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#F3F3F3',
+        padding: 20,
+    },
 
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 20,
-  },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 20,
+    },
 
-  back: {
-    fontSize: 22,
-  },
+    back: {
+        fontSize: 22,
+    },
 
- titleCentered: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 22,
-    fontWeight: '700',
-    marginLeft: "10%", // balance arrow
-  },
+    titleCentered: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 22,
+        fontWeight: '700',
+        marginLeft: "10%", // balance arrow
+    },
 
-  sub: {
-    textAlign: 'center',
-    marginTop: 30,
-    color: '#666',
-    fontSize: 13,
-    lineHeight: 18,
-  },
+    sub: {
+        textAlign: 'center',
+        marginTop: 30,
+        color: '#666',
+        fontSize: 13,
+        lineHeight: 18,
+    },
 
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center', // ✅ center boxes
-    marginTop: 30,
-  },
+    otpContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center', // ✅ center boxes
+        marginTop: 30,
+    },
 
-  box: {
-    width: 55,
-    height: 55,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginHorizontal: 6,
-    textAlign: 'center',
-    fontSize: 20,
-    borderRadius: 10,
-    backgroundColor: '#fff',
-  },
+    box: {
+        width: 55,
+        height: 55,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        marginHorizontal: 6,
+        textAlign: 'center',
+        fontSize: 20,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+    },
 
-  timer: {
-    marginTop: 20,
-    textAlign: 'center', // ✅ center
-    color: '#666',
-  },
+    timer: {
+        marginTop: 20,
+        textAlign: 'center', // ✅ center
+        color: '#666',
+    },
 
-  resend: {
-    marginTop: 8,
-    textAlign: 'center', // ✅ center
-    color: '#666',
-  },
+    resend: {
+        marginTop: 8,
+        textAlign: 'center', // ✅ center
+        color: '#666',
+    },
 
-  link: {
-    color: '#5A00D1',
-    textDecorationLine: 'underline', // ✅ underline like UI
-  },
+    link: {
+        color: '#5A00D1',
+        textDecorationLine: 'underline', // ✅ underline like UI
+    },
 
-  button: {
-    backgroundColor: '#5A00D1',
-    padding: 16,
-    borderRadius: 10,
-    marginTop: 30,
-    width: '100%', // ✅ full width
-    alignItems: 'center',
-  },
+    button: {
+        backgroundColor: '#5A00D1',
+        padding: 16,
+        borderRadius: 10,
+        marginTop: 30,
+        width: '100%', // ✅ full width
+        alignItems: 'center',
+    },
 
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 15,
-  },
+    buttonText: {
+        color: '#fff',
+        fontWeight: '600',
+        fontSize: 15,
+    },
 
-  loginText: {
-    marginTop: 20,
-    textAlign: 'center', // ✅ center
-    color: '#555',
-  },
+    loginText: {
+        marginTop: 20,
+        textAlign: 'center', // ✅ center
+        color: '#555',
+    },
 
-  footer: {
-    marginTop: 10,
-    textAlign: 'center',
-    color: '#777',
-    fontSize: 12,
-  },
+    footer: {
+        marginTop: 10,
+        textAlign: 'center',
+        color: '#777',
+        fontSize: 12,
+    },
 });
