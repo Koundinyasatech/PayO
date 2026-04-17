@@ -16,6 +16,11 @@ import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
+import TransactionPinVerify from '../screens/HomeScreen/pinScreen';
+import PaymentLoading from '../screens/HomeScreen/loadingScreen';
+import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
+import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
+import ReviewDetails from '../screens/HomeScreen/reviewDetails';
 // import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +41,14 @@ export default function AppNavigator() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+
+        <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
+                <Stack.Screen name="review" component={ReviewDetails} />
+
+
+        <Stack.Screen name="pinverify" component={TransactionPinVerify} />
+        <Stack.Screen name="loading" component={PaymentLoading} />
+        <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
       </Stack.Navigator>
     </NavigationContainer>
   );
