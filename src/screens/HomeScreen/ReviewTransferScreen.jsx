@@ -1,0 +1,202 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  StyleSheet,
+  Switch,
+} from "react-native";
+import LinearGradient from "react-native-linear-gradient";
+
+export default function ReviewTransferScreen({ route, navigation }) {
+  const { receiver, amount, address } = route.params;
+
+  const [save, setSave] = useState(false);
+
+  return (
+    <LinearGradient
+      colors={["#6A00F4", "#1A0033"]}
+      style={styles.container}
+    >
+      <SafeAreaView style={{ flex: 1, padding: 20 }}>
+
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Text style={styles.cancel}>Cancel</Text>
+          <Text style={styles.headerTitle}>
+            Review your Detail Transfer
+          </Text>
+        </View>
+
+        {/* AVATAR */}
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>
+            {receiver?.name?.[0] || "U"}
+          </Text>
+        </View>
+
+        {/* AMOUNT */}
+        <Text style={styles.labelCenter}>Total Tokens</Text>
+        <Text style={styles.amount}>
+          {amount}.00 <Text style={styles.payo}>PAYO</Text>
+        </Text>
+
+        {/* FROM */}
+        <View style={styles.section}>
+          <Text style={styles.small}>From</Text>
+          <View style={styles.rowBetween}>
+            <Text style={styles.name}>Jhon Thomas</Text>
+            <Text style={styles.wallet}>PXY37488R</Text>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* TO */}
+        <View style={styles.section}>
+          <Text style={styles.small}>To</Text>
+          <View style={styles.rowBetween}>
+            <Text style={styles.name}>{receiver?.name}</Text>
+            <Text style={styles.wallet}>{address}</Text>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* SAVE TO RECENTS */}
+        <View style={styles.rowBetween}>
+          <Text style={styles.saveText}>Save to Recents</Text>
+          <Switch
+            value={save}
+            onValueChange={setSave}
+            trackColor={{ false: "#999", true: "#fff" }}
+            thumbColor={save ? "#6A00F4" : "#fff"}
+          />
+        </View>
+
+        <View style={styles.divider} />
+
+        {/* BUTTON */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            navigation.navigate("SendPin", {
+              amount,
+              name: receiver?.name,
+              address,
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Confirm and send</Text>
+        </TouchableOpacity>
+
+      </SafeAreaView>
+    </LinearGradient>
+  );
+}
+
+/* 🎨 STYLES */
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+
+  cancel: {
+    color: "#fff",
+  },
+
+  headerTitle: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+
+  avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "#ddd",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    elevation: 5,
+  },
+
+  avatarText: {
+    fontSize: 22,
+    fontWeight: "600",
+  },
+
+  labelCenter: {
+    color: "#ccc",
+    textAlign: "center",
+  },
+
+  amount: {
+    color: "#fff",
+    fontSize: 28,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 25,
+  },
+
+  payo: {
+    color: "#00FFAA",
+    fontSize: 16,
+  },
+
+  section: {
+    marginBottom: 10,
+  },
+
+  small: {
+    color: "#aaa",
+    marginBottom: 5,
+  },
+
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  name: {
+    color: "#fff",
+    fontSize: 16,
+  },
+
+  wallet: {
+    color: "#ccc",
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: "#555",
+    marginVertical: 15,
+  },
+
+  saveText: {
+    color: "#fff",
+    fontSize: 15,
+  },
+
+  button: {
+    backgroundColor: "#0B8A2A",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 30,
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
+});

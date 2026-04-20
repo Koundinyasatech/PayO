@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+/* AUTH */
 import SplashScreen from '../screens/SplashScreen';
 import AnimationScreen from '../screens/AnimationScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -14,13 +15,24 @@ import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
+import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
+import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
+import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
 
-/* ✅ IMPORT TABS */
-import BottomTabs from './BottomTabs';
+/* ✅ IMPORT BOTTOM TABS */
+/* ✅ IMPORT BOTTOM TABS */
+import BottomTabs from '../screens/components/BottomTabs';
 
-/* ✅ SCREENS */
+/* SCAN + RECEIVE */
 import ScanQRScreen from '../screens/ScanQRScreen';
 import Receive from '../screens/Receive';
+
+/* PAYMENT FLOW */
+import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
+
+
+import PaymentLoading from '../screens/HomeScreen/loadingScreen';
+import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +41,7 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
 
-        {/* AUTH FLOW */}
+        {/* AUTH */}
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Animation" component={AnimationScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
@@ -41,12 +53,22 @@ export default function AppNavigator() {
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
+        <Stack.Screen name="enterAmount" component={EnterAmountScreen} />
+        <Stack.Screen name="SendPin" component={SendPinScreen} />
+        <Stack.Screen name="review" component={ReviewTransferScreen} />
 
-        {/* ✅ MAIN APP */}
+        {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />
 
-        {/* FEATURES */}
-        <Stack.Screen name="Scanner" component={ScanQRScreen} />
+        {/* SEND FLOW */}
+        <Stack.Screen name="ScanQR" component={ScanQRScreen} />
+        <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
+        
+        
+        <Stack.Screen name="loading" component={PaymentLoading} />
+        <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
+
+        {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
 
       </Stack.Navigator>
