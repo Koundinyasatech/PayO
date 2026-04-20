@@ -2,12 +2,20 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 const api = axios.create({
-  baseURL: 'https://evacuative-idolisingly-cherie.ngrok-free.dev',
+  baseURL: 'http://payo-app.duckdns.org:3000',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+export const getToken = () => {
+  const credentials = Keychain.getGenericPassword();
+  if (credentials) {
+    return credentials.password;
+  }
+  return null;
+};
 
 // ✅ CORRECT FOR YOUR BACKEND
 api.interceptors.request.use(
@@ -18,10 +26,8 @@ api.interceptors.request.use(
       if (credentials) {
         const token = credentials.password;
 
-        console.log('TOKEN SENT:', token); // 🔍 debug
-
-        // ✅ NO Bearer
-        config.headers.Authorization = token;
+        
+        config.headers.Authorization = `Bearer ${token}`;
       }
 
       return config;

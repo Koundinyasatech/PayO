@@ -26,7 +26,7 @@ const Receive = () => {
       console.log("Calling API...");
 
       // ✅ Backend uses GET
-      const res = await api.get("/generate-address");
+      const res = await api.get("api/wallet/generate-address");
       const data = res.data;
 
       console.log("API RESPONSE:", data);

@@ -16,6 +16,7 @@ const transactions = [
   { id: '1', name: 'Priya Mehta', amount: '+1000.0' },
   { id: '2', name: 'Priya Mehta', amount: '-250.0' },
   { id: '3', name: 'Priya Mehta', amount: '-500.0' },
+  { id: '4', name: 'Priya Mehta', amount: '+1000.0' },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -54,7 +55,7 @@ export default function HomeScreen({ navigation }) {
           <ActionPill
             icon="arrow-up-right"
             text="Send"
-            onPress={() => navigation.navigate('Scanner')}
+            onPress={() => navigation.navigate('ScanQR')}   // ✅ FIXED
           />
 
           <View style={styles.connector} />
@@ -62,7 +63,7 @@ export default function HomeScreen({ navigation }) {
           <ActionPill
             icon="arrow-down-left"
             text="Receive"
-            onPress={() => navigation.navigate('Receive')}
+            onPress={() => navigation.navigate('Receive')}  // ✅ FIXED
           />
 
           <View style={styles.connector} />
@@ -71,7 +72,10 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         {/* TRANSACTIONS */}
-        <Text style={styles.transTitle}>Recent Transactions</Text>
+        <View style={styles.transHeader}>
+          <Text style={styles.transTitle}>Recent Transaction</Text>
+          <Text style={styles.viewAll}>View All &gt;</Text>
+        </View>
 
         <FlatList
           data={transactions}
@@ -83,12 +87,13 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.avatar} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.time}>Today</Text>
+                <Text style={styles.time}>Today 9:10 PM</Text>
               </View>
               <Text
-                style={{
-                  color: item.amount.includes('+') ? '#00ff9f' : '#ff4d4d',
-                }}
+                style={[
+                  styles.amountText,
+                  { color: item.amount.includes('+') ? '#00ff9f' : '#ff4d4d' },
+                ]}
               >
                 {item.amount}
               </Text>
@@ -108,7 +113,9 @@ const ActionPill = ({ icon, text, onPress }) => (
       colors={['#f6d365', '#fda085']}
       style={styles.actionPill}
     >
-      <Icon name={icon} size={14} color="black" />
+      <View style={styles.iconCircle}>
+        <Icon name={icon} size={14} color="white" />
+      </View>
       <Text style={styles.actionText}>{text}</Text>
     </LinearGradient>
   </TouchableOpacity>
@@ -140,18 +147,31 @@ const styles = StyleSheet.create({
   balanceCard: {
     backgroundColor: '#1f1f1f',
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 25,
   },
 
   balanceTitle: { color: '#ccc' },
 
-  balanceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
+  balanceRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
 
-  balanceAmount: { color: 'white', fontSize: 28 },
+  balanceAmount: {
+    color: 'white',
+    fontSize: 28,
+  },
 
-  payo: { color: '#7CFCB2', marginLeft: 5 },
+  payo: {
+    color: '#7CFCB2',
+    marginLeft: 5,
+  },
 
-  eyeIcon: { position: 'absolute', right: 0 },
+  eyeIcon: {
+    position: 'absolute',
+    right: 0,
+  },
 
   walletRow: {
     flexDirection: 'row',
@@ -162,7 +182,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
-  walletText: { color: 'black' },
+  walletText: {
+    color: 'black',
+  },
 
   actionsWrapper: {
     flexDirection: 'row',
@@ -183,21 +205,38 @@ const styles = StyleSheet.create({
     borderRadius: 40,
   },
 
+  iconCircle: {
+    backgroundColor: 'black',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 6,
+  },
+
   actionText: {
-    marginLeft: 5,
     color: 'black',
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+
+  transHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 
   transTitle: {
     color: 'white',
-    marginBottom: 10,
+  },
+
+  viewAll: {
+    color: '#ccc',
   },
 
   transItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 15,
   },
 
   avatar: {
@@ -208,6 +247,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
 
-  name: { color: 'white' },
-  time: { color: '#aaa', fontSize: 12 },
+  name: {
+    color: 'white',
+  },
+
+  time: {
+    color: '#aaa',
+    fontSize: 12,
+  },
+
+  amountText: {
+    fontWeight: 'bold',
+  },
 });
