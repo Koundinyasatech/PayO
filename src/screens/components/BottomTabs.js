@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Svg, { Path } from 'react-native-svg';
 
 /* SCREENS */
-import HomeScreen from '../HomeScreen/HOMESCREEN';
+import HomeScreen from '../HomeScreen/HomeScreen';
 import ScanQRScreen from '../ScanQRScreen';
 import Receive from '../Receive';
 
