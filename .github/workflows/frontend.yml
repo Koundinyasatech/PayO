@@ -74,7 +74,7 @@ jobs:
           s3://${{ secrets.S3_BUCKET_APPS }}/$FILE_NAME
 
           echo "=================================="
-          echo "APK Uploaded Successfully 🚀"
+          echo "APK Uploaded Successfully"
           echo "Download Link:"
           echo "https://${{ secrets.S3_BUCKET_APPS }}.s3.amazonaws.com/$FILE_NAME"
           echo "=================================="
