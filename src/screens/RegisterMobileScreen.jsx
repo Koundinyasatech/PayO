@@ -15,15 +15,13 @@ export default function RegisterMobileScreen({ navigation }) {
 
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
+
   const isValidMobile = mobile?.length === 10;
 
   const handleSendOTP = async () => {
 
-     if (mobile?.length == 0) {
-      Alert.alert('Error', 'Enter mobile number');
-      return;
-    }
-    if (mobile?.length < 10) {
+    // ✅ Validation
+    if (!mobile || mobile.length !== 10) {
       Alert.alert('Error', 'Enter valid mobile number');
       return;
     }
@@ -31,24 +29,36 @@ export default function RegisterMobileScreen({ navigation }) {
     try {
       setLoading(true);
 
-      const response = await api.post('/api/auth/send-otp', {
-        mobile: mobile   // 🔥 FIXED (was phone before)
-      });
+      const payload = {
+        mobile: `+91${mobile}` // 🔥 FIX 1: correct format
+      };
 
-      console.log('API Response:', response?.data);
+      console.log("REQUEST:", payload);
 
-      // ✅ ALWAYS NAVIGATE (even if backend fails)
-      navigation.navigate('OTP', { mobile });
+      const response = await api.post('/api/auth/send-otp', payload);
+
+      console.log("RESPONSE:", response.data);
+
+      // 🔥 FIX 2: Proper response handling
+      if (response.data?.message === "OTP sent") {
+        navigation.navigate('OTP', { mobile });
+      } else {
+        Alert.alert(
+          'Error',
+          response.data?.message || 'Failed to send OTP'
+        );
+      }
 
     } catch (error) {
 
-      console.log('AXIOS ERROR:', error.response?.data || error.message);
+      console.log("FULL ERROR:", error);
+      console.log("ERROR RESPONSE:", error.response?.data);
 
-      // ⚠️ Show warning but continue
-      Alert.alert('Warning', 'Server Issue, Please try after some time');
-
-      // ✅ STILL NAVIGATE
-      // navigation.navigate('OTP', { mobile });
+      // 🔥 FIX 3: Show real backend error
+      Alert.alert(
+        'Error',
+        error.response?.data?.message || error.message
+      );
 
     } finally {
       setLoading(false);
@@ -58,100 +68,57 @@ export default function RegisterMobileScreen({ navigation }) {
   return (
     <View style={styles.container}>
 
-     <View style={styles.header}>
-  <TouchableOpacity onPress={() => navigation.goBack()}>
-   <Text style={styles.back}>←</Text>
-{/* <Text style={styles.back}>{'<'}</Text> */}
-  </TouchableOpacity>
+      {/* HEADER */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
+        </TouchableOpacity>
 
-  <Text style={styles.titleCentered}>
-    Enter Your Mobile Number
-  </Text>
-</View>
+        <Text style={styles.titleCentered}>
+          Enter Your Mobile Number
+        </Text>
+      </View>
 
       <Text style={styles.desc}>
         We will send a one time code to verify your number.
-        Standard rates may apply.
       </Text>
 
       <Text style={styles.label}>Mobile Number</Text>
 
+      {/* INPUT */}
       <View style={styles.inputRow}>
         <View style={styles.codeBox}>
           <Text>+91</Text>
         </View>
 
-        {/* <TextInput
+        <TextInput
           style={styles.input}
           placeholder="9876543210"
           keyboardType="phone-pad"
           value={mobile}
-          onChangeText={setMobile}
+          onChangeText={(text) => {
+            const numeric = text.replace(/[^0-9]/g, '');
+            setMobile(numeric);
+          }}
           maxLength={10}
-        /> */}
-
-        <TextInput
-  style={styles.input}
-  placeholder="9876543210"
-  keyboardType="phone-pad"
-  value={mobile}
-  onChangeText={(text) => {
-    const numeric = text.replace(/[^0-9]/g, '');
-    setMobile(numeric);
-  }}
-  maxLength={10}
-/>
+        />
       </View>
 
-      <Text style={styles.terms}>
-        By continuing you agree to PAYO’s{' '}
-        <Text style={styles.link}>Terms of Service</Text> &{' '}
-        <Text style={styles.link}>Privacy Policy</Text>
-      </Text>
-
-      {/* <TouchableOpacity
-        style={styles.button}
+      {/* BUTTON */}
+      <TouchableOpacity
+        style={[
+          styles.button,
+          { backgroundColor: isValidMobile ? '#4E00C2' : '#ccc' }
+        ]}
         onPress={handleSendOTP}
-        disabled={loading}
+        disabled={!isValidMobile || loading}
       >
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
           <Text style={styles.buttonText}>Send OTP</Text>
         )}
-      </TouchableOpacity> */}
-
-      <TouchableOpacity
-  style={[
-    styles.button,
-    { backgroundColor: isValidMobile ?'#4E00C2' : '#ccc' } // optional UI feedback
-  ]}
-  onPress={handleSendOTP}
-  disabled={!isValidMobile || loading}
-  
->
-  {loading ? (
-    <ActivityIndicator color="#fff" />
-  ) : (
-    <Text style={styles.buttonText}>Send OTP</Text>
-    
-  )}
-</TouchableOpacity>
-
-      <Text style={styles.loginText}>
-        Already have an account?{' '}
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate('Login')}
-        >
-          Login
-        </Text>
-      </Text>
-
-      <Text style={styles.footer}>
-        By Continuing, you agree to our{' '}
-        <Text style={styles.link}>Privacy Policy</Text>
-      </Text>
+      </TouchableOpacity>
 
     </View>
   );
@@ -164,46 +131,42 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
- header: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 20,
   },
-back: {
-  fontSize: 20,
-  marginRight: 10,
-},
 
-titleCentered: {
-  flex: 1,
-  textAlign: 'center',
-  fontSize: 22,
-  fontWeight: '700',
-  marginLeft: "2%", // balances arrow space
-},
+  back: {
+    fontSize: 20,
+    marginRight: 10,
+  },
+
+  titleCentered: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+  },
+
   desc: {
     textAlign: 'center',
     color: '#555',
     marginTop: 10,
     marginBottom: 30,
-    fontSize: 13,padding:10
   },
 
   label: {
     fontSize: 12,
-    color: '#333',
     marginBottom: 6,
-    fontWeight:700,
-    padding:10,
+    fontWeight: '700',
   },
 
   inputRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
-    overflow: 'hidden',
   },
 
   codeBox: {
@@ -216,23 +179,7 @@ titleCentered: {
     padding: 12,
   },
 
-  terms: {
-    fontSize: 12,
-    marginTop: 30,
-    marginBottom: 15,
-       marginLeft: 15,
-        marginRight: 15,
-    color: '#555',
-    padding:10
-  },
-
-link: {
-  color: '#4E00C2',
-  textDecorationLine: 'underline',
-},
-
   button: {
-    backgroundColor: '#4E00C2',
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -242,18 +189,5 @@ link: {
   buttonText: {
     color: '#fff',
     fontWeight: '600',
-  },
-
-  loginText: {
-    textAlign: 'center',
-    marginTop: 20,
-    fontSize: 13,
-  },
-
-  footer: {
-    textAlign: 'center',
-    marginTop: 10,
-    fontSize: 12,
-    color: '#555',
   },
 });
