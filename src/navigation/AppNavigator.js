@@ -18,6 +18,7 @@ import TransactionPinScreen from '../screens/TransactionPinScreen';
 import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
+import ReferEarn from '../screens/HomeScreen/ReferEarn';
 
 /* ✅ IMPORT BOTTOM TABS */
 /* ✅ IMPORT BOTTOM TABS */
@@ -57,6 +58,7 @@ export default function AppNavigator() {
         <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="review" component={ReviewTransferScreen} />
+        <Stack.Screen name="ReferEarn" component={ReferEarn} />
 
         {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />
