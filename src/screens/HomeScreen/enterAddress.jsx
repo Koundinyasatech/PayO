@@ -72,15 +72,11 @@ export default function EnterAddressScreen({ navigation }) {
   };
 
   return (
-    <LinearGradient
-      colors={["#6A00F4", "#1A0033"]}
-      style={{ flex: 1 }}
-    >
+    // <LinearGradient
+    //   colors={["#6A00F4", "#1A0033"]}
+    //   style={{ flex: 1 }}
+    // >
       <SafeAreaView style={styles.container}>
-
-        <Text style={styles.title}>
-          Enter address and send tokens
-        </Text>
 
         {/* ADDRESS */}
         <Text style={styles.label}>Recipient Wallet Address</Text>
@@ -140,6 +136,6 @@ export default function EnterAddressScreen({ navigation }) {
         </TouchableOpacity>
 
       </SafeAreaView>
-    </LinearGradient>
+    // </LinearGradient>
   );
 }
