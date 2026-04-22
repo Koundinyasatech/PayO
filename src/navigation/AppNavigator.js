@@ -33,6 +33,7 @@ import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
 
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
+import SendScreen from '../screens/components/sendScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,7 +54,7 @@ export default function AppNavigator() {
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
-        <Stack.Screen name="enterAmount" component={EnterAmountScreen} />
+        <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="review" component={ReviewTransferScreen} />
 
@@ -61,6 +62,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Main" component={BottomTabs} />
 
         {/* SEND FLOW */}
+        <Stack.Screen name="SendScreen" component={SendScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
         

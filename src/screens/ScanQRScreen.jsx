@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
+   SafeAreaView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -92,42 +93,12 @@ export default function ScanQRScreen({ navigation }) {
       </View>
     );
   }
+            
+  console.log(scannedData,"999")
 
   return (
-    <LinearGradient colors={['#6A00F4', '#1A0033']} style={styles.container}>
-
-      <Text style={styles.title}>Scan QR send tokens instantly</Text>
-
-      {/* 🔘 TABS */}
-      <View style={styles.tabs}>
-        <TouchableOpacity
-          style={activeTab === 'scan' ? styles.activeTab : styles.tab}
-        >
-          <Text style={activeTab === 'scan' ? styles.activeText : styles.tabText}>
-            Scan QR
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() =>
-            navigation.navigate('enterAddress', { tab: 'address' })
-          }
-        >
-          <Text style={styles.tabText}>Enter Address</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() =>
-            navigation.navigate('enterAddress', { tab: 'recent' })
-          }
-        >
-          <Text style={styles.tabText}>Recents</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* 📷 CAMERA */}
+ 
+       <SafeAreaView style={styles.container}>
       <View style={styles.scanWrapper}>
         {!scannedData && (
           <Camera
@@ -177,7 +148,7 @@ export default function ScanQRScreen({ navigation }) {
           <TouchableOpacity
             style={styles.continueBtn}
             onPress={() =>
-              navigation.navigate('enterAmount', {
+              navigation.navigate("EnterAmount", {
                 name: scannedData.name,
                 address: scannedData.address,
               })
@@ -216,6 +187,18 @@ export default function ScanQRScreen({ navigation }) {
         </View>
       )}
 
+
+       {!scannedData && (
+          <View style={styles.text}>
+            <Text style={{ fontWeight: '400',color:"white",fontSize:16 ,padding:3}}>
+              Point your camera at a QR code to continue.   </Text>
+<Text style={{ fontWeight: '400',color:"white",fontSize:16,marginLeft:"10%" }}>Hold steady for faster scanning
+            </Text>
+          </View>
+        )}
+      
+
+
       {!scannedData && (
         <TouchableOpacity
           style={styles.simulate}
@@ -224,13 +207,14 @@ export default function ScanQRScreen({ navigation }) {
           <Text style={{ color: '#fff' }}>Simulate Scan</Text>
         </TouchableOpacity>
       )}
-    </LinearGradient>
+       </SafeAreaView>
+   
   );
 }
 
 /* 🎨 STYLES */
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', paddingTop: 60 },
+  container: { flex: 1, alignItems: 'center' },
 
   title: { color: '#fff', marginBottom: 20 },
 
@@ -257,8 +241,8 @@ const styles = StyleSheet.create({
   activeText: { color: '#6A00F4', fontWeight: '600' },
 
   scanWrapper: {
-    width: 260,
-    height: 260,
+    width: 225,
+    height: 225,
     borderRadius: 20,
     overflow: 'hidden',
     justifyContent: 'center',
@@ -347,7 +331,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 10,
   },
-
+ text: { color: '#fff',padding:25},
   smallText: { color: '#fff' },
 
   simulate: {
@@ -356,7 +340,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: width * 0.7,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 8,
   },
 
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
