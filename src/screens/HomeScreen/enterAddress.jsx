@@ -169,6 +169,7 @@ export default function EnterAddressScreen({ navigation }) {
   const [amount, setAmount] = useState("");
   const [receiverData, setReceiverData] = useState(null);
   const [loading, setLoading] = useState(false);
+   const[avaliable,setAvaliable] =useState("");
 
   useEffect(() => {
     if (route.params?.address) setAddress(route.params.address);
@@ -197,28 +198,53 @@ export default function EnterAddressScreen({ navigation }) {
     fetchUser();
   }, [address]);
 
+ 
+
+
   // 🔥 PREVIEW TRANSFER
-  const handleNext = async () => {
-    if (!address || !receiverData) {
-      alert("Enter valid wallet address");
-      return;
-    }
+const handleNext = async () => {
+  if (!address || !receiverData?.walletAddress) {
+    alert("Enter valid wallet address");
+    return;
+  }
 
+  try {
+    const res = await api.post("/api/wallet/transfer/preview", {
+      toAddress: address,
+      amount: amount,
+    });
+
+    console.log("PREVIEW RESPONSE 👉", res.data);
+
+    navigation.navigate("review", {
+      receiver: { name: res.data.receiverName },
+      address: res.data.toAddress || address,
+      amount: res.data.amount,
+    });
+
+  } catch (err) {
+    console.log("ERROR 👉", err.response || err);
+    // alert(err.response?.data?.message || "Error");
+  }
+};
+
+   useEffect(() => {
+  const fetchBalance = async () => {
     try {
-      const res = await api.post("/api/wallet/transfer/preview", {
-        toAddress: address,
-        amount: amount || 100,
-      });
+      const response = await api.get('/api/wallet/balance'); // ✅ await هنا
 
-      navigation.navigate("review", {
-        receiver: { name: res.data.receiverName },
-        address: res.data.address,
-        amount: res.data.amount,
-      });
-    } catch (err) {
-      alert(err.response?.data?.message || "Error");
+      console.log(response.data, "997"); // now you'll see real data
+
+      // adjust based on API
+      setAvaliable(response?.data?.balance || "0");
+
+    } catch (error) {
+      console.log("Error fetching balance:", error);
     }
   };
+
+  fetchBalance();
+}, []);
 
   return (
     // <LinearGradient
@@ -276,7 +302,7 @@ export default function EnterAddressScreen({ navigation }) {
         {/* BALANCE */}
         <View style={styles.balanceBox}>
           <Text style={styles.balanceText}>Available balance</Text>
-          <Text style={styles.balanceAmount}>8,420.50 PAYO</Text>
+          <Text style={styles.balanceAmount}>{avaliable}</Text>
         </View>
 
         {/* BUTTON */}

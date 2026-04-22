@@ -136,7 +136,6 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
           </View>
         )}
       </View>
-
       {/* TEXT */}
       {!scannedData ? (
         <Text style={styles.scanText}>Scanning QR code...</Text>
