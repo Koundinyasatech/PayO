@@ -155,7 +155,7 @@ export default function SendScreen({navigation}) {
         );
 
       case 'address':
-        return <EnterAddressScreen />;
+        return <EnterAddressScreen navigation={navigation} />;
 
       case 'amount':
         return (
