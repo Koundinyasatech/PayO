@@ -3,7 +3,7 @@ name: Frontend APK Pipeline
 on:
   push:
     branches:
-      - API_PaymentSuccess_Transaction
+      - Updated_API
 
 jobs:
   build-apk:
