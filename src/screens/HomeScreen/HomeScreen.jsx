@@ -55,7 +55,7 @@ export default function HomeScreen({ navigation }) {
           <ActionPill
             icon="arrow-up-right"
             text="Send"
-            onPress={() => navigation.navigate('ScanQR')}   // ✅ FIXED
+            onPress={() => navigation.navigate('ScanQR')}
           />
 
           <View style={styles.connector} />
@@ -63,12 +63,17 @@ export default function HomeScreen({ navigation }) {
           <ActionPill
             icon="arrow-down-left"
             text="Receive"
-            onPress={() => navigation.navigate('Receive')}  // ✅ FIXED
+            onPress={() => navigation.navigate('Receive')}
           />
 
           <View style={styles.connector} />
 
-          <ActionPill icon="user-plus" text="Refer" />
+          {/* ✅ FIXED REFER BUTTON */}
+          <ActionPill
+            icon="user-plus"
+            text="Refer"
+            onPress={() => navigation.navigate('ReferEarn')}
+          />
         </View>
 
         {/* TRANSACTIONS */}
@@ -121,20 +126,18 @@ const ActionPill = ({ icon, text, onPress }) => (
   </TouchableOpacity>
 );
 
-/* STYLES */
+/* STYLES (UNCHANGED) */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 10,
   },
-
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-
   profile: {
     width: 32,
     height: 32,
@@ -143,36 +146,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   balanceCard: {
     backgroundColor: '#1f1f1f',
     padding: 20,
     borderRadius: 25,
   },
-
   balanceTitle: { color: '#ccc' },
-
   balanceRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 8,
   },
-
   balanceAmount: {
     color: 'white',
     fontSize: 28,
   },
-
   payo: {
     color: '#7CFCB2',
     marginLeft: 5,
   },
-
   eyeIcon: {
     position: 'absolute',
     right: 0,
   },
-
   walletRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -181,30 +177,23 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-
-  walletText: {
-    color: 'black',
-  },
-
+  walletText: { color: 'black' },
   actionsWrapper: {
     flexDirection: 'row',
     marginVertical: 20,
     alignItems: 'center',
   },
-
   connector: {
     width: 10,
     height: 2,
     backgroundColor: '#f6d365',
   },
-
   actionPill: {
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 12,
     borderRadius: 40,
   },
-
   iconCircle: {
     backgroundColor: 'black',
     width: 30,
@@ -214,31 +203,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 6,
   },
-
   actionText: {
     color: 'black',
     fontWeight: '600',
   },
-
   transHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
-  transTitle: {
-    color: 'white',
-  },
-
-  viewAll: {
-    color: '#ccc',
-  },
-
+  transTitle: { color: 'white' },
+  viewAll: { color: '#ccc' },
   transItem: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 15,
   },
-
   avatar: {
     width: 40,
     height: 40,
@@ -246,16 +225,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     marginRight: 10,
   },
-
-  name: {
-    color: 'white',
-  },
-
+  name: { color: 'white' },
   time: {
     color: '#aaa',
     fontSize: 12,
   },
-
   amountText: {
     fontWeight: 'bold',
   },

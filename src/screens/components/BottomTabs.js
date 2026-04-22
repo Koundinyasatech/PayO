@@ -11,13 +11,12 @@ import Svg, { Path } from 'react-native-svg';
 
 /* SCREENS */
 import HomeScreen from '../HomeScreen/HomeScreen';
-import ScanQRScreen from '../ScanQRScreen';
-import Receive from '../Receive';
+import TransactionHistory from '../HomeScreen/TransactionHistory';
 
 const Tab = createBottomTabNavigator();
 
 /* ---------- CUSTOM TAB BAR ---------- */
-function CustomTabBar({ state, navigation }) {
+function CustomTabBar({ state, descriptors, navigation }) {
   return (
     <View style={styles.wrapper}>
 
@@ -36,6 +35,18 @@ function CustomTabBar({ state, navigation }) {
 
           const isFocused = state.index === index;
 
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
           let iconName = '';
           if (route.name === 'Home') iconName = 'home';
           if (route.name === 'Wallets') iconName = 'credit-card';
@@ -45,14 +56,16 @@ function CustomTabBar({ state, navigation }) {
           return (
             <TouchableOpacity
               key={route.key}
-              onPress={() => navigation.navigate(route.name)}
+              onPress={onPress}
               style={styles.tabItem}
+              activeOpacity={0.8}
             >
               <Icon
                 name={iconName}
                 size={22}
                 color={isFocused ? '#FF7FD8' : '#aaa'}
               />
+
               <Text
                 style={[
                   styles.label,
@@ -69,7 +82,8 @@ function CustomTabBar({ state, navigation }) {
       {/* CENTER SCAN BUTTON */}
       <TouchableOpacity
         style={styles.scanButton}
-        onPress={() => navigation.navigate('ScanQR')} // ✅ FIXED
+        onPress={() => navigation.navigate('ScanQR')}
+        activeOpacity={0.8}
       >
         <Icon name="maximize" size={26} color="white" />
       </TouchableOpacity>
@@ -82,13 +96,14 @@ function CustomTabBar({ state, navigation }) {
 export default function BottomTabs() {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <CustomTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Wallets" component={HomeScreen} />
       <Tab.Screen name="Scan" component={HomeScreen} />
-      <Tab.Screen name="Transactions" component={HomeScreen} />
+      <Tab.Screen name="Transactions" component={TransactionHistory} />
       <Tab.Screen name="Profile" component={HomeScreen} />
     </Tab.Navigator>
   );

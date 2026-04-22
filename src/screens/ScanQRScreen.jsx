@@ -18,6 +18,13 @@ import { launchImageLibrary } from 'react-native-image-picker';
 
 import api from '../api/axios';
 
+/* ✅ IMPORT SEND TABS */
+import SendTabs from './components/SendTabs';
+
+/* ✅ IMPORT OTHER TAB SCREENS */
+import EnterAddressScreen from './HomeScreen/enterAddress';
+import Recents from './HomeScreen/Recents';
+
 const { width } = Dimensions.get('window');
 
 export default function ScanQRScreen({ navigation }) {
@@ -98,163 +105,133 @@ export default function ScanQRScreen({ navigation }) {
 
       <Text style={styles.title}>Scan QR send tokens instantly</Text>
 
-      {/* 🔘 TABS */}
-      <View style={styles.tabs}>
-        <TouchableOpacity
-          style={activeTab === 'scan' ? styles.activeTab : styles.tab}
-        >
-          <Text style={activeTab === 'scan' ? styles.activeText : styles.tabText}>
-            Scan QR
-          </Text>
-        </TouchableOpacity>
+      {/* ✅ NEW SEND TABS */}
+      <SendTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() =>
-            navigation.navigate('enterAddress', { tab: 'address' })
-          }
-        >
-          <Text style={styles.tabText}>Enter Address</Text>
-        </TouchableOpacity>
+      {/* ✅ TAB SWITCHING */}
+      {activeTab === 'address' && (
+        <EnterAddressScreen navigation={navigation} />
+      )}
 
-        <TouchableOpacity
-          style={styles.tab}
-          onPress={() =>
-            navigation.navigate('enterAddress', { tab: 'recent' })
-          }
-        >
-          <Text style={styles.tabText}>Recents</Text>
-        </TouchableOpacity>
-      </View>
+      {activeTab === 'recents' && (
+        <Recents navigation={navigation} />
+      )}
 
-      {/* 📷 CAMERA */}
-      <View style={styles.scanWrapper}>
-        {!scannedData && (
-          <Camera
-            style={styles.camera}
-            device={device}
-            isActive={!scannedData}
-            torch={torch}
-            codeScanner={codeScanner}
-          />
-        )}
-
-        {/* 🔥 Scan Line */}
-        {!scannedData && (
-          <Animated.View
-            style={[
-              styles.scanLine,
-              { transform: [{ translateY: scanLine }] },
-            ]}
-          />
-        )}
-
-        {/* 🔲 QR Corners */}
-        <View style={styles.cornerTL} />
-        <View style={styles.cornerTR} />
-        <View style={styles.cornerBL} />
-        <View style={styles.cornerBR} />
-
-        {/* ✅ Preview */}
-        {scannedData && (
-          <View style={styles.preview}>
-            <Text style={{ fontWeight: '600' }}>
-              {scannedData.name}
-            </Text>
-          </View>
-        )}
-      </View>
-
-      {/* TEXT */}
-      {!scannedData ? (
-        <Text style={styles.scanText}>Scanning QR code...</Text>
-      ) : (
+      {activeTab === 'scan' && (
         <>
-          <Text style={styles.success}>
-            QR detected. Enter amount to proceed
-          </Text>
+          {/* 📷 CAMERA */}
+          <View style={styles.scanWrapper}>
+            {!scannedData && (
+              <Camera
+                style={styles.camera}
+                device={device}
+                isActive={!scannedData}
+                torch={torch}
+                codeScanner={codeScanner}
+              />
+            )}
 
-          <TouchableOpacity
-            style={styles.continueBtn}
-            onPress={() =>
-              navigation.navigate('enterAmount', {
-                name: scannedData.name,
-                address: scannedData.address,
-              })
-            }
-          >
-            <Text style={styles.continueText}>Continue</Text>
-          </TouchableOpacity>
+            {!scannedData && (
+              <Animated.View
+                style={[
+                  styles.scanLine,
+                  { transform: [{ translateY: scanLine }] },
+                ]}
+              />
+            )}
+
+            <View style={styles.cornerTL} />
+            <View style={styles.cornerTR} />
+            <View style={styles.cornerBL} />
+            <View style={styles.cornerBR} />
+
+            {scannedData && (
+              <View style={styles.preview}>
+                <Text style={{ fontWeight: '600' }}>
+                  {scannedData.name}
+                </Text>
+              </View>
+            )}
+          </View>
+
+          {!scannedData ? (
+            <Text style={styles.scanText}>Scanning QR code...</Text>
+          ) : (
+            <>
+              <Text style={styles.success}>
+                QR detected. Enter amount to proceed
+              </Text>
+
+              <TouchableOpacity
+                style={styles.continueBtn}
+                onPress={() =>
+                  navigation.navigate('enterAmount', {
+                    name: scannedData.name,
+                    address: scannedData.address,
+                  })
+                }
+              >
+                <Text style={styles.continueText}>Continue</Text>
+              </TouchableOpacity>
+            </>
+          )}
+
+          {!scannedData && (
+            <View style={styles.row}>
+              <TouchableOpacity
+                style={styles.smallBtn}
+                onPress={async () => {
+                  const res = await launchImageLibrary({ mediaType: 'photo' });
+                  if (res.assets?.length) {
+                    handleQR('uploaded-image');
+                  }
+                }}
+              >
+                <Text style={styles.smallText}>Upload QR</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.smallBtn}
+                onPress={() =>
+                  setTorch(torch === 'off' ? 'on' : 'off')
+                }
+              >
+                <Text style={styles.smallText}>
+                  {torch === 'off' ? 'Torch' : 'Torch Off'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {!scannedData && (
+            <TouchableOpacity
+              style={styles.simulate}
+              onPress={() => handleQR('test-wallet-address')}
+            >
+              <Text style={{ color: '#fff' }}>Simulate Scan</Text>
+            </TouchableOpacity>
+          )}
         </>
       )}
 
-      {/* BUTTONS */}
-      {!scannedData && (
-        <View style={styles.row}>
-          <TouchableOpacity
-            style={styles.smallBtn}
-            onPress={async () => {
-              const res = await launchImageLibrary({ mediaType: 'photo' });
-              if (res.assets?.length) {
-                handleQR('uploaded-image');
-              }
-            }}
-          >
-            <Text style={styles.smallText}>Upload QR</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.smallBtn}
-            onPress={() =>
-              setTorch(torch === 'off' ? 'on' : 'off')
-            }
-          >
-            <Text style={styles.smallText}>
-              {torch === 'off' ? 'Torch' : 'Torch Off'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {!scannedData && (
-        <TouchableOpacity
-          style={styles.simulate}
-          onPress={() => handleQR('test-wallet-address')}
-        >
-          <Text style={{ color: '#fff' }}>Simulate Scan</Text>
-        </TouchableOpacity>
-      )}
     </LinearGradient>
   );
 }
-
-/* 🎨 STYLES */
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', paddingTop: 60 },
-
-  title: { color: '#fff', marginBottom: 20 },
-
-  tabs: {
-    flexDirection: 'row',
-    backgroundColor: '#6A00F4',
-    borderRadius: 12,
-    padding: 5,
-    width: '90%',
-    marginBottom: 20,
-  },
-
-  tab: { flex: 1, alignItems: 'center', padding: 8 },
-
-  activeTab: {
+  container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    padding: 8,
-    borderRadius: 8,
+    paddingTop: 50, // slightly reduced for better alignment with tabs
   },
 
-  tabText: { color: '#fff' },
-  activeText: { color: '#6A00F4', fontWeight: '600' },
+  title: {
+    color: '#fff',
+    marginBottom: 15,
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
+  /* ❌ removed old tabs styles (SendTabs handles it now) */
 
   scanWrapper: {
     width: 260,
@@ -263,9 +240,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
   },
 
-  camera: { width: '100%', height: '100%' },
+  camera: {
+    width: '100%',
+    height: '100%',
+  },
 
   scanLine: {
     position: 'absolute',
@@ -280,6 +261,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 10,
   },
 
   cornerTL: {
@@ -292,6 +274,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderColor: '#fff',
   },
+
   cornerTR: {
     position: 'absolute',
     top: 0,
@@ -302,6 +285,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 3,
     borderColor: '#fff',
   },
+
   cornerBL: {
     position: 'absolute',
     bottom: 0,
@@ -312,6 +296,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderColor: '#fff',
   },
+
   cornerBR: {
     position: 'absolute',
     bottom: 0,
@@ -323,32 +308,52 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
   },
 
-  scanText: { color: '#ccc', marginTop: 10 },
+  scanText: {
+    color: '#ccc',
+    marginTop: 12,
+    fontSize: 13,
+  },
 
-  success: { color: '#00FFAA', marginTop: 15 },
+  success: {
+    color: '#00FFAA',
+    marginTop: 15,
+    fontSize: 14,
+    fontWeight: '500',
+  },
 
   continueBtn: {
-    backgroundColor: 'green',
+    backgroundColor: '#0AA84F',
     padding: 14,
-    borderRadius: 10,
+    borderRadius: 12,
     marginTop: 20,
     width: '70%',
     alignItems: 'center',
   },
 
-  continueText: { color: '#fff', fontWeight: '600' },
+  continueText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
 
-  row: { flexDirection: 'row', marginTop: 20 },
+  row: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
 
   smallBtn: {
     borderWidth: 1,
     borderColor: '#fff',
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     borderRadius: 20,
-    marginHorizontal: 10,
+    marginHorizontal: 8,
   },
 
-  smallText: { color: '#fff' },
+  smallText: {
+    color: '#fff',
+    fontSize: 13,
+  },
 
   simulate: {
     backgroundColor: '#8A2BE2',
@@ -359,5 +364,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 
-  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
