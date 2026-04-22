@@ -21,14 +21,14 @@ import api from '../api/axios';
 
 const { width } = Dimensions.get('window');
 
-export default function ScanQRScreen({ navigation }) {
+export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab }) {
   const route = useRoute();
   const device = useCameraDevice('back');
 
   const [hasPermission, setHasPermission] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [torch, setTorch] = useState('off');
-  const [activeTab, setActiveTab] = useState('scan');
+ 
 
   const scanLine = useRef(new Animated.Value(0)).current;
 
@@ -74,6 +74,7 @@ export default function ScanQRScreen({ navigation }) {
       alert('Invalid QR');
     }
   };
+  
 
   // 🔍 Scanner
   const codeScanner = useCodeScanner({
@@ -145,17 +146,38 @@ export default function ScanQRScreen({ navigation }) {
             QR detected. Enter amount to proceed
           </Text>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.continueBtn}
             onPress={() =>
-              navigation.navigate("EnterAmount", {
-                name: scannedData.name,
-                address: scannedData.address,
-              })
+              // navigation.navigate("EnterAmount", {
+              //   name: scannedData.name,
+              //   address: scannedData.address,
+              // })
+
+                setSelectedUser({
+    name: scannedData.name,
+    address: scannedData.address,
+  })
+
+  setActiveTab('amount');
             }
           >
             <Text style={styles.continueText}>Continue</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          <TouchableOpacity
+  style={styles.continueBtn}
+  onPress={() => {
+    setSelectedUser({
+      name: scannedData.name,
+      address: scannedData.address,
+    });
+
+    setActiveTab('amount');
+  }}
+>
+  <Text style={styles.continueText}>Continue</Text>
+</TouchableOpacity>
         </>
       )}
 
@@ -203,6 +225,21 @@ export default function ScanQRScreen({ navigation }) {
         <TouchableOpacity
           style={styles.simulate}
           onPress={() => handleQR('test-wallet-address')}
+            // onPress={() =>
+            //   navigation.navigate("EnterAmount", {
+            //     name: "kiran",
+            //     address: "PYSB2417",
+            //   })
+            // }
+
+//             onPress={() => {
+//   setSelectedUser({
+//     name: scannedData.name,
+//     address: scannedData.address,
+//   });
+
+//   setActiveTab('amount'); // 👈 switch tab
+// }}
         >
           <Text style={{ color: '#fff' }}>Simulate Scan</Text>
         </TouchableOpacity>
@@ -211,6 +248,80 @@ export default function ScanQRScreen({ navigation }) {
    
   );
 }
+
+// export default function ScanQRScreen({ setSelectedUser, setActiveTab }) {
+//   const device = useCameraDevice('back');
+
+//   const [hasPermission, setHasPermission] = useState(false);
+//   const [scannedData, setScannedData] = useState(null);
+//   const [torch, setTorch] = useState('off');
+
+//   useEffect(() => {
+//     Camera.requestCameraPermission().then(res => {
+//       setHasPermission(res === 'granted');
+//     });
+//   }, []);
+
+//   const handleQR = async (value) => {
+//     if (scannedData) return;
+
+//     try {
+//       const res = await api.post('api/wallet/scan-qr', { qrData: value });
+
+//       setScannedData({
+//         name: res.data.name,
+//         address: res.data.walletAddress,
+//       });
+//     } catch {
+//       alert('Invalid QR');
+//     }
+//   };
+
+//   const codeScanner = useCodeScanner({
+//     codeTypes: ['qr'],
+//     onCodeScanned: (codes) => {
+//       if (codes.length > 0 && !scannedData) {
+//         handleQR(codes[0].value);
+//       }
+//     },
+//   });
+
+//   if (!device || !hasPermission) {
+//     return <Text>No Camera Permission</Text>;
+//   }
+
+//   return (
+//     <View style={{ flex: 1 }}>
+//       {!scannedData && (
+//         <Camera
+//           style={{ flex: 1 }}
+//           device={device}
+//           isActive={true}
+//           torch={torch}
+//           codeScanner={codeScanner}
+//         />
+//       )}
+
+//       {scannedData && (
+//         <>
+//           <Text style={{ color: 'white', textAlign: 'center' }}>
+//             {scannedData.name}
+//           </Text>
+
+//           <TouchableOpacity
+//             style={styles.continueBtn}
+//             onPress={() => {
+//               setSelectedUser(scannedData);
+//               setActiveTab('amount');
+//             }}
+//           >
+//             <Text style={styles.continueText}>Continue</Text>
+//           </TouchableOpacity>
+//         </>
+//       )}
+//     </View>
+//   );
+// }
 
 /* 🎨 STYLES */
 const styles = StyleSheet.create({

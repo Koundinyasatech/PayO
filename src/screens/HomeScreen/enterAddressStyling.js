@@ -16,8 +16,8 @@ export default StyleSheet.create({
 
   label: {
     color: "#ddd",
-    marginBottom: 8,
-    marginTop: 10,
+    marginBottom: 6,
+    marginTop: 14,
     fontSize: 13,
   },
 
@@ -25,25 +25,29 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: "#7A5DB0",
     borderRadius: 14,
-    padding: 16,
+    padding: 14,
     color: "#fff",
-    marginBottom: 10,
+    marginBottom: 6,
     backgroundColor: "rgba(255,255,255,0.05)",
   },
 
   infoText: {
     color: "#aaa",
-    marginBottom: 10,
+    marginBottom: 8,
+    fontSize: 12,
   },
 
   successText: {
     color: "#00FFAA",
-    marginBottom: 10,
+    marginBottom: 8,
+    fontSize: 13,
+    fontWeight: "500",
   },
 
   errorText: {
-    color: "red",
-    marginBottom: 10,
+    color: "#FF4D4D",
+    marginBottom: 8,
+    fontSize: 12,
   },
 
   amountRow: {
@@ -52,32 +56,34 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: "#7A5DB0",
     borderRadius: 14,
-    paddingHorizontal: 16,
-    marginBottom: 15,
+    paddingHorizontal: 14,
+    marginBottom: 12,
     backgroundColor: "rgba(255,255,255,0.05)",
   },
 
   amountInput: {
     flex: 1,
     color: "#fff",
-    paddingVertical: 14,
+    paddingVertical: 12,
     fontSize: 16,
   },
 
   token: {
     color: "#00FFAA",
     fontWeight: "600",
+    fontSize: 14,
   },
 
   quickRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginTop: 8,
+    marginBottom: 18,
   },
 
   quickBtn: {
     backgroundColor: "#E5E5E5",
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 18,
     borderRadius: 10,
   },
@@ -85,24 +91,32 @@ export default StyleSheet.create({
   quickText: {
     color: "#000",
     fontWeight: "500",
+    fontSize: 13,
   },
 
+  /* 🔥 UPDATED BALANCE BOX */
   balanceBox: {
     backgroundColor: "#7B3FE4",
     borderRadius: 14,
-    padding: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 25,
+    alignItems: "center",
+    marginBottom: 20,
   },
 
   balanceText: {
     color: "#ddd",
+    fontSize: 12,
   },
 
   balanceAmount: {
     color: "#fff",
     fontWeight: "600",
+    fontSize: 14,
+    minWidth: 120, // 🔥 prevents layout shift when "Loading..."
+    textAlign: "right",
   },
 
   button: {
@@ -110,11 +124,13 @@ export default StyleSheet.create({
     padding: 16,
     borderRadius: 14,
     alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
   },
 
   buttonText: {
     color: "#fff",
     fontWeight: "600",
-    fontSize: 16,
+    fontSize: 15,
   },
 });

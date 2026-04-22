@@ -40,6 +40,7 @@ export default function PaymentLoading({ route, navigation }) {
 
     } catch (err) {
       alert('Payment Failed');
+      
       navigation.goBack();
     }
   };

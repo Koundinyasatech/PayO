@@ -20,7 +20,7 @@ import ScanQRScreen from '../ScanQRScreen'
 const Tab = createBottomTabNavigator();
 
 /* ---------- CUSTOM TAB BAR ---------- */
-function CustomTabBar({ state, navigation }) {
+function CustomTabBar({ state, descriptors, navigation }) {
   return (
     // <View style={styles.wrapper}>
 
@@ -115,6 +115,7 @@ function CustomTabBar({ state, navigation }) {
 export default function BottomTabs() {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <CustomTabBar {...props} />}
     >
