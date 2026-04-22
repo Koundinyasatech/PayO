@@ -19,6 +19,6 @@ export default function SplashScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5A00D1',
+    backgroundColor: '#4E00C2',
   },
 });
