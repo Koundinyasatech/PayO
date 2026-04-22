@@ -293,6 +293,7 @@ export default function HomeScreen({ navigation }) {
     { id: '9', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
     { id: '10', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
   ];
+ const[avaliable,setAvaliable] =useState("");
 
   useEffect(()=>{
      try {
@@ -308,6 +309,24 @@ export default function HomeScreen({ navigation }) {
   }
 
   },[transactionsList])
+
+  useEffect(() => {
+  const fetchBalance = async () => {
+    try {
+      const response = await api.get('/api/wallet/balance'); // ✅ await هنا
+
+      console.log(response.data, "997"); // now you'll see real data
+
+      // adjust based on API
+      setAvaliable(response?.data?.balance || "0");
+
+    } catch (error) {
+      console.log("Error fetching balance:", error);
+    }
+  };
+
+  fetchBalance();
+}, []);
   
  
   const getTransactionIcon = (type) => {
@@ -351,7 +370,7 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.cardLeft}>
               <Text style={styles.balanceLabel}>Total Balance</Text>
               <Text style={styles.balanceAmount}>
-                {balanceVisible ? `₹ ${balance}` : '* * * * * *'}
+                {balanceVisible ? `₹ ${avaliable}` : '* * * * * *'}
               </Text>
               <Text style={styles.payoLabel}>PAYO</Text>
             </View>

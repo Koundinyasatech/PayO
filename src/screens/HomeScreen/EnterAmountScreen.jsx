@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/header';
+import api from '../../api/axios';
  
 // export default function EnterAmountScreen({ route, navigation }) {
 //   const { name, address } = route.params;
@@ -81,6 +82,45 @@ import Header from '../components/header';
 
 export default function EnterAmountScreen({ navigation,name, address, setActiveTab }) {
   const [amount, setAmount] = useState('300');
+  const[avaliable,setAvaliable] =useState("")
+
+  // useEffect(() => {
+  //   const fetchBalance = async () => {
+  //     try {
+  //       const response = await api.get('/api/wallet/balance');
+
+  //       console.log(response?.data, "997");
+
+  //       // ⚡ adjust based on your API response structure
+  //       // Example: if response.data.balance exists
+  //       setAvaliable(response?.data?.balance || "0");
+
+  //     } catch (error) {
+  //       console.log("Error fetching balance:", error);
+  //     }
+  //   }
+  
+  // }
+  
+  // );
+
+  useEffect(() => {
+  const fetchBalance = async () => {
+    try {
+      const response = await api.get('/api/wallet/balance'); // ✅ await هنا
+
+      console.log(response.data, "997"); // now you'll see real data
+
+      // adjust based on API
+      setAvaliable(response?.data?.balance || "0");
+
+    } catch (error) {
+      console.log("Error fetching balance:", error);
+    }
+  };
+
+  fetchBalance();
+}, []);
 
   return (
     <View style={styles.container}>
@@ -130,6 +170,11 @@ export default function EnterAmountScreen({ navigation,name, address, setActiveT
           </TouchableOpacity>
         ))}
       </View>
+
+       <View style={styles.balanceBox}>
+                <Text style={styles.balanceText}>Available balance</Text>
+                <Text style={styles.balanceAmount}>{avaliable}</Text>
+              </View>
 
       {/* Continue Button */}
       <TouchableOpacity
@@ -247,5 +292,28 @@ const styles = StyleSheet.create({
   continueText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  balanceBox: {
+    backgroundColor: "#7B3FE4",
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  balanceText: {
+    color: "#ddd",
+    fontSize: 12,
+  },
+
+  balanceAmount: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 14,
+    minWidth: 120, // 🔥 prevents layout shift when "Loading..."
+    textAlign: "right",
   },
 });
