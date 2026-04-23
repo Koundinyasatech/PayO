@@ -8,104 +8,122 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { Dropdown } from 'react-native-element-dropdown';
+import Icon from 'react-native-vector-icons/Feather';
+ 
 import styles from './TransactionHistoryStyles';
 import api from '../../api/axios';
-
+ 
 export default function TransactionHistory({ navigation }) {
   const [transactions, setTransactions] = useState([]);
-  const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
-
+ 
+  const [dateFilter, setDateFilter] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(null);
+ 
   /* 🔥 FETCH */
   const fetchTransactions = async () => {
     try {
-      const res = await api.get('/api/wallet/transactions');
+      const res = await api.get('/api/wallet/transaction-list');
       setTransactions(res.data.transactions || []);
     } catch (err) {
-      console.log('Transaction error:', err.message);
+      console.log(err.message);
     } finally {
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchTransactions();
-
-    const interval = setInterval(fetchTransactions, 5000); // realtime
+    const interval = setInterval(fetchTransactions, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  /* 🔥 FILTER */
+ 
+  /* 🔥 DROPDOWN DATA */
+  const dateOptions = [
+    { label: 'Today', value: 'today' },
+    { label: 'Yesterday', value: 'yesterday' },
+    { label: 'This Week', value: 'week' },
+  ];
+ 
+  const statusOptions = [
+    { label: 'Sent', value: 'sent' },
+    { label: 'Received', value: 'received' },
+    { label: 'Processing', value: 'processing' },
+  ];
+ 
+  /* 🔥 FILTER LOGIC */
   const filteredData = transactions.filter((item) => {
-    if (filter === 'all') return true;
-    if (filter === 'sent') return item.amount < 0;
-    if (filter === 'received') return item.amount > 0;
-    if (filter === 'processing') return item.status === 'processing';
+    const amount = Number(item.amount);
+ 
+    // STATUS
+    if (statusFilter === 'sent' && amount >= 0) return false;
+    if (statusFilter === 'received' && amount <= 0) return false;
+    if (statusFilter === 'processing' && item.status !== 'processing') return false;
+ 
+    // DATE
+    const itemDate = new Date(item.createdAt).toDateString();
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+ 
+    if (dateFilter === 'today' && itemDate !== today) return false;
+    if (dateFilter === 'yesterday' && itemDate !== yesterday) return false;
+ 
     return true;
   });
-
-  /* 🔥 FORMAT FULL DATE */
-  const formatFullDate = (date) => {
-    return new Date(date).toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-
+ 
+  /* 🔥 SORT */
+  const sortedData = [...filteredData].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+ 
   /* 🔥 GROUP */
   const groupByDate = (data) => {
     const today = new Date().toDateString();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
-
-    const groups = {
-      today: [],
-      yesterday: [],
-      week: [],
-    };
-
+ 
+    const groups = { today: [], yesterday: [], week: [] };
+ 
     data.forEach((item) => {
       const d = new Date(item.createdAt).toDateString();
-
+ 
       if (d === today) groups.today.push(item);
       else if (d === yesterday) groups.yesterday.push(item);
       else groups.week.push(item);
     });
-
+ 
     return groups;
   };
-
-  const grouped = groupByDate(filteredData);
-
-  /* 🔥 SECTION TITLE */
-  const getSectionTitle = (type, data) => {
-    if (!data.length) return '';
-
-    const firstDate = data[0].createdAt;
-
-    if (type === 'today') {
-      return `Today, ${formatFullDate(firstDate)}`;
-    }
-
-    if (type === 'yesterday') {
-      return `Yesterday, ${formatFullDate(firstDate)}`;
-    }
-
-    return `This week, ${formatFullDate(firstDate)}`;
-  };
-
-  /* 🔥 TIME */
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], {
+ 
+  const grouped = groupByDate(sortedData);
+ 
+  /* 🔥 FORMAT */
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+ 
+  const formatTime = (date) =>
+    new Date(date).toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
     });
+ 
+  const getTitle = (type, data) => {
+    if (!data.length) return '';
+    const d = formatDate(data[0].createdAt);
+ 
+    if (type === 'today') return `Today, ${d}`;
+    if (type === 'yesterday') return `Yesterday, ${d}`;
+    return `This week, ${d}`;
   };
-
+ 
   return (
     <LinearGradient colors={['#6A00F4', '#1A0033']} style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
-
+ 
         {/* HEADER */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -113,104 +131,134 @@ export default function TransactionHistory({ navigation }) {
           </TouchableOpacity>
           <Text style={styles.header}>Transaction History</Text>
         </View>
-
+ 
         {/* FILTERS */}
         <View style={styles.filterRow}>
-          {['all', 'sent', 'received', 'processing'].map((f) => (
-            <TouchableOpacity key={f} onPress={() => setFilter(f)}>
-              <Text style={filter === f ? styles.activeFilter : styles.filter}>
-                {f.charAt(0).toUpperCase() + f.slice(1)}
-              </Text>
-            </TouchableOpacity>
-          ))}
+ 
+          <TouchableOpacity onPress={() => {
+            setDateFilter(null);
+            setStatusFilter(null);
+          }}>
+            <Text style={styles.activeFilter}>All</Text>
+          </TouchableOpacity>
+ 
+          {/* DATE */}
+          <Dropdown
+            style={styles.dropdown}
+            data={dateOptions}
+            labelField="label"
+            valueField="value"
+            placeholder="Date"
+            value={dateFilter}
+            onChange={item => setDateFilter(item.value)}
+            placeholderStyle={styles.dropdownText}
+            selectedTextStyle={styles.dropdownText}
+          />
+ 
+          {/* STATUS */}
+          <Dropdown
+            style={styles.dropdown}
+            data={statusOptions}
+            labelField="label"
+            valueField="value"
+            placeholder="Status"
+            value={statusFilter}
+            onChange={item => setStatusFilter(item.value)}
+            placeholderStyle={styles.dropdownText}
+            selectedTextStyle={styles.dropdownText}
+          />
+ 
         </View>
-
+ 
         {/* CONTENT */}
         {loading ? (
           <ActivityIndicator color="#fff" />
-        ) : transactions.length === 0 ? (
-          <Text style={{ color: '#fff', marginTop: 20 }}>
-            No transactions found
-          </Text>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
-
-            {/* TODAY */}
+ 
             {grouped.today.length > 0 && (
               <>
                 <Text style={styles.section}>
-                  {getSectionTitle('today', grouped.today)}
+                  {getTitle('today', grouped.today)}
                 </Text>
-                {grouped.today.map((item, index) => (
-                  <TransactionItem key={index} item={item} formatTime={formatTime} />
+                {grouped.today.map((item, i) => (
+                  <Item key={i} item={item} formatTime={formatTime} />
                 ))}
               </>
             )}
-
-            {/* YESTERDAY */}
+ 
             {grouped.yesterday.length > 0 && (
               <>
                 <Text style={styles.section}>
-                  {getSectionTitle('yesterday', grouped.yesterday)}
+                  {getTitle('yesterday', grouped.yesterday)}
                 </Text>
-                {grouped.yesterday.map((item, index) => (
-                  <TransactionItem key={index} item={item} formatTime={formatTime} />
+                {grouped.yesterday.map((item, i) => (
+                  <Item key={i} item={item} formatTime={formatTime} />
                 ))}
               </>
             )}
-
-            {/* WEEK */}
+ 
             {grouped.week.length > 0 && (
               <>
                 <Text style={styles.section}>
-                  {getSectionTitle('week', grouped.week)}
+                  {getTitle('week', grouped.week)}
                 </Text>
-                {grouped.week.map((item, index) => (
-                  <TransactionItem key={index} item={item} formatTime={formatTime} />
+                {grouped.week.map((item, i) => (
+                  <Item key={i} item={item} formatTime={formatTime} />
                 ))}
               </>
             )}
-
+ 
           </ScrollView>
         )}
-
+ 
       </SafeAreaView>
     </LinearGradient>
   );
 }
-
+ 
 /* 🔥 ITEM */
-const TransactionItem = ({ item, formatTime }) => (
-  <View style={styles.item}>
-
-    <View style={styles.left}>
-      <View
-        style={[
+const Item = ({ item, formatTime }) => {
+  const isReceived = Number(item.amount) > 0;
+ 
+  return (
+    <View style={styles.item}>
+ 
+      <View style={styles.left}>
+        <View style={[
           styles.avatar,
-          item.amount > 0 && { backgroundColor: '#5df2a5' }
-        ]}
-      >
-        <Text>↗</Text>
+          { backgroundColor: isReceived ? '#22c55e' : '#e5e7eb' }
+        ]}>
+          <Icon
+            name={isReceived ? 'arrow-down' : 'arrow-up'}
+            size={18}
+            color={isReceived ? '#fff' : '#000'}
+          />
+        </View>
+ 
+        <View>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.time}>
+            {isReceived ? 'Received' : 'Sent'} · {formatTime(item.createdAt)}
+          </Text>
+        </View>
       </View>
-
-      <View>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
-      </View>
-    </View>
-
-    <View style={styles.right}>
-      <Text
-        style={[
+ 
+      <View style={styles.right}>
+        <Text style={[
           styles.amount,
-          item.amount > 0 ? styles.positive : styles.negative,
-        ]}
-      >
-        {item.amount > 0 ? `+${item.amount}` : item.amount}
-      </Text>
-
-      <Text style={styles.status}>{item.status}</Text>
+          { color: isReceived ? '#22c55e' : '#ef4444' }
+        ]}>
+          {isReceived
+            ? `+${Number(item.amount).toFixed(2)}`
+            : Number(item.amount).toFixed(2)}
+        </Text>
+ 
+        <Text style={styles.status}>
+          {isReceived ? 'received' : 'sent'}
+        </Text>
+      </View>
+ 
     </View>
-
-  </View>
-);
+  );
+};

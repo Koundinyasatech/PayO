@@ -1,125 +1,117 @@
 import { StyleSheet } from 'react-native';
-
+ 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 18,     // 🔥 increased for breathing space
-    paddingTop: 20,            // 🔥 prevents top touch
-    paddingBottom: 110,        // 🔥 prevents bottom tab overlap
+    paddingHorizontal: 18,
+    paddingTop: 20,
+    paddingBottom: 110,
   },
-
-  /* HEADER */
+ 
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 18,
+    marginBottom: 20,
   },
-
+ 
   back: {
     color: '#fff',
     fontSize: 22,
-    marginRight: 12,          // 🔥 more spacing
+    marginRight: 14,
   },
-
+ 
   header: {
     color: '#fff',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
   },
-
-  /* FILTERS */
+ 
   filterRow: {
     flexDirection: 'row',
-    marginBottom: 18,
-    flexWrap: 'wrap',         // 🔥 prevents overflow on small screens
+    alignItems: 'center',
+    marginBottom: 16,
   },
-
+ 
   activeFilter: {
-    backgroundColor: '#00a651',
+    backgroundColor: '#22c55e',
     color: '#fff',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 16,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 18,
     marginRight: 10,
-    marginBottom: 8,          // 🔥 spacing between rows
+    fontSize: 12,
+    fontWeight: '600',
+  },
+ 
+  dropdown: {
+    width: 110,
+    height: 36,
+    backgroundColor: '#4c1d95',
+    borderRadius: 18,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+  },
+ 
+  dropdownText: {
+    color: '#fff',
     fontSize: 12,
   },
-
-  filter: {
-    backgroundColor: '#5e2bb8',
-    color: '#fff',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    marginRight: 10,
-    marginBottom: 8,
-    fontSize: 12,
-  },
-
-  /* SECTION */
+ 
   section: {
-    color: '#fff',
-    marginTop: 18,
-    marginBottom: 12,
+    color: '#c4b5fd',
+    marginTop: 16,
+    marginBottom: 10,
     fontWeight: '600',
     fontSize: 13,
   },
-
-  /* TRANSACTION ITEM */
+ 
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,         // 🔥 more spacing
+    marginBottom: 18,
   },
-
+ 
   left: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+ 
   avatar: {
-    width: 40,                // 🔥 slightly bigger
-    height: 40,
-    borderRadius: 20,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
-    backgroundColor: '#3c3c3c',
   },
-
+ 
   name: {
     color: '#fff',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 15,
   },
-
+ 
   time: {
-    color: '#ccc',
-    fontSize: 11,
+    color: '#9ca3af',
+    fontSize: 12,
     marginTop: 3,
   },
-
+ 
   right: {
     alignItems: 'flex-end',
   },
-
+ 
   amount: {
     fontWeight: '700',
-    fontSize: 14,
+    fontSize: 15,
   },
-
-  positive: {
-    color: '#00ff99',
-  },
-
-  negative: {
-    color: '#ff4d4d',
-  },
-
+ 
   status: {
-    color: '#aaa',
+    color: '#9ca3af',
     fontSize: 11,
     marginTop: 3,
+    textTransform: 'capitalize',
   },
 });
