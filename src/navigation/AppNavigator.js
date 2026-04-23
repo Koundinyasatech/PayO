@@ -20,8 +20,7 @@ import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
 import ReferEarn from '../screens/HomeScreen/ReferEarn';
 
-/* ✅ IMPORT BOTTOM TABS */
-/* ✅ IMPORT BOTTOM TABS */
+/* BOTTOM TABS */
 import BottomTabs from '../screens/components/BottomTabs';
 
 /* SCAN + RECEIVE */
@@ -30,8 +29,6 @@ import Receive from '../screens/Receive';
 
 /* PAYMENT FLOW */
 import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
-
-
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
 import SendScreen from '../screens/components/sendScreen';
@@ -50,25 +47,26 @@ export default function AppNavigator() {
         <Stack.Screen name="Onboarding1" component={Onboarding1} />
         <Stack.Screen name="Onboarding2" component={Onboarding2} />
         <Stack.Screen name="Onboarding3" component={Onboarding3} />
+
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
         <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="review" component={ReviewTransferScreen} />
         <Stack.Screen name="ReferEarn" component={ReferEarn} />
 
-        {/* ✅ MAIN APP WITH BOTTOM TABS */}
+        {/* MAIN APP */}
         <Stack.Screen name="Main" component={BottomTabs} />
 
         {/* SEND FLOW */}
         <Stack.Screen name="SendScreen" component={SendScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
-        
-        
+
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
 
