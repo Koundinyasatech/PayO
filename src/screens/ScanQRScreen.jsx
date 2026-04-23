@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
+   SafeAreaView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -18,23 +19,16 @@ import { launchImageLibrary } from 'react-native-image-picker';
 
 import api from '../api/axios';
 
-/* ✅ IMPORT SEND TABS */
-import SendTabs from './components/SendTabs';
-
-/* ✅ IMPORT OTHER TAB SCREENS */
-import EnterAddressScreen from './HomeScreen/enterAddress';
-import Recents from './HomeScreen/Recents';
-
 const { width } = Dimensions.get('window');
 
-export default function ScanQRScreen({ navigation }) {
+export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab }) {
   const route = useRoute();
   const device = useCameraDevice('back');
 
   const [hasPermission, setHasPermission] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [torch, setTorch] = useState('off');
-  const [activeTab, setActiveTab] = useState('scan');
+ 
 
   const scanLine = useRef(new Animated.Value(0)).current;
 
@@ -80,6 +74,7 @@ export default function ScanQRScreen({ navigation }) {
       alert('Invalid QR');
     }
   };
+  
 
   // 🔍 Scanner
   const codeScanner = useCodeScanner({
@@ -99,154 +94,272 @@ export default function ScanQRScreen({ navigation }) {
       </View>
     );
   }
+            
+  console.log(scannedData,"999")
 
   return (
-    <LinearGradient colors={['#6A00F4', '#1A0033']} style={styles.container}>
+ 
+       <SafeAreaView style={styles.container}>
+      <View style={styles.scanWrapper}>
+        {!scannedData && (
+          <Camera
+            style={styles.camera}
+            device={device}
+            isActive={!scannedData}
+            torch={torch}
+            codeScanner={codeScanner}
+          />
+        )}
 
-      <Text style={styles.title}>Scan QR send tokens instantly</Text>
+        {/* 🔥 Scan Line */}
+        {!scannedData && (
+          <Animated.View
+            style={[
+              styles.scanLine,
+              { transform: [{ translateY: scanLine }] },
+            ]}
+          />
+        )}
 
-      {/* ✅ NEW SEND TABS */}
-      <SendTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        {/* 🔲 QR Corners */}
+        <View style={styles.cornerTL} />
+        <View style={styles.cornerTR} />
+        <View style={styles.cornerBL} />
+        <View style={styles.cornerBR} />
 
-      {/* ✅ TAB SWITCHING */}
-      {activeTab === 'address' && (
-        <EnterAddressScreen navigation={navigation} />
-      )}
-
-      {activeTab === 'recents' && (
-        <Recents navigation={navigation} />
-      )}
-
-      {activeTab === 'scan' && (
-        <>
-          {/* 📷 CAMERA */}
-          <View style={styles.scanWrapper}>
-            {!scannedData && (
-              <Camera
-                style={styles.camera}
-                device={device}
-                isActive={!scannedData}
-                torch={torch}
-                codeScanner={codeScanner}
-              />
-            )}
-
-            {!scannedData && (
-              <Animated.View
-                style={[
-                  styles.scanLine,
-                  { transform: [{ translateY: scanLine }] },
-                ]}
-              />
-            )}
-
-            <View style={styles.cornerTL} />
-            <View style={styles.cornerTR} />
-            <View style={styles.cornerBL} />
-            <View style={styles.cornerBR} />
-
-            {scannedData && (
-              <View style={styles.preview}>
-                <Text style={{ fontWeight: '600' }}>
-                  {scannedData.name}
-                </Text>
-              </View>
-            )}
+        {/* ✅ Preview */}
+        {scannedData && (
+          <View style={styles.preview}>
+            <Text style={{ fontWeight: '600' }}>
+              {scannedData.name}
+            </Text>
           </View>
+        )}
+      </View>
+      {/* TEXT */}
+      {!scannedData ? (
+        <Text style={styles.scanText}>Scanning QR code...</Text>
+      ) : (
+        <>
+          <Text style={styles.success}>
+            QR detected. Enter amount to proceed
+          </Text>
 
-          {!scannedData ? (
-            <Text style={styles.scanText}>Scanning QR code...</Text>
-          ) : (
-            <>
-              <Text style={styles.success}>
-                QR detected. Enter amount to proceed
-              </Text>
+          {/* <TouchableOpacity
+            style={styles.continueBtn}
+            onPress={() =>
+              // navigation.navigate("EnterAmount", {
+              //   name: scannedData.name,
+              //   address: scannedData.address,
+              // })
 
-              <TouchableOpacity
-                style={styles.continueBtn}
-                onPress={() =>
-                  navigation.navigate('enterAmount', {
-                    name: scannedData.name,
-                    address: scannedData.address,
-                  })
-                }
-              >
-                <Text style={styles.continueText}>Continue</Text>
-              </TouchableOpacity>
-            </>
-          )}
+                setSelectedUser({
+    name: scannedData.name,
+    address: scannedData.address,
+  })
 
-          {!scannedData && (
-            <View style={styles.row}>
-              <TouchableOpacity
-                style={styles.smallBtn}
-                onPress={async () => {
-                  const res = await launchImageLibrary({ mediaType: 'photo' });
-                  if (res.assets?.length) {
-                    handleQR('uploaded-image');
-                  }
-                }}
-              >
-                <Text style={styles.smallText}>Upload QR</Text>
-              </TouchableOpacity>
+  setActiveTab('amount');
+            }
+          >
+            <Text style={styles.continueText}>Continue</Text>
+          </TouchableOpacity> */}
 
-              <TouchableOpacity
-                style={styles.smallBtn}
-                onPress={() =>
-                  setTorch(torch === 'off' ? 'on' : 'off')
-                }
-              >
-                <Text style={styles.smallText}>
-                  {torch === 'off' ? 'Torch' : 'Torch Off'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          <TouchableOpacity
+  style={styles.continueBtn}
+  onPress={() => {
+    setSelectedUser({
+      name: scannedData.name,
+      address: scannedData.address,
+    });
 
-          {!scannedData && (
-            <TouchableOpacity
-              style={styles.simulate}
-              onPress={() => handleQR('test-wallet-address')}
-            >
-              <Text style={{ color: '#fff' }}>Simulate Scan</Text>
-            </TouchableOpacity>
-          )}
+    setActiveTab('amount');
+  }}
+>
+  <Text style={styles.continueText}>Continue</Text>
+</TouchableOpacity>
         </>
       )}
 
-    </LinearGradient>
+      {/* BUTTONS */}
+      {!scannedData && (
+        <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.smallBtn}
+            onPress={async () => {
+              const res = await launchImageLibrary({ mediaType: 'photo' });
+              if (res.assets?.length) {
+                handleQR('uploaded-image');
+              }
+            }}
+          >
+            <Text style={styles.smallText}>Upload QR</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.smallBtn}
+            onPress={() =>
+              setTorch(torch === 'off' ? 'on' : 'off')
+            }
+          >
+            <Text style={styles.smallText}>
+              {torch === 'off' ? 'Torch' : 'Torch Off'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+
+       {!scannedData && (
+          <View style={styles.text}>
+            <Text style={{ fontWeight: '400',color:"white",fontSize:16 ,padding:3}}>
+              Point your camera at a QR code to continue.   </Text>
+<Text style={{ fontWeight: '400',color:"white",fontSize:16,marginLeft:"10%" }}>Hold steady for faster scanning
+            </Text>
+          </View>
+        )}
+      
+
+
+      {!scannedData && (
+        <TouchableOpacity
+          style={styles.simulate}
+          onPress={() => handleQR('test-wallet-address')}
+            // onPress={() =>
+            //   navigation.navigate("EnterAmount", {
+            //     name: "kiran",
+            //     address: "PYSB2417",
+            //   })
+            // }
+
+//             onPress={() => {
+//   setSelectedUser({
+//     name: scannedData.name,
+//     address: scannedData.address,
+//   });
+
+//   setActiveTab('amount'); // 👈 switch tab
+// }}
+        >
+          <Text style={{ color: '#fff' }}>Simulate Scan</Text>
+        </TouchableOpacity>
+      )}
+       </SafeAreaView>
+   
   );
 }
+
+// export default function ScanQRScreen({ setSelectedUser, setActiveTab }) {
+//   const device = useCameraDevice('back');
+
+//   const [hasPermission, setHasPermission] = useState(false);
+//   const [scannedData, setScannedData] = useState(null);
+//   const [torch, setTorch] = useState('off');
+
+//   useEffect(() => {
+//     Camera.requestCameraPermission().then(res => {
+//       setHasPermission(res === 'granted');
+//     });
+//   }, []);
+
+//   const handleQR = async (value) => {
+//     if (scannedData) return;
+
+//     try {
+//       const res = await api.post('api/wallet/scan-qr', { qrData: value });
+
+//       setScannedData({
+//         name: res.data.name,
+//         address: res.data.walletAddress,
+//       });
+//     } catch {
+//       alert('Invalid QR');
+//     }
+//   };
+
+//   const codeScanner = useCodeScanner({
+//     codeTypes: ['qr'],
+//     onCodeScanned: (codes) => {
+//       if (codes.length > 0 && !scannedData) {
+//         handleQR(codes[0].value);
+//       }
+//     },
+//   });
+
+//   if (!device || !hasPermission) {
+//     return <Text>No Camera Permission</Text>;
+//   }
+
+//   return (
+//     <View style={{ flex: 1 }}>
+//       {!scannedData && (
+//         <Camera
+//           style={{ flex: 1 }}
+//           device={device}
+//           isActive={true}
+//           torch={torch}
+//           codeScanner={codeScanner}
+//         />
+//       )}
+
+//       {scannedData && (
+//         <>
+//           <Text style={{ color: 'white', textAlign: 'center' }}>
+//             {scannedData.name}
+//           </Text>
+
+//           <TouchableOpacity
+//             style={styles.continueBtn}
+//             onPress={() => {
+//               setSelectedUser(scannedData);
+//               setActiveTab('amount');
+//             }}
+//           >
+//             <Text style={styles.continueText}>Continue</Text>
+//           </TouchableOpacity>
+//         </>
+//       )}
+//     </View>
+//   );
+// }
+
+/* 🎨 STYLES */
 const styles = StyleSheet.create({
-  container: {
+  container: { flex: 1, alignItems: 'center' },
+
+  title: { color: '#fff', marginBottom: 20 },
+
+  tabs: {
+    flexDirection: 'row',
+    backgroundColor: '#6A00F4',
+    borderRadius: 12,
+    padding: 5,
+    width: '90%',
+    marginBottom: 20,
+  },
+
+  tab: { flex: 1, alignItems: 'center', padding: 8 },
+
+  activeTab: {
     flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
-    paddingTop: 50, // slightly reduced for better alignment with tabs
+    padding: 8,
+    borderRadius: 8,
   },
 
-  title: {
-    color: '#fff',
-    marginBottom: 15,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-
-  /* ❌ removed old tabs styles (SendTabs handles it now) */
+  tabText: { color: '#fff' },
+  activeText: { color: '#6A00F4', fontWeight: '600' },
 
   scanWrapper: {
-    width: 260,
-    height: 260,
+    width: 225,
+    height: 225,
     borderRadius: 20,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
   },
 
-  camera: {
-    width: '100%',
-    height: '100%',
-  },
+  camera: { width: '100%', height: '100%' },
 
   scanLine: {
     position: 'absolute',
@@ -261,7 +374,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
   },
 
   cornerTL: {
@@ -274,7 +386,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderColor: '#fff',
   },
-
   cornerTR: {
     position: 'absolute',
     top: 0,
@@ -285,7 +396,6 @@ const styles = StyleSheet.create({
     borderRightWidth: 3,
     borderColor: '#fff',
   },
-
   cornerBL: {
     position: 'absolute',
     bottom: 0,
@@ -296,7 +406,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 3,
     borderColor: '#fff',
   },
-
   cornerBR: {
     position: 'absolute',
     bottom: 0,
@@ -308,52 +417,32 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
   },
 
-  scanText: {
-    color: '#ccc',
-    marginTop: 12,
-    fontSize: 13,
-  },
+  scanText: { color: '#ccc', marginTop: 10 },
 
-  success: {
-    color: '#00FFAA',
-    marginTop: 15,
-    fontSize: 14,
-    fontWeight: '500',
-  },
+  success: { color: '#00FFAA', marginTop: 15 },
 
   continueBtn: {
-    backgroundColor: '#0AA84F',
+    backgroundColor: 'green',
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 10,
     marginTop: 20,
     width: '70%',
     alignItems: 'center',
   },
 
-  continueText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
-  },
+  continueText: { color: '#fff', fontWeight: '600' },
 
-  row: {
-    flexDirection: 'row',
-    marginTop: 20,
-  },
+  row: { flexDirection: 'row', marginTop: 20 },
 
   smallBtn: {
     borderWidth: 1,
     borderColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    padding: 10,
     borderRadius: 20,
-    marginHorizontal: 8,
+    marginHorizontal: 10,
   },
-
-  smallText: {
-    color: '#fff',
-    fontSize: 13,
-  },
+ text: { color: '#fff',padding:25},
+  smallText: { color: '#fff' },
 
   simulate: {
     backgroundColor: '#8A2BE2',
@@ -361,12 +450,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: width * 0.7,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 8,
   },
 
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 });

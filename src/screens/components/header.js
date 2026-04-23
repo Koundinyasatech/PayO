@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import styles from '../../screens/HomeScreen/homeStlying';
+import styles from '../HomeScreen/homeStyling';
 
 export default function Header() {
   return (
