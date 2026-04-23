@@ -2,9 +2,16 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 10,
+    // flex: 1,
+    // paddingHorizontal: 20,
+    // paddingTop: 20,
+  },
+
+  title: {
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: "600",
+    marginBottom: 25,
   },
 
   label: {
