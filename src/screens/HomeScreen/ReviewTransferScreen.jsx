@@ -6,13 +6,40 @@ import {
   SafeAreaView,
   StyleSheet,
   Switch,
+  Alert
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import api from "../../api/axios"; // ✅ ADDED
 
 export default function ReviewTransferScreen({ route, navigation }) {
-  const { receiver, amount, address } = route.params;
+
+  const { receiver, amount, address, sender } = route.params;
 
   const [save, setSave] = useState(false);
+
+  // ✅ ONLY ADD LOGIC (NO REMOVE)
+  const handleSaveToggle = async (value) => {
+    setSave(value);
+
+    if (value) {
+      try {
+        const response = await api.post("/api/recents/add", {
+          name: receiver?.name,
+          wallet: address,
+        });
+
+        console.log("Saved to recents:", response.data);
+
+      } catch (error) {
+        console.log("RECENT ERROR:", error?.response?.data || error.message);
+
+        Alert.alert(
+          "Error",
+          error?.response?.data?.message || "Failed to save recents"
+        );
+      }
+    }
+  };
 
   return (
     <LinearGradient
@@ -45,9 +72,15 @@ export default function ReviewTransferScreen({ route, navigation }) {
         {/* FROM */}
         <View style={styles.section}>
           <Text style={styles.small}>From</Text>
+
           <View style={styles.rowBetween}>
-            <Text style={styles.name}>Jhon Thomas</Text>
-            <Text style={styles.wallet}>PXY37488R</Text>
+            <Text style={styles.name}>
+              {sender?.name || "Loading..."}
+            </Text>
+
+            <Text style={styles.wallet}>
+              {sender?.wallet || ""}
+            </Text>
           </View>
         </View>
 
@@ -56,9 +89,15 @@ export default function ReviewTransferScreen({ route, navigation }) {
         {/* TO */}
         <View style={styles.section}>
           <Text style={styles.small}>To</Text>
+
           <View style={styles.rowBetween}>
-            <Text style={styles.name}>{receiver?.name}</Text>
-            <Text style={styles.wallet}>{address}</Text>
+            <Text style={styles.name}>
+              {receiver?.name || ""}
+            </Text>
+
+            <Text style={styles.wallet}>
+              {address}
+            </Text>
           </View>
         </View>
 
@@ -69,7 +108,7 @@ export default function ReviewTransferScreen({ route, navigation }) {
           <Text style={styles.saveText}>Save to Recents</Text>
           <Switch
             value={save}
-            onValueChange={setSave}
+            onValueChange={handleSaveToggle} // ✅ ONLY CHANGE HERE
             trackColor={{ false: "#999", true: "#fff" }}
             thumbColor={save ? "#6A00F4" : "#fff"}
           />
@@ -83,8 +122,8 @@ export default function ReviewTransferScreen({ route, navigation }) {
           onPress={() =>
             navigation.navigate("SendPin", {
               amount,
-              name: receiver?.name,
-              address,
+              toAddress: address,
+              fromAddress: sender?.wallet,
             })
           }
         >
@@ -96,11 +135,9 @@ export default function ReviewTransferScreen({ route, navigation }) {
   );
 }
 
-/* 🎨 STYLES */
+/* SAME STYLES (UNCHANGED) */
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
 
   header: {
     flexDirection: "row",
@@ -108,9 +145,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 
-  cancel: {
-    color: "#fff",
-  },
+  cancel: { color: "#fff" },
 
   headerTitle: {
     color: "#fff",
