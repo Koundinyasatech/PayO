@@ -331,7 +331,6 @@ const styles = StyleSheet.create({
   },
 
   scanText: { color: '#ccc', marginTop: 10 },
-
   success: { color: '#00FFAA', marginTop: 15 },
 
   continueBtn: {

@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -35,8 +36,8 @@ export default function TransactionHistory({ navigation }) {
  
   useEffect(() => {
     fetchTransactions();
-    const interval = setInterval(fetchTransactions, 5000);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchTransactions, 5000);
+    // return () => clearInterval(interval);
   }, []);
  
   /* 🔥 DROPDOWN DATA */
@@ -121,7 +122,8 @@ export default function TransactionHistory({ navigation }) {
   };
  
   return (
-    <LinearGradient colors={['#6A00F4', '#1A0033']} style={{ flex: 1 }}>
+    <LinearGradient colors={['#6A00F4', '#1A0033']} style={{ flex: 1,    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+     }}>
       <SafeAreaView style={styles.container}>
  
         {/* HEADER */}
