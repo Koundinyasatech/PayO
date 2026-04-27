@@ -1,33 +1,36 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#E8E8E8',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  welcomeText: {
-    fontSize: 48,
-    fontWeight: 'bold',
-    color: '#2D0A7B',
-    letterSpacing: -1,
-  },
-});
+export default function WelcomeScreen({ navigation }) {
 
-export default function WelcomeScreen({ navigate }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('on1');
-    }, 3000);
+      navigation.replace('Onboarding1'); // 👈 auto navigation
+    }, 3000); // 3 seconds
+
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.welcomeText}>Welcome</Text>
+      <Text style={styles.text}>Welcome</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#EAEAEA',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  text: {
+    fontSize: 36,
+    color: '#5A00D1',
+    fontWeight: '700',
+    letterSpacing: 2,
+    fontFamily: 'Limelight',
+  },
+});

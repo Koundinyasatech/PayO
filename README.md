@@ -1,1 +1,1 @@
-# PayO
+# payo-app
