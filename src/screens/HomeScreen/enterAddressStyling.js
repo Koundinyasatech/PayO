@@ -2,9 +2,8 @@ import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
-    // flex: 1,
-    // paddingHorizontal: 20,
-    // paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
 
   title: {
@@ -16,19 +15,26 @@ export default StyleSheet.create({
 
   label: {
     color: "#ddd",
-    marginBottom: 6,
-    marginTop: 14,
+    marginBottom: 8,
+    marginTop: 18,
     fontSize: 13,
   },
 
   input: {
     borderWidth: 1,
-    borderColor: "#7A5DB0",
-    borderRadius: 14,
-    padding: 14,
+    marginBottom: 12,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
     color: "#fff",
-    marginBottom: 6,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    fontSize: 14,
+    backgroundColor: "rgba(255,255,255,0.08)",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   infoText: {
@@ -54,17 +60,18 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#7A5DB0",
-    borderRadius: 14,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 16,
     paddingHorizontal: 14,
-    marginBottom: 12,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    paddingVertical: 4,
+    marginBottom: 16,
+    backgroundColor: "rgba(255,255,255,0.08)",
   },
 
   amountInput: {
     flex: 1,
     color: "#fff",
-    paddingVertical: 12,
+    paddingVertical: 14,
     fontSize: 16,
   },
 
@@ -74,18 +81,20 @@ export default StyleSheet.create({
     fontSize: 14,
   },
 
+  /* ✅ QUICK BUTTONS (ONLY ONE TIME) */
   quickRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 8,
     marginBottom: 18,
   },
 
   quickBtn: {
     backgroundColor: "#E5E5E5",
-    paddingVertical: 8,
+    paddingVertical: 10,
     paddingHorizontal: 18,
     borderRadius: 10,
+    minWidth: 60,
+    alignItems: "center",
   },
 
   quickText: {
@@ -94,7 +103,7 @@ export default StyleSheet.create({
     fontSize: 13,
   },
 
-  /* 🔥 UPDATED BALANCE BOX */
+  /* 🔥 BALANCE BOX */
   balanceBox: {
     backgroundColor: "#7B3FE4",
     borderRadius: 14,
@@ -115,7 +124,7 @@ export default StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 14,
-    minWidth: 120, // 🔥 prevents layout shift when "Loading..."
+    minWidth: 120,
     textAlign: "right",
   },
 

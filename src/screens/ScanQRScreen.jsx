@@ -6,29 +6,24 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-   SafeAreaView,
+  SafeAreaView,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import {
   Camera,
   useCameraDevice,
   useCodeScanner,
 } from 'react-native-vision-camera';
-import { useRoute } from '@react-navigation/native';
 import { launchImageLibrary } from 'react-native-image-picker';
-
 import api from '../api/axios';
 
 const { width } = Dimensions.get('window');
 
-export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab }) {
-  const route = useRoute();
+export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab }) {
   const device = useCameraDevice('back');
 
   const [hasPermission, setHasPermission] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [torch, setTorch] = useState('off');
- 
 
   const scanLine = useRef(new Animated.Value(0)).current;
 
@@ -52,13 +47,6 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
     getPermission();
   }, []);
 
-  // 🔄 Tab Handling
-  useEffect(() => {
-    if (route.params?.tab) {
-      setActiveTab(route.params.tab);
-    }
-  }, [route.params]);
-
   // 📷 Handle QR
   const handleQR = async (value) => {
     if (scannedData) return;
@@ -74,7 +62,6 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
       alert('Invalid QR');
     }
   };
-  
 
   // 🔍 Scanner
   const codeScanner = useCodeScanner({
@@ -94,12 +81,9 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
       </View>
     );
   }
-            
-  console.log(scannedData,"999")
 
   return (
- 
-       <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.scanWrapper}>
         {!scannedData && (
           <Camera
@@ -136,6 +120,7 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
           </View>
         )}
       </View>
+
       {/* TEXT */}
       {!scannedData ? (
         <Text style={styles.scanText}>Scanning QR code...</Text>
@@ -145,38 +130,19 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
             QR detected. Enter amount to proceed
           </Text>
 
-          {/* <TouchableOpacity
+          <TouchableOpacity
             style={styles.continueBtn}
-            onPress={() =>
-              // navigation.navigate("EnterAmount", {
-              //   name: scannedData.name,
-              //   address: scannedData.address,
-              // })
+            onPress={() => {
+              setSelectedUser && setSelectedUser({
+                name: scannedData.name,
+                address: scannedData.address,
+              });
 
-                setSelectedUser({
-    name: scannedData.name,
-    address: scannedData.address,
-  })
-
-  setActiveTab('amount');
-            }
+              setActiveTab && setActiveTab('amount');
+            }}
           >
             <Text style={styles.continueText}>Continue</Text>
-          </TouchableOpacity> */}
-
-          <TouchableOpacity
-  style={styles.continueBtn}
-  onPress={() => {
-    setSelectedUser({
-      name: scannedData.name,
-      address: scannedData.address,
-    });
-
-    setActiveTab('amount');
-  }}
->
-  <Text style={styles.continueText}>Continue</Text>
-</TouchableOpacity>
+          </TouchableOpacity>
         </>
       )}
 
@@ -208,147 +174,32 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
         </View>
       )}
 
-
-       {!scannedData && (
-          <View style={styles.text}>
-            <Text style={{ fontWeight: '400',color:"white",fontSize:16 ,padding:3}}>
-              Point your camera at a QR code to continue.   </Text>
-<Text style={{ fontWeight: '400',color:"white",fontSize:16,marginLeft:"10%" }}>Hold steady for faster scanning
-            </Text>
-          </View>
-        )}
-      
-
+      {!scannedData && (
+        <View style={styles.text}>
+          <Text style={{ color: "white", fontSize: 16 }}>
+            Point your camera at a QR code to continue.
+          </Text>
+          <Text style={{ color: "white", fontSize: 16 }}>
+            Hold steady for faster scanning
+          </Text>
+        </View>
+      )}
 
       {!scannedData && (
         <TouchableOpacity
           style={styles.simulate}
           onPress={() => handleQR('test-wallet-address')}
-            // onPress={() =>
-            //   navigation.navigate("EnterAmount", {
-            //     name: "kiran",
-            //     address: "PYSB2417",
-            //   })
-            // }
-
-//             onPress={() => {
-//   setSelectedUser({
-//     name: scannedData.name,
-//     address: scannedData.address,
-//   });
-
-//   setActiveTab('amount'); // 👈 switch tab
-// }}
         >
           <Text style={{ color: '#fff' }}>Simulate Scan</Text>
         </TouchableOpacity>
       )}
-       </SafeAreaView>
-   
+    </SafeAreaView>
   );
 }
-
-// export default function ScanQRScreen({ setSelectedUser, setActiveTab }) {
-//   const device = useCameraDevice('back');
-
-//   const [hasPermission, setHasPermission] = useState(false);
-//   const [scannedData, setScannedData] = useState(null);
-//   const [torch, setTorch] = useState('off');
-
-//   useEffect(() => {
-//     Camera.requestCameraPermission().then(res => {
-//       setHasPermission(res === 'granted');
-//     });
-//   }, []);
-
-//   const handleQR = async (value) => {
-//     if (scannedData) return;
-
-//     try {
-//       const res = await api.post('api/wallet/scan-qr', { qrData: value });
-
-//       setScannedData({
-//         name: res.data.name,
-//         address: res.data.walletAddress,
-//       });
-//     } catch {
-//       alert('Invalid QR');
-//     }
-//   };
-
-//   const codeScanner = useCodeScanner({
-//     codeTypes: ['qr'],
-//     onCodeScanned: (codes) => {
-//       if (codes.length > 0 && !scannedData) {
-//         handleQR(codes[0].value);
-//       }
-//     },
-//   });
-
-//   if (!device || !hasPermission) {
-//     return <Text>No Camera Permission</Text>;
-//   }
-
-//   return (
-//     <View style={{ flex: 1 }}>
-//       {!scannedData && (
-//         <Camera
-//           style={{ flex: 1 }}
-//           device={device}
-//           isActive={true}
-//           torch={torch}
-//           codeScanner={codeScanner}
-//         />
-//       )}
-
-//       {scannedData && (
-//         <>
-//           <Text style={{ color: 'white', textAlign: 'center' }}>
-//             {scannedData.name}
-//           </Text>
-
-//           <TouchableOpacity
-//             style={styles.continueBtn}
-//             onPress={() => {
-//               setSelectedUser(scannedData);
-//               setActiveTab('amount');
-//             }}
-//           >
-//             <Text style={styles.continueText}>Continue</Text>
-//           </TouchableOpacity>
-//         </>
-//       )}
-//     </View>
-//   );
-// }
 
 /* 🎨 STYLES */
 const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center' },
-
-  title: { color: '#fff', marginBottom: 20 },
-
-  tabs: {
-    flexDirection: 'row',
-    backgroundColor: '#6A00F4',
-    borderRadius: 12,
-    padding: 5,
-    width: '90%',
-    marginBottom: 20,
-  },
-
-  tab: { flex: 1, alignItems: 'center', padding: 8 },
-
-  activeTab: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 8,
-  },
-
-  tabText: { color: '#fff' },
-  activeText: { color: '#6A00F4', fontWeight: '600' },
 
   scanWrapper: {
     width: 225,
@@ -418,7 +269,6 @@ const styles = StyleSheet.create({
   },
 
   scanText: { color: '#ccc', marginTop: 10 },
-
   success: { color: '#00FFAA', marginTop: 15 },
 
   continueBtn: {
@@ -441,8 +291,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 10,
   },
- text: { color: '#fff',padding:25},
+
   smallText: { color: '#fff' },
+
+  text: { padding: 25 },
 
   simulate: {
     backgroundColor: '#8A2BE2',

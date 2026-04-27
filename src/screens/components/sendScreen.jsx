@@ -1,131 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { View, Text } from 'react-native';
+import LinearGradient from "react-native-linear-gradient";
 
 import ScanQRScreen from '../ScanQRScreen';
 import EnterAddressScreen from '../HomeScreen/enterAddress';
-import styles from '../HomeScreen/homeStyling';
-import Header from './header';
-import BottomNav from './bottomNav';
-import LinearGradient from "react-native-linear-gradient";
 import EnterAmountScreen from '../HomeScreen/EnterAmountScreen';
+import Header from './header';
+import SendTabs from './SendTabs';   // ✅ USING YOUR TABS
 
-// export default function SendScreen({navigation}) {
-//   const [activeTab, setActiveTab] = useState('scan');
-//   const [selectedUser, setSelectedUser] = useState(null);
-
-//   const getHeaderTitle = () => {
-//   switch (activeTab) {
-//     case 'scan':
-//       return 'Scan QR send tokens instantly';
-
-//     case 'address':
-//       return 'Enter address and send tokens';
-
-//     case 'recents':
-//       return 'Send tokens to recent contacts';
-      
-
-//     default:
-//       return '';
-//   }
-// };
-
-//   const renderContent = () => {
-//     switch (activeTab) {
-//       case 'scan':
-//         return <ScanQRScreen navigation={navigation}  setSelectedUser={setSelectedUser} setActiveTab={setActiveTab}/>;
-
-//       case 'address':
-//         return <EnterAddressScreen navigation={navigation}/>;
-
-//       case 'recents':
-//         return <Text>recent</Text>
-//         case 'amount':
-//       return (
-//         <EnterAmountScreen
-//           name={selectedUser?.name}
-//           address={selectedUser?.address}
-//           setActiveTab={setActiveTab}
-//         />
-//       );
-
-//       default:
-//         return null;
-//     }
-//   };
-
-//   return (
-//       <LinearGradient
-//       colors={["#6A00F4", "#1A0033"]}
-//       style={{ flex: 1 }}
-//     >
-//     {/* <View style={styles.container}> */}
-
-//       {/* HEADER */}
-//       {/* <View style={styles.header}>
-//         <Text style={styles.headerText}>
-//           Send tokens instantly
-//         </Text>
-//       </View> */}
-//       <Header/>
-
-//      <View style={styles.headerContent}>
-//   <Text style={styles.headerText}>
-//     {getHeaderTitle()}
-//   </Text>
-// </View>
-
-//       {/* TAB BUTTONS */}
-//       <View style={styles.tabs}>
-//         <TouchableOpacity onPress={() => setActiveTab('scan')}>
-//           <Text style={activeTab === 'scan' ? styles.activeTab : styles.tab}>
-//             Scan QR
-//           </Text>
-//         </TouchableOpacity>
-
-//         <TouchableOpacity onPress={() => setActiveTab('address')}>
-//           <Text style={activeTab === 'address' ? styles.activeTab : styles.tab}>
-//             Enter Address
-//           </Text>
-//         </TouchableOpacity>
-
-//         <TouchableOpacity onPress={() => setActiveTab('recents')}>
-//           <Text style={activeTab === 'recents' ? styles.activeTab : styles.tab}>
-//             Recents
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-
-//       {/* DYNAMIC CONTENT */}
-//       <View style={styles.content}>
-//         {renderContent()}
-//       </View>
-
-//       {/* BOTTOM NAV (your existing one) */}
-//       {/* <View style={styles.bottom}>
-//         <Text style={{ color: '#fff' }}>Bottom Navigation</Text>
-//       </View> */}
-//       <BottomNav/>
-
-   
-//     </LinearGradient>
-//   );
-// }
-
-// import React, { useState } from 'react';
-// import { View, Text, TouchableOpacity } from 'react-native';
-// import LinearGradient from "react-native-linear-gradient";
-
-// import ScanQRScreen from '../ScanQRScreen';
-// import EnterAddressScreen from '../HomeScreen/enterAddress';
-// import EnterAmountScreen from '../EnterAmountScreen';
-
-// import styles from '../HomeScreen/homeStyling';
-// import Header from './header';
-// import BottomNav from './bottomNav';
-
-export default function SendScreen({navigation}) {
+export default function SendScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('scan');
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -162,13 +45,12 @@ export default function SendScreen({navigation}) {
           <EnterAmountScreen
             name={selectedUser?.name}
             address={selectedUser?.address}
-            setActiveTab={setActiveTab}
-              navigation={navigation} 
+            navigation={navigation}
           />
         );
 
       case 'recents':
-        return <Text style={{ color: 'white' }}>Recents</Text>;
+        return <Text style={{ color: 'white', textAlign: 'center' }}>Recents</Text>;
 
       default:
         return null;
@@ -177,39 +59,29 @@ export default function SendScreen({navigation}) {
 
   return (
     <LinearGradient colors={["#6A00F4", "#1A0033"]} style={{ flex: 1 }}>
+
+      {/* HEADER */}
       <Header />
 
-     {activeTab !== 'amount' && (
-  <>
-    <View style={styles.headerContent}>
-      <Text style={styles.headerText}>{getHeaderTitle()}</Text>
-    </View>
+      {/* TITLE */}
+      {activeTab !== 'amount' && (
+        <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+          <Text style={{ color: '#fff', fontSize: 16 }}>
+            {getHeaderTitle()}
+          </Text>
+        </View>
+      )}
 
-    <View style={styles.tabs}>
-      <TouchableOpacity onPress={() => setActiveTab('scan')}>
-        <Text style={activeTab === 'scan' ? styles.activeTab : styles.tab}>
-          Scan QR
-        </Text>
-      </TouchableOpacity>
+      {/* ✅ TABS (FIXED) */}
+      {activeTab !== 'amount' && (
+        <SendTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      )}
 
-      <TouchableOpacity onPress={() => setActiveTab('address')}>
-        <Text style={activeTab === 'address' ? styles.activeTab : styles.tab}>
-          Enter Address
-        </Text>
-      </TouchableOpacity>
+      {/* CONTENT */}
+      <View style={{ flex: 1, marginTop: 30 }}>
+        {renderContent()}
+      </View>
 
-      <TouchableOpacity onPress={() => setActiveTab('recents')}>
-        <Text style={activeTab === 'recents' ? styles.activeTab : styles.tab}>
-          Recents
-        </Text>
-      </TouchableOpacity>
-    </View>
-  </>
-)}
-
-      <View style={styles.content}>{renderContent()}</View>
-
-      <BottomNav />
     </LinearGradient>
   );
 }

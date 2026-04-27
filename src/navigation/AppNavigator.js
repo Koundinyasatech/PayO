@@ -15,23 +15,19 @@ import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
+
+/* MAIN */
+import BottomTabs from '../screens/components/BottomTabs';
+
+/* OTHER */
 import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
 import ReferEarn from '../screens/HomeScreen/ReferEarn';
-
-/* BOTTOM TABS */
-import BottomTabs from '../screens/components/BottomTabs';
-
-/* SCAN + RECEIVE */
-import ScanQRScreen from '../screens/ScanQRScreen';
-import Receive from '../screens/Receive';
-
-/* PAYMENT FLOW */
 import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
-import SendScreen from '../screens/components/sendScreen';
+import Receive from '../screens/Receive';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,23 +50,18 @@ export default function AppNavigator() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
 
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
-        <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
-        <Stack.Screen name="SendPin" component={SendPinScreen} />
-        <Stack.Screen name="review" component={ReviewTransferScreen} />
-        <Stack.Screen name="ReferEarn" component={ReferEarn} />
 
         {/* MAIN APP */}
         <Stack.Screen name="Main" component={BottomTabs} />
 
-        {/* SEND FLOW */}
-        <Stack.Screen name="SendScreen" component={SendScreen} />
-        <Stack.Screen name="ScanQR" component={ScanQRScreen} />
+        {/* OTHER FLOW */}
+        <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
+        <Stack.Screen name="SendPin" component={SendPinScreen} />
+        <Stack.Screen name="review" component={ReviewTransferScreen} />
+        <Stack.Screen name="ReferEarn" component={ReferEarn} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
-
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
-
-        {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
 
       </Stack.Navigator>

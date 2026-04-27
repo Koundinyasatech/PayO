@@ -5,6 +5,7 @@ export default function SendTabs({ activeTab, setActiveTab }) {
   return (
     <View style={styles.container}>
       
+      {/* SCAN */}
       <TouchableOpacity
         style={[styles.tab, activeTab === "scan" && styles.activeTab]}
         onPress={() => setActiveTab("scan")}
@@ -14,6 +15,7 @@ export default function SendTabs({ activeTab, setActiveTab }) {
         </Text>
       </TouchableOpacity>
 
+      {/* ADDRESS */}
       <TouchableOpacity
         style={[styles.tab, activeTab === "address" && styles.activeTab]}
         onPress={() => setActiveTab("address")}
@@ -23,6 +25,7 @@ export default function SendTabs({ activeTab, setActiveTab }) {
         </Text>
       </TouchableOpacity>
 
+      {/* RECENTS */}
       <TouchableOpacity
         style={[styles.tab, activeTab === "recents" && styles.activeTab]}
         onPress={() => setActiveTab("recents")}
@@ -39,29 +42,35 @@ export default function SendTabs({ activeTab, setActiveTab }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: "#5E2CA5",
-    borderRadius: 12,
-    padding: 4,
-    marginVertical: 15,
+    backgroundColor: "rgba(255,255,255,0.08)", // soft glass
+    borderRadius: 16,
+    padding: 5,
+    marginHorizontal: 28,   // ✅ center spacing
+    marginTop: 15,
   },
 
   tab: {
     flex: 1,
     alignItems: "center",
-    padding: 10,
-    borderRadius: 10,
+    justifyContent: "center",
+    paddingVertical: 10,
+    borderRadius: 12,
   },
 
   activeTab: {
     backgroundColor: "#fff",
+    borderRadius: 12,
+    elevation: 4, // Android shadow
   },
 
   text: {
-    color: "#fff",
+    color: "#d1d5db", // soft white
+    fontSize: 13,
   },
 
   activeText: {
     color: "#000",
     fontWeight: "600",
+    fontSize: 13,
   },
 });

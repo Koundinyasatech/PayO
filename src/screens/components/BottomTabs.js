@@ -1,175 +1,87 @@
 import React from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import Svg, { Path } from 'react-native-svg';
 
-/* SCREENS */
 import HomeScreen from '../HomeScreen/HomeScreen';
-import styles from '../HomeScreen/homeStyling';
-import ScanQRScreen from '../ScanQRScreen'
+import TransactionHistory from "../HomeScreen/TransactionHistory";
+import WalletScreen from '../HomeScreen/WalletScreen';
+import SendScreen from './sendScreen';
 
-// import ScanQRScreen from '../ScanQRScreen';
-// import Receive from '../Receive';
+import styles from '../HomeScreen/homeStyling';
 
 const Tab = createBottomTabNavigator();
 
-/* ---------- CUSTOM TAB BAR ---------- */
-function CustomTabBar({ state, descriptors, navigation }) {
+function CustomTabBar({ state, navigation }) {
   return (
-    // <View style={styles.wrapper}>
+    <View style={styles.bottomWrapper}>
 
-    //   {/* CURVED BACKGROUND */}
-    //   <Svg width="100%" height={90} viewBox="0 0 400 90" style={styles.svg}>
-    //     <Path
-    //       d="M0 20 Q200 -40 400 20 L400 90 L0 90 Z"
-    //       fill="#1c0033"
-    //     />
-    //   </Svg>
+      {/* CURVE */}
+      <Svg width="100%" height={110} viewBox="0 0 400 110" style={styles.bottomSvg}>
+        <Path
+          d="M0 40 Q200 -30 400 40 L400 110 L0 110 Z"
+          fill="#2D1B69"
+        />
+      </Svg>
 
-    //   {/* TABS */}
-    //   <View style={styles.tabs}>
-    //     {state.routes.map((route, index) => {
-    //       if (route.name === 'Scan') return null;
+      {/* TABS */}
+      <View style={styles.bottomTabs}>
 
-    //       const isFocused = state.index === index;
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
+          <Icon name="home" size={22} color={state.index === 0 ? '#FF7FD8' : '#ccc'} />
+          <Text style={[styles.tabLabel, state.index === 0 && styles.activeTab]}>
+            Home
+          </Text>
+        </TouchableOpacity>
 
-    //       let iconName = '';
-    //       if (route.name === 'Home') iconName = 'home';
-    //       if (route.name === 'Wallets') iconName = 'credit-card';
-    //       if (route.name === 'Transactions') iconName = 'bar-chart-2';
-    //       if (route.name === 'Profile') iconName = 'settings';
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Wallets')}>
+          <Icon name="credit-card" size={22} color={state.index === 1 ? '#FF7FD8' : '#ccc'} />
+          <Text style={[styles.tabLabel, state.index === 1 && styles.activeTab]}>
+            Wallets
+          </Text>
+        </TouchableOpacity>
 
-    //       return (
-    //         <TouchableOpacity
-    //           key={route.key}
-    //           onPress={() => navigation.navigate(route.name)}
-    //           style={styles.tabItem}
-    //         >
-    //           <Icon
-    //             name={iconName}
-    //             size={22}
-    //             color={isFocused ? '#FF7FD8' : '#aaa'}
-    //           />
-    //           <Text
-    //             style={[
-    //               styles.label,
-    //               { color: isFocused ? '#FF7FD8' : '#aaa' },
-    //             ]}
-    //           >
-    //             {route.name}
-    //           </Text>
-    //         </TouchableOpacity>
-    //       );
-    //     })}
-    //   </View>
+        <View style={{ width: 70 }} />
 
-    //   {/* CENTER SCAN BUTTON */}
-    //   <TouchableOpacity
-    //     style={styles.scanButton}
-    //     onPress={() => navigation.navigate('ScanQR')} // ✅ FIXED
-    //   >
-    //     <Icon name="maximize" size={26} color="white" />
-    //   </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Transactions')}>
+          <Icon name="bar-chart-2" size={22} color={state.index === 3 ? '#FF7FD8' : '#ccc'} />
+          <Text style={[styles.tabLabel, state.index === 3 && styles.activeTab]}>
+            Transactions
+          </Text>
+        </TouchableOpacity>
 
-    // </View>
-    <View style={styles.bottomNav}>
+        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Profile')}>
+          <Icon name="settings" size={22} color={state.index === 4 ? '#FF7FD8' : '#ccc'} />
+          <Text style={[styles.tabLabel, state.index === 4 && styles.activeTab]}>
+            Profile
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navActive]}>🏠</Text>
-        <Text style={[styles.navLabel, styles.navActive]}>Home</Text>
-      </TouchableOpacity>
+      </View>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navInactive]}>💳</Text>
-        <Text style={[styles.navLabel, styles.navInactive]}>Wallets</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.centerIcon}
-         onPress={() => navigation.navigate('ScanQR')}
-      >
-        <Text style={{ fontSize: 28 }}>↔</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navInactive]}>📊</Text>
-        <Text style={[styles.navLabel, styles.navInactive]}>Transactions</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navInactive]}>⚙️</Text>
-        <Text style={[styles.navLabel, styles.navInactive]}>Profile</Text>
-      </TouchableOpacity>
+      {/* FLOAT BUTTON */}
+      <View style={styles.scanButton}>
+        <TouchableOpacity onPress={() => navigation.navigate('Scan')}>
+          <Icon name="maximize" size={26} color="#fff" />
+        </TouchableOpacity>
+      </View>
 
     </View>
   );
 }
 
-/* ---------- NAV ---------- */
 export default function BottomTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
       screenOptions={{ headerShown: false }}
       tabBar={(props) => <CustomTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Wallets" component={HomeScreen} />
-      <Tab.Screen name="Scan" component={ScanQRScreen} />
-      <Tab.Screen name="Transactions" component={HomeScreen} />
+      <Tab.Screen name="Wallets" component={WalletScreen} />
+      <Tab.Screen name="Scan" component={SendScreen} />
+      <Tab.Screen name="Transactions" component={TransactionHistory} />
       <Tab.Screen name="Profile" component={HomeScreen} />
     </Tab.Navigator>
   );
 }
-
-/* ---------- STYLES ---------- */
-// const styles = StyleSheet.create({
-//   wrapper: {
-//     position: 'absolute',
-//     bottom: 0,
-//     width: '100%',
-//     height: 90,
-//   },
-
-//   svg: {
-//     position: 'absolute',
-//     bottom: 0,
-//   },
-
-//   tabs: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-around',
-//     alignItems: 'center',
-//     height: 90,
-//     paddingHorizontal: 10,
-//   },
-
-//   tabItem: {
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-
-//   label: {
-//     fontSize: 12,
-//     marginTop: 4,
-//   },
-
-//   scanButton: {
-//     position: 'absolute',
-//     alignSelf: 'center',
-//     top: -28,
-//     width: 70,
-//     height: 70,
-//     borderRadius: 35,
-//     backgroundColor: '#7B2CFF',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     elevation: 10,
-//   },
-// });
