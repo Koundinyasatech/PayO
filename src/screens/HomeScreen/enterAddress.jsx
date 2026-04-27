@@ -194,6 +194,19 @@ export default function EnterAddressScreen({ navigation }) {
         <Text style={styles.token}>PAYO</Text>
       </View>
 
+      {/* 🔥 QUICK BUTTONS */}
+      <View style={styles.quickRow}>
+        {[100, 300, 500, 700].map((val) => (
+          <TouchableOpacity
+            key={val}
+            style={styles.quickBtn}
+            onPress={() => setAmount(String(val))}
+          >
+            <Text style={styles.quickText}>{val}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <View style={styles.balanceBox}>
         <Text style={styles.balanceText}>Available balance</Text>
         <Text style={styles.balanceAmount}>

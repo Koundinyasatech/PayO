@@ -1,36 +1,62 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import styles from '../HomeScreen/homeStyling';
 
 export default function BottomNav({ navigation }) {
   return (
     <View style={styles.bottomNav}>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navActive]}>🏠</Text>
-        <Text style={[styles.navLabel, styles.navActive]}>Home</Text>
+      {/* HOME */}
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate('Home')}
+      >
+        <Icon name="home" size={22} color="#F472B6" />
+        <Text style={[styles.navLabel, styles.navActive]}>
+          Home
+        </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navInactive]}>💳</Text>
-        <Text style={[styles.navLabel, styles.navInactive]}>Wallets</Text>
+      {/* WALLETS */}
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate('Wallets')}
+      >
+        <Icon name="credit-card" size={22} color="#aaa" />
+        <Text style={[styles.navLabel, styles.navInactive]}>
+          Wallets
+        </Text>
       </TouchableOpacity>
 
+      {/* CENTER SCAN BUTTON */}
       <TouchableOpacity
         style={styles.centerIcon}
-        // onPress={() => navigation.navigate('scan')}
+        onPress={() => navigation.navigate('Scan')}
       >
-        <Text style={{ fontSize: 28 }}>↔</Text>
+        <Icon name="maximize" size={26} color="#fff" />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navInactive]}>📊</Text>
-        <Text style={[styles.navLabel, styles.navInactive]}>Transactions</Text>
+      {/* TRANSACTIONS */}
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate('Transactions')}
+      >
+        <Icon name="bar-chart-2" size={22} color="#aaa" />
+        <Text style={[styles.navLabel, styles.navInactive]}>
+          Transactions
+        </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.navItem}>
-        <Text style={[styles.navIcon, styles.navInactive]}>⚙️</Text>
-        <Text style={[styles.navLabel, styles.navInactive]}>Profile</Text>
+      {/* PROFILE */}
+      <TouchableOpacity
+        style={styles.navItem}
+        onPress={() => navigation.navigate('Profile')}
+      >
+        <Icon name="settings" size={22} color="#aaa" />
+        <Text style={[styles.navLabel, styles.navInactive]}>
+          Profile
+        </Text>
       </TouchableOpacity>
 
     </View>
