@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 import styles from './homeStyling';
 import api, { getToken } from '../../api/axios';
 import Header from '../components/header';
@@ -119,29 +119,29 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.cardFooter}>
             <Text style={styles.walletLabel}>My Wallets</Text>
           <TouchableOpacity onPress={() => setShowAll(!showAll)}>
-  <Text style={styles.viewAllText}>
+  {/* <Text style={styles.viewAllText}>
     {showAll ? "Show Less ›" : "View All ›"}
-  </Text>
+  </Text> */}
 </TouchableOpacity>
           </View>
         </View>
 
-        {/* ACTION BUTTONS */}
+     
         <View style={styles.actionsContainer}>
 
 
 
           <View style={styles.actions}>
 
-            {/* SEND */}
+           
             <TouchableOpacity style={styles.button}
-              // onPress={() => navigation.navigate('SendScreen')}
-            //  onPress={() => navigation.navigate('ScanQR')}
+            
               onPress={() => navigation.navigate('SendScreen', { tab: 'address' })}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↗ */}
+                  
                 </Text>
               </View>
               <Text style={styles.label}>Send</Text>
@@ -260,8 +260,10 @@ export default function HomeScreen({ navigation }) {
        
 
       </ScrollView>
+      
 
          </View>
+         
   //  </SafeAreaView>
   );
 }

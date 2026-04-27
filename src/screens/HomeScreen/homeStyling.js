@@ -1,10 +1,11 @@
-import { StyleSheet } from 'react-native';
+import { StatusBar, StyleSheet } from 'react-native';
  
 export default StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#2E1065', // deep purple base
-  },
+container: {
+  flex: 1,
+  backgroundColor: "#3B0A6B",
+  paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+},
  
   //  actions: {
   //   flexDirection: 'row',
@@ -54,13 +55,23 @@ connector: {
 
 
   /* HEADER */
+  // header: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 20,
+  //   paddingTop: 10,
+  //   alignItems: 'center',
+  // },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    alignItems: 'center',
-  },
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  paddingHorizontal: 20,
+  // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 10,
+  alignItems: 'center',
+},
+walletNumber:{
+  color:"white"
+},
   menuIcon: {
     fontSize: 22,
     color: '#fff',
