@@ -1,11 +1,58 @@
-// src/screens/Onboarding1.jsx
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+
+
+
+export default function Onboarding1({ navigation }) {
+  return (
+    <View style={styles.container}>
+
+      {/* <Text style={styles.logo}>PAYO</Text>
+
+      <View style={styles.content}>
+        <Text style={styles.title}>Your Digital Wallet, Simplified</Text>
+        <Text style={styles.desc}>
+          Store, send & receive PAYO tokens instantly. No bank account needed.
+        </Text>
+      </View> */}
+
+       <View style={styles.header}>
+        <Text style={styles.logo}>PAYO</Text>
+        <TouchableOpacity style={styles.skipBtn} 
+        onPress={() => navigation.navigate('Onboarding3')}
+        >
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
+      </View>
+
+       <View style={styles.content}>
+        <View style={styles.imageContainer}>
+          {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
+          
+        </View>
+        <Text style={styles.title}>Your Digital{'\n'}Wallet, Simplified</Text>
+        <Text style={styles.description}>
+          Store, send &amp; receive Payo tokens instantly. No bank account needed - just your mobile number!
+        </Text>
+      </View>
+
+ <View style={styles.footer}>
+      <TouchableOpacity
+      style={styles.nextBtn}
+        onPress={() => navigation.navigate('Onboarding2')}
+      >
+        <Text style={styles.nextBtnText}>→</Text>
+      </TouchableOpacity>
+      </View>
+
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     margin:20
   },
    header: {
@@ -137,49 +184,3 @@ skipBtn: {
     fontWeight: '900',
   },
 });
-
-export default function Onboarding1({ navigate }) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>PAYO</Text>
-        <TouchableOpacity style={styles.skipBtn} onPress={() => navigate('on3')}>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.content}>
-        <View style={styles.imageContainer}>
-          {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
-          
-        </View>
-        <Text style={styles.title}>Your Digital{'\n'}Wallet, Simplified</Text>
-        <Text style={styles.description}>
-          Store, send &amp; receive Payo tokens instantly. No bank account needed - just your mobile number!
-        </Text>
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.nextBtn} onPress={() => navigate('on2')}>
-          <Text style={styles.nextBtnText}>→</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* <View style={styles.footer}>
-  <TouchableOpacity onPress={() => navigate('on2')}>
-    <View style={styles.wrapper}>
-
-  
-      <View style={styles.arc} />
-
-      
-      <View style={styles.nextBtn}>
-        <Text style={styles.nextBtnText}>→</Text>
-      </View>
-
-    </View>
-  </TouchableOpacity>
-</View> */}
-    </View>
-  );
-}

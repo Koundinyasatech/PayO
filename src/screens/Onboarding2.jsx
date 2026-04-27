@@ -1,11 +1,60 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+
+
+
+
+export default function Onboarding2({ navigation }) {
+  return (
+    <View style={styles.container}>
+
+      {/* <Text style={styles.logo}>PAYO</Text>
+
+      <View style={styles.content}>
+        <Text style={styles.title}>Instant QR Payments</Text>
+        <Text style={styles.desc}>
+          Scan QR code to send tokens instantly. Fast wallet transfers.
+        </Text>
+      </View> */}
+
+      <View style={styles.header}>
+        <Text style={styles.logo}>PAYO</Text>
+        <TouchableOpacity style={styles.skipBtn} 
+        onPress={() => navigation.navigate('Onboarding3')}
+        >
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.content}>
+        <View style={styles.imageContainer}>
+          {/* <Text style={styles.icon}>�</Text> */}
+          {<Image source={require('..//../assets/images/work_flow.png')} style={{ width: 215, height: 200 }} />}
+
+        </View>
+        <Text style={styles.title}>Instant QR{'\n'}Payments</Text>
+        <Text style={styles.description}>
+          Scan a QR code to send tokens in seconds. Safe, secure and lightning -fast wallet-to-wallet transfers.
+        </Text>
+      </View>
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.nextBtn}
+          onPress={() => navigation.navigate('Onboarding3')}
+        >
+          <Text style={styles.nextBtnText}>→</Text>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    margin:20
+    // backgroundColor: '#fff',
+    margin: 20
   },
   // header: {
   //   paddingHorizontal: 24,
@@ -28,27 +77,27 @@ const styles = StyleSheet.create({
   //   paddingHorizontal: 12,
   // },
   header: {
-  paddingHorizontal: 24,
-    marginTop:10,
-  paddingTop: 40,
-  alignItems: 'center', // ✅ center PAYO
-  justifyContent: 'center',
-},
+    paddingHorizontal: 24,
+    marginTop: 10,
+    paddingTop: 40,
+    alignItems: 'center', // ✅ center PAYO
+    justifyContent: 'center',
+  },
 
-logo: {
+  logo: {
 
-  fontSize: 22,
-  fontWeight: 'bold',
-  color: '#6C2BD9',
-  letterSpacing: 3,
-  fontFamily: 'serif',
-},
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#6C2BD9',
+    letterSpacing: 3,
+    fontFamily: 'serif',
+  },
 
-skipBtn: {
-  position: 'absolute', // ✅ take it out of flow
-  right: 24,
-  top: 40,
-},
+  skipBtn: {
+    position: 'absolute', // ✅ take it out of flow
+    right: 24,
+    top: 40,
+  },
   skipText: {
     fontSize: 12,
     color: '#999',
@@ -61,7 +110,7 @@ skipBtn: {
     justifyContent: 'center',
   },
   imageContainer: {
-     width: 240,
+    width: 240,
     height: 240,
     borderRadius: 110,
     // backgroundColor: '#F3E5FF',
@@ -121,34 +170,3 @@ skipBtn: {
     fontWeight: '900',
   },
 });
-
-export default function Onboarding2({ navigate }) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>PAYO</Text>
-        <TouchableOpacity style={styles.skipBtn} onPress={() => navigate('on3')}>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.content}>
-        <View style={styles.imageContainer}>
-          {/* <Text style={styles.icon}>�</Text> */}
-                    {<Image source={require('..//../assets/images/work_flow.png')} style={{ width: 215, height: 200 }} />}
-          
-        </View>
-        <Text style={styles.title}>Instant QR{'\n'}Payments</Text>
-        <Text style={styles.description}>
-          Scan a QR code to send tokens in seconds. Safe, secure and lightning -fast wallet-to-wallet transfers.
-        </Text>
-      </View>
-
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.nextBtn} onPress={() => navigate('on3')}>
-          <Text style={styles.nextBtnText}>→</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}

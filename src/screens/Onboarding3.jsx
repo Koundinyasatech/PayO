@@ -1,11 +1,49 @@
-// src/screens/Onboarding3.jsx
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+
+export default function Onboarding3({ navigation }) {
+  return (
+    <View style={styles.container}>
+
+      <View style={styles.header}>
+        <Text style={styles.logo}>PAYO</Text>
+      </View>
+
+      <View style={styles.content}>
+         <View style={styles.imageContainer}>
+                  {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
+                  
+                </View>
+        <Text style={styles.title}>Earn with Every Referral</Text>
+        <Text style={styles.description}>
+          Invite friends and earn PAYO tokens when they join and transact. Grow your network, Grow your wallet.
+        </Text>
+      </View>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.registerBtn}
+          onPress={() => navigation.navigate('RegisterMobile')}
+        >
+          <Text style={styles.btnText}>Register</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.loginBtn}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text  style={styles.loginBtnText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
   
     marginTop:20,
     marginBottom:50,
@@ -89,39 +127,3 @@ const styles = StyleSheet.create({
     color: '#333',
   },
 });
-
-export default function Onboarding3({ navigate }) {
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>PAYO</Text>
-      </View>
-
-      <View style={styles.content}>
-         <View style={styles.imageContainer}>
-                  {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
-                  
-                </View>
-        <Text style={styles.title}>Earn with Every Referral</Text>
-        <Text style={styles.description}>
-          Invite friends and earn PAYO tokens when they join and transact. Grow your network, Grow your wallet.
-        </Text>
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          onPress={() => navigate('register')}
-          style={styles.registerBtn}
-        >
-          <Text style={styles.btnText}>Register</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => navigate('login')}
-          style={styles.loginBtn}
-        >
-          <Text style={styles.loginBtnText}>Login</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}

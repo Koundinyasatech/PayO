@@ -1,224 +1,671 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   TouchableOpacity
+// } from 'react-native';
+// import api from '../api/axios';
+// import * as Keychain from 'react-native-keychain';
 
+// export default function LoginScreen({ navigation }) {
+
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const[message,setMessage]=useState("");
+  
+//   const [errors, setErrors] = useState({
+//   email: '',
+//   password: '',
+// });
+// const validate = () => {
+//   let valid = true;
+//   let newErrors = { email: '', password: '' };
+
+//   if (!email.trim()) {
+//     newErrors.email = "Email is required";
+//     valid = false;
+//   }
+
+//   if (!password.trim()) {
+//     newErrors.password = "Password is required";
+//     valid = false;
+//   }
+
+//   setErrors(newErrors);
+//   return valid;
+// };
+
+// // const handleSubmit = async () => {
+// //   // if (!validate()) return;
+
+// //   try {
+// //     const response = await api.post('/login', {
+// //       email,
+// //       password,
+// //     });
+
+// //     console.log(response.data, "result");
+
+// //     // ✅ Check message from backend
+// //     if (response?.data?.message === "Login success") {
+// //       // navigation.navigate('Home');
+// //       setMessage("")
+// //       console.log("88")
+// //     } else {
+// //       setMessage(response?.data?.message || "Login failed");
+// //     }
+
+// //   } catch (error) {
+// //     console.log(error?.response?.data, "LOGIN ERROR");
+
+// //     setMessage(
+// //       error?.response?.data?.message ||
+// //       error?.message ||
+// //       "Something went wrong. Please try again"
+// //     );
+// //   }
+// // };
+
+// // const handleSubmit = async () => {
+// //   //  navigation.navigate('Home');
+// //   if (!validate()) return;
+
+
+// //   try {
+// //     const response = await api.post('/login', {
+// //       email,
+// //       password,
+// //     });
+
+// //     if (response?.data?.message === "Login success") {
+// //       setMessage("");
+// //       navigation.navigate('Home');
+// //     } else {
+// //       setMessage(response?.data?.message || "Login failed");
+// //     }
+
+// //   } catch (error) {
+// //     setMessage(
+// //       error?.response?.data?.message ||
+// //       error?.message ||
+// //       "Something went wrong"
+// //     );
+// //   }
+// // };
+
+
+
+// const handleSubmit = async () => {
+//   if (!validate()) return;
+
+//   try {
+//     const response = await api.post('/api/auth/login', {
+//       email,
+//       password,
+//     });
+
+//     if (response?.data?.message === "Login success") {
+//       const token = response?.data?.token;
+//       console.log(token,"token1")
+
+//       // ✅ Store token securely
+//       await Keychain.setGenericPassword("userToken", token);
+
+//       setMessage("");
+//       navigation.navigate('Main');
+//     } else {
+//       setMessage(response?.data?.message || "Login failed");
+//     }
+
+//   } catch (error) {
+//     setMessage(
+//       error?.response?.data?.message ||
+//       error?.message ||
+//       "Something went wrong"
+//     );
+//   }
+// };
+
+//   return (
+//     <View style={styles.container}>
+
+//        <View style={styles.header}>
+//                     <TouchableOpacity onPress={() => navigation.goBack()}>
+//                      <Text style={styles.back}>←</Text>
+//                   {/* <Text style={styles.back}>{'<'}</Text> */}
+//                     </TouchableOpacity>
+                  
+//                     <Text style={styles.titleCentered}>
+// Login to Payo             </Text>
+//                   </View>
+
+//       {/* BACK */}
+//       {/* <TouchableOpacity onPress={() => navigation.goBack()}>
+//         <Text style={styles.back}>← Back</Text>
+//       </TouchableOpacity>
+
+    
+//       <Text style={styles.title}>Login to Payo</Text> */}
+//       <Text style={styles.sub}>
+//         Welcome back! Please enter your details.
+//       </Text>
+
+//       {message ? (
+//               <Text style={{ color: 'red', margin: 10, textAlign: 'center' }}>
+//                 {message}
+//               </Text>
+//             ) : null}
+
+//       {/* EMAIL */}
+//       <Text style={styles.label}>Email ID</Text>
+//       {/* <TextInput
+//         style={styles.input}
+//         placeholder="your@email.com"
+//         value={email}
+//         // onChangeText={setEmail}
+//         onChangeText={(text) => {
+//           setMessage("")
+//           setEmail(text);
+//         }}
+        
+//       /> */}
+
+//       <TextInput
+//   style={[styles.input, errors.email && { borderColor: 'red' }]}
+//   placeholder="your@email.com"
+//   value={email}
+//   onChangeText={(text) => {
+//     setEmail(text);
+//     setErrors(prev => ({ ...prev, email: '' }));
+//   }}
+// />
+
+// {errors.email ? (
+//   <Text style={{ color: 'red', marginBottom: 5 }}>
+//     {errors.email}
+//   </Text>
+// ) : null}
+
+//       {/* PASSWORD */}
+//       <Text style={styles.label}>Password</Text>
+//       {/* <TextInput
+//         style={styles.input}
+//         placeholder="Your password"
+//         secureTextEntry
+//         value={password}
+//         // onChangeText={setPassword}
+//          onChangeText={(text) => {
+//           setMessage("")
+//           setPassword(text);
+//         }}
+//       /> */}
+
+//       <TextInput
+//   style={[styles.input, errors.password && { borderColor: 'red' }]}
+//   placeholder="Your password"
+//   secureTextEntry
+//   value={password}
+//   onChangeText={(text) => {
+//     setPassword(text);
+//     setErrors(prev => ({ ...prev, password: '' }));
+//   }}
+// />
+
+// {errors.password ? (
+//   <Text style={{ color: 'red', marginBottom: 5 }}>
+//     {errors.password}
+//   </Text>
+// ) : null}
+
+//       {/* FORGOT PASSWORD */}
+//       <Text style={styles.forgot}>Forgot Password?</Text>
+
+//       {/* SUBMIT BUTTON */}
+//       <TouchableOpacity
+//         style={styles.button}
+//         // onPress={() => navigation.replace('Home')}
+//         onPress={handleSubmit}
+//       >
+//         <Text style={styles.buttonText}>Submit</Text>
+//       </TouchableOpacity>
+
+//       {/* OR LINE */}
+//       <View style={styles.orRow}>
+//         <View style={styles.line} />
+//         <Text style={styles.or}>OR</Text>
+//         <View style={styles.line} />
+//       </View>
+
+//       {/* OTP LOGIN */}
+//       <TouchableOpacity style={styles.otpBtn}>
+//         <Text style={styles.otpText}>Login with OTP</Text>
+//       </TouchableOpacity>
+
+//       {/* REGISTER */}
+//       <Text style={styles.registerText}>
+//         Don’t have an account?{' '}
+//         <Text
+//           style={styles.link}
+//           onPress={() => navigation.navigate('RegisterMobile')}
+//         >
+//           Register
+//         </Text>
+//       </Text>
+
+//     </View>
+//   );
+// }
+
+// /* ================= STYLES ================= */
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#EAEAEA',
+//     padding: 20,
+//   },
+
+//   // back: {
+//   //   marginTop: 10,
+//   //   fontSize: 14,
+//   //   color: '#333',
+//   // },
+//     header: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginTop: 20,
+//   },
+
+//   back: {
+//     fontSize: 22,
+//   },
+
+//  titleCentered: {
+//     flex: 1,
+//     textAlign: 'center',
+//     fontSize: 22,
+//     fontWeight: '700',
+//     marginLeft: "10%", // balance arrow
+//   },
+
+//   title: {
+//     fontSize: 22,
+//     fontWeight: '700',
+//     marginTop: 20,
+//   },
+
+//    sub: {
+//     textAlign: 'center',
+//     margin: 10,
+//     color: '#666',
+//     fontSize: 13,
+//     lineHeight: 18,
+//     marginBottom:30
+//   },
+
+//   label: {
+//     fontSize: 12,
+//     color: '#333',
+//     marginBottom: 5,
+//     fontWeight:700,
+//     padding:10,
+//   },
+
+//    input: {
+//     backgroundColor: '#fff',
+//     borderRadius: 12,
+//     padding: 14,
+//     borderWidth: 1,
+//     borderColor: '#E0E0E0',
+//   },
+
+
+//   forgot: {
+//     textAlign: 'right',
+//     marginTop: 5,
+//     color: '#5A00D1',
+//     fontSize: 12,
+//   },
+
+//   button: {
+//     backgroundColor: '#5A00D1',
+//     padding: 14,
+//     borderRadius: 10,
+//     alignItems: 'center',
+//     marginTop: 25,
+//   },
+
+//   buttonText: {
+//     color: '#fff',
+//     fontWeight: '600',
+//   },
+
+//   orRow: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginVertical: 20,
+//   },
+
+//   line: {
+//     flex: 1,
+//     height: 1,
+//     backgroundColor: '#ccc',
+//   },
+
+//   or: {
+//     marginHorizontal: 10,
+//     color: '#777',
+//   },
+
+//   otpBtn: {
+//     borderWidth: 2,
+//     borderColor: '#5A00D1',
+//     padding: 14,
+//     borderRadius: 10,
+//     alignItems: 'center',
+//   },
+
+//   otpText: {
+//     color: '#5A00D1',
+//     fontWeight: '600',
+//   },
+
+//   registerText: {
+//     textAlign: 'center',
+//     marginTop: 20,
+//     color: '#555',
+//   },
+
+//   link: {
+//     color: '#5A00D1',
+//     fontWeight: '600',
+//   },
+// });
+
+
+
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
+import api from '../api/axios';
+import * as Keychain from 'react-native-keychain';
+ 
+export default function LoginScreen({ navigation }) {
+ 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState("");
+ 
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+  });
+ 
+  const validate = () => {
+    let valid = true;
+    let newErrors = { email: '', password: '' };
+ 
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      valid = false;
+    }
+ 
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+      valid = false;
+    }
+ 
+    setErrors(newErrors);
+    return valid;
+  };
+ 
+  const handleSubmit = async () => {
+    if (!validate()) return;
+ 
+    try {
+      const response = await api.post('/api/auth/login', {
+        email,
+        password,
+      });
+ 
+      if (response?.data?.message === "Login success") {
+        const token = response?.data?.token;
+ 
+        await Keychain.setGenericPassword("userToken", token);
+ 
+        setMessage("");
+        navigation.navigate('Main');
+      } else {
+        setMessage(response?.data?.message || "Login failed");
+      }
+ 
+    } catch (error) {
+      setMessage(
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong"
+      );
+    }
+  };
+ 
+  return (
+    <View style={styles.container}>
+ 
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>←</Text>
+        </TouchableOpacity>
+ 
+        <Text style={styles.titleCentered}>
+          Login to Payo
+        </Text>
+      </View>
+ 
+      <Text style={styles.sub}>
+        Welcome back! Please enter your details.
+      </Text>
+ 
+      {message ? (
+        <Text style={{ color: 'red', margin: 10, textAlign: 'center' }}>
+          {message}
+        </Text>
+      ) : null}
+ 
+      {/* EMAIL */}
+      <Text style={styles.label}>Email ID</Text>
+ 
+      <TextInput
+        style={[styles.input, errors.email && { borderColor: 'red' }]}
+        placeholder="your@email.com"
+        value={email}
+        onChangeText={(text) => {
+          setEmail(text);
+          setErrors(prev => ({ ...prev, email: '' }));
+        }}
+      />
+ 
+      {errors.email ? (
+        <Text style={{ color: 'red', marginBottom: 5 }}>
+          {errors.email}
+        </Text>
+      ) : null}
+ 
+      {/* PASSWORD */}
+      <Text style={styles.label}>Password</Text>
+ 
+      <TextInput
+        style={[styles.input, errors.password && { borderColor: 'red' }]}
+        placeholder="Your password"
+        secureTextEntry
+        value={password}
+        onChangeText={(text) => {
+          setPassword(text);
+          setErrors(prev => ({ ...prev, password: '' }));
+        }}
+      />
+ 
+      {errors.password ? (
+        <Text style={{ color: 'red', marginBottom: 5 }}>
+          {errors.password}
+        </Text>
+      ) : null}
+ 
+      <Text style={styles.forgot}>Forgot Password?</Text>
+ 
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit}
+      >
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+ 
+      <View style={styles.orRow}>
+        <View style={styles.line} />
+        <Text style={styles.or}>OR</Text>
+        <View style={styles.line} />
+      </View>
+ 
+      {/* ✅ LOGIN WITH OTP (UPDATED) */}
+      <TouchableOpacity
+        style={styles.otpBtn}
+        onPress={() => navigation.navigate('RegisterMobile', { mode: 'login' })}
+      >
+        <Text style={styles.otpText}>Login with OTP</Text>
+      </TouchableOpacity>
+ 
+      {/* REGISTER */}
+      <Text style={styles.registerText}>
+        Don’t have an account?{' '}
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
+        >
+          Register
+        </Text>
+      </Text>
+ 
+    </View>
+  );
+}
+ 
+/* ================= STYLES ================= */
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#EAEAEA',
+    padding: 20,
   },
-  content: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 32,
-  },
-  backBtn: {
-    marginBottom: 24,
-  },
-  backText: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 13,
-    color: '#666',
-    marginBottom: 24,
-    lineHeight: 19,
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 16,
-    fontSize: 13,
-    color: '#333',
-  },
-  forgotContainer: {
-    alignItems: 'flex-end',
-    marginBottom: 24,
-  },
-  forgotText: {
-    fontSize: 12,
-    color: '#6C2BD9',
-    fontWeight: '600',
-  },
-  errorContainer: {
-    marginBottom: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: '#FEE2E2',
-    borderWidth: 1,
-    borderColor: '#FCA5A5',
-    borderRadius: 8,
-  },
-  errorText: {
-    fontSize: 12,
-    color: '#DC2626',
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  submitBtn: {
-    backgroundColor: '#6C2BD9',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-    marginBottom: 16,
-    shadowColor: '#6C2BD9',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  submitBtnText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  divider: {
+ 
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginTop: 20,
   },
-  dividerLine: {
+ 
+  back: {
+    fontSize: 22,
+  },
+ 
+  titleCentered: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
+    marginLeft: "0%",
+  },
+ 
+  sub: {
+    textAlign: 'center',
+    margin: 10,
+    color: '#666',
+    fontSize: 13,
+    lineHeight: 18,
+    marginBottom: 30
+  },
+ 
+  label: {
+    fontSize: 12,
+    color: '#333',
+    marginBottom: 5,
+    fontWeight: 700,
+    padding: 10,
+  },
+ 
+  input: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+ 
+  forgot: {
+    textAlign: 'right',
+    marginTop: 5,
+    color: '#5A00D1',
+    fontSize: 12,
+  },
+ 
+  button: {
+    backgroundColor: '#5A00D1',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 25,
+  },
+ 
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+ 
+  orRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+ 
+  line: {
     flex: 1,
     height: 1,
     backgroundColor: '#ccc',
   },
-  dividerText: {
-    marginHorizontal: 12,
-    fontSize: 12,
-    color: '#999',
+ 
+  or: {
+    marginHorizontal: 10,
+    color: '#777',
   },
+ 
   otpBtn: {
     borderWidth: 2,
-    borderColor: '#6C2BD9',
-    borderRadius: 8,
-    paddingVertical: 12,
+    borderColor: '#5A00D1',
+    padding: 14,
+    borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 24,
   },
-  otpBtnText: {
-    color: '#6C2BD9',
-    fontSize: 14,
+ 
+  otpText: {
+    color: '#5A00D1',
     fontWeight: '600',
   },
-  registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+ 
   registerText: {
-    fontSize: 12,
-    color: '#666',
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#555',
   },
-  registerLink: {
-    color: '#6C2BD9',
+ 
+  link: {
+    color: '#5A00D1',
     fontWeight: '600',
   },
 });
-
-export default function LoginScreen({ navigate }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleSubmit = () => {
-    if (!email || !password) {
-      setError('Please fill in all fields');
-      return;
-    }
-    if (!email.includes('@')) {
-      setError('Please enter a valid email');
-      return;
-    }
-    navigate('loginsuccess');
-  };
-
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigate('on1')}>
-          <Text style={styles.backText}>← Back</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.title}>Login to Payo</Text>
-        <Text style={styles.subtitle}>Welcome back! Please enter your details.</Text>
-
-        {error && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
-        <Text style={styles.label}>Email ID</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="your@email.com"
-          value={email}
-          onChangeText={(val) => {
-            setEmail(val);
-            setError('');
-          }}
-          placeholderTextColor="#999"
-          keyboardType="email-address"
-        />
-
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Your password"
-          value={password}
-          onChangeText={(val) => {
-            setPassword(val);
-            setError('');
-          }}
-          secureTextEntry
-          placeholderTextColor="#999"
-        />
-
-        <View style={styles.forgotContainer}>
-          <TouchableOpacity>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-          <Text style={styles.submitBtnText}>Submit</Text>
-        </TouchableOpacity>
-
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>OR</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        <TouchableOpacity style={styles.otpBtn} onPress={() => navigate('loginotp')}>
-          <Text style={styles.otpBtnText}>Login with OTP</Text>
-        </TouchableOpacity>
-
-        <View style={styles.registerContainer}>
-          <Text style={styles.registerText}>
-            Don't have an account?{' '}
-            <Text style={styles.registerLink} onPress={() => navigate('register')}>
-              Register
-            </Text>
-          </Text>
-        </View>
-      </View>
-    </ScrollView>
-  );
-}
+ 
