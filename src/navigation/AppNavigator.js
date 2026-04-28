@@ -40,6 +40,12 @@ import BottomNav from '../screens/components/bottomNav';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ScanButtonQRScreen from '../screens/HomeScreen/scanButton';
 
+import AddBankHome from "../screens/Bank/AddBankHome";
+import AccountDetails from "../screens/Bank/AccountDetails";
+import AccountNumber from "../screens/Bank/AccountNumber";
+import UpiPin from "../screens/Bank/UpiPin";
+import SuccessScreen from "../screens/Bank/SuccessScreen";
+
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
@@ -67,21 +73,29 @@ export default function AppNavigator() {
         {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />
         <Stack.Screen name="Buttom" component={BottomNav} />
-         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
 
         {/* SEND FLOW */}
         <Stack.Screen name="SendScreen" component={SendScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
-        
-        
+
+
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
-         <Stack.Screen name="ScanButton" component={ScanButtonQRScreen} />
-            <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
+        <Stack.Screen name="ScanButton" component={ScanButtonQRScreen} />
+        <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
+        
+        
+        {/* BANK DETAILS */}
+        <Stack.Screen name="AddBankHome" component={AddBankHome} />
+        <Stack.Screen name="AccountDetails" component={AccountDetails} />
+        <Stack.Screen name="AccountNumber" component={AccountNumber} />
+        <Stack.Screen name="UpiPin" component={UpiPin} />
+        <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
 
 
       </Stack.Navigator>
