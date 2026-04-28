@@ -7,8 +7,7 @@ import {
 } from 'react-native';
 
 export default function SendPinScreen({ route, navigation }) {
-
-  const { amount, toAddress, fromAddress } = route.params;
+  const { amount, name, address } = route.params;
 
   const [pin, setPin] = useState('');
 
@@ -30,10 +29,11 @@ export default function SendPinScreen({ route, navigation }) {
       return;
     }
 
+    // ✅ FIXED HERE
     navigation.navigate('loading', {
       amount,
-      toAddress,
-      fromAddress,
+      name,
+      toAddress: address,
       pin,
     });
   };
@@ -56,21 +56,18 @@ export default function SendPinScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.cancel}>Cancel</Text>
+      <Text style={styles.cancel} onPress={() => navigation.navigate("Main")}>Cancel</Text>
 
       <View style={styles.card}>
+        <Text style={styles.small}>from wallet</Text>
 
-        {/* FROM */}
-        <Text style={styles.small}>From Wallet</Text>
-        <Text style={styles.address}>{fromAddress}</Text>
-
-        {/* TO */}
         <View style={styles.rowBetween}>
-          <Text style={styles.small}>To Wallet</Text>
+          <Text style={styles.small}>To wallet</Text>
           <Text style={styles.amount}>{amount} PAYO</Text>
         </View>
 
-        <Text style={styles.address}>{toAddress}</Text>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.address}>{address}</Text>
       </View>
 
       <Text style={styles.title}>ENTER 4-DIGIT TRANSACTION PIN</Text>
@@ -114,8 +111,6 @@ export default function SendPinScreen({ route, navigation }) {
     </View>
   );
 }
-
-/* KEEP YOUR SAME STYLES */
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#eee', padding: 20 },

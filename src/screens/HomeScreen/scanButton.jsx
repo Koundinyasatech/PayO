@@ -1,0 +1,279 @@
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+   SafeAreaView,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import {
+  Camera,
+  useCameraDevice,
+  useCodeScanner,
+} from 'react-native-vision-camera';
+import { useRoute } from '@react-navigation/native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import BottomNav from '../components/bottomNav';
+
+
+const { width } = Dimensions.get('window');
+
+export default function ScanButtonQRScreen({ navigation, setSelectedUser, setActiveTab }) {
+
+  const [activeTab, setLocalTab] = useState('scan'); // local UI tab
+
+    const route = useRoute();
+    const device = useCameraDevice('back');
+  
+    const [hasPermission, setHasPermission] = useState(false);
+    const [scannedData, setScannedData] = useState(null);
+    const [torch, setTorch] = useState('off');
+   
+  
+    const scanLine = useRef(new Animated.Value(0)).current;
+     useEffect(() => {
+    if (route.params?.tab) {
+      setActiveTab(route.params.tab);
+    }
+  }, [route.params]);
+
+  // 📷 Handle QR
+  const handleQR = async (value) => {
+    if (scannedData) return;
+
+    try {
+      const res = await api.post('api/wallet/scan-qr', { qrData: value });
+
+      setScannedData({
+        name: res.data.name,
+        address: res.data.walletAddress,
+      });
+    } catch {
+      alert('Invalid QR');
+    }
+  };
+  
+
+   const codeScanner = useCodeScanner({
+      codeTypes: ['qr'],
+      onCodeScanned: (codes) => {
+        if (codes.length > 0 && !scannedData) {
+          handleQR(codes[0].value);
+        }
+      },
+    });
+
+  return (
+    <SafeAreaView style={styles.container}>
+
+      {/* CENTER CONTENT */}
+      <View style={styles.centerContainer}>
+
+        <View style={styles.scanWrapper}>
+          {!scannedData && (
+            <Camera
+              style={styles.camera}
+              device={device}
+              isActive={!scannedData}
+              torch={torch}
+              codeScanner={codeScanner}
+            />
+          )}
+
+          {!scannedData && (
+            <Animated.View
+              style={[
+                styles.scanLine,
+                { transform: [{ translateY: scanLine }] },
+              ]}
+            />
+          )}
+
+          <View style={styles.cornerTL} />
+          <View style={styles.cornerTR} />
+          <View style={styles.cornerBL} />
+          <View style={styles.cornerBR} />
+
+          {scannedData && (
+            <View style={styles.preview}>
+              <Text>{scannedData.name}</Text>
+            </View>
+          )}
+        </View>
+
+        {!scannedData ? (
+          <Text style={styles.scanText}>Scanning QR code...</Text>
+        ) : (
+          <>
+            <Text style={styles.success}>
+              QR detected. Enter amount to proceed
+            </Text>
+
+            <TouchableOpacity
+              style={styles.continueBtn}
+              onPress={() => {
+                setSelectedUser({
+                  name: scannedData.name,
+                  address: scannedData.address,
+                });
+                setActiveTab('amount');
+              }}
+            >
+              <Text style={styles.continueText}>Continue</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+
+      {/* BOTTOM NAV */}
+      <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+ container: {
+  flex: 1,
+  backgroundColor: '#000',
+  justifyContent: 'space-between',
+},
+
+centerContainer: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+  title: { color: '#fff', marginBottom: 20 },
+
+  tabs: {
+    flexDirection: 'row',
+    backgroundColor: '#6A00F4',
+    borderRadius: 12,
+    padding: 5,
+    width: '90%',
+    marginBottom: 20,
+  },
+
+  tab: { flex: 1, alignItems: 'center', padding: 8 },
+
+  activeTab: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    padding: 8,
+    borderRadius: 8,
+  },
+
+  tabText: { color: '#fff' },
+  activeText: { color: '#6A00F4', fontWeight: '600' },
+
+  scanWrapper: {
+    width: 225,
+    height: 225,
+    borderRadius: 20,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  camera: { width: '100%', height: '100%' },
+
+  scanLine: {
+    position: 'absolute',
+    width: '100%',
+    height: 2,
+    backgroundColor: 'lime',
+  },
+
+  preview: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  cornerTL: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 40,
+    height: 40,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderColor: '#fff',
+  },
+  cornerTR: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 40,
+    height: 40,
+    borderTopWidth: 3,
+    borderRightWidth: 3,
+    borderColor: '#fff',
+  },
+  cornerBL: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 40,
+    height: 40,
+    borderBottomWidth: 3,
+    borderLeftWidth: 3,
+    borderColor: '#fff',
+  },
+  cornerBR: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 40,
+    height: 40,
+    borderBottomWidth: 3,
+    borderRightWidth: 3,
+    borderColor: '#fff',
+  },
+
+  scanText: { color: '#ccc', marginTop: 10 },
+
+  success: { color: '#00FFAA', marginTop: 15 },
+
+  continueBtn: {
+    backgroundColor: 'green',
+    padding: 14,
+    borderRadius: 10,
+    marginTop: 20,
+    width: '70%',
+    alignItems: 'center',
+  },
+
+  continueText: { color: '#fff', fontWeight: '600' },
+
+  row: { flexDirection: 'row', marginTop: 20 },
+
+  smallBtn: {
+    borderWidth: 1,
+    borderColor: '#fff',
+    padding: 10,
+    borderRadius: 20,
+    marginHorizontal: 10,
+  },
+ text: { color: '#fff',padding:25},
+  smallText: { color: '#fff' },
+
+  simulate: {
+    backgroundColor: '#8A2BE2',
+    padding: 12,
+    borderRadius: 10,
+    width: width * 0.7,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+});

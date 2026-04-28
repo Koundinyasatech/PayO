@@ -40,7 +40,7 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 const api = axios.create({
-  baseURL: 'http://payo-app.duckdns.org:3000',
+  baseURL: 'http://payo-app.duckdns.org:3001',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

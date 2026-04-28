@@ -81,7 +81,7 @@ import api from '../../api/axios';
 // } from 'react-native';
 
 export default function EnterAmountScreen({ navigation,name, address, setActiveTab }) {
-  const [amount, setAmount] = useState('300');
+  const [amount, setAmount] = useState('');
   const[avaliable,setAvaliable] =useState("")
 
   // useEffect(() => {
@@ -144,13 +144,13 @@ export default function EnterAmountScreen({ navigation,name, address, setActiveT
               setAmount(cleaned);
             }}
             keyboardType="numeric"
-            placeholder="0"
+            placeholder="0.00"
             placeholderTextColor="#eee"
             autoFocus
             cursorColor="#fff"
           />
-          <Text style={styles.decimal}>.00</Text>
-          <Text style={styles.currency}> PAYO</Text>
+          {/* <Text style={styles.decimal}>.00</Text> */}
+           <Text style={styles.currency}> PAYO</Text>
         </View>
       </View>
 
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: '#fff',
     fontWeight: '700',
-    minWidth: 60,
+    minWidth: 0,
     textAlign: 'center',
   },
 
