@@ -1,338 +1,413 @@
-import { StyleSheet } from 'react-native';
-
+import { StatusBar, StyleSheet } from 'react-native';
+ 
 export default StyleSheet.create({
+container: {
+  flex: 1,
+  backgroundColor: "#3B0A6B",
+  paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+},
+ 
+  //  actions: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 20,
+  //   marginTop: 20,
+  // },
+actions: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 
-  /* ===== ROOT ===== */
-  container: {
-    flex: 1,
-    backgroundColor: '#2E1065',
-  },
+button: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#FDE68A',
+  paddingHorizontal: 16,
+  paddingVertical: 10,
+  borderRadius: 30,
+  zIndex: 2, // keeps button above line
+},
 
-  scrollContent: {
-    paddingBottom: 170, // 🔥 prevents bottom overlap
-  },
+label: {
+  marginLeft: 8,
+  fontWeight: '600',
+},
 
-  /* ===== HEADER ===== */
+iconCircle: {
+  width: 28,
+  height: 28,
+  borderRadius: 14,
+  backgroundColor: '#000',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+// 🔥 MAGIC LINE
+connector: {
+  height: 12,
+  width: 20, // adjust this for spacing
+  backgroundColor: '#FDE68A',
+  marginHorizontal: -2, // removes gap between button & line
+  zIndex: 1,
+},
+
+
+
+  /* HEADER */
+  // header: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   paddingHorizontal: 20,
+  //   paddingTop: 10,
+  //   alignItems: 'center',
+  // },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  paddingHorizontal: 20,
+  // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 10,
+  alignItems: 'center',
+},
+walletNumber:{
+  color:"white"
+},
   menuIcon: {
     fontSize: 22,
     color: '#fff',
   },
-
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
-
   notificationIcon: {
     fontSize: 18,
     color: '#fff',
-    marginRight: 12,
   },
-
   profileIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#FACC15',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFD700',
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  /* ===== BALANCE CARD ===== */
+ 
+  /* BALANCE CARD */
   cardContainer: {
     paddingHorizontal: 20,
-    marginTop: 15,
+    marginTop: 20,
   },
-
-  cardWrapper: {
-    height: 160,
-    borderRadius: 22,
-    overflow: 'hidden',
-    backgroundColor: '#1F1F1F',
-  },
-
-  topRightCurve: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#FACC15',
-    top: -50,
-    right: -50,
-  },
-
-  bottomLeftCurve: {
-    position: 'absolute',
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#E5E5E5',
-    bottom: -40,
-    left: -40,
-  },
-
-  cardContent: {
-    flex: 1,
-    padding: 18,
-  },
-
+  card: {
+  backgroundColor: '#1C1C1E',
+  borderRadius: 20,
+  padding: 18,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+},
   balanceLabel: {
-    color: '#BDBDBD',
-    fontSize: 14,
+    color: '#aaa',
+    fontSize: 12,
   },
-
-  balanceTopRight: {
-    position: 'absolute',
-    top: 45,
-    right: 20,
-    alignItems: 'flex-end',
-  },
-
-  balanceAmount: {
-    color: '#fff',
-    fontSize: 26,
-    fontWeight: 'bold',
-    letterSpacing: 3,
-  },
-
+ balanceAmount: {
+  color: '#fff',
+  fontSize: 24,
+  fontWeight: 'bold',
+  letterSpacing: 4,
+},
   payoLabel: {
     color: '#22c55e',
-    fontWeight: '600',
-    marginTop: 2,
+    fontSize: 12,
   },
-
-  eyeIcon: {
-    position: 'absolute',
-    top: 18,
-    right: 18,
+ 
+  cardRight: {
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
   },
-
-  walletRow: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
+ 
+  /* WALLET */
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 12,
+    alignItems: 'center',
+  },
+  walletLabel: {
+    color: '#ccc',
+    fontSize: 12,
+  },
+  walletButton: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
-  walletText: {
+  walletButtonText: {
     color: '#fff',
-    marginRight: 8,
+    marginRight: 6,
+  },
+  walletArrow: {
+    color: '#fff',
+    fontSize: 16,
   },
 
-  arrowCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+   headerContent: {
+    paddingTop: 40,        // space from top (status bar)
+    paddingBottom: 40,     // space before tabs
+    paddingHorizontal: 20,
+    alignItems: 'center',  // center text horizontally
+  },
+
+  headerText: {
+    color: '#FFFFFF',
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',   // important for long text
+    lineHeight: 24,        // better readability
+  },
+  tabs: {
+    flexDirection: 'row',
+    backgroundColor: '#4B1FA7',
+    marginHorizontal: 20,
+    borderRadius: 12,
+    padding: 10,
+    justifyContent: 'space-between',
+  },
+
+  tab: {
+    color: '#cbb6ff',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    fontSize: 13,
+  },
+
+  activeTab: {
+    color: '#000',
     backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    fontSize: 13,
+    fontWeight: '600',
   },
 
-  /* ===== ACTION BUTTONS ===== */
-  actionsContainer: {
+  /* CONTENT AREA */
+  content: {
+    flex: 1,
     marginTop: 20,
     paddingHorizontal: 20,
   },
 
-  actions: {
-    flexDirection: 'row',
+ 
+  /* ACTION BUTTONS (FIXED LIKE FIGMA) */
+  actionsContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+//  actions: {
+//   flexDirection: 'row',
+//   justifyContent: 'space-between',
+// },
+
+actionButton: {
+  backgroundColor: '#FDE68A',
+  paddingVertical: 12,
+  paddingHorizontal: 22,
+  borderRadius: 30,
+  flexDirection: 'row',
+  alignItems: 'center',
+  elevation: 3,
+},
+  actionWrapper: {
     alignItems: 'center',
   },
-
-  actionBlock: {
-    flex: 1,
+  // actionButton: {
+  //   backgroundColor: '#FDE68A',
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 20,
+  //   borderRadius: 25,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  actionIcon: {
+    fontSize: 14,
+    marginRight: 6,
   },
-
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FDE68A',
-    paddingVertical: 12,
-    borderRadius: 30,
-  },
-
-  iconCircle: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  label: {
-    marginLeft: 6,
-    fontWeight: '600',
+  actionLabel: {
     color: '#000',
-    fontSize: 13,
+    fontSize: 12,
+    fontWeight: '600',
   },
-
-  connector: {
-    width: 18,
-    height: 12,
-    backgroundColor: '#FDE68A',
-  },
-
-  /* ===== STATS ===== */
+ 
+  /* INCOME / OUTCOME */
   statsContainer: {
-    marginTop: 22,
+    marginTop: 20,
     paddingHorizontal: 20,
   },
-
   statsCard: {
-    backgroundColor: '#1C1C1E',
-    borderRadius: 20,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-
+  backgroundColor: '#1C1C1E',
+  borderRadius: 16,
+  paddingVertical: 14,
+  paddingHorizontal: 20,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+},
   statItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 10,
   },
-
+  statIcon: {
+    fontSize: 20,
+  },
   statValue: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-
-  statLabel: {
-    color: '#aaa',
-  },
-
-  divider: {
-    width: 1,
-    height: 30,
-    backgroundColor: '#333',
-  },
-
-  /* ===== TRANSACTIONS ===== */
-  transactionsHeader: {
-    marginTop: 24,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  transactionsTitle: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
   },
-
-  viewAllText: {
-    color: '#FDE68A',
+  statLabel: {
+    color: '#aaa',
+    fontSize: 11,
   },
-
-  transactionsList: {
+  divider: {
+    width: 1,
+    backgroundColor: '#333',
+  },
+ 
+  /* TRANSACTIONS */
+  transactionsHeader: {
+    marginTop: 20,
     paddingHorizontal: 20,
-    marginTop: 14,
-    paddingBottom: 160,
-  },
-
-  transactionItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 18,
-    alignItems: 'center',
   },
-
+  transactionsTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  viewAllText: {
+    color: '#FDE68A',
+    fontSize: 12,
+  },
+ 
+  transactionsList: {
+    paddingHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 120,
+  },
+ 
+ transactionItem: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  marginBottom: 16,
+  alignItems: 'center',
+},
+ 
   transactionLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
+ 
   transactionAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
-
+ 
   transactionName: {
     color: '#fff',
+    fontSize: 13,
     fontWeight: '600',
   },
-
+ 
   transactionTime: {
     color: '#aaa',
-    fontSize: 11,
+    fontSize: 10,
   },
-
+ 
   transactionAmount: {
     fontWeight: 'bold',
+    fontSize: 14,
   },
-
+ 
   amountPositive: {
     color: '#22c55e',
   },
-
   amountNegative: {
     color: '#f87171',
   },
-
-  /* ===== BOTTOM NAV ===== */
-  bottomWrapper: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: 110,
-  },
-
-  bottomSvg: {
-    position: 'absolute',
-    bottom: 0,
-  },
-
-  bottomTabs: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 80,
-    paddingHorizontal: 20,
-  },
-
-  tabItem: {
+ 
+  /* BOTTOM NAV */
+ bottomNav: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  height: 85,
+  backgroundColor: '#2E1065',
+  borderTopLeftRadius: 25,
+  borderTopRightRadius: 25,
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+  paddingBottom: 10,
+},
+  navItem: {
     alignItems: 'center',
   },
-
-  tabLabel: {
-    fontSize: 11,
-    color: '#ccc',
-    marginTop: 2,
+ 
+  navIcon: {
+    fontSize: 20,
   },
-
-  activeTab: {
-    color: '#FF7FD8',
+ 
+  navLabel: {
+    fontSize: 10,
+    marginTop: 4,
   },
-
-  scanButton: {
-    position: 'absolute',
-    top: -30,
-    alignSelf: 'center',
-    width: 65,
-    height: 65,
-    borderRadius: 32,
-    backgroundColor: '#7C3AED',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 10,
+ 
+  navActive: {
+    color: '#F472B6',
   },
+ 
+  navInactive: {
+    color: '#aaa',
+  },
+ 
+  /* CENTER BUTTON */
+centerIcon: {
+  width: 65,
+  height: 65,
+  borderRadius: 35,
+  backgroundColor: '#7C3AED',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'absolute',
+  top: -30,
+  alignSelf: 'center',
+  elevation: 10,
+},
+// bottomNav: {
+//   position: 'absolute',   // 🔥 IMPORTANT
+//   bottom: 0,              // stick to bottom
+//   left: 0,
+//   right: 0,
 
+//   flexDirection: 'row',
+//   justifyContent: 'space-around',
+//   alignItems: 'center',
+
+//   height: 70,
+//   backgroundColor: '#111',
+
+//   borderTopWidth: 1,
+//   borderColor: '#333',
+
+//   paddingBottom: 10, // for safe area (Android)
+//   zIndex: 1000,      // keep above everything
+//   elevation: 10,     // Android shadow
+// },
 });

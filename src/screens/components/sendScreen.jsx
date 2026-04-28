@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
-import LinearGradient from "react-native-linear-gradient";
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, StatusBar } from 'react-native';
+
 
 import ScanQRScreen from '../ScanQRScreen';
 import EnterAddressScreen from '../HomeScreen/enterAddress';
-import EnterAmountScreen from '../HomeScreen/EnterAmountScreen';
+import styles from '../HomeScreen/homeStyling';
 import Header from './header';
-import SendTabs from './SendTabs';   // ✅ USING YOUR TABS
+import BottomNav from './bottomNav';
+import LinearGradient from "react-native-linear-gradient";
+import EnterAmountScreen from '../HomeScreen/EnterAmountScreen';
+import Recents from '../HomeScreen/Recents';
 
-export default function SendScreen({ navigation }) {
-  const [activeTab, setActiveTab] = useState('scan');
+
+
+export default function SendScreen({ navigation, route }) {
+  // const initialTab = route?.params?.tab || 'scan';
+ const [activeTab, setActiveTab] = useState('scan');
   const [selectedUser, setSelectedUser] = useState(null);
+
+  // const [activeTab, setActiveTab] = useState('scan');
+  // const [selectedUser, setSelectedUser] = useState(null);
+
+useEffect(() => {
+  if (route?.params?.tab) {
+    setActiveTab(route.params.tab);
+  }
+}, [route?.params?.tab]);
 
   const getHeaderTitle = () => {
     switch (activeTab) {
@@ -45,12 +60,15 @@ export default function SendScreen({ navigation }) {
           <EnterAmountScreen
             name={selectedUser?.name}
             address={selectedUser?.address}
-            navigation={navigation}
+            setActiveTab={setActiveTab}
+              navigation={navigation} 
           />
         );
 
       case 'recents':
-        return <Text style={{ color: 'white', textAlign: 'center' }}>Recents</Text>;
+        return 
+        // <Text style={{ color: 'white' }}>Recents</Text>;
+        <Recents/>
 
       default:
         return null;
@@ -58,30 +76,64 @@ export default function SendScreen({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={["#6A00F4", "#1A0033"]} style={{ flex: 1 }}>
-
-      {/* HEADER */}
+    <LinearGradient colors={["#6A00F4", "#1A0033"]} 
+    // style={{ flex: 1 }}
+    style={{
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  }}
+    >
       <Header />
 
-      {/* TITLE */}
-      {activeTab !== 'amount' && (
-        <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
-          <Text style={{ color: '#fff', fontSize: 16 }}>
-            {getHeaderTitle()}
-          </Text>
-        </View>
-      )}
+     {activeTab !== 'amount' && (
+  <>
+    <View style={styles.headerContent}>
+      <Text style={styles.headerText}>{getHeaderTitle()}</Text>
+    </View>
 
-      {/* ✅ TABS (FIXED) */}
-      {activeTab !== 'amount' && (
-        <SendTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      )}
+    <View style={styles.tabs}>
+      <TouchableOpacity onPress={() => setActiveTab('scan')}>
+        <Text style={activeTab === 'scan' ? styles.activeTab : styles.tab}>
+          Scan QR
+        </Text>
+      </TouchableOpacity>
 
-      {/* CONTENT */}
-      <View style={{ flex: 1, marginTop: 30 }}>
-        {renderContent()}
-      </View>
+      <TouchableOpacity onPress={() => setActiveTab('address')}>
+        <Text style={activeTab === 'address' ? styles.activeTab : styles.tab}>
+          Enter Address
+        </Text>
+      </TouchableOpacity>
 
+      <TouchableOpacity onPress={() => setActiveTab('recents')}>
+        <Text style={activeTab === 'recents' ? styles.activeTab : styles.tab}>
+          Recents
+        </Text>
+      </TouchableOpacity>
+    </View>
+  </>
+)}
+
+      <View style={styles.content}>{renderContent()}</View>
+
+      {/* <BottomNav /> */}
+      {/* <BottomNav navigation={navigation} currentRoute="Scan" /> */}
+
+      <KeyboardAvoidingView
+  style={{ flex: 1 }}
+  behavior={Platform.OS === 'ios' ? 'padding' : undefined} // 👈 KEY FIX
+>
+  <View style={{ flex: 1 }}>
+    
+    {/* Your Screen Content */}
+
+    <BottomNav
+      navigation={navigation}
+      // currentRoute="Home"
+      currentRoute="Scan"
+    />
+    
+  </View>
+</KeyboardAvoidingView>
     </LinearGradient>
   );
 }

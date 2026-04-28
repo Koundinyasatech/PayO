@@ -3,7 +3,7 @@ name: Frontend APK Pipeline
 on:
   push:
     branches:
-      - Updated_API
+      - Frontend_UI
 
 jobs:
   build-apk:

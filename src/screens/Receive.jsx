@@ -126,17 +126,17 @@ const Receive = () => {
       {/* ================= BUTTONS ================= */}
       <View style={styles.row}>
         <TouchableOpacity style={styles.button} onPress={handleCopy}>
-          <Text style={styles.buttonText}>Copy Address</Text>
+          <Text style={styles.buttonText}>Copy</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={handleShare}>
-          <Text style={styles.buttonText}>Share Address</Text>
+          <Text style={styles.buttonText}>Share</Text>
         </TouchableOpacity>
       </View>
 
       {/* ================= TIMER ================= */}
       <Text style={styles.timer}>
-        {loading ? "Generating QR..." : `  QR expires in ${formatTime()} sec`}
+        {loading ? "Generating QR..." : `Expires in ${formatTime()}`}
       </Text>
 
       {/* ================= REGENERATE ================= */}

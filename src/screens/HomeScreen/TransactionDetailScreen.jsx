@@ -12,9 +12,9 @@ import api from "../../api/axios";
 import styles from "./TransactionDetailStyles";
 import { Share } from "react-native";
 
-export default function TransactionDetailScreen() {
+export default function TransactionDetailScreen({navigation}) {
     const route = useRoute();
-    const navigation = useNavigation();
+    // const navigation = useNavigation();
 
 
     // ✅ get transactionId from previous screen
@@ -22,24 +22,27 @@ export default function TransactionDetailScreen() {
 
     const [transaction, setTransaction] = useState(null);
     const [loading, setLoading] = useState(true);
+    console.log(transaction_id,"check8")
 
     // ✅ API CALL
-    useEffect(() => {
-        fetchTransaction();
-    }, []);
-
+   useEffect(() => {
     const fetchTransaction = async () => {
         try {
             const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
-            // your backend returns { status, transaction }
             setTransaction(res.data.transaction);
-
         } catch (err) {
             console.log("Transaction API error:", err?.response || err.message);
         } finally {
             setLoading(false);
         }
     };
+
+    if (transaction_id) {
+        fetchTransaction();
+    }
+}, [transaction_id]);
+
+   
 
     const handleSendAgain = () => {
         navigation.navigate("Send", {

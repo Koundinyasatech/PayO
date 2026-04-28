@@ -22,7 +22,7 @@ export default StyleSheet.create({
  
   header: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '700',
   },
  

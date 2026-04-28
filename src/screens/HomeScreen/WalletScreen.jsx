@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../api/axios';
 import styles from './WalletScreenStyles';
+import Header from '../components/header';
 
 export default function WalletScreen() {
   const [wallet, setWallet] = useState(null);
@@ -61,12 +63,12 @@ export default function WalletScreen() {
   }
 
   return (
-    <LinearGradient colors={['#7B2CFF', '#1C0033']} style={{ flex: 1 }}>
+    <LinearGradient colors={['#7B2CFF', '#1C0033']} style={{ flex: 1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, }}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView showsVerticalScrollIndicator={false}>
 
           {/* HEADER */}
-          <View style={styles.header}>
+          {/* <View style={styles.header}>
             <View>
               <Text style={styles.walletId}>Wallet ID</Text>
               <Text style={styles.walletNumber}>{wallet?.id}</Text>
@@ -76,7 +78,11 @@ export default function WalletScreen() {
               <Icon name="bell" size={20} color="#fff" />
               <View style={styles.avatar} />
             </View>
-          </View>
+          </View> */}
+<Header type="wallet" title="My Wallet" 
+id={wallet?.id}
+// id="523456"
+ />
 
           {/* WALLET CARD */}
           <View style={styles.card}>
