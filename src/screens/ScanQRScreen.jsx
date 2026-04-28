@@ -60,21 +60,42 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
   // }, [route.params]);
 
   // 📷 Handle QR
-  const handleQR = async (value) => {
-    if (scannedData) return;
+  // const handleQR = async (value) => {
+  //   if (scannedData) return;
 
-    try {
-      const res = await api.post('api/wallet/scan-qr', { qrData: value });
+  //   try {
+  //     const res = await api.post('api/wallet/scan-qr', { qrData: value });
 
-      setScannedData({
-        name: res.data.name,
-        address: res.data.walletAddress,
-      });
-    } catch {
-      alert('Invalid QR');
-    }
-  };
+  //     setScannedData({
+  //       name: res.data.name,
+  //       address: res.data.walletAddress,
+  //     });
+  //   } catch {
+  //     alert('Invalid QR');
+  //   }
+  // };
   
+const handleQR = async (value) => {
+  if (scannedData) return;
+
+  try {
+    const res = await api.post('api/wallet/scan-qr', { qrData: value });
+
+    const user = {
+      name: res.data.name,
+      address: res.data.walletAddress,
+    };
+
+    setScannedData(user);
+
+    // ✅ directly navigate to amount screen
+    setSelectedUser(user);
+    setActiveTab('amount');
+
+  } catch (err) {
+    alert('Invalid QR');
+  }
+};
 
   // 🔍 Scanner
   const codeScanner = useCodeScanner({
@@ -164,7 +185,7 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity> */}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
   style={styles.continueBtn}
   onPress={() => {
     setSelectedUser({
@@ -176,7 +197,7 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
   }}
 >
   <Text style={styles.continueText}>Continue</Text>
-</TouchableOpacity>
+</TouchableOpacity> */}
         </>
       )}
 
@@ -331,7 +352,6 @@ const styles = StyleSheet.create({
   },
 
   scanText: { color: '#ccc', marginTop: 10 },
-
   success: { color: '#00FFAA', marginTop: 15 },
 
   continueBtn: {
