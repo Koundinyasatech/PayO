@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   Alert,
   ScrollView,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './ReferEarnStyles';
@@ -39,7 +41,7 @@ export default function ReferEarn({ navigation }) {
   return (
     <LinearGradient
       colors={['#1e0a3c', '#5b21b6']}
-      style={{ flex: 1 }}
+      style={{ flex: 1,paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, }}
     >
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>

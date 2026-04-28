@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import styles from './UserProfileStyling';
  
-export default function UserProfile({ navigate }) {
+export default function UserProfile({ navigation }) {
  
   // ✅ HANDLE BACK BUTTON (ANDROID + GESTURE)
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function UserProfile({ navigate }) {
  
       {/* HEADER */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigate('home')}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>←</Text>
         </TouchableOpacity>
  

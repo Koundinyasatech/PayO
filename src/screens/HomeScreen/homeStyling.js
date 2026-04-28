@@ -95,60 +95,157 @@ walletNumber:{
   },
  
   /* BALANCE CARD */
-  cardContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-  },
-  card: {
+//   cardContainer: {
+//     paddingHorizontal: 20,
+//     marginTop: 20,
+//   },
+//   card: {
+//   backgroundColor: '#1C1C1E',
+//   borderRadius: 20,
+//   padding: 18,
+//   flexDirection: 'row',
+//   justifyContent: 'space-between',
+// },
+//   balanceLabel: {
+//     color: '#aaa',
+//     fontSize: 12,
+//   },
+//  balanceAmount: {
+//   color: '#fff',
+//   fontSize: 24,
+//   fontWeight: 'bold',
+//   letterSpacing: 4,
+// },
+//   payoLabel: {
+//     color: '#22c55e',
+//     fontSize: 12,
+//   },
+ 
+//   cardRight: {
+//     alignItems: 'flex-end',
+//     justifyContent: 'space-between',
+//   },
+ 
+//   /* WALLET */
+//   cardFooter: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginTop: 12,
+//     alignItems: 'center',
+//   },
+//   walletLabel: {
+//     color: '#ccc',
+//     fontSize: 12,
+//   },
+//   walletButton: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   walletButtonText: {
+//     color: '#fff',
+//     marginRight: 6,
+//   },
+//   walletArrow: {
+//     color: '#fff',
+//     fontSize: 16,
+//   },
+
+cardContainer: {
+  paddingHorizontal: 20,
+  marginTop: 20,
+    marginBottom: 10,
+},
+
+
+
+card: {
   backgroundColor: '#1C1C1E',
-  borderRadius: 20,
+  borderRadius: 18,
   padding: 18,
   flexDirection: 'row',
   justifyContent: 'space-between',
+  overflow: 'hidden',
+  height: 130,
 },
-  balanceLabel: {
-    color: '#aaa',
-    fontSize: 12,
-  },
- balanceAmount: {
+
+balanceLabel: {
+  color: '#aaa',
+  fontSize: 12,
+  marginBottom: 6,
+},
+
+balanceRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+balanceAmount: {
   color: '#fff',
-  fontSize: 24,
+  fontSize: 22,
   fontWeight: 'bold',
   letterSpacing: 4,
 },
-  payoLabel: {
-    color: '#22c55e',
-    fontSize: 12,
-  },
- 
-  cardRight: {
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-  },
- 
-  /* WALLET */
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-    alignItems: 'center',
-  },
-  walletLabel: {
-    color: '#ccc',
-    fontSize: 12,
-  },
-  walletButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  walletButtonText: {
-    color: '#fff',
-    marginRight: 6,
-  },
-  walletArrow: {
-    color: '#fff',
-    fontSize: 16,
-  },
+
+payoLabel: {
+  color: '#22c55e',
+  fontSize: 12,
+  marginLeft: 6,
+},
+
+cardRight: {
+  justifyContent: 'space-between',
+  alignItems: 'flex-end',
+},
+
+walletRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+walletText: {
+  color: '#ccc',
+  marginRight: 8,
+},
+
+arrowCircle: {
+  width: 26,
+  height: 26,
+  borderRadius: 13,
+  backgroundColor: '#fff',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+/* Decorative shapes */
+
+topRightCurve: {
+  position: 'absolute',
+  top: -20,
+  right: -20,
+  width: 80,
+  height: 80,
+  borderRadius: 40,
+  backgroundColor: '#F59E0B',
+},
+
+bottomLeftCurve: {
+  position: 'absolute',
+  bottom: -25,
+  left: -25,
+  width: 80,
+  height: 80,
+  borderRadius: 40,
+  backgroundColor: '#E5E7EB',
+},
+
+cardFooter: {
+  marginTop: 10,
+},
+
+walletLabel: {
+  color: '#aaa',
+  fontSize: 12,
+},
 
    headerContent: {
     paddingTop: 40,        // space from top (status bar)
@@ -204,10 +301,7 @@ walletNumber:{
     marginTop: 20,
     paddingHorizontal: 20,
   },
-//  actions: {
-//   flexDirection: 'row',
-//   justifyContent: 'space-between',
-// },
+
 
 actionButton: {
   backgroundColor: '#FDE68A',
@@ -221,14 +315,7 @@ actionButton: {
   actionWrapper: {
     alignItems: 'center',
   },
-  // actionButton: {
-  //   backgroundColor: '#FDE68A',
-  //   paddingVertical: 10,
-  //   paddingHorizontal: 20,
-  //   borderRadius: 25,
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  // },
+  
   actionIcon: {
     fontSize: 14,
     marginRight: 6,
@@ -239,7 +326,7 @@ actionButton: {
     fontWeight: '600',
   },
  
-  /* INCOME / OUTCOME */
+
   statsContainer: {
     marginTop: 20,
     paddingHorizontal: 20,
@@ -390,24 +477,5 @@ centerIcon: {
   alignSelf: 'center',
   elevation: 10,
 },
-// bottomNav: {
-//   position: 'absolute',   // 🔥 IMPORTANT
-//   bottom: 0,              // stick to bottom
-//   left: 0,
-//   right: 0,
 
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-//   alignItems: 'center',
-
-//   height: 70,
-//   backgroundColor: '#111',
-
-//   borderTopWidth: 1,
-//   borderColor: '#333',
-
-//   paddingBottom: 10, // for safe area (Android)
-//   zIndex: 1000,      // keep above everything
-//   elevation: 10,     // Android shadow
-// },
 });
