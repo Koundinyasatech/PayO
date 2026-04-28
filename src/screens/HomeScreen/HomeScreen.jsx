@@ -8,6 +8,7 @@ import Header from '../components/header';
 import { SafeAreaView } from 'react-native';
 // import Header from '../components/header';
 // import BottomNav from '../components/bottomNav';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function HomeScreen({ navigation }) {
   const [balance, setBalance] = useState(20000);
@@ -98,13 +99,40 @@ export default function HomeScreen({ navigation }) {
 
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={styles.cardContainer}>
-          <View style={styles.card}>
-            <View style={styles.cardLeft}>
+          <View style={styles.cardWrapper}>
+
+            <View style={styles.topRightCurve} />
+            <View style={styles.bottomLeftCurve} />
+
+            <View style={styles.cardContent}>
+
               <Text style={styles.balanceLabel}>Total Balance</Text>
-              <Text style={styles.balanceAmount}>
-                {balanceVisible ? `P ${avaliable}` : '* * * * * *'}
-              </Text>
-              <Text style={styles.payoLabel}>PAYO</Text>
+
+              <View style={styles.balanceTopRight}>
+                <Text style={styles.balanceAmount}>
+                  {balanceVisible ? `₹ ${balance}` : '* * * * *'}
+                </Text>
+                <Text style={styles.payoLabel}>PAYO</Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setBalanceVisible(!balanceVisible)}
+              >
+                <Icon
+                  name={balanceVisible ? 'eye-off' : 'eye'}
+                  size={18}
+                  color="#fff"
+                />
+              </TouchableOpacity>
+
+              <View style={styles.walletRow}>
+                <Text style={styles.walletText}>My Wallet</Text>
+                <View style={styles.arrowCircle}>
+                  <Icon name="arrow-right" size={16} color="#000" />
+                </View>
+              </View>
+
             </View>
 
             <View style={styles.cardRight}>
@@ -141,6 +169,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↗ */}
+                   <Icon name="arrow-up-right" size={14} color="#fff" />
                   
                 </Text>
               </View>
@@ -152,11 +181,12 @@ export default function HomeScreen({ navigation }) {
 
            
             <TouchableOpacity style={styles.button}
-              onPress={() => navigation.navigate('Receive')}
+              onPress={() => navigation.navigate('ReceiveScreen')}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↙ */}
+                   <Icon name="arrow-down" size={14} color="#fff" />
                 </Text>
               </View>
               <Text style={styles.label}>Receive</Text>
@@ -165,15 +195,18 @@ export default function HomeScreen({ navigation }) {
          
             <View style={styles.connector} />
 
-         
-            <TouchableOpacity style={styles.button}>
-              <View style={styles.iconCircle}>
-                <Text style={{ color: '#fff' }}>
-                  {/* ↗ */}
-                </Text>
-              </View>
-              <Text style={styles.label}>Refer</Text>
-            </TouchableOpacity>
+            {/* REFER */}
+            <View style={styles.actionBlock}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("ReferEarn")}
+              >
+                <View style={styles.iconCircle}>
+                  <Icon name="arrow-up-right" size={14} color="#fff" />
+                </View>
+                <Text style={styles.label}>Refer</Text>
+              </TouchableOpacity>
+            </View>
 
           </View>
 

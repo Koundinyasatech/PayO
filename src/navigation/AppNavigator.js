@@ -19,6 +19,7 @@ import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
 import ReferEarn from '../screens/HomeScreen/ReferEarn';
+import TransactionDetailScreen from '../screens/HomeScreen/TransactionDetailScreen'
 
 /* ✅ IMPORT BOTTOM TABS */
 /* ✅ IMPORT BOTTOM TABS */
@@ -80,6 +81,8 @@ export default function AppNavigator() {
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
          <Stack.Screen name="ScanButton" component={ScanButtonQRScreen} />
+            <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

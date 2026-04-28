@@ -25,7 +25,7 @@ export default function WalletScreen() {
   const fetchWallet = async () => {
     try {
       // ✅ CHANGE API IF YOUR ROUTE IS DIFFERENT
-      const res = await api.get('/api/wallet/dashboard');
+      const res = await api.get('/api/wallet/getwalletdashboard');
 
       /*
         Expected response example:
