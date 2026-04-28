@@ -4,10 +4,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 import Svg, { Path } from 'react-native-svg';
 
+/* SCREENS */
 import HomeScreen from '../HomeScreen/HomeScreen';
 import TransactionHistory from "../HomeScreen/TransactionHistory";
 import WalletScreen from '../HomeScreen/WalletScreen';
 import SendScreen from './sendScreen';
+import TransactionDetailScreen from '../HomeScreen/TransactionDetailScreen';
+import Receive from '../Receive';
+import ReferEarn from '../HomeScreen/ReferEarn';
 
 import styles from '../HomeScreen/homeStyling';
 
@@ -17,7 +21,7 @@ function CustomTabBar({ state, navigation }) {
   return (
     <View style={styles.bottomWrapper}>
 
-      {/* CURVE */}
+      {/* CURVED BACKGROUND */}
       <Svg width="100%" height={110} viewBox="0 0 400 110" style={styles.bottomSvg}>
         <Path
           d="M0 40 Q200 -30 400 40 L400 110 L0 110 Z"
@@ -25,33 +29,34 @@ function CustomTabBar({ state, navigation }) {
         />
       </Svg>
 
-      {/* TABS */}
+      {/* TAB ITEMS */}
       <View style={styles.bottomTabs}>
 
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.tabItem}>
           <Icon name="home" size={22} color={state.index === 0 ? '#FF7FD8' : '#ccc'} />
           <Text style={[styles.tabLabel, state.index === 0 && styles.activeTab]}>
             Home
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Wallets')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Wallets')} style={styles.tabItem}>
           <Icon name="credit-card" size={22} color={state.index === 1 ? '#FF7FD8' : '#ccc'} />
           <Text style={[styles.tabLabel, state.index === 1 && styles.activeTab]}>
             Wallets
           </Text>
         </TouchableOpacity>
 
+        {/* SPACE FOR CENTER BUTTON */}
         <View style={{ width: 70 }} />
 
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Transactions')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Transactions')} style={styles.tabItem}>
           <Icon name="bar-chart-2" size={22} color={state.index === 3 ? '#FF7FD8' : '#ccc'} />
           <Text style={[styles.tabLabel, state.index === 3 && styles.activeTab]}>
             Transactions
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Profile')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.tabItem}>
           <Icon name="settings" size={22} color={state.index === 4 ? '#FF7FD8' : '#ccc'} />
           <Text style={[styles.tabLabel, state.index === 4 && styles.activeTab]}>
             Profile
@@ -60,7 +65,7 @@ function CustomTabBar({ state, navigation }) {
 
       </View>
 
-      {/* FLOAT BUTTON */}
+      {/* FLOATING BUTTON */}
       <View style={styles.scanButton}>
         <TouchableOpacity onPress={() => navigation.navigate('Scan')}>
           <Icon name="maximize" size={26} color="#fff" />
@@ -82,6 +87,26 @@ export default function BottomTabs() {
       <Tab.Screen name="Scan" component={SendScreen} />
       <Tab.Screen name="Transactions" component={TransactionHistory} />
       <Tab.Screen name="Profile" component={HomeScreen} />
+
+      {/* ✅ IMPORTANT: Add Detail Screen INSIDE Tabs */}
+      <Tab.Screen
+        name="TransactionDetail"
+        component={TransactionDetailScreen}
+        options={{
+          tabBarButton: () => null, // hide from tab bar
+        }}
+      />
+      <Tab.Screen
+        name="ReceiveScreen"
+        component={Receive}
+        options={{ tabBarButton: () => null }}
+      />
+
+      <Tab.Screen
+        name="ReferEarn"
+        component={ReferEarn}
+        options={{ tabBarButton: () => null }}
+      />
     </Tab.Navigator>
   );
 }

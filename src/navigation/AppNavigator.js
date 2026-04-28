@@ -23,11 +23,12 @@ import BottomTabs from '../screens/components/BottomTabs';
 import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
-import ReferEarn from '../screens/HomeScreen/ReferEarn';
+
 import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
-import Receive from '../screens/Receive';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -58,11 +59,12 @@ export default function AppNavigator() {
         <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="review" component={ReviewTransferScreen} />
-        <Stack.Screen name="ReferEarn" component={ReferEarn} />
+        
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
-        <Stack.Screen name="Receive" component={Receive} />
+        
+        
 
       </Stack.Navigator>
     </NavigationContainer>
