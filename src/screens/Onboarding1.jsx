@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 
 
 
@@ -41,7 +43,8 @@ export default function Onboarding1({ navigation }) {
       style={styles.nextBtn}
         onPress={() => navigation.navigate('Onboarding2')}
       >
-        <Text style={styles.nextBtnText}>→</Text>
+        {/* <Text style={styles.nextBtnText}>→</Text> */}
+        <Ionicons name="arrow-forward" size={30} color="#6C2BD9" />
       </TouchableOpacity>
       </View>
 
@@ -177,10 +180,5 @@ skipBtn: {
     shadowRadius: 8,
     elevation: 5,
   },
-  nextBtnText: {
-    paddingBottom: 0,
-    fontSize: 45,
-    color: '#6C2BD9',
-    fontWeight: '900',
-  },
+
 });

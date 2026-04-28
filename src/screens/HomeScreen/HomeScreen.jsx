@@ -1,16 +1,17 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
 import styles from './homeStyling';
 import api, { getToken } from '../../api/axios';
 import Header from '../components/header';
 import { SafeAreaView } from 'react-native';
 // import Header from '../components/header';
 // import BottomNav from '../components/bottomNav';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function HomeScreen({ navigation }) {
-  const [balance, setBalance] = useState(20000);
+  const [balance, setBalance] = useState(0);
   const [income] = useState(20000);
   const [outcome] = useState(17000);
   const [balanceVisible, setBalanceVisible] = useState(false);
@@ -97,14 +98,41 @@ export default function HomeScreen({ navigation }) {
       <Header />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        <View style={styles.cardContainer}>
-          <View style={styles.card}>
-            <View style={styles.cardLeft}>
+        {/* <View style={styles.cardContainer}>
+          <View style={styles.cardWrapper}>
+
+            <View style={styles.topRightCurve} />
+            <View style={styles.bottomLeftCurve} />
+
+            <View style={styles.cardContent}>
+
               <Text style={styles.balanceLabel}>Total Balance</Text>
-              <Text style={styles.balanceAmount}>
-                {balanceVisible ? `P ${avaliable}` : '* * * * * *'}
-              </Text>
-              <Text style={styles.payoLabel}>PAYO</Text>
+
+              <View style={styles.balanceTopRight}>
+                <Text style={styles.balanceAmount}>
+                  {balanceVisible ? `₹ ${balance}` : '* * * * *'}
+                </Text>
+                <Text style={styles.payoLabel}>PAYO</Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setBalanceVisible(!balanceVisible)}
+              >
+                <Icon
+                  name={balanceVisible ? 'eye-off' : 'eye'}
+                  size={18}
+                  color="#fff"
+                />
+              </TouchableOpacity>
+
+              <View style={styles.walletRow}>
+                <Text style={styles.walletText}>My Wallet</Text>
+                <View style={styles.arrowCircle}>
+                  <Icon name="arrow-right" size={16} color="#000" />
+                </View>
+              </View>
+
             </View>
 
             <View style={styles.cardRight}>
@@ -115,33 +143,81 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
 
-          {/* WALLET BUTTON */}
+       
           <View style={styles.cardFooter}>
             <Text style={styles.walletLabel}>My Wallets</Text>
           <TouchableOpacity onPress={() => setShowAll(!showAll)}>
-  <Text style={styles.viewAllText}>
-    {showAll ? "Show Less ›" : "View All ›"}
-  </Text>
+
 </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
-        {/* ACTION BUTTONS */}
+<View style={styles.cardContainer}>
+  <View style={styles.card}>
+
+    {/* Decorative Shapes */}
+    <View style={styles.topRightCurve} />
+    <View style={styles.bottomLeftCurve} />
+
+    {/* LEFT CONTENT */}
+    <View>
+      <Text style={styles.balanceLabel}>Total Balance</Text>
+
+      <View style={styles.balanceRow}>
+        <Text style={styles.balanceAmount}>
+          {/* {balanceVisible ? `₹ ${balance}` : '* * * * *'} */}
+          {balanceVisible ? `P ${avaliable}` : '* * * * *'}
+        </Text>
+        <Text style={styles.payoLabel}> PAYO</Text>
+      </View>
+    </View>
+
+    {/* RIGHT CONTENT */}
+    <View style={styles.cardRight}>
+
+      {/* Eye Icon */}
+      <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
+        <Icon
+          name={balanceVisible ? "eye-off" : "eye"}
+          size={18}
+          color="#fff"
+        />
+      </TouchableOpacity>
+
+      {/* Wallet Row */}
+      <TouchableOpacity style={styles.walletRow}>
+        <Text style={styles.walletText}>My Wallet</Text>
+
+        <View style={styles.arrowCircle}>
+          <Icon name="arrow-right" size={14} color="#000" />
+        </View>
+      </TouchableOpacity>
+
+    </View>
+  </View>
+
+  {/* Footer */}
+  {/* <View style={styles.cardFooter}>
+    <Text style={styles.walletLabel}>My Wallets</Text>
+  </View> */}
+</View>
+     
         <View style={styles.actionsContainer}>
 
 
 
           <View style={styles.actions}>
 
-            {/* SEND */}
+           
             <TouchableOpacity style={styles.button}
-              // onPress={() => navigation.navigate('SendScreen')}
-            //  onPress={() => navigation.navigate('ScanQR')}
+            
               onPress={() => navigation.navigate('SendScreen', { tab: 'address' })}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↗ */}
+                   <Icon name="arrow-up-right" size={14} color="#fff" />
+                  
                 </Text>
               </View>
               <Text style={styles.label}>Send</Text>
@@ -157,6 +233,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↙ */}
+                   <Icon name="arrow-down" size={14} color="#fff" />
                 </Text>
               </View>
               <Text style={styles.label}>Receive</Text>
@@ -165,15 +242,18 @@ export default function HomeScreen({ navigation }) {
          
             <View style={styles.connector} />
 
-         
-            <TouchableOpacity style={styles.button}>
-              <View style={styles.iconCircle}>
-                <Text style={{ color: '#fff' }}>
-                  {/* ↗ */}
-                </Text>
-              </View>
-              <Text style={styles.label}>Refer</Text>
-            </TouchableOpacity>
+            {/* REFER */}
+            <View style={styles.actionBlock}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("ReferEarn")}
+              >
+                <View style={styles.iconCircle}>
+                  <Icon name="arrow-up-right" size={14} color="#fff" />
+                </View>
+                <Text style={styles.label}>Refer</Text>
+              </TouchableOpacity>
+            </View>
 
           </View>
 
@@ -260,8 +340,10 @@ export default function HomeScreen({ navigation }) {
        
 
       </ScrollView>
+      
 
          </View>
+         
   //  </SafeAreaView>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,152 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import Clipboard from "@react-native-clipboard/clipboard";
 import api from "../api/axios";
+import BottomNav from "./components/bottomNav";
 
-const Receive = () => {
+// const Receive = () => {
+//   const [qr, setQr] = useState(null);
+//   const [address, setAddress] = useState("");
+//   const [timer, setTimer] = useState(0);
+//   const [loading, setLoading] = useState(true);
+
+//   // ================= FETCH QR =================
+//   const fetchQr = async () => {
+//     try {
+//       setLoading(true);
+
+//       console.log("Calling API...");
+
+//       // ✅ Backend uses GET
+//       const res = await api.get("api/wallet/generate-address");
+//       const data = res.data;
+
+//       console.log("API RESPONSE:", data);
+
+//       // ✅ QR FIX (correct key: qr)
+//       const qrImage = data.qr?.startsWith("data:image")
+//         ? data.qr
+//         : `data:image/png;base64,${data.qr}`;
+
+//       setQr(qrImage);
+
+//       // ✅ ADDRESS FIX
+//       setAddress(data.address || "No Address");
+
+//       // ✅ TIMER FIX (expiresIn in seconds)
+//       setTimer(data.expiresIn || 900);
+
+//       setLoading(false);
+//     } catch (err) {
+//       console.log("QR ERROR:", err.response?.data || err.message);
+//       setQr(null);
+//       setAddress("");
+//       setTimer(0);
+//       setLoading(false);
+//     }
+//   };
+
+//   // ================= INITIAL LOAD =================
+//   useEffect(() => {
+//     fetchQr();
+//   }, []);
+
+//   // ================= TIMER =================
+//   useEffect(() => {
+//     if (timer <= 0) return;
+
+//     const interval = setInterval(() => {
+//       setTimer((prev) => prev - 1);
+//     }, 1000);
+
+//     return () => clearInterval(interval);
+//   }, [timer]);
+
+//   // ================= AUTO REFRESH =================
+//   useEffect(() => {
+//     if (timer === 0 && !loading) {
+//       fetchQr();
+//     }
+//   }, [timer]);
+
+//   // ================= COPY =================
+//   const handleCopy = () => {
+//     Clipboard.setString(address);
+//   };
+
+//   // ================= SHARE =================
+//   const handleShare = async () => {
+//     try {
+//       await Share.share({
+//         message: address,
+//       });
+//     } catch (e) {
+//       console.log("Share error:", e);
+//     }
+//   };
+
+//   // ================= FORMAT TIMER =================
+//   const formatTime = () => {
+//     const m = Math.floor(timer / 60);
+//     const s = timer % 60;
+//     return `${m}:${s < 10 ? "0" : ""}${s}`;
+//   };
+
+//   return (
+//     <LinearGradient colors={["#6A0DAD", "#2E0854"]} style={styles.container}>
+//       <Text style={styles.title}>Receive Payo</Text>
+
+//       {/* ================= QR ================= */}
+//       <View style={styles.qrContainer}>
+//         {loading ? (
+//           <ActivityIndicator size="large" color="#6A0DAD" />
+//         ) : qr ? (
+//           <Image source={{ uri: qr }} style={styles.qrImage} />
+//         ) : (
+//           <Text style={styles.errorText}>Failed to load QR</Text>
+//         )}
+//       </View>
+
+//       {/* ================= ADDRESS ================= */}
+//       <View style={styles.addressBox}>
+//         <Text style={styles.label}>WALLET ADDRESS</Text>
+//         <Text style={styles.address}>
+//           {address || (loading ? "Loading..." : "Unavailable")}
+//         </Text>
+//       </View>
+
+//       {/* ================= BUTTONS ================= */}
+//       <View style={styles.row}>
+//         <TouchableOpacity style={styles.button} onPress={handleCopy}>
+//           <Text style={styles.buttonText}>Copy</Text>
+//         </TouchableOpacity>
+
+//         <TouchableOpacity style={styles.button} onPress={handleShare}>
+//           <Text style={styles.buttonText}>Share</Text>
+//         </TouchableOpacity>
+//       </View>
+
+//       {/* ================= TIMER ================= */}
+//       <Text style={styles.timer}>
+//         {loading ? "Generating QR..." : `Expires in ${formatTime()}`}
+//       </Text>
+
+//       {/* ================= REGENERATE ================= */}
+//       <TouchableOpacity onPress={fetchQr} disabled={loading}>
+//         <Text style={styles.regenerate}>
+//           {loading ? "Generating..." : "Regenerate QR"}
+//         </Text>
+//       </TouchableOpacity>
+//     </LinearGradient>
+//   );
+// };
+
+const Receive = ({navigation}) => {
   const [qr, setQr] = useState(null);
   const [address, setAddress] = useState("");
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(900); // 15 minutes
   const [loading, setLoading] = useState(true);
+
+  const intervalRef = useRef(null);
 
   // ================= FETCH QR =================
   const fetchQr = async () => {
@@ -25,24 +165,20 @@ const Receive = () => {
 
       console.log("Calling API...");
 
-      // ✅ Backend uses GET
       const res = await api.get("api/wallet/generate-address");
       const data = res.data;
 
       console.log("API RESPONSE:", data);
 
-      // ✅ QR FIX (correct key: qr)
       const qrImage = data.qr?.startsWith("data:image")
         ? data.qr
         : `data:image/png;base64,${data.qr}`;
 
       setQr(qrImage);
-
-      // ✅ ADDRESS FIX
       setAddress(data.address || "No Address");
 
-      // ✅ TIMER FIX (expiresIn in seconds)
-      setTimer(data.expiresIn || 900);
+      // reset timer to 15 min
+      setTimer(900);
 
       setLoading(false);
     } catch (err) {
@@ -61,16 +197,20 @@ const Receive = () => {
 
   // ================= TIMER =================
   useEffect(() => {
-    if (timer <= 0) return;
-
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
+    intervalRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [timer]);
+    return () => clearInterval(intervalRef.current);
+  }, []);
 
-  // ================= AUTO REFRESH =================
+  // ================= AUTO REFRESH WHEN TIMER ENDS =================
   useEffect(() => {
     if (timer === 0 && !loading) {
       fetchQr();
@@ -145,6 +285,11 @@ const Receive = () => {
           {loading ? "Generating..." : "Regenerate QR"}
         </Text>
       </TouchableOpacity>
+      <BottomNav
+            navigation={navigation}
+            // currentRoute="Home"
+            currentRoute="Scan"
+          />
     </LinearGradient>
   );
 };

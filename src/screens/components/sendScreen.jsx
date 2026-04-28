@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, StatusBar } from 'react-native';
 
 
 import ScanQRScreen from '../ScanQRScreen';
@@ -9,6 +9,7 @@ import Header from './header';
 import BottomNav from './bottomNav';
 import LinearGradient from "react-native-linear-gradient";
 import EnterAmountScreen from '../HomeScreen/EnterAmountScreen';
+import Recents from '../HomeScreen/Recents';
 
 
 
@@ -65,7 +66,9 @@ useEffect(() => {
         );
 
       case 'recents':
-        return <Text style={{ color: 'white' }}>Recents</Text>;
+        return 
+        // <Text style={{ color: 'white' }}>Recents</Text>;
+        <Recents/>
 
       default:
         return null;
@@ -73,7 +76,13 @@ useEffect(() => {
   };
 
   return (
-    <LinearGradient colors={["#6A00F4", "#1A0033"]} style={{ flex: 1 }}>
+    <LinearGradient colors={["#6A00F4", "#1A0033"]} 
+    // style={{ flex: 1 }}
+    style={{
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  }}
+    >
       <Header />
 
      {activeTab !== 'amount' && (
