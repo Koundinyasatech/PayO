@@ -11,7 +11,7 @@ import { SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 export default function HomeScreen({ navigation }) {
-  const [balance, setBalance] = useState(20000);
+  const [balance, setBalance] = useState(0);
   const [income] = useState(20000);
   const [outcome] = useState(17000);
   const [balanceVisible, setBalanceVisible] = useState(false);
@@ -98,7 +98,7 @@ export default function HomeScreen({ navigation }) {
       <Header />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        <View style={styles.cardContainer}>
+        {/* <View style={styles.cardContainer}>
           <View style={styles.cardWrapper}>
 
             <View style={styles.topRightCurve} />
@@ -143,17 +143,64 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
 
-          {/* WALLET BUTTON */}
+       
           <View style={styles.cardFooter}>
             <Text style={styles.walletLabel}>My Wallets</Text>
           <TouchableOpacity onPress={() => setShowAll(!showAll)}>
-  {/* <Text style={styles.viewAllText}>
-    {showAll ? "Show Less ›" : "View All ›"}
-  </Text> */}
+
 </TouchableOpacity>
           </View>
-        </View>
+        </View> */}
 
+<View style={styles.cardContainer}>
+  <View style={styles.card}>
+
+    {/* Decorative Shapes */}
+    <View style={styles.topRightCurve} />
+    <View style={styles.bottomLeftCurve} />
+
+    {/* LEFT CONTENT */}
+    <View>
+      <Text style={styles.balanceLabel}>Total Balance</Text>
+
+      <View style={styles.balanceRow}>
+        <Text style={styles.balanceAmount}>
+          {/* {balanceVisible ? `₹ ${balance}` : '* * * * *'} */}
+          {balanceVisible ? `P ${avaliable}` : '* * * * *'}
+        </Text>
+        <Text style={styles.payoLabel}> PAYO</Text>
+      </View>
+    </View>
+
+    {/* RIGHT CONTENT */}
+    <View style={styles.cardRight}>
+
+      {/* Eye Icon */}
+      <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
+        <Icon
+          name={balanceVisible ? "eye-off" : "eye"}
+          size={18}
+          color="#fff"
+        />
+      </TouchableOpacity>
+
+      {/* Wallet Row */}
+      <TouchableOpacity style={styles.walletRow}>
+        <Text style={styles.walletText}>My Wallet</Text>
+
+        <View style={styles.arrowCircle}>
+          <Icon name="arrow-right" size={14} color="#000" />
+        </View>
+      </TouchableOpacity>
+
+    </View>
+  </View>
+
+  {/* Footer */}
+  {/* <View style={styles.cardFooter}>
+    <Text style={styles.walletLabel}>My Wallets</Text>
+  </View> */}
+</View>
      
         <View style={styles.actionsContainer}>
 
@@ -181,7 +228,7 @@ export default function HomeScreen({ navigation }) {
 
            
             <TouchableOpacity style={styles.button}
-              onPress={() => navigation.navigate('ReceiveScreen')}
+              onPress={() => navigation.navigate('Receive')}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
