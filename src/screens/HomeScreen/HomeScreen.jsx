@@ -36,8 +36,12 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
+
         const res = await api.get('/api/wallet/transactions');
-        const tx = res.data || [];
+
+        const tx = Array.isArray(res.data)
+          ? res.data
+          : res.data?.transactions || [];
 
         setTransactions(tx);
 
@@ -87,17 +91,13 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.cardContainer}>
           <View style={styles.cardWrapper}>
 
-            {/* BACKGROUND SHAPES */}
             <View style={styles.topRightCurve} />
             <View style={styles.bottomLeftCurve} />
 
-            {/* CONTENT */}
             <View style={styles.cardContent}>
 
-              {/* LABEL */}
               <Text style={styles.balanceLabel}>Total Balance</Text>
 
-              {/* BALANCE TOP RIGHT */}
               <View style={styles.balanceTopRight}>
                 <Text style={styles.balanceAmount}>
                   {balanceVisible ? `₹ ${balance}` : '* * * * *'}
@@ -105,7 +105,6 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.payoLabel}>PAYO</Text>
               </View>
 
-              {/* EYE ICON */}
               <TouchableOpacity
                 style={styles.eyeIcon}
                 onPress={() => setBalanceVisible(!balanceVisible)}
@@ -117,7 +116,6 @@ export default function HomeScreen({ navigation }) {
                 />
               </TouchableOpacity>
 
-              {/* WALLET */}
               <View style={styles.walletRow}>
                 <Text style={styles.walletText}>My Wallet</Text>
                 <View style={styles.arrowCircle}>
@@ -133,8 +131,12 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.actionsContainer}>
           <View style={styles.actions}>
 
+            {/* SEND */}
             <View style={styles.actionBlock}>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("Scan")}
+              >
                 <View style={styles.iconCircle}>
                   <Icon name="arrow-up-right" size={14} color="#fff" />
                 </View>
@@ -144,8 +146,12 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.connector} />
 
+            {/* RECEIVE */}
             <View style={styles.actionBlock}>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("ReceiveScreen")}
+              >
                 <View style={styles.iconCircle}>
                   <Icon name="arrow-down" size={14} color="#fff" />
                 </View>
@@ -155,8 +161,12 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.connector} />
 
+            {/* REFER */}
             <View style={styles.actionBlock}>
-              <TouchableOpacity style={styles.button}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("ReferEarn")}
+              >
                 <View style={styles.iconCircle}>
                   <Icon name="arrow-up-right" size={14} color="#fff" />
                 </View>
@@ -195,7 +205,7 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View style={styles.transactionsList}>
-          {transactions.map((item, index) => (
+          {Array.isArray(transactions) && transactions.map((item, index) => (
             <View key={index} style={styles.transactionItem}>
 
               <View style={styles.transactionLeft}>
