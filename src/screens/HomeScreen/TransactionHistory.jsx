@@ -241,7 +241,7 @@ const Item = ({ item, formatTime, navigation }) => {
       style={styles.item}
       onPress={() =>
         navigation.navigate("TransactionDetail", {
-          transaction_id: item.id, // 🔥 send id to detail screen
+          transaction_id: item.id,  // 🔥 send id to detail screen
         })
       }
       activeOpacity={0.7}

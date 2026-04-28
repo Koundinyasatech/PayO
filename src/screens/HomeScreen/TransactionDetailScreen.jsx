@@ -5,14 +5,17 @@ import {
     TouchableOpacity,
     ActivityIndicator
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import LinearGradient from "react-native-linear-gradient";
 import Icon from "react-native-vector-icons/Feather";
 import api from "../../api/axios";
 import styles from "./TransactionDetailStyles";
+import { Share } from "react-native";
 
 export default function TransactionDetailScreen() {
     const route = useRoute();
+    const navigation = useNavigation();
+
 
     // ✅ get transactionId from previous screen
     const { transaction_id } = route.params || {};
@@ -29,12 +32,39 @@ export default function TransactionDetailScreen() {
         try {
             const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
             // your backend returns { status, transaction }
-            setTransaction(res.data);
+            setTransaction(res.data.transaction);
 
         } catch (err) {
             console.log("Transaction API error:", err?.response || err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleSendAgain = () => {
+        navigation.navigate("Send", {
+            address: transaction?.wallet,
+            amount: transaction?.amount,
+        });
+    };
+
+    const handleHistory = () => {
+        navigation.navigate("Transactions");
+    };
+
+    const handleDownload = () => {
+        alert("Download feature coming soon");
+    };
+
+
+
+    const handleShare = async () => {
+        try {
+            await Share.share({
+                message: `Transaction Receipt\n\nTo: ${transaction?.name}\nAmount: ${transaction?.amount} PAYO\nID: ${transaction?.id}`,
+            });
+        } catch (err) {
+            console.log(err);
         }
     };
 
@@ -52,7 +82,9 @@ export default function TransactionDetailScreen() {
 
             {/* HEADER */}
             <View style={styles.header}>
-                <Icon name="arrow-left" size={22} color="#fff" />
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-left" size={22} color="#fff" />
+                </TouchableOpacity>
                 <Text style={styles.headerText}>Transaction Details</Text>
             </View>
 
@@ -109,19 +141,33 @@ export default function TransactionDetailScreen() {
             {/* ACTIONS */}
             <View style={styles.actionsRow}>
 
-                <View style={styles.actionItem}>
+                <TouchableOpacity style={styles.actionItem} onPress={handleSendAgain}>
                     <View style={styles.circle}>
                         <Icon name="arrow-up-right" size={18} color="#000" />
                     </View>
                     <Text style={styles.actionText}>Send again</Text>
-                </View>
+                </TouchableOpacity>
 
-                <View style={styles.actionItem}>
+                <TouchableOpacity style={styles.actionItem} onPress={handleShare}>
                     <View style={styles.circle}>
                         <Icon name="share-2" size={18} color="#000" />
                     </View>
                     <Text style={styles.actionText}>Share Receipt</Text>
-                </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.actionItem} onPress={handleHistory}>
+                    <View style={styles.circle}>
+                        <Icon name="clock" size={18} color="#000" />
+                    </View>
+                    <Text style={styles.actionText}>History</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.actionItem} onPress={handleDownload}>
+                    <View style={styles.circle}>
+                        <Icon name="download" size={18} color="#000" />
+                    </View>
+                    <Text style={styles.actionText}>Download</Text>
+                </TouchableOpacity>
 
             </View>
 
