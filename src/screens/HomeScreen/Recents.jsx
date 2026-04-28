@@ -17,7 +17,7 @@ export default function Recents({ navigation }) {
   const fetchRecents = async () => {
     try {
       setLoading(true);
-      const res = await api.get("");
+      const res = await api.get("api/wallet/recents-page");
       setRecents(res.data);
     } catch (err) {
       console.log("Recents error:", err.response?.data || err.message);
