@@ -25,6 +25,7 @@ export default function Recents({ navigation }) {
       setLoading(false);
     }
   };
+  console.log("check")
 
   useEffect(() => {
     fetchRecents();
