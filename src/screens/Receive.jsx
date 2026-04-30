@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -11,12 +11,16 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import Clipboard from "@react-native-clipboard/clipboard";
 import api from "../api/axios";
+import BottomNav from "./components/bottomNav";
 
-const Receive = () => {
+
+const Receive = ({navigation}) => {
   const [qr, setQr] = useState(null);
   const [address, setAddress] = useState("");
-  const [timer, setTimer] = useState(0);
+  const [timer, setTimer] = useState(900); // 15 minutes
   const [loading, setLoading] = useState(true);
+
+  const intervalRef = useRef(null);
 
   // ================= FETCH QR =================
   const fetchQr = async () => {
@@ -25,24 +29,20 @@ const Receive = () => {
 
       console.log("Calling API...");
 
-      // ✅ Backend uses GET
       const res = await api.get("api/wallet/generate-address");
       const data = res.data;
 
       console.log("API RESPONSE:", data);
 
-      // ✅ QR FIX (correct key: qr)
       const qrImage = data.qr?.startsWith("data:image")
         ? data.qr
         : `data:image/png;base64,${data.qr}`;
 
       setQr(qrImage);
-
-      // ✅ ADDRESS FIX
       setAddress(data.address || "No Address");
 
-      // ✅ TIMER FIX (expiresIn in seconds)
-      setTimer(data.expiresIn || 900);
+      // reset timer to 15 min
+      setTimer(900);
 
       setLoading(false);
     } catch (err) {
@@ -61,16 +61,20 @@ const Receive = () => {
 
   // ================= TIMER =================
   useEffect(() => {
-    if (timer <= 0) return;
-
-    const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
+    intervalRef.current = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(intervalRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [timer]);
+    return () => clearInterval(intervalRef.current);
+  }, []);
 
-  // ================= AUTO REFRESH =================
+  // ================= AUTO REFRESH WHEN TIMER ENDS =================
   useEffect(() => {
     if (timer === 0 && !loading) {
       fetchQr();
@@ -145,6 +149,11 @@ const Receive = () => {
           {loading ? "Generating..." : "Regenerate QR"}
         </Text>
       </TouchableOpacity>
+      <BottomNav
+            navigation={navigation}
+            // currentRoute="Home"
+            currentRoute="Scan"
+          />
     </LinearGradient>
   );
 };

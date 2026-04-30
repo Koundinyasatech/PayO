@@ -11,7 +11,6 @@ import styles from './UserProfileStyling';
 
 export default function UserProfile({ navigation }) {
 
-  // ✅ HANDLE BACK BUTTON
   useEffect(() => {
     const backAction = () => {
       navigation.navigate('home');
@@ -29,12 +28,11 @@ export default function UserProfile({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       
-      {/* ✅ SCROLL ADDED */}
       <ScrollView contentContainerStyle={styles.container}>
 
         {/* HEADER */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.navigate('home')}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Text style={styles.back}>←</Text>
           </TouchableOpacity>
 
@@ -87,7 +85,7 @@ export default function UserProfile({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* ✅ ADD BANK DETAILS BUTTON */}
+        {/* ADD BANK DETAILS BUTTON */}
         <TouchableOpacity
           style={{
             backgroundColor: "#16a34a",

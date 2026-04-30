@@ -52,29 +52,28 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
     getPermission();
   }, []);
 
-  // 🔄 Tab Handling
-  // useEffect(() => {
-  //   if (route.params?.tab) {
-  //     setActiveTab(route.params.tab);
-  //   }
-  // }, [route.params]);
-
-  // 📷 Handle QR
-  const handleQR = async (value) => {
-    if (scannedData) return;
-
-    try {
-      const res = await api.post('api/wallet/scan-qr', { qrData: value });
-
-      setScannedData({
-        name: res.data.name,
-        address: res.data.walletAddress,
-      });
-    } catch {
-      alert('Invalid QR');
-    }
-  };
   
+const handleQR = async (value) => {
+  if (scannedData) return;
+
+  try {
+    const res = await api.post('api/wallet/scan-qr', { qrData: value });
+
+    const user = {
+      name: res.data.name,
+      address: res.data.walletAddress,
+    };
+
+    setScannedData(user);
+
+    // ✅ directly navigate to amount screen
+    setSelectedUser(user);
+    setActiveTab('amount');
+
+  } catch (err) {
+    alert('Invalid QR');
+  }
+};
 
   // 🔍 Scanner
   const codeScanner = useCodeScanner({
@@ -164,7 +163,7 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity> */}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
   style={styles.continueBtn}
   onPress={() => {
     setSelectedUser({
@@ -176,7 +175,7 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
   }}
 >
   <Text style={styles.continueText}>Continue</Text>
-</TouchableOpacity>
+</TouchableOpacity> */}
         </>
       )}
 
