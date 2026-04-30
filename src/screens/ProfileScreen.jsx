@@ -199,7 +199,9 @@ const styles = StyleSheet.create({
   back: {
     fontSize: 22,
   },
- 
+ errorCenter:{
+  color: "red",
+ },
   titleCentered: {
     flex: 1,
     textAlign: 'center',

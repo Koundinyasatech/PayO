@@ -41,6 +41,7 @@ import SendScreen from '../screens/components/sendScreen';
 import BottomNav from '../screens/components/bottomNav';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import ScanButtonQRScreen from '../screens/HomeScreen/scanButton';
+import Recents from '../screens/HomeScreen/Recents';
 
 import AddBankHome from "../screens/Bank/AddBankHome";
 import AccountDetails from "../screens/Bank/AccountDetails";
@@ -81,8 +82,9 @@ export default function AppNavigator() {
         <Stack.Screen name="SendScreen" component={SendScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
-
-
+         <Stack.Screen name="recents" component={Recents} />
+        
+        
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
 
