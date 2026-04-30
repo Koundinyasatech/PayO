@@ -12,7 +12,7 @@ import api from "../../api/axios";
 import styles from "./TransactionDetailStyles";
 import { Share } from "react-native";
 
-export default function TransactionDetailScreen({navigation}) {
+export default function TransactionDetailScreen({ navigation }) {
     const route = useRoute();
     // const navigation = useNavigation();
 
@@ -22,29 +22,34 @@ export default function TransactionDetailScreen({navigation}) {
 
     const [transaction, setTransaction] = useState(null);
     const [loading, setLoading] = useState(true);
-    console.log(transaction_id,"check8")
+    console.log(transaction_id, "check8")
 
     // ✅ API CALL
-   useEffect(() => {
-    const fetchTransaction = async () => {
-        try {
-            const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
-            setTransaction(res.data);
-        } catch (err) {
-            console.log("Transaction API error:", err?.response || err.message);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        const fetchTransaction = async () => {
+            try {
+                const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
+                setTransaction(res.data);
+            } catch (err) {
+                console.log("Transaction API error:", err?.response || err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (transaction_id) {
+            fetchTransaction();
         }
-    };
+    }, [transaction_id]);
 
-    if (transaction_id) {
-        fetchTransaction();
-    }
-}, [transaction_id]);
 
-   
 
     const handleSendAgain = () => {
+        if (!transaction) {
+            alert("Transaction not loaded");
+            return;
+        }
+
         navigation.navigate("Send", {
             address: transaction?.wallet,
             amount: transaction?.amount,

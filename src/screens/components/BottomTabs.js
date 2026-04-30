@@ -13,10 +13,7 @@ import Svg, { Path } from 'react-native-svg';
 import HomeScreen from '../HomeScreen/HomeScreen';
 import ScanQRScreen from '../ScanQRScreen';
 
-// 👉 Create dummy screens for now (replace later)
-// const WalletScreen = () => <View><Text>Wallet Screen</Text></View>;
-// const TransactionScreen = () => <View><Text>Transaction Screen</Text></View>;
-// const ProfileScreen = () => <View><Text>Profile Screen</Text></View>;
+
 
 import styles from '../HomeScreen/homeStyling';
 import ScanButtonQRScreen from '../HomeScreen/scanButton';
@@ -24,6 +21,7 @@ import SendScreen from './sendScreen';
 import TransactionHistory from '../HomeScreen/TransactionHistory';
 import WalletScreen from '../HomeScreen/WalletScreen';
 import UserProfile from '../UserProfile/UserProfile';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -39,15 +37,15 @@ function CustomTabBar({ state, navigation }) {
           navigation.navigate(route.name); // ✅ navigate to tab
         };
 
-       let icon;
+        let icon;
 
-if (route.name === "Home") icon = "home";
-if (route.name === "Wallets") icon = "credit-card";
-if (route.name === "Transactions") icon = "bar-chart-2";
-if (route.name === "Profile") icon = "settings";
+        if (route.name === "Home") icon = "home";
+        if (route.name === "Wallets") icon = "credit-card";
+        if (route.name === "Transactions") icon = "bar-chart-2";
+        if (route.name === "Profile") icon = "settings";
 
         // ⭐ Center Button (Scan)
-        if (route.name === "Scan") {
+        if (route.name === "Send") {
           return (
             <TouchableOpacity
               key={route.name}
@@ -67,10 +65,10 @@ if (route.name === "Profile") icon = "settings";
             onPress={onPress}
           >
             <Icon
-  name={icon}
-  size={22}
-  color={isFocused ? '#FF7FD8' : '#ccc'}
-/>
+              name={icon}
+              size={22}
+              color={isFocused ? '#FF7FD8' : '#ccc'}
+            />
 
             <Text
               style={[
@@ -102,10 +100,10 @@ export default function BottomTabs() {
       {/* <Tab.Screen name="Scan" component={SendScreen} tab="scan" /> */}
 
       <Tab.Screen
-  name="Scan"
-  component={SendScreen}
-  initialParams={{ tab: 'scan' }}
-/>
+        name="Send"
+        component={SendScreen}
+        
+      />
       <Tab.Screen name="Transactions" component={TransactionHistory} />
       <Tab.Screen name="Profile" component={UserProfile} />
     </Tab.Navigator>
