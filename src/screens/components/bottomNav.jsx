@@ -43,6 +43,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function BottomNav({ navigation, currentRoute }) {
   const insets = useSafeAreaInsets();
@@ -59,7 +60,15 @@ export default function BottomNav({ navigation, currentRoute }) {
         <Text style={[
           styles.navIcon,
           currentRoute === 'Home' ? styles.navActive : styles.navInactive
-        ]}>🏠</Text>
+        ]}>
+                   <Icon
+            name="home"
+            size={22}
+            color=
+             '#FF7FD8' 
+          />
+
+        </Text>
         <Text style={[
           styles.navLabel,
           currentRoute === 'Home' ? styles.navActive : styles.navInactive
@@ -71,7 +80,14 @@ export default function BottomNav({ navigation, currentRoute }) {
         <Text style={[
           styles.navIcon,
           currentRoute === 'Wallets' ? styles.navActive : styles.navInactive
-        ]}>💳</Text>
+        ]}>
+                <Icon
+            name="credit-card"
+            size={22}
+            color=
+             '#ccc'
+          />
+        </Text>
         <Text style={[
           styles.navLabel,
           currentRoute === 'Wallets' ? styles.navActive : styles.navInactive
@@ -80,7 +96,9 @@ export default function BottomNav({ navigation, currentRoute }) {
 
       {/* CENTER BUTTON */}
       <TouchableOpacity style={styles.centerIcon} onPress={() => goToTab('ScanButton')}>
-        <Text style={{ fontSize: 28, color: '#fff' }}>↔</Text>
+        <Text style={{ fontSize: 28, color: '#fff' }}>
+          <Icon name="maximize" size={26} color="#fff" />
+        </Text>
       </TouchableOpacity>
 
       {/* TRANSACTIONS */}
@@ -88,7 +106,14 @@ export default function BottomNav({ navigation, currentRoute }) {
         <Text style={[
           styles.navIcon,
           currentRoute === 'Transactions' ? styles.navActive : styles.navInactive
-        ]}>📊</Text>
+        ]}>
+                <Icon
+            name="bar-chart-2"
+            size={22}
+            color=
+             '#ccc'
+          />
+        </Text>
         <Text style={[
           styles.navLabel,
           currentRoute === 'Transactions' ? styles.navActive : styles.navInactive
@@ -100,7 +125,14 @@ export default function BottomNav({ navigation, currentRoute }) {
         <Text style={[
           styles.navIcon,
           currentRoute === 'Profile' ? styles.navActive : styles.navInactive
-        ]}>⚙️</Text>
+        ]}>
+                <Icon
+            name="settings"
+            size={22}
+            color=
+             '#ccc'
+          />
+        </Text>
         <Text style={[
           styles.navLabel,
           currentRoute === 'Profile' ? styles.navActive : styles.navInactive

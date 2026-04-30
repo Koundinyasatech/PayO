@@ -52,6 +52,7 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
     getPermission();
   }, []);
 
+ 
   
 const handleQR = async (value) => {
   if (scannedData) return;
@@ -110,7 +111,7 @@ const handleQR = async (value) => {
           />
         )}
 
-        {/* 🔥 Scan Line */}
+       
         {!scannedData && (
           <Animated.View
             style={[
@@ -120,7 +121,7 @@ const handleQR = async (value) => {
           />
         )}
 
-        {/* 🔲 QR Corners */}
+       
         <View style={styles.cornerTL} />
         <View style={styles.cornerTR} />
         <View style={styles.cornerBL} />
@@ -135,7 +136,7 @@ const handleQR = async (value) => {
           </View>
         )}
       </View>
-      {/* TEXT */}
+   
       {!scannedData ? (
         <Text style={styles.scanText}>Scanning QR code...</Text>
       ) : (
@@ -144,42 +145,10 @@ const handleQR = async (value) => {
             QR detected. Enter amount to proceed
           </Text>
 
-          {/* <TouchableOpacity
-            style={styles.continueBtn}
-            onPress={() =>
-              // navigation.navigate("EnterAmount", {
-              //   name: scannedData.name,
-              //   address: scannedData.address,
-              // })
-
-                setSelectedUser({
-    name: scannedData.name,
-    address: scannedData.address,
-  })
-
-  setActiveTab('amount');
-            }
-          >
-            <Text style={styles.continueText}>Continue</Text>
-          </TouchableOpacity> */}
-
-          {/* <TouchableOpacity
-  style={styles.continueBtn}
-  onPress={() => {
-    setSelectedUser({
-      name: scannedData.name,
-      address: scannedData.address,
-    });
-
-    setActiveTab('amount');
-  }}
->
-  <Text style={styles.continueText}>Continue</Text>
-</TouchableOpacity> */}
         </>
       )}
 
-      {/* BUTTONS */}
+   
       {!scannedData && (
         <View style={styles.row}>
           <TouchableOpacity
