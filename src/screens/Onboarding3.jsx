@@ -6,7 +6,7 @@ export default function Onboarding3({ navigation }) {
     <View style={styles.container}>
 
       <View style={styles.header}>
-        <Text style={styles.logo}>PAYO</Text>
+       <Image source={require('../../assets/images/payo_Text.png')} style={{ width: 86, height: 36 }} />
       </View>
 
       <View style={styles.content}>
@@ -77,15 +77,9 @@ const styles = StyleSheet.create({
     width: 240,
     height: 240,
     borderRadius: 110,
-    // backgroundColor: '#F3E5FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 32,
-    // shadowColor: '#6C2BD9',
-    // shadowOffset: { width: 0, height: 4 },
-    // shadowOpacity: 0.1,
-    // shadowRadius: 12,
-    // elevation: 4,
   },
   title: {
     fontSize: 28,
@@ -96,34 +90,38 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 17,
-    color: '#666',
     textAlign: 'center',
     lineHeight: 20,
+    fontWeight:400
   },
-  buttonContainer: {
-    gap: 12,
-  },
-  registerBtn: {
-    backgroundColor: '#16A34A',
-    borderRadius: 8,
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  loginBtn: {
-    borderWidth: 2,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 18,
-    alignItems: 'center',
-  },
-  btnText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#fff',
-  },
-  loginBtnText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-  },
+registerBtn: {
+  backgroundColor: '#008431',
+  borderRadius: 8,
+  paddingVertical: 12,   // reduced from 20
+  alignItems: 'center',
+},
+
+loginBtn: {
+  borderWidth: 2,
+  borderColor: '#21793E',
+  borderRadius: 8,
+  paddingVertical: 12,   // reduced from 18
+  alignItems: 'center',
+},
+
+btnText: {
+  fontSize: 16,   // slightly smaller
+  fontWeight: '600',
+  color: '#fff',
+},
+
+loginBtnText: {
+  fontSize: 16,
+  fontWeight: '600',
+  color: '#21793E',
+},
+
+buttonContainer: {
+  gap: 12,
+},
 });
