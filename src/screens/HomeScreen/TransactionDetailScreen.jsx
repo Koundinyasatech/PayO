@@ -29,7 +29,7 @@ export default function TransactionDetailScreen({navigation}) {
     const fetchTransaction = async () => {
         try {
             const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
-            setTransaction(res.data.transaction);
+            setTransaction(res.data);
         } catch (err) {
             console.log("Transaction API error:", err?.response || err.message);
         } finally {
