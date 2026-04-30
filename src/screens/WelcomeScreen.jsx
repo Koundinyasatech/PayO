@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 36,
-    color: '#5A00D1',
+    color: '#4E00C2',
     fontWeight: '700',
     letterSpacing: 2,
     fontFamily: 'Limelight',
