@@ -41,39 +41,37 @@ useEffect(() => {
         return '';
     }
   };
-
+console.log(activeTab,"activeTab")
   const renderContent = () => {
-    switch (activeTab) {
-      case 'scan':
-        return (
-          <ScanQRScreen
-            setSelectedUser={setSelectedUser}
-            setActiveTab={setActiveTab}
-          />
-        );
+  switch (activeTab) {
+    case 'scan':
+      return (
+        <ScanQRScreen
+          setSelectedUser={setSelectedUser}
+          setActiveTab={setActiveTab}
+        />
+      );
 
-      case 'address':
-        return <EnterAddressScreen navigation={navigation} />;
+    case 'address':
+      return <EnterAddressScreen navigation={navigation} />;
 
-      case 'amount':
-        return (
-          <EnterAmountScreen
-            name={selectedUser?.name}
-            address={selectedUser?.address}
-            setActiveTab={setActiveTab}
-              navigation={navigation} 
-          />
-        );
+    case 'amount':
+      return (
+        <EnterAmountScreen
+          name={selectedUser?.name}
+          address={selectedUser?.address}
+          setActiveTab={setActiveTab}
+          navigation={navigation}
+        />
+      );
 
-      case 'recents':
-        return 
-        // <Text style={{ color: 'white' }}>Recents</Text>;
-        <Recents/>
+    case 'recents':
+      return <Recents navigation={navigation} />;
 
-      default:
-        return null;
-    }
-  };
+    default:
+      return null;
+  }
+};
 
   return (
     <LinearGradient colors={["#6A00F4", "#1A0033"]} 

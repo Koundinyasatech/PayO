@@ -1,18 +1,20 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../api/axios';
 import styles from './WalletScreenStyles';
 import Header from '../components/header';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function WalletScreen() {
   const [wallet, setWallet] = useState(null);
@@ -24,23 +26,10 @@ export default function WalletScreen() {
 
   const fetchWallet = async () => {
     try {
-      // ✅ CHANGE API IF YOUR ROUTE IS DIFFERENT
       const res = await api.get('/api/wallet/getwalletdashboard');
+      console.log(res?.data, "API DATA");
 
-      /*
-        Expected response example:
-        {
-          id: "PYXZ673849A",
-          balance: 8420.50,
-          referralRewards: 200,
-          referralStatus: "Locked",
-          unlockInDays: 3,
-          dailyUsed: 6200,
-          dailyLimit: 10000
-        }
-      */
-
-      setWallet(res.data);
+      setWallet(res?.data);
     } catch (error) {
       console.log('Wallet API error:', error?.response || error.message);
     } finally {
@@ -48,10 +37,10 @@ export default function WalletScreen() {
     }
   };
 
-  // ✅ Progress calculation
+  // progress calculation
   const progress =
     wallet?.dailyLimit > 0
-      ? (wallet.dailyUsed / wallet.dailyLimit) * 100
+      ? ((wallet?.dailyUsed?.amount || 0) / wallet?.dailyLimit) * 100
       : 0;
 
   if (loading) {
@@ -63,26 +52,23 @@ export default function WalletScreen() {
   }
 
   return (
-    <LinearGradient colors={['#7B2CFF', '#1C0033']} style={{ flex: 1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, }}>
+    <LinearGradient
+      colors={['#7B2CFF', '#1C0033']}
+      style={{
+        flex: 1,
+        paddingTop:
+          Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}
+    >
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView showsVerticalScrollIndicator={false}>
 
           {/* HEADER */}
-          {/* <View style={styles.header}>
-            <View>
-              <Text style={styles.walletId}>Wallet ID</Text>
-              <Text style={styles.walletNumber}>{wallet?.id}</Text>
-            </View>
-
-            <View style={styles.headerRight}>
-              <Icon name="bell" size={20} color="#fff" />
-              <View style={styles.avatar} />
-            </View>
-          </View> */}
-<Header type="wallet" title="My Wallet" 
-id={wallet?.id}
-// id="523456"
- />
+          <Header
+            type="wallet"
+            title="My Wallet"
+            id={wallet?.id}
+          />
 
           {/* WALLET CARD */}
           <View style={styles.card}>
@@ -105,13 +91,13 @@ id={wallet?.id}
             </View>
           </View>
 
-          {/* HEADER ROW */}
+          {/* TOKEN HOLDINGS HEADER */}
           <View style={styles.rowBetween}>
             <Text style={styles.sectionTitle}>Token Holdings</Text>
             <Text style={styles.history}>History</Text>
           </View>
 
-          {/* REFERRAL */}
+          {/* REFERRAL BOX */}
           <View style={styles.box}>
             <View style={styles.rowBetween}>
               <Text style={styles.boxTitle}>Referral rewards</Text>
@@ -134,17 +120,23 @@ id={wallet?.id}
 
           {/* DAILY LIMIT */}
           <View style={styles.box}>
+
+            <Text style={styles.boxTitle}>
+              Daily Transaction Limit
+            </Text>
+
+            {/* USED / LIMIT */}
             <View style={styles.rowBetween}>
-              <Text style={styles.boxTitle}>
-                Daily Transaction Limit
+              <Text style={styles.subText}>
+                Used {wallet?.dailyUsed?.amount || 0}
               </Text>
 
-              <Text style={styles.limit}>
-                {wallet?.dailyUsed} / {wallet?.dailyLimit}
+              <Text style={styles.subText}>
+                Limit: {wallet?.dailyLimit}
               </Text>
             </View>
 
-            {/* PROGRESS */}
+            {/* PROGRESS BAR */}
             <View style={styles.progressBg}>
               <View
                 style={[
@@ -154,18 +146,11 @@ id={wallet?.id}
               />
             </View>
 
-            <View style={styles.rowBetween}>
-              <Text style={styles.subText}>
-                Used {wallet?.dailyUsed}
-              </Text>
-              <Text style={styles.subText}>
-                Limit: {wallet?.dailyLimit}
-              </Text>
-            </View>
           </View>
 
           {/* BUTTONS */}
           <View style={styles.bottomButtons}>
+
             <TouchableOpacity style={styles.freezeBtn}>
               <Text style={styles.freezeText}>Freeze Wallet</Text>
             </TouchableOpacity>
@@ -173,6 +158,7 @@ id={wallet?.id}
             <TouchableOpacity style={styles.sendBtn}>
               <Text style={styles.sendText}>Send PAYO</Text>
             </TouchableOpacity>
+
           </View>
 
         </ScrollView>
@@ -180,3 +166,4 @@ id={wallet?.id}
     </LinearGradient>
   );
 }
+
