@@ -38,4 +38,10 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontFamily: 'Limelight',
   },
+  image:{
+    width:200,
+    height:80,
+    resizeMode:'contain'
+
+  }
 });
