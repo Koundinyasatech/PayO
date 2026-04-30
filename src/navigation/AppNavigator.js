@@ -19,9 +19,11 @@ import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
 import ReferEarn from '../screens/HomeScreen/ReferEarn';
-import TransactionDetailScreen from '../screens/HomeScreen/TransactionDetailScreen'
+import TransactionDetailScreen from '../screens/HomeScreen/TransactionDetailScreen';
+import NotificationScreen from '../screens/HomeScreen/NotificationScreen';
 
-/* ✅ IMPORT BOTTOM TABS */
+
+
 /* ✅ IMPORT BOTTOM TABS */
 import BottomTabs from '../screens/components/BottomTabs';
 
@@ -96,6 +98,7 @@ export default function AppNavigator() {
         <Stack.Screen name="AccountNumber" component={AccountNumber} />
         <Stack.Screen name="UpiPin" component={UpiPin} />
         <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+        <Stack.Screen name="Notifications" component={NotificationScreen} />
 
 
       </Stack.Navigator>
