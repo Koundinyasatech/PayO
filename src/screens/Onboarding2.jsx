@@ -20,7 +20,7 @@ export default function Onboarding2({ navigation }) {
       </View> */}
 
       <View style={styles.header}>
-        <Text style={styles.logo}>PAYO</Text>
+       <Image source={require('../../assets/images/payo_Text.png')} style={{ width: 86, height: 36 }} />
         <TouchableOpacity style={styles.skipBtn} 
         onPress={() => navigation.navigate('Onboarding3')}
         >
@@ -41,11 +41,14 @@ export default function Onboarding2({ navigation }) {
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.nextBtn}
+        <TouchableOpacity
           onPress={() => navigation.navigate('Onboarding3')}
+          activeOpacity={0.8}
         >
-          {/* <Text style={styles.nextBtnText}>→</Text> */}
-             <Ionicons name="arrow-forward" size={30} color="#6C2BD9" />
+          <Image
+            source={require('../../assets/images/full_load.png')}
+            style={styles.nextImage}
+          />
         </TouchableOpacity>
       </View>
 
@@ -103,8 +106,8 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 12,
-    color: '#999',
-    fontWeight: '600',
+    color: '#0a0a0a',
+    fontWeight: '700',
   },
   content: {
     flex: 1,
@@ -139,37 +142,20 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 17,
-    color: '#666',
+        fontWeight:400,
     lineHeight: 20,
     textAlign: 'center',
     marginBottom: 48,
   },
-  footer: {
-    width: '100%',
-    height: 150,
-    paddingHorizontal: 24,
-    paddingBottom: 48,
-    alignItems: 'center',
-  },
-  nextBtn: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 3,
-    borderColor: '#6C2BD9',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    shadowColor: '#6C2BD9',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  nextBtnText: {
-    paddingBottom: 0,
-    fontSize: 45,
-    color: '#6C2BD9',
-    fontWeight: '900',
-  },
+ footer: {
+  alignItems: 'center',
+  marginBottom: 40,
+},
+
+nextImage: {
+  width: 100,
+  height: 100,
+  resizeMode: 'contain',
+},
+
 });

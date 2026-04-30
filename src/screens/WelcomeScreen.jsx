@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Image } from 'react-native';
 import { View, Text, StyleSheet } from 'react-native';
 
 export default function WelcomeScreen({ navigation }) {
@@ -12,23 +13,27 @@ export default function WelcomeScreen({ navigation }) {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome</Text>
+       <View style={styles.container}>
+      <Image
+        source={require('../../assets/images/Welcome.png')}
+        style={styles.image}
+      />
     </View>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EAEAEA',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   text: {
     fontSize: 36,
-    color: '#5A00D1',
+    color: '#4E00C2',
     fontWeight: '700',
     letterSpacing: 2,
     fontFamily: 'Limelight',
