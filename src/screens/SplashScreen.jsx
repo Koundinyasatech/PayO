@@ -1,30 +1,4 @@
-// import React, { useEffect } from 'react';
-// import { View, StyleSheet } from 'react-native';
-
-// export default function SplashScreen({ navigation }) {
-
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       navigation.replace('Animation');
-//     }, 5000);
-
-//     return () => {
-//       clearTimeout(timer);
-//     };
-//   }, [navigation]);
-
-//   return <View style={styles.container} />;
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#4E00C2',
-//   },
-// });
-
-// src/screens/SplashScreen.jsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -32,42 +6,67 @@ import {
   Dimensions,
 } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default function SplashScreen({ navigation }) {
+
+  const [showLogo, setShowLogo] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Move logo from center to bottom
-    Animated.timing(slideAnim, {
-      toValue: 100,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
 
-    const timer = setTimeout(() => {
+    // 1️⃣ Violet screen for 2 seconds
+    const violetTimer = setTimeout(() => {
+      setShowLogo(true);
+
+      // start logo animation
+      Animated.timing(slideAnim, {
+        toValue: 150,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+
+    }, 2000);
+
+    // 2️⃣ After total 5 seconds go to Welcome
+    const navTimer = setTimeout(() => {
       navigation.replace('Welcome');
-    }, 3000);
+    }, 5000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(violetTimer);
+      clearTimeout(navTimer);
+    };
+
   }, []);
 
   return (
     <View style={styles.container}>
-      <Animated.Image
-        source={require('../../assets/images/payoLogo.png')}
-        style={[
-          styles.logoImage,
-          {
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
-      />
+
+      {/* Violet Screen */}
+      {!showLogo && (
+        <View style={styles.violetScreen} />
+      )}
+
+      {/* Logo Screen */}
+      {showLogo && (
+        <Animated.Image
+          source={require('../../assets/images/payoLogo.png')}
+          style={[
+            styles.logoImage,
+            {
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        />
+      )}
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#6C2BD9',
@@ -75,9 +74,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-logoImage: {
-  width: width * 1.1,
-  height: width * 1.1,
-  resizeMode: 'contain',
-}
+  violetScreen: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: '#6C2BD9',
+  },
+
+  logoImage: {
+    width: width * 1.1,
+    height: width * 1.2,
+    resizeMode: 'contain',
+  },
+
 });
