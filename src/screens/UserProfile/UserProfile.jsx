@@ -1,3 +1,289 @@
+// // import React, { useEffect } from 'react';
+// // import {
+// //   View,
+// //   Text,
+// //   TouchableOpacity,
+// //   SafeAreaView,
+// //   BackHandler,
+// //   ScrollView,
+// // } from 'react-native';
+// // import styles from './UserProfileStyling';
+
+// // export default function UserProfile({ navigation }) {
+
+// //   useEffect(() => {
+// //     const backAction = () => {
+// //       navigation.navigate('home'); // fixed
+// //       return true;
+// //     };
+
+// //     const backHandler = BackHandler.addEventListener(
+// //       'hardwareBackPress',
+// //       backAction
+// //     );
+
+// //     return () => backHandler.remove();
+// //   }, []);
+
+// //   return (
+// //     <SafeAreaView style={{ flex: 1 }}>
+// //       <ScrollView
+// //         showsVerticalScrollIndicator={false}
+// //         contentContainerStyle={{ paddingBottom: 40 }}
+// //       >
+// //         <View style={styles.container}>
+
+// //           {/* HEADER */}
+// //           <View style={styles.header}>
+// //             <TouchableOpacity onPress={() => navigation.goBack()}>
+// //               <Text style={styles.back}>←</Text>
+// //             </TouchableOpacity>
+
+// //             <Text style={styles.title}>Profile</Text>
+
+// //             <View style={{ width: 20 }} />
+// //           </View>
+
+// //           {/* PROFILE SECTION */}
+// //           <View style={styles.profileSection}>
+// //             <View style={styles.profileCircle}>
+// //               <Text style={styles.profileText}>👤</Text>
+// //             </View>
+
+// //             <Text style={styles.phone}>+91 8332 285 718</Text>
+// //             <Text style={styles.verified}>• KYC VERIFIED</Text>
+// //           </View>
+
+// //           {/* BALANCE CARD */}
+// //           <View style={styles.balanceCard}>
+// //             <View>
+// //               <Text style={styles.label}>Balance</Text>
+// //               <Text style={styles.balance}>
+// //                 8,420.50 <Text style={styles.token}>PAYO</Text>
+// //               </Text>
+// //             </View>
+
+// //             <View style={styles.divider} />
+
+// //             <View>
+// //               <Text style={styles.label}>Transactions</Text>
+// //               <Text style={styles.transactions}>20</Text>
+// //             </View>
+// //           </View>
+
+// //           {/* REFERRAL BOX */}
+// //           <View style={styles.referralBox}>
+// //             <Text style={styles.refLabel}>Your Referral code</Text>
+// //             <Text style={styles.refCode}>PAYO0872</Text>
+// //           </View>
+
+// //           {/* BUTTONS */}
+// //           <View style={styles.buttonRow}>
+// //             <TouchableOpacity style={styles.btn}>
+// //               <Text style={styles.btnText}>Copy address</Text>
+// //             </TouchableOpacity>
+
+// //             <TouchableOpacity style={styles.btn}>
+// //               <Text style={styles.btnText}>Share address</Text>
+// //             </TouchableOpacity>
+// //           </View>
+
+// //           {/* ACCOUNT SECTION */}
+// //           <Text style={styles.sectionTitle}>Account</Text>
+
+// //           <View style={styles.card}>
+// //             <View style={styles.row}>
+// //               <Text style={styles.item}>KYC Verification</Text>
+// //               <Text style={styles.green}>Approved ›</Text>
+// //             </View>
+
+// //             <View style={styles.row}>
+// //               <Text style={styles.item}>Personal Information</Text>
+// //               <Text style={styles.arrow}>›</Text>
+// //             </View>
+
+// //             <View style={styles.row}>
+// //               <Text style={styles.item}>Linked Mobile</Text>
+// //               <Text style={styles.value}>+91 8332 285 718</Text>
+// //             </View>
+// //           </View>
+
+// //           {/* SECURITY SECTION */}
+// //           <Text style={styles.sectionTitle}>Security</Text>
+
+// //           <View style={styles.card}>
+// //             <View style={styles.row}>
+// //               <Text style={styles.item}>KYC Verification</Text>
+// //               <Text style={styles.green}>Approved ›</Text>
+// //             </View>
+
+// //             <View style={styles.row}>
+// //               <Text style={styles.item}>Personal Information</Text>
+// //               <Text style={styles.arrow}>›</Text>
+// //             </View>
+
+// //             <View style={styles.row}>
+// //               <Text style={styles.item}>Linked Mobile</Text>
+// //               <Text style={styles.value}>+91 8332 285 718</Text>
+// //             </View>
+// //           </View>
+
+// //         </View>
+// //       </ScrollView>
+// //     </SafeAreaView>
+// //   );
+// // }
+
+// import React, { useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   SafeAreaView,
+//   BackHandler,
+//   ScrollView,
+// } from 'react-native';
+// import styles from './UserProfileStyling';
+
+// export default function UserProfile({ navigation }) {
+
+//   useEffect(() => {
+//     const backAction = () => {
+//       navigation.navigate('home');
+//       return true;
+//     };
+
+//     const backHandler = BackHandler.addEventListener(
+//       'hardwareBackPress',
+//       backAction
+//     );
+
+//     return () => backHandler.remove();
+//   }, []);
+
+//   // ✅ LOGOUT FUNCTION
+//   const handleLogout = () => {
+//     // 👉 If using AsyncStorage / token, clear here
+//     // AsyncStorage.removeItem("token");
+
+//     navigation.replace('Login'); // change if your route name is different
+//   };
+
+//   return (
+//     <SafeAreaView style={{ flex: 1 }}>
+//       <ScrollView
+//         showsVerticalScrollIndicator={false}
+//         contentContainerStyle={{ paddingBottom: 40 }}
+//       >
+//         <View style={styles.container}>
+
+//           {/* HEADER */}
+//           <View style={styles.header}>
+//             <TouchableOpacity onPress={() => navigation.goBack()}>
+//               <Text style={styles.back}>←</Text>
+//             </TouchableOpacity>
+
+//             <Text style={styles.title}>Profile</Text>
+
+//             <View style={{ width: 20 }} />
+//           </View>
+
+//           {/* PROFILE SECTION */}
+//           <View style={styles.profileSection}>
+//             <View style={styles.profileCircle}>
+//               <Text style={styles.profileText}>👤</Text>
+//             </View>
+
+//             <Text style={styles.phone}>+91 8332 285 718</Text>
+//             <Text style={styles.verified}>• KYC VERIFIED</Text>
+//           </View>
+
+//           {/* BALANCE CARD */}
+//           <View style={styles.balanceCard}>
+//             <View>
+//               <Text style={styles.label}>Balance</Text>
+//               <Text style={styles.balance}>
+//                 8,420.50 <Text style={styles.token}>PAYO</Text>
+//               </Text>
+//             </View>
+
+//             <View style={styles.divider} />
+
+//             <View>
+//               <Text style={styles.label}>Transactions</Text>
+//               <Text style={styles.transactions}>20</Text>
+//             </View>
+//           </View>
+
+//           {/* REFERRAL BOX */}
+//           <View style={styles.referralBox}>
+//             <Text style={styles.refLabel}>Your Referral code</Text>
+//             <Text style={styles.refCode}>PAYO0872</Text>
+//           </View>
+
+//           {/* BUTTONS */}
+//           <View style={styles.buttonRow}>
+//             <TouchableOpacity style={styles.btn}>
+//               <Text style={styles.btnText}>Copy address</Text>
+//             </TouchableOpacity>
+
+//             <TouchableOpacity style={styles.btn}>
+//               <Text style={styles.btnText}>Share address</Text>
+//             </TouchableOpacity>
+//           </View>
+
+//           {/* ACCOUNT SECTION */}
+//           <Text style={styles.sectionTitle}>Account</Text>
+
+//           <View style={styles.card}>
+//             <View style={styles.row}>
+//               <Text style={styles.item}>KYC Verification</Text>
+//               <Text style={styles.green}>Approved ›</Text>
+//             </View>
+
+//             <View style={styles.row}>
+//               <Text style={styles.item}>Personal Information</Text>
+//               <Text style={styles.arrow}>›</Text>
+//             </View>
+
+//             <View style={styles.row}>
+//               <Text style={styles.item}>Linked Mobile</Text>
+//               <Text style={styles.value}>+91 8332 285 718</Text>
+//             </View>
+//           </View>
+
+//           {/* SECURITY SECTION */}
+//           <Text style={styles.sectionTitle}>Security</Text>
+
+//           <View style={styles.card}>
+//             <View style={styles.row}>
+//               <Text style={styles.item}>KYC Verification</Text>
+//               <Text style={styles.green}>Approved ›</Text>
+//             </View>
+
+//             <View style={styles.row}>
+//               <Text style={styles.item}>Personal Information</Text>
+//               <Text style={styles.arrow}>›</Text>
+//             </View>
+
+//             <View style={styles.row}>
+//               <Text style={styles.item}>Linked Mobile</Text>
+//               <Text style={styles.value}>+91 8332 285 718</Text>
+//             </View>
+//           </View>
+
+//           {/* ✅ LOGOUT BUTTON */}
+//           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+//             <Text style={styles.logoutText}>Logout</Text>
+//           </TouchableOpacity>
+
+//         </View>
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// }
+
+
 import React, { useEffect } from 'react';
 import {
   View,
@@ -7,13 +293,14 @@ import {
   BackHandler,
   ScrollView,
 } from 'react-native';
+import * as Keychain from 'react-native-keychain'; // ✅ added
 import styles from './UserProfileStyling';
 
 export default function UserProfile({ navigation }) {
 
   useEffect(() => {
     const backAction = () => {
-      navigation.navigate('home'); // fixed
+      navigation.navigate('home');
       return true;
     };
 
@@ -24,6 +311,21 @@ export default function UserProfile({ navigation }) {
 
     return () => backHandler.remove();
   }, []);
+
+  // ✅ SECURE LOGOUT (FIXED)
+  const handleLogout = async () => {
+    try {
+      await Keychain.resetGenericPassword(); // clear token
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // keep your route name
+      });
+
+    } catch (error) {
+      console.log('Logout error:', error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -127,6 +429,11 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.value}>+91 8332 285 718</Text>
             </View>
           </View>
+
+          {/* ✅ LOGOUT BUTTON */}
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
 
         </View>
       </ScrollView>
