@@ -5,9 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Share,
+  
   ActivityIndicator,
 } from "react-native";
+import RNFS from "react-native-fs";
+import Share from "react-native-share";
 import LinearGradient from "react-native-linear-gradient";
 import Clipboard from "@react-native-clipboard/clipboard";
 import api from "../api/axios";
@@ -88,15 +90,22 @@ const Receive = ({navigation}) => {
 
   // ================= SHARE =================
   const handleShare = async () => {
-    try {
-      await Share.share({
-        message: address,
-      });
-    } catch (e) {
-      console.log("Share error:", e);
-    }
-  };
-
+  try {
+    if (!qr) return;
+    // Extract base64 part
+    const base64Data = qr.replace(/^data:image\/png;base64,/, "");
+    const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
+    // Save QR image to file
+    await RNFS.writeFile(filePath, base64Data, "base64");
+    // Share image + message
+    await Share.open({
+      url: "file://" + filePath,
+      message: `Send PAYO to this address:\n${address}`,
+    });
+  } catch (error) {
+    console.log("Share error:", error);
+  }
+};
   // ================= FORMAT TIMER =================
   const formatTime = () => {
     const m = Math.floor(timer / 60);
