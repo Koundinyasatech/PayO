@@ -13,7 +13,7 @@ export default function UserProfile({ navigation }) {
 
   useEffect(() => {
     const backAction = () => {
-      navigation.navigate('home'); // fixed
+      navigation.navigate('Home'); // fixed
       return true;
     };
 

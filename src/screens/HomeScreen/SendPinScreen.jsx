@@ -4,10 +4,12 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Platform,
+  StatusBar,
 } from 'react-native';
 
 export default function SendPinScreen({ route, navigation }) {
-  const { amount, name, address } = route.params;
+  const { amount, name, address,sender } = route.params;
 
   const [pin, setPin] = useState('');
 
@@ -58,17 +60,25 @@ export default function SendPinScreen({ route, navigation }) {
 
       <Text style={styles.cancel} onPress={() => navigation.navigate("Main")}>Cancel</Text>
 
-      <View style={styles.card}>
-        <Text style={styles.small}>from wallet</Text>
+     <View style={styles.card}>
+  {/* FROM SECTION */}
+  <View style={styles.section}>
+    <Text style={styles.small}>From wallet</Text>
+    <Text style={styles.name}>{sender?.name}</Text>
+    <Text style={styles.wallet}>{sender?.wallet}</Text>
+  </View>
 
-        <View style={styles.rowBetween}>
-          <Text style={styles.small}>To wallet</Text>
-          <Text style={styles.amount}>{amount} PAYO</Text>
-        </View>
+  {/* TO SECTION */}
+  <View style={styles.toSection}>
+    <View style={styles.rowBetween}>
+      <Text style={styles.small}>To wallet</Text>
+      <Text style={styles.amount}>{amount} PAYO</Text>
+    </View>
 
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.address}>{address}</Text>
-      </View>
+    <Text style={styles.name}>{name}</Text>
+    <Text style={styles.address}>{address}</Text>
+  </View>
+</View>
 
       <Text style={styles.title}>ENTER 4-DIGIT TRANSACTION PIN</Text>
 
@@ -113,28 +123,55 @@ export default function SendPinScreen({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#eee', padding: 20 },
+  container: { flex: 1, backgroundColor: '#eee', padding: 20 , paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0},
   cancel: { marginBottom: 10, color: '#444' },
 
-  card: {
-    backgroundColor: '#dcd6f7',
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 20,
-  },
+card: {
+  borderRadius: 12,
+  overflow: 'hidden', // important for section backgrounds
+  marginBottom: 20,
+},
 
-  small: { color: '#555' },
+section: {
+  backgroundColor: '#fff',
+  padding: 15,
+},
 
-  rowBetween: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+toSection: {
+  backgroundColor: '#dcd6f7',
+  padding: 15,
+},
 
-  amount: { fontWeight: '700' },
+small: {
+  color: '#777',
+  fontSize: 12,
+},
 
-  name: { fontWeight: '600', marginTop: 5 },
+rowBetween: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+},
 
-  address: { color: '#777', fontSize: 12 },
+amount: {
+  fontWeight: '700',
+  color: '#3c8c5a', // greenish like screenshot
+},
+
+name: {
+  fontWeight: '600',
+  marginTop: 5,
+},
+
+wallet: {
+  fontWeight: '600',
+  color: '#000',
+},
+
+address: {
+  color: '#777',
+  fontSize: 12,
+},
 
   title: { textAlign: 'center', marginBottom: 15 },
 
