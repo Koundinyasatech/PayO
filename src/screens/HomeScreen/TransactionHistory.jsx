@@ -128,7 +128,8 @@ export default function TransactionHistory({ navigation }) {
 
         {/* HEADER */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity 
+  onPress={() => navigation.canGoBack() && navigation.goBack()}          >
             <Text style={styles.back}>←</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Transaction History</Text>
@@ -235,7 +236,7 @@ export default function TransactionHistory({ navigation }) {
 }
 
 /* 🔥 ITEM */
-const Item = ({ item, formatTime, navigation }) => {
+export const Item = ({ item, formatTime, navigation }) => {
   const isReceived = Number(item.amount) > 0;
 
   return (
