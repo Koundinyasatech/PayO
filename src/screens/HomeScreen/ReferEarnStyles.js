@@ -10,23 +10,28 @@ export default StyleSheet.create({
   },
 
   /* HEADER */
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
+ headerRow: {
+  height: 50,
+  justifyContent: "center",
+  alignItems: "center",
+  position: "relative",
+},
 
-  back: {
-    color: '#fff',
-    fontSize: 22,
-    marginRight: 10,
-  },
+backBtn: {
+  position: "absolute",
+  left: 15,
+},
 
-  header: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
+back: {
+  fontSize: 22,
+  color: "#fff",
+},
+
+header: {
+  fontSize: 18,
+  fontWeight: "600",
+  color: "#fff",
+},
 
   /* CARD */
   card: {

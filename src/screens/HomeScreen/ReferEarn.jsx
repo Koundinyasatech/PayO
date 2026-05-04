@@ -13,6 +13,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './ReferEarnStyles';
 import api from '../../api/axios';
 import Clipboard from '@react-native-clipboard/clipboard';
+import BottomNav from '../components/bottomNav';
+import Icon from "react-native-vector-icons/Feather";
  
 export default function ReferEarn({ navigation }) {
   const [data, setData] = useState({
@@ -47,12 +49,18 @@ export default function ReferEarn({ navigation }) {
         <ScrollView contentContainerStyle={styles.container}>
  
           {/* HEADER */}
-          <View style={styles.headerRow}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.back}>←</Text>
-            </TouchableOpacity>
-            <Text style={styles.header}>Refer & earn</Text>
-          </View>
+       <View style={styles.headerRow}>
+  <TouchableOpacity
+    style={styles.backBtn}
+    onPress={() => navigation.goBack()}
+  >
+    <Text style={styles.back}>
+       <Icon name="arrow-left" size={22} color="#fff" />
+    </Text>
+  </TouchableOpacity>
+
+  <Text style={styles.header}>Refer & earn</Text>
+</View>
  
           {/* CARD */}
           <View style={styles.card}>
@@ -114,6 +122,11 @@ export default function ReferEarn({ navigation }) {
           </View>
  
         </ScrollView>
+        <BottomNav
+                    navigation={navigation}
+                    // currentRoute="Home"
+                    // currentRoute="Scan"
+                  />
       </SafeAreaView>
     </LinearGradient>
   );

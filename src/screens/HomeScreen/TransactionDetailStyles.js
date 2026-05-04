@@ -1,24 +1,29 @@
-import { StyleSheet } from "react-native";
+import { Platform, StatusBar, StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 18,
-    paddingTop: 40,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
 
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 25,
-  },
+ header: {
+  height: 50,
+  justifyContent: "center",
+  alignItems: "center",
+  position: "relative",
+},
 
-  headerText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-    marginLeft: 10,
-  },
+backBtn: {
+  position: "absolute",
+  left: 15,
+},
+
+headerText: {
+  color: "#fff",
+  fontSize: 18,
+  fontWeight: "600",
+},
 
   section: {
     marginBottom: 18,

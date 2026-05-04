@@ -84,12 +84,23 @@ export default function TransactionDetailScreen({navigation}) {
         <LinearGradient colors={["#5B0FD1", "#14002B"]} style={styles.container}>
 
             {/* HEADER */}
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Icon name="arrow-left" size={22} color="#fff" />
                 </TouchableOpacity>
                 <Text style={styles.headerText}>Transaction Details</Text>
-            </View>
+            </View> */}
+
+            <View style={styles.header}>
+  <TouchableOpacity
+    style={styles.backBtn}
+    onPress={() => navigation.goBack()}
+  >
+    <Icon name="arrow-left" size={22} color="#fff" />
+  </TouchableOpacity>
+
+  <Text style={styles.headerText}>Transaction Details</Text>
+</View>
 
             {/* PAID TO */}
             <View style={styles.section}>
