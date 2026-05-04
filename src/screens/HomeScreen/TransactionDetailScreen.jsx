@@ -11,8 +11,9 @@ import Icon from "react-native-vector-icons/Feather";
 import api from "../../api/axios";
 import styles from "./TransactionDetailStyles";
 import { Share } from "react-native";
+import RNFS from "react-native-fs";
 
-export default function TransactionDetailScreen({navigation}) {
+export default function TransactionDetailScreen({ navigation }) {
     const route = useRoute();
     // const navigation = useNavigation();
 
@@ -22,32 +23,37 @@ export default function TransactionDetailScreen({navigation}) {
 
     const [transaction, setTransaction] = useState(null);
     const [loading, setLoading] = useState(true);
-    console.log(transaction_id,"check8")
+    console.log(transaction_id, "check8")
 
     // ✅ API CALL
-   useEffect(() => {
-    const fetchTransaction = async () => {
-        try {
-            const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
-            setTransaction(res.data);
-        } catch (err) {
-            console.log("Transaction API error:", err?.response || err.message);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        const fetchTransaction = async () => {
+            try {
+                const res = await api.get(`/api/wallet/transactionById/${transaction_id}`);
+                setTransaction(res.data);
+            } catch (err) {
+                console.log("Transaction API error:", err?.response || err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (transaction_id) {
+            fetchTransaction();
         }
-    };
+    }, [transaction_id]);
 
-    if (transaction_id) {
-        fetchTransaction();
-    }
-}, [transaction_id]);
 
-   
 
     const handleSendAgain = () => {
-        navigation.navigate("Send", {
-            address: transaction?.wallet,
-            amount: transaction?.amount,
+        if (!transaction) return;
+
+        navigation.navigate("Main", {
+            screen: "Send",
+            params: {
+                address: transaction.wallet,
+                amount: transaction.amount,
+            },
         });
     };
 
@@ -55,19 +61,50 @@ export default function TransactionDetailScreen({navigation}) {
         navigation.navigate("Transactions");
     };
 
-    const handleDownload = () => {
-        alert("Download feature coming soon");
+    const handleDownload = async () => {
+        if (!transaction) return;
+
+        try {
+            const receipt = `
+Transaction Receipt
+
+To: ${transaction.name}
+Amount: ${transaction.amount} PAYO
+Transaction ID: ${transaction.id}
+Wallet: ${transaction.wallet}
+        `;
+
+            const path = `${RNFS.DownloadDirectoryPath}/receipt_${transaction.id}.txt`;
+
+            await RNFS.writeFile(path, receipt, "utf8");
+
+            alert("Receipt saved to Downloads!");
+        } catch (err) {
+            console.log("Download error:", err);
+            alert("Failed to download receipt");
+        }
     };
 
 
 
     const handleShare = async () => {
+        if (!transaction) return;
+
         try {
+            const message = `
+📄 Transaction Receipt
+
+👤 To: ${transaction.name}
+💰 Amount: ${transaction.amount} PAYO
+🆔 Transaction ID: ${transaction.id}
+🏦 Wallet: ${transaction.wallet}
+        `;
+
             await Share.share({
-                message: `Transaction Receipt\n\nTo: ${transaction?.name}\nAmount: ${transaction?.amount} PAYO\nID: ${transaction?.id}`,
+                message,
             });
         } catch (err) {
-            console.log(err);
+            console.log("Share error:", err);
         }
     };
 

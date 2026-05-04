@@ -165,5 +165,5 @@ export default function WalletScreen() {
       </SafeAreaView>
     </LinearGradient>
   );
-}
+} 
 

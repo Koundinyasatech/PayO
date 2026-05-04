@@ -7,6 +7,7 @@ import {
   BackHandler,
   ScrollView,
 } from 'react-native';
+import * as Keychain from 'react-native-keychain'; // ✅ added
 import styles from './UserProfileStyling';
 
 export default function UserProfile({ navigation }) {
@@ -26,6 +27,21 @@ useEffect(() => {
 
   return () => backHandler.remove();
 }, [navigation]);
+
+  // ✅ SECURE LOGOUT (FIXED)
+  const handleLogout = async () => {
+    try {
+      await Keychain.resetGenericPassword(); // clear token
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // keep your route name
+      });
+
+    } catch (error) {
+      console.log('Logout error:', error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -131,6 +147,11 @@ useEffect(() => {
               <Text style={styles.value}>+91 8332 285 718</Text>
             </View>
           </View>
+
+          {/* ✅ LOGOUT BUTTON */}
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
 
         </View>
       </ScrollView>

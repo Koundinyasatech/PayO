@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 
+import { useFocusEffect } from "@react-navigation/native";
 import api from "../../api/axios";
 
 export default function Recents({ navigation }) {
@@ -18,18 +19,38 @@ export default function Recents({ navigation }) {
     try {
       setLoading(true);
       const res = await api.get("api/wallet/recents-page");
-      setRecents(res.data);
+
+      let data = res.data || [];
+
+      // 🔁 Remove duplicates (by walletAddress)
+      const uniqueMap = new Map();
+      data.forEach((item) => {
+        uniqueMap.set(item.walletAddress, item);
+      });
+
+      let uniqueList = Array.from(uniqueMap.values());
+
+      // ⭐ Sort by latest (newest first)
+      uniqueList.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      // 🧠 Limit to last 5 users
+      const finalList = uniqueList.slice(0, 5);
+
+      setRecents(finalList);
     } catch (err) {
       console.log("Recents error:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
   };
-  console.log("check")
 
-  useEffect(() => {
-    fetchRecents();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecents();
+    }, [])
+  );
 
   const formatTime = (timestamp) => {
     const now = new Date();
@@ -46,9 +67,9 @@ export default function Recents({ navigation }) {
     <TouchableOpacity
       style={styles.card}
       onPress={() =>
-        navigation.navigate("enterAmount", {
+        navigation.navigate("EnterAmount", {
           address: item.walletAddress,
-          name: item.name,
+          name: item.receiverName,   // ✅ ONLY backend value
         })
       }
     >
@@ -58,7 +79,7 @@ export default function Recents({ navigation }) {
         </View>
 
         <View>
-          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.name}>{item.receiverName}</Text> {/* ✅ ONLY */}
           <Text style={styles.address}>{item.walletAddress}</Text>
         </View>
       </View>
@@ -69,11 +90,12 @@ export default function Recents({ navigation }) {
 
   return (
     <View style={styles.container}>
-      
       <Text style={styles.section}>Recent Contacts</Text>
 
       {loading ? (
         <ActivityIndicator color="#fff" />
+      ) : recents.length === 0 ? (
+        <Text style={styles.empty}>No recent contacts</Text>
       ) : (
         <FlatList
           data={recents}
@@ -82,10 +104,10 @@ export default function Recents({ navigation }) {
           showsVerticalScrollIndicator={false}
         />
       )}
-
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -96,6 +118,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 14,
     marginBottom: 12,
+  },
+
+  empty: {
+    color: "#ccc",
+    textAlign: "center",
+    marginTop: 20,
   },
 
   card: {
