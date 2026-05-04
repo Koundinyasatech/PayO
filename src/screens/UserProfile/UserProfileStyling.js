@@ -6,6 +6,7 @@ export default StyleSheet.create({
     backgroundColor: '#2b007a',
     padding: 20,
       paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      paddingBottom:100
     
   },
  
