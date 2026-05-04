@@ -7,194 +7,108 @@ import {
   TextInput,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Header from '../components/header';
 import api from '../../api/axios';
- 
-// export default function EnterAmountScreen({ route, navigation }) {
-//   const { name, address } = route.params;
- 
-//   const [amount, setAmount] = useState('300');
- 
-//   return (
-//     <>
-//       <Header/>
-//     <LinearGradient colors={['#6A00F4', '#1A0033']} style={styles.container}>
-    
- 
-//       <Text style={styles.cancel}>Cancel</Text>
- 
-//       <Text style={styles.title}>Total Tokens Transfer Details</Text>
- 
-//       <View style={styles.amountCard}>
-//         <Text style={styles.amountText}>{amount}.00</Text>
-//         <Text style={styles.currency}>PAYO</Text>
-//       </View>
- 
-//       <Text style={styles.toText}>To - {name}</Text>
-//       <Text style={styles.address}>{address}</Text>
- 
-//       <View style={styles.row}>
-//         {['100', '300', '500', '700'].map((val) => (
-//           <TouchableOpacity
-//             key={val}
-//             style={styles.quickBtn}
-//             onPress={() => setAmount(val)}
-//           >
-//             <Text>{val}</Text>
-//           </TouchableOpacity>
-//         ))}
-//       </View>
- 
-//       <TouchableOpacity
-//         style={styles.continueBtn}
-//         onPress={() =>
-//           navigation.navigate('SendPin', {
-//             amount,
-//             name,
-//             address,
-//           })
-//         }
-//       >
-//         <Text style={styles.continueText}>Continue</Text>
-//       </TouchableOpacity>
- 
-//       <TextInput
-//         style={styles.input}
-//         value={amount}
-//         onChangeText={setAmount}
-//         keyboardType="numeric"
-//       />
-//     </LinearGradient>
-//     </>
-//   );
-// }
+import { useRoute } from "@react-navigation/native";
 
+export default function EnterAmountScreen({ navigation }) {
+  const route = useRoute();
 
+  // ✅ Safe params (works for both flows)
+  const { name = "Unknown", address = "" } = route.params || {};
 
-// import React, { useState } from 'react';
-// import {
-//   View,
-//   Text,
-//   TouchableOpacity,
-//   TextInput,
-//   StyleSheet,
-// } from 'react-native';
-
-export default function EnterAmountScreen({ navigation,name, address, setActiveTab }) {
   const [amount, setAmount] = useState('');
-  const[avaliable,setAvaliable] =useState("")
+  const [available, setAvailable] = useState("");
 
-  // useEffect(() => {
-  //   const fetchBalance = async () => {
-  //     try {
-  //       const response = await api.get('/api/wallet/balance');
-
-  //       console.log(response?.data, "997");
-
-  //       // ⚡ adjust based on your API response structure
-  //       // Example: if response.data.balance exists
-  //       setAvaliable(response?.data?.balance || "0");
-
-  //     } catch (error) {
-  //       console.log("Error fetching balance:", error);
-  //     }
-  //   }
-  
-  // }
-  
-  // );
-
+  // 🔥 Fetch balance
   useEffect(() => {
-  const fetchBalance = async () => {
-    try {
-      const response = await api.get('/api/wallet/balance'); // ✅ await هنا
+    const fetchBalance = async () => {
+      try {
+        const response = await api.get('/api/wallet/balance');
+        setAvailable(response?.data?.balance || "0");
+      } catch (error) {
+        console.log("Error fetching balance:", error);
+      }
+    };
 
-      console.log(response.data, "997"); // now you'll see real data
-
-      // adjust based on API
-      setAvaliable(response?.data?.balance || "0");
-
-    } catch (error) {
-      console.log("Error fetching balance:", error);
-    }
-  };
-
-  fetchBalance();
-}, []);
+    fetchBalance();
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={["#6A00F4", "#1A0033"]}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
 
-      {/* 🔙 Cancel Button */}
-      <TouchableOpacity onPress={() => setActiveTab('scan')}>
-        <Text style={styles.cancel}>Cancel</Text>
-      </TouchableOpacity>
+        {/* 🔙 Cancel Button */}
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.cancel}>Cancel</Text>
+        </TouchableOpacity>
 
-      {/* Title */}
-      <Text style={styles.title}>Total Tokens Transfer Details</Text>
+        {/* Title */}
+        <Text style={styles.title}>Total Tokens Transfer Details</Text>
 
-      {/* 💜 Amount Card */}
-      <View style={styles.amountCard}>
-        <View style={styles.amountRow}>
-          <TextInput
-            style={styles.amountInput}
-            value={amount}
-            onChangeText={(text) => {
-              const cleaned = text.replace(/[^0-9]/g, '');
-              setAmount(cleaned);
-            }}
-            keyboardType="numeric"
-            placeholder="0.00"
-            placeholderTextColor="#eee"
-            autoFocus
-            cursorColor="#fff"
-          />
-          {/* <Text style={styles.decimal}>.00</Text> */}
-           <Text style={styles.currency}> PAYO</Text>
+        {/* 💜 Amount Card */}
+        <View style={styles.amountCard}>
+          <View style={styles.amountRow}>
+            <TextInput
+              style={styles.amountInput}
+              value={amount}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/[^0-9]/g, '');
+                setAmount(cleaned);
+              }}
+              keyboardType="numeric"
+              placeholder="0.00"
+              placeholderTextColor="#eee"
+              cursorColor="#fff"
+            />
+            <Text style={styles.currency}> PAYO</Text>
+          </View>
         </View>
+
+        {/* User Details */}
+        <Text style={styles.toText}>To - {name}</Text>
+        <Text style={styles.address}>{address}</Text>
+
+        {/* Quick Amount Buttons */}
+        <View style={styles.row}>
+          {['100', '300', '500', '700'].map((val) => (
+            <TouchableOpacity
+              key={val}
+              style={styles.quickBtn}
+              onPress={() => setAmount(val)}
+            >
+              <Text style={styles.quickText}>{val}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Balance */}
+        <View style={styles.balanceBox}>
+          <Text style={styles.balanceText}>Available balance</Text>
+          <Text style={styles.balanceAmount}>{available}</Text>
+        </View>
+
+        {/* Continue Button */}
+        <TouchableOpacity
+          style={styles.continueBtn}
+          onPress={() =>
+            navigation.navigate('SendPin', {
+              amount,
+              name,
+              address,
+            })
+          }
+        >
+          <Text style={styles.continueText}>Continue</Text>
+        </TouchableOpacity>
+
       </View>
-
-      {/* User Details */}
-      <Text style={styles.toText}>To - {name}</Text>
-      <Text style={styles.address}>{address}</Text>
-
-      {/* Quick Amount Buttons */}
-      <View style={styles.row}>
-        {['100', '300', '500', '700'].map((val) => (
-          <TouchableOpacity
-            key={val}
-            style={styles.quickBtn}
-            onPress={() => setAmount(val)}
-          >
-            <Text style={styles.quickText}>{val}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-       <View style={styles.balanceBox}>
-                <Text style={styles.balanceText}>Available balance</Text>
-                <Text style={styles.balanceAmount}>{avaliable}</Text>
-              </View>
-
-      {/* Continue Button */}
-      <TouchableOpacity
-        style={styles.continueBtn}
-        // onPress={() => setActiveTab('scan')}
-                onPress={() =>
-          navigation.navigate('SendPin', {
-            amount,
-            name,
-            address,
-          })
-        }
-      >
-        <Text style={styles.continueText}>Continue</Text>
-      </TouchableOpacity>
-
-    </View>
+    </LinearGradient>
   );
 }
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -235,14 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     color: '#fff',
     fontWeight: '700',
-    minWidth: 0,
     textAlign: 'center',
-  },
-
-  decimal: {
-    fontSize: 28,
-    color: '#eee',
-    marginLeft: 2,
   },
 
   currency: {
@@ -282,17 +189,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  continueBtn: {
-    backgroundColor: '#16A34A',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-
-  continueText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   balanceBox: {
     backgroundColor: "#7B3FE4",
     borderRadius: 14,
@@ -313,7 +209,18 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 14,
-    minWidth: 120, // 🔥 prevents layout shift when "Loading..."
     textAlign: "right",
+  },
+
+  continueBtn: {
+    backgroundColor: '#16A34A',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
+  continueText: {
+    color: '#fff',
+    fontWeight: '600',
   },
 });
