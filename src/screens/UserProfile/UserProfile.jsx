@@ -11,19 +11,21 @@ import styles from './UserProfileStyling';
 
 export default function UserProfile({ navigation }) {
 
-  useEffect(() => {
-    const backAction = () => {
-      navigation.navigate('Home'); // fixed
-      return true;
-    };
+useEffect(() => {
+  const backAction = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack(); // go to previous screen dynamically
+    }
+    return true;
+  };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
+  const backHandler = BackHandler.addEventListener(
+    "hardwareBackPress",
+    backAction
+  );
 
-    return () => backHandler.remove();
-  }, []);
+  return () => backHandler.remove();
+}, [navigation]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -35,7 +37,9 @@ export default function UserProfile({ navigation }) {
 
           {/* HEADER */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+  onPress={() => navigation.canGoBack() && navigation.goBack()}
+>
               <Text style={styles.back}>←</Text>
             </TouchableOpacity>
 

@@ -33,16 +33,33 @@ export default function HomeScreen({ navigation }) {
     { id: '10', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
   ];
   const [avaliable, setAvaliable] = useState("");
+   const [totalBalance, setTotalBalance] = useState("");
   const displayedTransactions = showAll
     ? transactionsList
     : transactionsList.slice(0, 6);
 
+
+     useEffect(() => {
+    const fetchTotalBalance = async () => {
+      try {
+        const res = await api.get('/api/wallet/income-outcome'); // ✅ await
+
+        console.log(res.data, "000"); // ✅ actual data
+
+        setTotalBalance(res?.data || []);
+
+      } catch (err) {
+        console.log('Transaction error:', err.message);
+      }
+    };
+
+    fetchTotalBalance();
+  }, []);
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const res = await api.get('/api/wallet/transaction-list'); // ✅ await
-
-        console.log(res.data?.transactions, "000"); // ✅ actual data
+        const res = await api.get('/api/wallet/transaction-list'); 
 
         setTransactionsList(res?.data?.transactions || []);
 
@@ -57,11 +74,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await api.get('/api/wallet/balance'); // ✅ await هنا
-
-        console.log(response.data, "997"); // now you'll see real data
-
-        // adjust based on API
+        const response = await api.get('/api/wallet/balance');
         setAvaliable(response?.data?.balance || "0");
 
       } catch (error) {
@@ -236,7 +249,7 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.statLabel}>Income</Text>
 
                 <View style={styles.amountRow}>
-                  <Text style={styles.statValue}>20,000</Text>
+                  <Text style={styles.statValue}>{totalBalance?.income}</Text>
                   <Text style={styles.unit}> PAYO</Text>
                 </View>
               </View>
@@ -252,7 +265,7 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.statLabel}>Outcome</Text>
 
                 <View style={styles.amountRow}>
-                  <Text style={styles.statValue}>17,000</Text>
+                  <Text style={styles.statValue}>{totalBalance?.outcome}</Text>
                   <Text style={styles.unit}> PAYO</Text>
                 </View>
               </View>
