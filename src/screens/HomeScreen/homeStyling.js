@@ -165,12 +165,12 @@ card: {
   flexDirection: 'row',
   justifyContent: 'space-between',
   overflow: 'hidden',
-  height: 130,
+  height: 180,
 },
 
 balanceLabel: {
   color: '#aaa',
-  fontSize: 12,
+  fontSize: 14,
   marginBottom: 6,
 },
 
@@ -190,6 +190,7 @@ payoLabel: {
   color: '#22c55e',
   fontSize: 12,
   marginLeft: 6,
+  marginTop:-10,
 },
 
 cardRight: {
@@ -222,9 +223,9 @@ topRightCurve: {
   position: 'absolute',
   top: -20,
   right: -20,
-  width: 80,
-  height: 80,
-  borderRadius: 40,
+  width: 90,
+  height: 100,
+  borderRadius: 50,
   backgroundColor: '#F59E0B',
 },
 
@@ -232,8 +233,8 @@ bottomLeftCurve: {
   position: 'absolute',
   bottom: -25,
   left: -25,
-  width: 80,
-  height: 80,
+  width: 90,
+  height: 90,
   borderRadius: 40,
   backgroundColor: '#E5E7EB',
 },
@@ -327,40 +328,116 @@ actionButton: {
   },
  
 
-  statsContainer: {
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  statsCard: {
-  backgroundColor: '#1C1C1E',
-  borderRadius: 16,
-  paddingVertical: 14,
-  paddingHorizontal: 20,
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-},
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  statIcon: {
-    fontSize: 20,
-  },
-  statValue: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  statLabel: {
-    color: '#aaa',
-    fontSize: 11,
-  },
-  divider: {
-    width: 1,
-    backgroundColor: '#333',
-  },
+//   statsContainer: {
+//     marginTop: 20,
+//     paddingHorizontal: 20,
+//   },
+//   statsCard: {
+//   backgroundColor: '#1C1C1E',
+//   borderRadius: 16,
+//   paddingVertical: 14,
+//   paddingHorizontal: 20,
+//   flexDirection: 'row',
+//   justifyContent: 'space-between',
+// },
+//   statItem: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     gap: 10,
+//   },
+//   statIcon: {
+//     fontSize: 20,
+//   },
+//   statValue: {
+//     color: '#fff',
+//     fontWeight: 'bold',
+//     fontSize: 16,
+//   },
+//   statLabel: {
+//     color: '#aaa',
+//     fontSize: 11,
+//   },
+//   divider: {
+//     width: 1,
+//     backgroundColor: '#333',
+//   },
  
+statsContainer: {
+  marginTop: 20,
+  paddingHorizontal: 20,
+},
+
+statsCard: {
+  backgroundColor: "#1C1C1E",
+  borderRadius: 16,
+  paddingVertical: 16,
+  paddingHorizontal: 20,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  overflow: "hidden"
+  
+},
+
+statItem: {
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 10,
+},
+
+textBlock: {
+  flexDirection: "column",
+},
+
+statLabel: {
+  color: "#aaa",
+  fontSize: 12,
+},
+
+amountRow: {
+  flexDirection: "row",
+  alignItems: "flex-end",
+},
+
+statValue: {
+  color: "#fff",
+  fontWeight: "bold",
+  fontSize: 18,
+},
+
+unit: {
+  color: "#53D258",
+  fontSize: 10,
+  marginLeft: 4,
+},
+
+divider: {
+  width: 1,
+  height: 35,
+  backgroundColor: "#444",
+},
+
+cornerLeft: {
+  position: "absolute",
+  width: 30,
+  height: 30,
+  backgroundColor: "#fff",
+  borderRadius: 15,
+  bottom: -10,
+  left: 10,
+  opacity: 0.2
+},
+
+cornerRight: {
+  position: "absolute",
+  width: 30,
+  height: 30,
+  backgroundColor: "#fff",
+  borderRadius: 15,
+  top: -10,
+  right: 10,
+  opacity: 0.2
+},
   /* TRANSACTIONS */
   transactionsHeader: {
     marginTop: 20,
@@ -384,50 +461,121 @@ actionButton: {
     marginBottom: 120,
   },
  
- transactionItem: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  marginBottom: 16,
-  alignItems: 'center',
+//  transactionItem: {
+//   flexDirection: 'row',
+//   justifyContent: 'space-between',
+//   marginBottom: 16,
+//   alignItems: 'center',
+// },
+ 
+//   transactionLeft: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+ 
+//   transactionAvatar: {
+//     width: 36,
+//     height: 36,
+//     borderRadius: 18,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginRight: 10,
+//   },
+ 
+//   transactionName: {
+//     color: '#fff',
+//     fontSize: 13,
+//     fontWeight: '600',
+//   },
+ 
+//   transactionTime: {
+//     color: '#aaa',
+//     fontSize: 10,
+//   },
+ 
+//   transactionAmount: {
+//     fontWeight: 'bold',
+//     fontSize: 14,
+//   },
+ 
+//   amountPositive: {
+//     color: '#22c55e',
+//   },
+//   amountNegative: {
+//     color: '#f87171',
+//   },
+ 
+
+transactionItem: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: 18,
 },
- 
-  transactionLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
- 
-  transactionAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
- 
-  transactionName: {
-    color: '#fff',
-    fontSize: 13,
-    fontWeight: '600',
-  },
- 
-  transactionTime: {
-    color: '#aaa',
-    fontSize: 10,
-  },
- 
-  transactionAmount: {
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
- 
-  amountPositive: {
-    color: '#22c55e',
-  },
-  amountNegative: {
-    color: '#f87171',
-  },
- 
+
+transactionLeft: {
+  flexDirection: "row",
+  alignItems: "center",
+},
+
+transactionAvatar: {
+  width: 28,
+  height: 28,
+  borderRadius: 14,
+  justifyContent: "center",
+  alignItems: "center",
+  marginRight: 10,
+},
+
+transactionInfo: {
+  flexDirection: "column",
+},
+
+transactionName: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "600",
+    textTransform: "capitalize",
+
+},
+
+transactionTime: {
+  color: "#C7B8FF",
+  fontSize: 11,
+},
+
+amountBlock: {
+  alignItems: "flex-end",
+},
+
+amountRow: {
+  flexDirection: "row",
+  alignItems: "flex-end",
+},
+
+transactionAmount: {
+  fontSize: 18,
+  fontWeight: "bold",
+},
+
+payo: {
+  fontSize: 9,
+  color: "#8AFF9C",
+  marginLeft: 3,
+},
+
+amountPositive: {
+  color: "#56F27B",
+},
+
+amountNegative: {
+  color: "#FF6B6B",
+},
+
+statusText: {
+  fontSize: 10,
+  color: "#C7B8FF",
+},
   /* BOTTOM NAV */
  bottomNav: {
   position: 'absolute',

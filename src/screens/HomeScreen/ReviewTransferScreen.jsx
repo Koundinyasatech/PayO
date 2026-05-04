@@ -47,6 +47,7 @@ export default function ReviewTransferScreen({ route, navigation }) {
         amount,
         name: receiver?.name,
         address,
+        sender
       });
     } catch (error) {
       console.log("Save recent error:", error.response?.data || error.message);

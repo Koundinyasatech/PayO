@@ -14,6 +14,7 @@ import LinearGradient from "react-native-linear-gradient";
 import Clipboard from "@react-native-clipboard/clipboard";
 import api from "../api/axios";
 import BottomNav from "./components/bottomNav";
+import Icon from "react-native-vector-icons/Feather";
 
 
 const Receive = ({navigation}) => {
@@ -115,7 +116,17 @@ const Receive = ({navigation}) => {
 
   return (
     <LinearGradient colors={["#6A0DAD", "#2E0854"]} style={styles.container}>
-      <Text style={styles.title}>Receive Payo</Text>
+     <View style={styles.header}>
+  <TouchableOpacity
+    style={styles.backBtn}
+    onPress={() => navigation.goBack()}
+  >
+    <Text style={styles.back}><Icon name="arrow-left" size={22} color="#fff" /></Text>
+  </TouchableOpacity>
+
+  <Text style={styles.title}>Receive Payo</Text>
+</View>
+      
 
       {/* ================= QR ================= */}
       <View style={styles.qrContainer}>
@@ -176,12 +187,29 @@ const styles = StyleSheet.create({
     paddingTop: 80,
     alignItems: "center",
   },
-  title: {
-    color: "#fff",
-    fontSize: 20,
-    marginBottom: 20,
-    fontWeight: "600",
-  },
+
+  header: {
+  height: 50,
+  justifyContent: "center",
+  alignItems: "center",
+  position: "relative",
+},
+
+backBtn: {
+  position: "absolute",
+  left: 15,
+},
+
+back: {
+  fontSize: 22,
+  color: "#fff",
+},
+
+title: {
+  fontSize: 18,
+  fontWeight: "600",
+  color: "#fff",
+},
   qrContainer: {
     backgroundColor: "#fff",
     padding: 15,
