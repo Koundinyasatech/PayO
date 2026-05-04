@@ -34,8 +34,8 @@ export default function HomeScreen({ navigation }) {
   ];
   const [avaliable, setAvaliable] = useState("");
   const displayedTransactions = showAll
-  ? transactionsList
-  : transactionsList.slice(0, 6);
+    ? transactionsList
+    : transactionsList.slice(0, 6);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -92,154 +92,101 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-  //  <SafeAreaView>
-     <View style={styles.container}>
+    //  <SafeAreaView>
+    <View style={styles.container}>
 
       <Header />
 
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        {/* <View style={styles.cardContainer}>
-          <View style={styles.cardWrapper}>
 
+        <View style={styles.cardContainer}>
+          <View style={styles.card}>
+
+            {/* Decorative Shapes */}
             <View style={styles.topRightCurve} />
             <View style={styles.bottomLeftCurve} />
 
-            <View style={styles.cardContent}>
-
+            {/* LEFT CONTENT */}
+            <View>
               <Text style={styles.balanceLabel}>Total Balance</Text>
 
-              <View style={styles.balanceTopRight}>
+              <View style={styles.balanceRow}>
                 <Text style={styles.balanceAmount}>
-                  {balanceVisible ? `₹ ${balance}` : '* * * * *'}
+                  {/* {balanceVisible ? `₹ ${balance}` : '* * * * *'} */}
+                  {balanceVisible ? `P ${avaliable}` : '* * * * *'}
                 </Text>
-                <Text style={styles.payoLabel}>PAYO</Text>
+                <Text style={styles.payoLabel}>  PAYO</Text>
               </View>
+            </View>
 
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setBalanceVisible(!balanceVisible)}
-              >
+            {/* RIGHT CONTENT */}
+            <View style={styles.cardRight}>
+
+              {/* Eye Icon */}
+              <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
                 <Icon
-                  name={balanceVisible ? 'eye-off' : 'eye'}
+                  name={balanceVisible ? "eye-off" : "eye"}
                   size={18}
                   color="#fff"
                 />
               </TouchableOpacity>
 
-              <View style={styles.walletRow}>
+              {/* Wallet Row */}
+              <TouchableOpacity style={styles.walletRow}>
                 <Text style={styles.walletText}>My Wallet</Text>
+
                 <View style={styles.arrowCircle}>
-                  <Icon name="arrow-right" size={16} color="#000" />
+                  <Icon name="arrow-right" size={14} color="#000" />
                 </View>
-              </View>
-
-            </View>
-
-            <View style={styles.cardRight}>
-              <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
-                <Text style={{ fontSize: 16, color: '#FFD700' }}>👁</Text>
               </TouchableOpacity>
-              <View style={styles.walletDecoration} />
+
             </View>
           </View>
 
-       
-          <View style={styles.cardFooter}>
-            <Text style={styles.walletLabel}>My Wallets</Text>
-          <TouchableOpacity onPress={() => setShowAll(!showAll)}>
-
-</TouchableOpacity>
-          </View>
-        </View> */}
-
-<View style={styles.cardContainer}>
-  <View style={styles.card}>
-
-    {/* Decorative Shapes */}
-    <View style={styles.topRightCurve} />
-    <View style={styles.bottomLeftCurve} />
-
-    {/* LEFT CONTENT */}
-    <View>
-      <Text style={styles.balanceLabel}>Total Balance</Text>
-
-      <View style={styles.balanceRow}>
-        <Text style={styles.balanceAmount}>
-          {/* {balanceVisible ? `₹ ${balance}` : '* * * * *'} */}
-          {balanceVisible ? `P ${avaliable}` : '* * * * *'}
-        </Text>
-        <Text style={styles.payoLabel}> PAYO</Text>
-      </View>
-    </View>
-
-    {/* RIGHT CONTENT */}
-    <View style={styles.cardRight}>
-
-      {/* Eye Icon */}
-      <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
-        <Icon
-          name={balanceVisible ? "eye-off" : "eye"}
-          size={18}
-          color="#fff"
-        />
-      </TouchableOpacity>
-
-      {/* Wallet Row */}
-      <TouchableOpacity style={styles.walletRow}>
-        <Text style={styles.walletText}>My Wallet</Text>
-
-        <View style={styles.arrowCircle}>
-          <Icon name="arrow-right" size={14} color="#000" />
-        </View>
-      </TouchableOpacity>
-
-    </View>
-  </View>
-
-  {/* Footer */}
-  {/* <View style={styles.cardFooter}>
+          {/* Footer */}
+          {/* <View style={styles.cardFooter}>
     <Text style={styles.walletLabel}>My Wallets</Text>
   </View> */}
-</View>
-     
+        </View>
+
         <View style={styles.actionsContainer}>
 
 
 
           <View style={styles.actions}>
 
-           
+
             <TouchableOpacity style={styles.button}
-            
+
               onPress={() => navigation.navigate('SendScreen', { tab: 'address' })}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↗ */}
-                   <Icon name="arrow-up-right" size={14} color="#fff" />
-                  
+                  <Icon name="arrow-up-right" size={14} color="#fff" />
+
                 </Text>
               </View>
               <Text style={styles.label}>Send</Text>
             </TouchableOpacity>
 
-          
+
             <View style={styles.connector} />
 
-           
+
             <TouchableOpacity style={styles.button}
               onPress={() => navigation.navigate('Receive')}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↙ */}
-                   <Icon name="arrow-down" size={14} color="#fff" />
+                  <Icon name="arrow-down" size={14} color="#fff" />
                 </Text>
               </View>
               <Text style={styles.label}>Receive</Text>
             </TouchableOpacity>
 
-         
+
             <View style={styles.connector} />
 
             {/* REFER */}
@@ -259,91 +206,160 @@ export default function HomeScreen({ navigation }) {
 
         </View>
 
-        <View style={styles.statsContainer}>
+        {/* <View style={styles.statsContainer}>
           <View style={styles.statsCard}>
             <View style={styles.statItem}>
-              <Text style={styles.statIcon}>📈</Text>
+              <Text style={styles.statIcon}>
+                 <Icon name="arrow-up" size={18} color="#53D258" />
+              </Text>
               <Text style={styles.statValue}>₹ {income}</Text>
               <Text style={styles.statLabel}>Income</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.statItem}>
-              <Text style={styles.statIcon}>📉</Text>
+              <Text style={styles.statIcon}>
+                     <Icon name="arrow-down" size={18} color="#E25C5C" />
+              </Text>
               <Text style={styles.statValue}>₹ {outcome}</Text>
               <Text style={styles.statLabel}>Outcome</Text>
             </View>
           </View>
-        </View>
+        </View> */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statsCard}>
 
-        
+            {/* Income */}
+            <View style={styles.statItem}>
+              <Icon name="arrow-down" size={28} color="#53D258" />
 
-<View style={styles.transactionsHeader}>
-  <Text style={styles.transactionsTitle}>Recent Transaction</Text>
+              <View style={styles.textBlock}>
+                <Text style={styles.statLabel}>Income</Text>
 
-  <TouchableOpacity onPress={() => setShowAll(!showAll)}>
-    <Text style={styles.viewAllText}>
-      {showAll ? "Show Less ›" : "View All ›"}
-    </Text>
-  </TouchableOpacity>
-</View>
+                <View style={styles.amountRow}>
+                  <Text style={styles.statValue}>20,000</Text>
+                  <Text style={styles.unit}> PAYO</Text>
+                </View>
+              </View>
+            </View>
 
-{transactionsList?.length > 0 ? (
-  <View style={styles.transactionsList}>
-    {displayedTransactions.map((transaction, index) => (
-      <View key={index} style={styles.transactionItem}>
-        
-        <View style={styles.transactionLeft}>
-          <View
-            style={[
-              styles.transactionAvatar,
-              {
-                backgroundColor:
-                  transaction.amount > 0 ? "#4CAF50" : "#F44336",
-              },
-            ]}
-          >
-            <Text>
-              {transaction.amount > 0 ? "↓" : "↑"}
-            </Text>
+            <View style={styles.divider} />
+
+            {/* Outcome */}
+            <View style={styles.statItem}>
+              <Icon name="arrow-up" size={28} color="#FF6B6B" />
+
+              <View style={styles.textBlock}>
+                <Text style={styles.statLabel}>Outcome</Text>
+
+                <View style={styles.amountRow}>
+                  <Text style={styles.statValue}>17,000</Text>
+                  <Text style={styles.unit}> PAYO</Text>
+                </View>
+              </View>
+            </View>
+
           </View>
 
-          <View style={styles.transactionInfo}>
-            <Text style={styles.transactionName}>
-              {transaction.name}
-            </Text>
-
-            <Text style={styles.transactionTime}>
-              {new Date(transaction.createdAt).toLocaleString()}
-            </Text>
-          </View>
+          {/* white corners */}
+          {/* <View style={styles.cornerLeft} />
+          <View style={styles.cornerRight} /> */}
         </View>
 
-        <Text
-          style={[
-            styles.transactionAmount,
-            transaction.amount > 0
-              ? styles.amountPositive
-              : styles.amountNegative,
-          ]}
-        >
-          {transaction.amount > 0 ? "+" : ""}
-          {transaction.amount}
-        </Text>
-      </View>
-    ))}
-  </View>
-) : (
-  <Text style={{ textAlign: 'center', marginTop: 20 }}>
-    No transactions found
-  </Text>
-)}
-       
+
+
+
+        <View style={styles.transactionsHeader}>
+          <Text style={styles.transactionsTitle}>Recent Transaction</Text>
+
+          <TouchableOpacity onPress={() => setShowAll(!showAll)}>
+            <Text style={styles.viewAllText}>
+              {showAll ? "Show Less ›" : "View All ›"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {transactionsList?.length > 0 ? (
+          <View style={styles.transactionsList}>
+            {displayedTransactions.map((transaction, index) => (
+
+              <TouchableOpacity
+                key={index}
+                style={styles.transactionItem}
+                activeOpacity={0.7}
+                onPress={() =>
+                  navigation.navigate("TransactionDetailScreen", {
+                    transaction_id: transaction?.id,
+                  })
+                }
+              >
+                {/* LEFT SIDE */}
+                <View style={styles.transactionLeft}>
+
+                  <View
+                    style={[
+                      styles.transactionAvatar,
+                      {
+                        backgroundColor:
+                          transaction.amount > 0 ? "#56F27B" : "#E5E7EB",
+                      },
+                    ]}
+                  >
+                    <Text style={{ fontSize: 20 }}>
+                      {transaction?.amount > 0 ? 
+                      <Icon name="arrow-down" size={18} color="black" /> : 
+                      <Icon name="arrow-up-right" size={18} color="black" />}
+                    </Text>
+                  </View>
+
+                  <View style={styles.transactionInfo}>
+                    <Text style={styles.transactionName}>
+                      {transaction.name}
+                    </Text>
+
+                    <Text style={styles.transactionTime}>
+                      {new Date(transaction.createdAt).toLocaleString()}
+                    </Text>
+                  </View>
+                </View>
+
+                {/* RIGHT SIDE */}
+                <View style={styles.amountBlock}>
+                  <View style={styles.amountRow}>
+                    <Text
+                      style={[
+                        styles.transactionAmount,
+                        transaction.amount > 0
+                          ? styles.amountPositive
+                          : styles.amountNegative,
+                      ]}
+                    >
+                      {transaction.amount > 0 ? "+" : ""}
+                      {transaction.amount}
+                    </Text>
+
+                    {/* <Text style={styles.payo}> PAYO</Text> */}
+                  </View>
+
+                  <Text style={styles.statusText}>
+                    {transaction.amount > 0 ? "Received" : "sent"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+            ))}
+          </View>
+        ) : (
+          <Text style={{ textAlign: "center", marginTop: 20 }}>
+            No transactions found
+          </Text>
+        )}
+
 
       </ScrollView>
-      
 
-         </View>
-         
-  //  </SafeAreaView>
+
+    </View>
+
+    //  </SafeAreaView>
   );
 }

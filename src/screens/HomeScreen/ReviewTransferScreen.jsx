@@ -334,6 +334,7 @@ export default function ReviewTransferScreen({ route, navigation }) {
               amount,
               name: receiver?.name,
               address,
+              sender
             })
           }
         >

@@ -235,7 +235,7 @@ export default function TransactionHistory({ navigation }) {
 }
 
 /* 🔥 ITEM */
-const Item = ({ item, formatTime, navigation }) => {
+export const Item = ({ item, formatTime, navigation }) => {
   const isReceived = Number(item.amount) > 0;
 
   return (
