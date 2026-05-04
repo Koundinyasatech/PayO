@@ -169,5 +169,18 @@ export default StyleSheet.create({
   green: {
     color: '#00ff99',
   },
+  logoutBtn: {
+  marginTop: 20,
+  backgroundColor: '#ff4d4d',
+  padding: 15,
+  borderRadius: 12,
+  alignItems: 'center',
+},
+
+logoutText: {
+  color: '#fff',
+  fontWeight: '700',
+  fontSize: 16,
+},
 });
  
