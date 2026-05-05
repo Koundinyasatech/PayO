@@ -61,9 +61,10 @@ const handleQR = async (value) => {
     const res = await api.post('api/wallet/scan-qr', { qrData: value });
 
     const user = {
-      name: res.data.name,
+      name: res?.data?.name,
       address: res.data.walletAddress,
     };
+    console.log(user,"sowmyacheck7")
 
     setScannedData(user);
 

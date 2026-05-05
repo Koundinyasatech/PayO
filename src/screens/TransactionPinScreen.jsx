@@ -4,7 +4,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert
+  Alert,
+  Platform,
+  StatusBar
 } from 'react-native';
 
 import api from '../api/axios';
@@ -193,7 +195,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAEAEA',
     padding: 20,
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
 
   // back: {

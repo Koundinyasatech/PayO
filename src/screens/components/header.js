@@ -29,11 +29,11 @@ export default function Header({ type = "default", title, id }) {
       <View style={styles.headerRight}>
         
         {/* ✅ NOTIFICATION CLICK */}
-        <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Icon name="bell" size={20} color="#fff" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.profileIcon}>
+        <TouchableOpacity onPress={() => navigation.navigate('UserProfile')} style={styles.profileIcon}>
           <Icon name="user" size={16} color="#000" />
         </TouchableOpacity>
       </View>
