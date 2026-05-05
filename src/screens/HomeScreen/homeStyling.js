@@ -440,7 +440,7 @@ cornerRight: {
 },
   /* TRANSACTIONS */
   transactionsHeader: {
-    marginTop: 20,
+    marginTop: 32,
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -460,6 +460,18 @@ cornerRight: {
     marginTop: 10,
     marginBottom: 120,
   },
+
+  noTransactionContainer: {
+  height:250,
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+noTransactionText: {
+  fontSize: 16,
+  color: "#999",
+  textAlign: "center",
+},
  
 //  transactionItem: {
 //   flexDirection: 'row',

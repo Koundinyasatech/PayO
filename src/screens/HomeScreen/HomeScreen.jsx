@@ -362,9 +362,11 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
         ) : (
-          <Text style={{ textAlign: "center", marginTop: 20 }}>
-            No transactions found
-          </Text>
+          <View style={styles.noTransactionContainer}>
+  <Text style={styles.noTransactionText}>
+    No transactions found
+  </Text>
+</View>
         )}
 
 

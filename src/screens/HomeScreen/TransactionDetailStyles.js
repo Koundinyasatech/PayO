@@ -12,6 +12,7 @@ export default StyleSheet.create({
   justifyContent: "center",
   alignItems: "center",
   position: "relative",
+
 },
 
 backBtn: {
@@ -27,6 +28,7 @@ headerText: {
 
   section: {
     marginBottom: 18,
+      paddingTop:30
   },
 
   smallLabel: {
@@ -60,6 +62,8 @@ headerText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+    textTransform:"capitalize",
+    width:"70%"
   },
 
   amount: {

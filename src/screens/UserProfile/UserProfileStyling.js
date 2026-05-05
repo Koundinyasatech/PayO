@@ -82,12 +82,15 @@ export default StyleSheet.create({
  
   token: {
     color: '#00ff99',
+    fontSize: 14,
+
   },
  
   transactions: {
     color: '#fff',
     fontSize: 18,
     fontWeight: '700',
+    textAlign:"center"
   },
  
   divider: {
@@ -169,16 +172,18 @@ export default StyleSheet.create({
   green: {
     color: '#00ff99',
   },
-  logoutBtn: {
+logoutBtn: {
   marginTop: 20,
-  backgroundColor: '#ff4d4d',
+  borderWidth: 1.5,
+  borderColor: '#ff4d4d',
   padding: 15,
   borderRadius: 12,
   alignItems: 'center',
+  backgroundColor: 'transparent'
 },
 
 logoutText: {
-  color: '#fff',
+  color: '#ff4d4d',
   fontWeight: '700',
   fontSize: 16,
 },
