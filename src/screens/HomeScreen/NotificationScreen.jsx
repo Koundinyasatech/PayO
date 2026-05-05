@@ -7,9 +7,12 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Platform,
+  StatusBar,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import api from "../../api/axios"; // ✅ your existing axios instance
+import Icon from "react-native-vector-icons/Feather";
  
 export default function NotificationScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("Today");
@@ -23,7 +26,7 @@ export default function NotificationScreen({ navigation }) {
   // ✅ API CALL HERE (using your axios instance)
   const fetchNotifications = async () => {
     try {
-      const res = await api.get("/notifications");
+      const res = await api.get("/api/wallet/notifications");
       setData(res.data);
     } catch (err) {
       console.log("API ERROR:", err);
@@ -32,7 +35,6 @@ export default function NotificationScreen({ navigation }) {
     }
   };
  
-  // ✅ FILTER LOGIC
   const filterData = () => {
     const now = new Date();
  
@@ -99,7 +101,10 @@ export default function NotificationScreen({ navigation }) {
         {/* HEADER */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.back}>←</Text>
+            <Text style={styles.back}>
+
+       <Icon name="arrow-left" size={22} color="#fff" />
+            </Text>
           </TouchableOpacity>
  
           <Text style={styles.headerTitle}>Notifications</Text>
@@ -138,7 +143,7 @@ export default function NotificationScreen({ navigation }) {
         ) : (
           <FlatList
             data={filterData()}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item?.id?.toString()}
             renderItem={renderItem}
             contentContainerStyle={{ paddingTop: 15 }}
             showsVerticalScrollIndicator={false}
@@ -154,6 +159,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
  
   header: {

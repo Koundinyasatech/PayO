@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -8,9 +8,10 @@ import {
   StyleSheet,
 } from "react-native";
 
+import { useFocusEffect } from "@react-navigation/native";
 import api from "../../api/axios";
 
-export default function Recents({ navigation }) {
+export default function Recents({ navigation, setSelectedUser, setActiveTab }) {
   const [recents, setRecents] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -18,18 +19,38 @@ export default function Recents({ navigation }) {
     try {
       setLoading(true);
       const res = await api.get("api/wallet/recents-page");
-      setRecents(res.data);
+
+      let data = res.data || [];
+
+      // 🔁 Remove duplicates (by walletAddress)
+      const uniqueMap = new Map();
+      data.forEach((item) => {
+        uniqueMap.set(item.walletAddress, item);
+      });
+
+      let uniqueList = Array.from(uniqueMap.values());
+
+      // ⭐ Sort by latest (newest first)
+      uniqueList.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      // 🧠 Limit to last 5 users
+      const finalList = uniqueList.slice(0, 5);
+
+      setRecents(finalList);
     } catch (err) {
       console.log("Recents error:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
   };
-  console.log("check")
 
-  useEffect(() => {
-    fetchRecents();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchRecents();
+    }, [])
+  );
 
   const formatTime = (timestamp) => {
     const now = new Date();
@@ -42,38 +63,41 @@ export default function Recents({ navigation }) {
     return date.toLocaleDateString();
   };
 
+  
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() =>
-        navigation.navigate("enterAmount", {
-          address: item.walletAddress,
-          name: item.name,
-        })
-      }
-    >
-      <View style={styles.left}>
-        <View style={styles.icon}>
-          <Text style={{ fontSize: 12 }}>↗</Text>
-        </View>
+  <TouchableOpacity
+    style={styles.card}
+    onPress={() => {
+      setSelectedUser({
+        name: item.receiverName,
+        address: item.walletAddress,
+      });
 
-        <View>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.address}>{item.walletAddress}</Text>
-        </View>
+      setActiveTab("amount");
+    }}
+  >
+    <View style={styles.left}>
+      <View style={styles.icon}>
+        <Text style={{ fontSize: 12 }}>↗</Text>
       </View>
 
-      <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
-    </TouchableOpacity>
-  );
+      <View>
+        <Text style={styles.name}>{item.receiverName}</Text>
+        <Text style={styles.address}>{item.walletAddress}</Text>
+      </View>
+    </View>
 
+    <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
+  </TouchableOpacity>
+);
   return (
-    <View style={styles.container}>
-      
+   <View style={styles.container}>
       <Text style={styles.section}>Recent Contacts</Text>
 
       {loading ? (
         <ActivityIndicator color="#fff" />
+      ) : recents.length === 0 ? (
+        <Text style={styles.empty}>No recent contacts</Text>
       ) : (
         <FlatList
           data={recents}
@@ -82,20 +106,25 @@ export default function Recents({ navigation }) {
           showsVerticalScrollIndicator={false}
         />
       )}
-
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-  },
+container: {
+  paddingTop: 10,
+},
 
   section: {
     color: "#fff",
     fontSize: 14,
     marginBottom: 12,
+  },
+
+  empty: {
+    color: "#ccc",
+    textAlign: "center",
+    marginTop: 20,
   },
 
   card: {

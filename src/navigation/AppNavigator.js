@@ -48,6 +48,7 @@ import AccountDetails from "../screens/Bank/AccountDetails";
 import AccountNumber from "../screens/Bank/AccountNumber";
 import UpiPin from "../screens/Bank/UpiPin";
 import SuccessScreen from "../screens/Bank/SuccessScreen";
+import UserProfile from '../screens/UserProfile/UserProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -77,6 +78,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Main" component={BottomTabs} />
         <Stack.Screen name="Buttom" component={BottomNav} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
 
         {/* SEND FLOW */}
         <Stack.Screen name="SendScreen" component={SendScreen} />
@@ -101,6 +103,7 @@ export default function AppNavigator() {
         <Stack.Screen name="UpiPin" component={UpiPin} />
         <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
         <Stack.Screen name="Notifications" component={NotificationScreen} />
+          
 
 
       </Stack.Navigator>

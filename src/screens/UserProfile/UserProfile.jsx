@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,37 +6,159 @@ import {
   SafeAreaView,
   BackHandler,
   ScrollView,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
+import * as Keychain from 'react-native-keychain'; // ✅ added
 import styles from './UserProfileStyling';
+import api from '../../api/axios';
+import Clipboard from "@react-native-clipboard/clipboard";
+import Share from "react-native-share";
+import RNFS from "react-native-fs";
+import Icon from "react-native-vector-icons/Feather";
 
 export default function UserProfile({ navigation }) {
+  const[profiledata,setProfileData]=useState({});
+  const [address, setAddress] = useState("");
+const [qr, setQr] = useState(null);
 
-  useEffect(() => {
-    const backAction = () => {
-      navigation.navigate('home'); // fixed
-      return true;
+useEffect(() => {
+  const backAction = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack(); // go to previous screen dynamically
+    }
+    return true;
+  };
+
+  const backHandler = BackHandler.addEventListener(
+    "hardwareBackPress",
+    backAction
+  );
+
+  return () => backHandler.remove();
+}, [navigation]);
+
+const fetchQr = async () => {
+  try {
+    const res = await api.get("api/wallet/generate-address");
+
+    const data = res.data;
+
+    const qrImage = data.qr?.startsWith("data:image")
+      ? data.qr
+      : `data:image/png;base64,${data.qr}`;
+
+    setQr(qrImage);
+    setAddress(data.address);
+
+    return { qrImage, address: data.address };
+
+  } catch (err) {
+    console.log("QR ERROR:", err.message);
+    return null;
+  }
+};
+
+ useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const res = await api.get('/api/wallet/profile');
+        console.log(res.data.data,"9898")
+        setProfileData(res?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
     };
+    fetchProfileData();
+  }, [navigation]);
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction
-    );
 
-    return () => backHandler.remove();
-  }, []);
+  // ✅ SECURE LOGOUT (FIXED)
+
+const handleCopy = () => {
+  const walletAddress = profiledata?.walletAddress;
+
+  if (!walletAddress) return;
+
+  Clipboard.setString(walletAddress);
+
+  if (Platform.OS === "android") {
+    ToastAndroid.show("Address copied", ToastAndroid.SHORT);
+  }
+};
+
+  // ================= SHARE =================
+//   const handleShare = async () => {
+//   try {
+//     if (!qr) return;
+//     // Extract base64 part
+//     const base64Data = qr.replace(/^data:image\/png;base64,/, "");
+//     const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
+//     // Save QR image to file
+//     await RNFS.writeFile(filePath, base64Data, "base64");
+//     // Share image + message
+//     await Share.open({
+//       url: "file://" + filePath,
+//       message: `Send PAYO to this address:\n${address}`,
+//     });
+//   } catch (error) {
+//     console.log("Share error:", error);
+//   }
+// };
+
+const handleShare = async () => {
+  try {
+
+    // fetch QR first
+    const result = await fetchQr();
+
+    if (!result) return;
+
+    const { qrImage, address } = result;
+
+    const base64Data = qrImage.replace(/^data:image\/png;base64,/, "");
+
+    const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
+
+    await RNFS.writeFile(filePath, base64Data, "base64");
+
+    await Share.open({
+      url: "file://" + filePath,
+      message: `Send PAYO to this address:\n${address}`,
+    });
+
+  } catch (error) {
+    console.log("Share error:", error);
+  }
+};
+
+  const handleLogout = async () => {
+    try {
+      await Keychain.resetGenericPassword(); // clear token
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }], // keep your route name
+      });
+
+    } catch (error) {
+      console.log('Logout error:', error);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      >
+     
         <View style={styles.container}>
 
           {/* HEADER */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={styles.back}>←</Text>
+          <TouchableOpacity
+  onPress={() => navigation.canGoBack() && navigation.goBack()}
+>
+              <Text style={styles.back}>
+                      <Icon name="arrow-left" size={22} color="#fff" />
+              </Text>
             </TouchableOpacity>
 
             <Text style={styles.title}>Profile</Text>
@@ -50,16 +172,21 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.profileText}>👤</Text>
             </View>
 
-            <Text style={styles.phone}>+91 8332 285 718</Text>
+            <Text style={styles.phone}>+91 {profiledata?.mobile}</Text>
             <Text style={styles.verified}>• KYC VERIFIED</Text>
           </View>
 
           {/* BALANCE CARD */}
+
+           <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 40 }}
+      >
           <View style={styles.balanceCard}>
             <View>
               <Text style={styles.label}>Balance</Text>
               <Text style={styles.balance}>
-                8,420.50 <Text style={styles.token}>PAYO</Text>
+                  {profiledata?.balance} <Text style={styles.token}>PAYO</Text>
               </Text>
             </View>
 
@@ -67,23 +194,23 @@ export default function UserProfile({ navigation }) {
 
             <View>
               <Text style={styles.label}>Transactions</Text>
-              <Text style={styles.transactions}>20</Text>
+              <Text style={styles.transactions}>{profiledata?.transactionCount}</Text>
             </View>
           </View>
 
           {/* REFERRAL BOX */}
           <View style={styles.referralBox}>
             <Text style={styles.refLabel}>Your Referral code</Text>
-            <Text style={styles.refCode}>PAYO0872</Text>
+            <Text style={styles.refCode}>{profiledata?.referralCode}</Text>
           </View>
 
           {/* BUTTONS */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity style={styles.btn}  onPress={handleCopy}>
               <Text style={styles.btnText}>Copy address</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity style={styles.btn}  onPress={handleShare}>
               <Text style={styles.btnText}>Share address</Text>
             </TouchableOpacity>
           </View>
@@ -104,7 +231,7 @@ export default function UserProfile({ navigation }) {
 
             <View style={styles.row}>
               <Text style={styles.item}>Linked Mobile</Text>
-              <Text style={styles.value}>+91 8332 285 718</Text>
+              <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
             </View>
           </View>
 
@@ -124,12 +251,17 @@ export default function UserProfile({ navigation }) {
 
             <View style={styles.row}>
               <Text style={styles.item}>Linked Mobile</Text>
-              <Text style={styles.value}>+91 8332 285 718</Text>
+              <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
             </View>
           </View>
 
+          {/* ✅ LOGOUT BUTTON */}
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+</ScrollView>
         </View>
-      </ScrollView>
+      
     </SafeAreaView>
   );
 }
