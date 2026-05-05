@@ -145,7 +145,7 @@ export default function HomeScreen({ navigation }) {
               </TouchableOpacity>
 
               {/* Wallet Row */}
-              <TouchableOpacity style={styles.walletRow}>
+              <TouchableOpacity style={styles.walletRow} onPress={() => navigation.navigate('Wallets')} >
                 <Text style={styles.walletText}>My Wallet</Text>
 
                 <View style={styles.arrowCircle}>
