@@ -15,6 +15,11 @@ import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
+
+/* ✅ ADD THIS */
+// import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+
+/* HOME FLOW */
 import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
@@ -22,19 +27,13 @@ import ReferEarn from '../screens/HomeScreen/ReferEarn';
 import TransactionDetailScreen from '../screens/HomeScreen/TransactionDetailScreen';
 import NotificationScreen from '../screens/HomeScreen/NotificationScreen';
 
-
-
-/* ✅ IMPORT BOTTOM TABS */
+/* TABS */
 import BottomTabs from '../screens/components/BottomTabs';
 
-/* SCAN + RECEIVE */
+/* OTHER SCREENS */
 import ScanQRScreen from '../screens/ScanQRScreen';
 import Receive from '../screens/Receive';
-
-/* PAYMENT FLOW */
 import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
-
-
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
 import SendScreen from '../screens/components/sendScreen';
@@ -49,6 +48,7 @@ import AccountNumber from "../screens/Bank/AccountNumber";
 import UpiPin from "../screens/Bank/UpiPin";
 import SuccessScreen from "../screens/Bank/SuccessScreen";
 import UserProfile from '../screens/UserProfile/UserProfile';
+import ForgotPassword from '../screens/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -69,42 +69,42 @@ export default function AppNavigator() {
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
+
+        {/* ✅ FORGOT PASSWORD ADDED */}
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+
+        {/* MAIN APP */}
+        <Stack.Screen name="Main" component={BottomTabs} />
+        <Stack.Screen name="Buttom" component={BottomNav} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Notifications" component={NotificationScreen} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
+
+        {/* TRANSACTIONS */}
         <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="review" component={ReviewTransferScreen} />
         <Stack.Screen name="ReferEarn" component={ReferEarn} />
-
-        {/* ✅ MAIN APP WITH BOTTOM TABS */}
-        <Stack.Screen name="Main" component={BottomTabs} />
-        <Stack.Screen name="Buttom" component={BottomNav} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="UserProfile" component={UserProfile} />
+        <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
 
         {/* SEND FLOW */}
         <Stack.Screen name="SendScreen" component={SendScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
-         <Stack.Screen name="recents" component={Recents} />
-        
-        
+        <Stack.Screen name="recents" component={Recents} />
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
         <Stack.Screen name="ScanButton" component={ScanButtonQRScreen} />
-        <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
-        
-        
-        {/* BANK DETAILS */}
+
+        {/* BANK */}
         <Stack.Screen name="AddBankHome" component={AddBankHome} />
         <Stack.Screen name="AccountDetails" component={AccountDetails} />
         <Stack.Screen name="AccountNumber" component={AccountNumber} />
         <Stack.Screen name="UpiPin" component={UpiPin} />
         <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
-        <Stack.Screen name="Notifications" component={NotificationScreen} />
-          
-
 
       </Stack.Navigator>
     </NavigationContainer>
