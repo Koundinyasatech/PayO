@@ -8,56 +8,56 @@ import {
 } from 'react-native';
 import api from '../api/axios';
 import * as Keychain from 'react-native-keychain';
-
+ 
 export default function LoginScreen({ navigation }) {
-
+ 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState("");
-
+ 
   const [errors, setErrors] = useState({
     email: '',
     password: '',
   });
-
+ 
   const validate = () => {
     let valid = true;
     let newErrors = { email: '', password: '' };
-
+ 
     if (!email.trim()) {
       newErrors.email = "Email is required";
       valid = false;
     }
-
+ 
     if (!password.trim()) {
       newErrors.password = "Password is required";
       valid = false;
     }
-
+ 
     setErrors(newErrors);
     return valid;
   };
-
+ 
   const handleSubmit = async () => {
     if (!validate()) return;
-
+ 
     try {
       const response = await api.post('/api/auth/login', {
         email,
         password,
       });
-
+ 
       if (response?.data?.message === "Login success") {
         const token = response?.data?.token;
-
+ 
         await Keychain.setGenericPassword("userToken", token);
-
+ 
         setMessage("");
         navigation.navigate('Main');
       } else {
         setMessage(response?.data?.message || "Login failed");
       }
-
+ 
     } catch (error) {
       setMessage(
         error?.response?.data?.message ||
@@ -66,34 +66,33 @@ export default function LoginScreen({ navigation }) {
       );
     }
   };
-
+ 
   return (
     <View style={styles.container}>
-
-      {/* HEADER */}
+ 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>←</Text>
         </TouchableOpacity>
-
+ 
         <Text style={styles.titleCentered}>
           Login to Payo
         </Text>
       </View>
-
+ 
       <Text style={styles.sub}>
         Welcome back! Please enter your details.
       </Text>
-
+ 
       {message ? (
         <Text style={{ color: 'red', margin: 10, textAlign: 'center' }}>
           {message}
         </Text>
       ) : null}
-
+ 
       {/* EMAIL */}
       <Text style={styles.label}>Email ID</Text>
-
+ 
       <TextInput
         style={[styles.input, errors.email && { borderColor: 'red' }]}
         placeholder="your@email.com"
@@ -103,12 +102,16 @@ export default function LoginScreen({ navigation }) {
           setErrors(prev => ({ ...prev, email: '' }));
         }}
       />
-
-      {errors.email && <Text style={{ color: 'red' }}>{errors.email}</Text>}
-
+ 
+      {errors.email ? (
+        <Text style={{ color: 'red', marginBottom: 5 }}>
+          {errors.email}
+        </Text>
+      ) : null}
+ 
       {/* PASSWORD */}
       <Text style={styles.label}>Password</Text>
-
+ 
       <TextInput
         style={[styles.input, errors.password && { borderColor: 'red' }]}
         placeholder="Your password"
@@ -119,39 +122,36 @@ export default function LoginScreen({ navigation }) {
           setErrors(prev => ({ ...prev, password: '' }));
         }}
       />
-
-      {errors.password && <Text style={{ color: 'red' }}>{errors.password}</Text>}
-
-      {/* ✅ FIXED FORGOT PASSWORD */}
-      <TouchableOpacity
-        onPress={() => navigation.navigate('ForgotPassword')}
-      >
-        <Text style={styles.forgot}>Forgot Password?</Text>
-      </TouchableOpacity>
-
-      {/* SUBMIT */}
+ 
+      {errors.password ? (
+        <Text style={{ color: 'red', marginBottom: 5 }}>
+          {errors.password}
+        </Text>
+      ) : null}
+ 
+      <Text style={styles.forgot}>Forgot Password?</Text>
+ 
       <TouchableOpacity
         style={styles.button}
         onPress={handleSubmit}
       >
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
-
-      {/* OR */}
+ 
       <View style={styles.orRow}>
         <View style={styles.line} />
         <Text style={styles.or}>OR</Text>
         <View style={styles.line} />
       </View>
-
-      {/* OTP LOGIN */}
+ 
+      {/* ✅ LOGIN WITH OTP (UPDATED) */}
       <TouchableOpacity
         style={styles.otpBtn}
         onPress={() => navigation.navigate('RegisterMobile', { mode: 'login' })}
       >
         <Text style={styles.otpText}>Login with OTP</Text>
       </TouchableOpacity>
-
+ 
       {/* REGISTER */}
       <Text style={styles.registerText}>
         Don’t have an account?{' '}
@@ -162,7 +162,7 @@ export default function LoginScreen({ navigation }) {
           Register
         </Text>
       </Text>
-
+ 
     </View>
   );
 }

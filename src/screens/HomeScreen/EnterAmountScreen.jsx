@@ -21,7 +21,7 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
       const Transname = route?.params?.name;
   const Transaddress =  route?.params?.address;
   const TransrouteAmount = route?.params?.amount;
-  const TransShow = route?.params?.amount;
+  const TransShow = route?.params?.show;
 
   console.log(TransShow,"9994")
 
@@ -53,10 +53,12 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
   }, [navigation]);
 
   return (
-    // <LinearGradient
-    //   colors={["#6A00F4", "#1A0033"]}
-    //   style={{ flex: 1 }}
-    // >
+    TransShow ?
+   <>
+    <LinearGradient
+      colors={["#6A00F4", "#1A0033"]}
+      style={{ flex: 1 }}
+    >
       <View style={styles.container}>
 
         {/* 🔙 Cancel Button */}
@@ -87,8 +89,80 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
         </View>
 
         {/* User Details */}
-        <Text style={styles.toText}>To - {name}</Text>
-        <Text style={styles.address}>{address}</Text>
+        <Text style={styles.toText}>To - {name || Transname}</Text>
+        <Text style={styles.address}>{address || Transaddress }</Text>
+
+        {/* Quick Amount Buttons */}
+        <View style={styles.row}>
+          {['100', '300', '500', '700'].map((val) => (
+            <TouchableOpacity
+              key={val}
+              style={styles.quickBtn}
+              onPress={() => setAmount(val)}
+            >
+              <Text style={styles.quickText}>{val}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Balance */}
+        <View style={styles.balanceBox}>
+          <Text style={styles.balanceText}>Available balance</Text>
+          <Text style={styles.balanceAmount}>{available}</Text>
+        </View>
+
+        {/* Continue Button */}
+        <TouchableOpacity
+          style={styles.continueBtn}
+         onPress={() =>
+  navigation.navigate('SendPin', {
+    amount: TransrouteAmount,
+    name: Transname,
+    address: Transaddress,
+    senderData
+  })
+}
+        >
+          <Text style={styles.continueText}>Continue</Text>
+        </TouchableOpacity>
+
+      </View>
+      </LinearGradient>
+   </>
+      :
+      
+       <View style={styles.container}>
+
+        {/* 🔙 Cancel Button */}
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.cancel}>Cancel</Text>
+        </TouchableOpacity>
+
+        {/* Title */}
+        <Text style={styles.title}>Total Tokens Transfer Details</Text>
+
+        {/* 💜 Amount Card */}
+        <View style={styles.amountCard}>
+          <View style={styles.amountRow}>
+            <TextInput
+              style={styles.amountInput}
+              value={amount}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/[^0-9]/g, '');
+                setAmount(cleaned);
+              }}
+              keyboardType="numeric"
+              placeholder="0.00"
+              placeholderTextColor="#eee"
+              cursorColor="#fff"
+            />
+            <Text style={styles.currency}> PAYO</Text>
+          </View>
+        </View>
+
+        {/* User Details */}
+        <Text style={styles.toText}>To - {name || Transname}</Text>
+        <Text style={styles.address}>{address || Transaddress }</Text>
 
         {/* Quick Amount Buttons */}
         <View style={styles.row}>
