@@ -26,7 +26,7 @@ export default function NotificationScreen({ navigation }) {
   // ✅ API CALL HERE (using your axios instance)
   const fetchNotifications = async () => {
     try {
-      const res = await api.get("/notifications");
+      const res = await api.get("/api/wallet/notifications");
       setData(res.data);
     } catch (err) {
       console.log("API ERROR:", err);
@@ -35,7 +35,6 @@ export default function NotificationScreen({ navigation }) {
     }
   };
  
-  // ✅ FILTER LOGIC
   const filterData = () => {
     const now = new Date();
  
@@ -144,7 +143,7 @@ export default function NotificationScreen({ navigation }) {
         ) : (
           <FlatList
             data={filterData()}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item?.id?.toString()}
             renderItem={renderItem}
             contentContainerStyle={{ paddingTop: 15 }}
             showsVerticalScrollIndicator={false}

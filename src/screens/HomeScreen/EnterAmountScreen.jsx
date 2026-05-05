@@ -10,12 +10,20 @@ import LinearGradient from 'react-native-linear-gradient';
 import api from '../../api/axios';
 import { useRoute } from "@react-navigation/native";
 
-export default function EnterAmountScreen({ navigation, name, address,setActiveTab }) {
+export default function EnterAmountScreen({ navigation, name, address,setActiveTab ,show}) {
 
 
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState("");
   const [available, setAvailable] = useState("");
-  const[senderData,setSenderData]=useState({})
+  const[senderData,setSenderData]=useState({});
+    const route = useRoute();
+
+      const Transname = route?.params?.name;
+  const Transaddress =  route?.params?.address;
+  const TransrouteAmount = route?.params?.amount;
+  const TransShow = route?.params?.amount;
+
+  console.log(TransShow,"9994")
 
   // 🔥 Fetch balance
   useEffect(() => {
@@ -45,10 +53,10 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
   }, [navigation]);
 
   return (
-    <LinearGradient
-      colors={["#6A00F4", "#1A0033"]}
-      style={{ flex: 1 }}
-    >
+    // <LinearGradient
+    //   colors={["#6A00F4", "#1A0033"]}
+    //   style={{ flex: 1 }}
+    // >
       <View style={styles.container}>
 
         {/* 🔙 Cancel Button */}
@@ -117,7 +125,7 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
         </TouchableOpacity>
 
       </View>
-    </LinearGradient>
+    
   );
 }
 

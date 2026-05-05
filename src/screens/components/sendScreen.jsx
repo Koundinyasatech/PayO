@@ -66,7 +66,12 @@ console.log(activeTab,"activeTab")
       );
 
     case 'recents':
-      return <Recents navigation={navigation} />;
+      return <Recents
+            navigation={navigation}
+            setSelectedUser={setSelectedUser}
+            setActiveTab={setActiveTab}
+          />
+;
 
     default:
       return null;

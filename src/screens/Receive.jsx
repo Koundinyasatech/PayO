@@ -22,6 +22,7 @@ const Receive = ({navigation}) => {
   const [address, setAddress] = useState("");
   const [timer, setTimer] = useState(900); // 15 minutes
   const [loading, setLoading] = useState(true);
+  
 
   const intervalRef = useRef(null);
 
@@ -121,7 +122,9 @@ const Receive = ({navigation}) => {
     style={styles.backBtn}
     onPress={() => navigation.goBack()}
   >
-    <Text style={styles.back}><Icon name="arrow-left" size={22} color="#fff" /></Text>
+    <Text style={styles.back}>
+      <Icon name="arrow-left" size={22} color="#fff" />
+      </Text>
   </TouchableOpacity>
 
   <Text style={styles.title}>Receive Payo</Text>
