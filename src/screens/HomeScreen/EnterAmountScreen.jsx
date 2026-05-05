@@ -14,9 +14,9 @@ export default function EnterAmountScreen({ navigation }) {
   const route = useRoute();
 
   // ✅ Safe params (works for both flows)
-  const { name = "Unknown", address = "" } = route.params || {};
+  const { name = "Unknown", address = "", amount: initialAmount = "" } = route.params || {};
 
-  const [amount, setAmount] = useState('');
+  const [amount, setAmount] = useState(initialAmount);
   const [available, setAvailable] = useState("");
 
   // 🔥 Fetch balance
