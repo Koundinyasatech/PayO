@@ -7,9 +7,12 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Platform,
+  StatusBar,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import api from "../../api/axios"; // ✅ your existing axios instance
+import Icon from "react-native-vector-icons/Feather";
  
 export default function NotificationScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState("Today");
@@ -99,7 +102,10 @@ export default function NotificationScreen({ navigation }) {
         {/* HEADER */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.back}>←</Text>
+            <Text style={styles.back}>
+
+       <Icon name="arrow-left" size={22} color="#fff" />
+            </Text>
           </TouchableOpacity>
  
           <Text style={styles.headerTitle}>Notifications</Text>
@@ -154,6 +160,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
  
   header: {

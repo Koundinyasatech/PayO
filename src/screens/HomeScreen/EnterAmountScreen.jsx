@@ -10,14 +10,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import api from '../../api/axios';
 import { useRoute } from "@react-navigation/native";
 
-export default function EnterAmountScreen({ navigation }) {
-  const route = useRoute();
+export default function EnterAmountScreen({ navigation, name, address,setActiveTab }) {
 
-  // ✅ Safe params (works for both flows)
-  const { name = "Unknown", address = "" } = route.params || {};
 
   const [amount, setAmount] = useState('');
   const [available, setAvailable] = useState("");
+  const[senderData,setSenderData]=useState({})
 
   // 🔥 Fetch balance
   useEffect(() => {
@@ -32,6 +30,19 @@ export default function EnterAmountScreen({ navigation }) {
 
     fetchBalance();
   }, []);
+
+   useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const res = await api.get('/api/wallet/profile');
+        console.log(res.data.data,"9898")
+        setSenderData(res?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+    fetchProfileData();
+  }, [navigation]);
 
   return (
     <LinearGradient
@@ -98,6 +109,7 @@ export default function EnterAmountScreen({ navigation }) {
               amount,
               name,
               address,
+              senderData
             })
           }
         >
@@ -163,6 +175,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginBottom: 5,
+    textTransform:"capitalize"
   },
 
   address: {

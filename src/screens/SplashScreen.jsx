@@ -21,7 +21,7 @@ export default function SplashScreen({ navigation }) {
 
       // start logo animation
       Animated.timing(slideAnim, {
-        toValue: 150,
+        toValue: 140,
         duration: 1000,
         useNativeDriver: true,
       }).start();
