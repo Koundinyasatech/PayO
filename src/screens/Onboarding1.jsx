@@ -35,7 +35,7 @@ export default function Onboarding1({ navigation }) {
         </View>
         <Text style={styles.title}>Your Digital{'\n'}Wallet, Simplified</Text>
         <Text style={styles.description}>
-          Store, send &amp; receive Payo tokens instantly. No bank account needed - just your mobile number!
+          Store, send &amp; receive Payo tokens instantly. No bank account needed  - just your phone.
         </Text>
       </View>
 
