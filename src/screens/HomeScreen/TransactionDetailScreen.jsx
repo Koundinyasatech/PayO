@@ -87,8 +87,8 @@ export default function TransactionDetailScreen({ navigation }) {
         navigation.navigate("EnterAmount", {
             name: transaction.name,
             address: transaction.wallet,
-
             amount: transaction.amount,
+            show:true
 
 
         });

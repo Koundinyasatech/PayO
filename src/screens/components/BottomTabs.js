@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import {
   View,
@@ -8,33 +6,34 @@ import {
 } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
-import Svg, { Path } from 'react-native-svg';
 
 import HomeScreen from '../HomeScreen/HomeScreen';
-import ScanQRScreen from '../ScanQRScreen';
-
-
-
 import styles from '../HomeScreen/homeStyling';
-import ScanButtonQRScreen from '../HomeScreen/scanButton';
 import SendScreen from './sendScreen';
 import TransactionHistory from '../HomeScreen/TransactionHistory';
 import WalletScreen from '../HomeScreen/WalletScreen';
 import UserProfile from '../UserProfile/UserProfile';
 
-
 const Tab = createBottomTabNavigator();
-
 
 // 🔥 Custom Bottom Tab Bar
 function CustomTabBar({ state, navigation }) {
+
+  const labels = {
+    Home: "Home",
+    Wallets: "Wallets",
+    Transactions: "Transactions",
+    UserProfile: "Profile", // ✅ change label here
+  };
+
   return (
     <View style={styles.bottomNav}>
       {state.routes.map((route, index) => {
+
         const isFocused = state.index === index;
 
         const onPress = () => {
-          navigation.navigate(route.name); // ✅ navigate to tab
+          navigation.navigate(route.name);
         };
 
         let icon;
@@ -42,9 +41,9 @@ function CustomTabBar({ state, navigation }) {
         if (route.name === "Home") icon = "home";
         if (route.name === "Wallets") icon = "credit-card";
         if (route.name === "Transactions") icon = "bar-chart-2";
-        if (route.name === "Profile") icon = "settings";
+        if (route.name === "UserProfile") icon = "settings";
 
-        // ⭐ Center Button (Scan)
+        // ⭐ Center Button
         if (route.name === "Send") {
           return (
             <TouchableOpacity
@@ -52,7 +51,6 @@ function CustomTabBar({ state, navigation }) {
               style={styles.centerIcon}
               onPress={onPress}
             >
-              {/* <Text style={{ fontSize: 28 }}>↔</Text> */}
               <Icon name="maximize" size={26} color="#fff" />
             </TouchableOpacity>
           );
@@ -76,8 +74,9 @@ function CustomTabBar({ state, navigation }) {
                 isFocused ? styles.navActive : styles.navInactive,
               ]}
             >
-              {route.name}
+              {labels[route.name] || route.name}
             </Text>
+
           </TouchableOpacity>
         );
       })}
@@ -96,16 +95,9 @@ export default function BottomTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Wallets" component={WalletScreen} />
-      {/* <Tab.Screen name="Scan" component={ScanButtonQRScreen} /> */}
-      {/* <Tab.Screen name="Scan" component={SendScreen} tab="scan" /> */}
-
-      <Tab.Screen
-        name="Send"
-        component={SendScreen}
-        
-      />
+      <Tab.Screen name="Send" component={SendScreen} />
       <Tab.Screen name="Transactions" component={TransactionHistory} />
-      <Tab.Screen name="Profile" component={UserProfile} />
+      <Tab.Screen name="UserProfile" component={UserProfile} />
     </Tab.Navigator>
   );
 }
