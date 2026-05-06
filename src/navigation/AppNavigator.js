@@ -21,6 +21,7 @@ import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
 import ReferEarn from '../screens/HomeScreen/ReferEarn';
 import TransactionDetailScreen from '../screens/HomeScreen/TransactionDetailScreen';
 import NotificationScreen from '../screens/HomeScreen/NotificationScreen';
+import ForgotPassword from '../screens/ForgotPasswordScreen';
 
 
 
@@ -73,6 +74,7 @@ export default function AppNavigator() {
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="review" component={ReviewTransferScreen} />
         <Stack.Screen name="ReferEarn" component={ReferEarn} />
+        <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
 
         {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />

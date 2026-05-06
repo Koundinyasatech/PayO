@@ -36,7 +36,7 @@ export default function Onboarding2({ navigation }) {
         </View>
         <Text style={styles.title}>Instant QR{'\n'}Payments</Text>
         <Text style={styles.description}>
-          Scan a QR code to send tokens in seconds. Safe, secure and lightning -fast wallet-to-wallet transfers.
+          Scan a QR code to send tokens in seconds. Safe, secure, and    lightning -fast wallet-to-wallet transfers.
         </Text>
       </View>
 
