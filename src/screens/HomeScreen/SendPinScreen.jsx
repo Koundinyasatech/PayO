@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 
 export default function SendPinScreen({ route, navigation }) {
-  const { amount, name, address,sender } = route.params;
+  const { amount, name, address,sender ,senderData} = route.params;
+  console.log( senderData,"0005")
 
   const [pin, setPin] = useState('');
 
@@ -40,20 +41,29 @@ export default function SendPinScreen({ route, navigation }) {
     });
   };
 
+   const Key = ({ num, onPress }) => {
+      return (
+        <TouchableOpacity
+          style={styles.key}
+          onPress={() => onPress(num)}
+        >
+          <Text style={styles.keyText}>{num}</Text>
+        </TouchableOpacity>
+      );
+    };
+
   const renderBoxes = () => {
     return [...Array(4)].map((_, i) => (
       <View key={i} style={styles.box}>
-        <Text style={styles.dot}>{pin[i] ? '•' : ''}</Text>
+        <Text style={styles.dot}>{pin[i] ? '*' : ''}</Text>
       </View>
     ));
   };
 
-  const keys = [
-    ['1', '2', '3'],
-    ['4', '5', '6'],
-    ['7', '8', '9'],
-    ['0', 'back', 'submit'],
-  ];
+
+    const handleDelete = () => {
+    setPin((prev) => prev.slice(0, -1));
+  };
 
   return (
     <View style={styles.container}>
@@ -64,8 +74,8 @@ export default function SendPinScreen({ route, navigation }) {
   {/* FROM SECTION */}
   <View style={styles.section}>
     <Text style={styles.small}>From wallet</Text>
-    <Text style={styles.name}>{sender?.name}</Text>
-    <Text style={styles.wallet}>{sender?.wallet}</Text>
+    <Text style={styles.name}>{sender?.name || senderData?.name}</Text>
+    <Text style={styles.wallet}>{sender?.wallet || senderData?.walletAddress }</Text>
   </View>
 
   {/* TO SECTION */}
@@ -90,34 +100,47 @@ export default function SendPinScreen({ route, navigation }) {
         </Text>
       </View>
 
-      <View style={styles.keypad}>
-        {keys.map((row, i) => (
-          <View key={i} style={styles.keyRow}>
-            {row.map((item) => (
-              <TouchableOpacity
-                key={item}
-                style={[
-                  styles.key,
-                  item === 'submit' && styles.submit,
-                ]}
-                onPress={() => handlePress(item)}
-              >
-                <Text
-                  style={[
-                    styles.keyText,
-                    item === 'submit' && { color: 'white' },
-                  ]}
-                >
-                  {item === 'back' ? '⌫' :
-                   item === 'submit' ? 'Submit' :
-                   item}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
-      </View>
 
+
+      <View style={styles.keypad}>
+
+        {/* ROW 1 */}
+        <View style={styles.row}>
+          <Key num="1" onPress={handlePress} />
+          <Key num="2" onPress={handlePress} />
+          <Key num="3" onPress={handlePress} />
+        </View>
+
+        {/* ROW 2 */}
+        <View style={styles.row}>
+          <Key num="4" onPress={handlePress} />
+          <Key num="5" onPress={handlePress} />
+          <Key num="6" onPress={handlePress} />
+        </View>
+
+        {/* ROW 3 */}
+        <View style={styles.row}>
+          <Key num="7" onPress={handlePress} />
+          <Key num="8" onPress={handlePress} />
+          <Key num="9" onPress={handlePress} />
+        </View>
+
+        {/* ROW 4 */}
+        <View style={styles.row}>
+          <View style={styles.emptyKey} />
+          <Key num="0" onPress={handlePress} />
+          <Key num="×" onPress={handleDelete} />
+       
+        </View>
+
+       
+
+      </View>
+<View style={styles.submitRow}>
+  <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+    <Text style={styles.submitText}>Submit</Text>
+  </TouchableOpacity>
+</View>
     </View>
   );
 }
@@ -161,6 +184,7 @@ amount: {
 name: {
   fontWeight: '600',
   marginTop: 5,
+  textTransform:"capitalize"
 },
 
 wallet: {
@@ -202,21 +226,58 @@ address: {
 
   warningText: { textAlign: 'center' },
 
-  keypad: { alignItems: 'center' },
+keypad: {
+  marginTop: 10,
+  width: "70%",   // smaller width
+  alignSelf: "center",
+},
 
-  keyRow: { flexDirection: 'row', marginVertical: 8 },
+row: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginBottom: 15, // smaller vertical spacing
+},
 
-  key: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#fff',
-    marginHorizontal: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+key: {
+  width: 55,      // smaller key
+  height: 55,
+  borderRadius: 28,
+  backgroundColor: "#F2F2F2",
+  justifyContent: "center",
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  elevation: 2,
+},
 
-  keyText: { fontSize: 20 },
+emptyKey: {
+  width: 55,
+  height: 55,
+},
 
-  submit: { backgroundColor: 'green' },
+keyText: {
+  fontSize: 18,  // smaller text
+  fontWeight: "600",
+},
+submitRow: {
+  marginTop: 25,
+  alignItems: "center",
+},
+
+submitButton: {
+  backgroundColor: "#22C55E",
+  width: "70%",
+  paddingVertical: 15,
+  borderRadius: 12,
+  alignItems: "center",
+  elevation: 3,
+},
+
+submitText: {
+  color: "#fff",
+  fontSize: 18,
+  fontWeight: "600",
+},
+ 
 });

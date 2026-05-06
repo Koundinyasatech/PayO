@@ -10,14 +10,20 @@ import LinearGradient from 'react-native-linear-gradient';
 import api from '../../api/axios';
 import { useRoute } from "@react-navigation/native";
 
-export default function EnterAmountScreen({ navigation }) {
-  const route = useRoute();
+export default function EnterAmountScreen({ navigation, name, address,setActiveTab ,show}) {
 
-  // ✅ Safe params (works for both flows)
-  const { name = "Unknown", address = "", amount: initialAmount = "" } = route.params || {};
 
-  const [amount, setAmount] = useState(initialAmount);
+  const [amount, setAmount] = useState("");
   const [available, setAvailable] = useState("");
+  const[senderData,setSenderData]=useState({});
+    const route = useRoute();
+
+      const Transname = route?.params?.name;
+  const Transaddress =  route?.params?.address;
+  const TransrouteAmount = route?.params?.amount;
+  const TransShow = route?.params?.show;
+
+  console.log(TransShow,"9994")
 
   // 🔥 Fetch balance
   useEffect(() => {
@@ -33,7 +39,22 @@ export default function EnterAmountScreen({ navigation }) {
     fetchBalance();
   }, []);
 
+   useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const res = await api.get('/api/wallet/profile');
+        console.log(res.data.data,"9898")
+        setSenderData(res?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+    fetchProfileData();
+  }, [navigation]);
+
   return (
+    TransShow ?
+   <>
     <LinearGradient
       colors={["#6A00F4", "#1A0033"]}
       style={{ flex: 1 }}
@@ -68,8 +89,80 @@ export default function EnterAmountScreen({ navigation }) {
         </View>
 
         {/* User Details */}
-        <Text style={styles.toText}>To - {name}</Text>
-        <Text style={styles.address}>{address}</Text>
+        <Text style={styles.toText}>To - {name || Transname}</Text>
+        <Text style={styles.address}>{address || Transaddress }</Text>
+
+        {/* Quick Amount Buttons */}
+        <View style={styles.row}>
+          {['100', '300', '500', '700'].map((val) => (
+            <TouchableOpacity
+              key={val}
+              style={styles.quickBtn}
+              onPress={() => setAmount(val)}
+            >
+              <Text style={styles.quickText}>{val}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Balance */}
+        <View style={styles.balanceBox}>
+          <Text style={styles.balanceText}>Available balance</Text>
+          <Text style={styles.balanceAmount}>{available}</Text>
+        </View>
+
+        {/* Continue Button */}
+        <TouchableOpacity
+          style={styles.continueBtn}
+         onPress={() =>
+  navigation.navigate('SendPin', {
+    amount: TransrouteAmount,
+    name: Transname,
+    address: Transaddress,
+    senderData
+  })
+}
+        >
+          <Text style={styles.continueText}>Continue</Text>
+        </TouchableOpacity>
+
+      </View>
+      </LinearGradient>
+   </>
+      :
+      
+       <View style={styles.container}>
+
+        {/* 🔙 Cancel Button */}
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.cancel}>Cancel</Text>
+        </TouchableOpacity>
+
+        {/* Title */}
+        <Text style={styles.title}>Total Tokens Transfer Details</Text>
+
+        {/* 💜 Amount Card */}
+        <View style={styles.amountCard}>
+          <View style={styles.amountRow}>
+            <TextInput
+              style={styles.amountInput}
+              value={amount}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/[^0-9]/g, '');
+                setAmount(cleaned);
+              }}
+              keyboardType="numeric"
+              placeholder="0.00"
+              placeholderTextColor="#eee"
+              cursorColor="#fff"
+            />
+            <Text style={styles.currency}> PAYO</Text>
+          </View>
+        </View>
+
+        {/* User Details */}
+        <Text style={styles.toText}>To - {name || Transname}</Text>
+        <Text style={styles.address}>{address || Transaddress }</Text>
 
         {/* Quick Amount Buttons */}
         <View style={styles.row}>
@@ -98,6 +191,7 @@ export default function EnterAmountScreen({ navigation }) {
               amount,
               name,
               address,
+              senderData
             })
           }
         >
@@ -105,7 +199,7 @@ export default function EnterAmountScreen({ navigation }) {
         </TouchableOpacity>
 
       </View>
-    </LinearGradient>
+    
   );
 }
 
@@ -163,6 +257,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginBottom: 5,
+    textTransform:"capitalize"
   },
 
   address: {

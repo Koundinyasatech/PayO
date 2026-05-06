@@ -12,7 +12,13 @@ export default StyleSheet.create({
 
   },
 
-  /* HEADER */
+ header: {
+  height: 50,
+  justifyContent: "center",
+  alignItems: "center",
+  position: "relative",
+
+},
 
   header: {
 
@@ -39,9 +45,8 @@ export default StyleSheet.create({
   /* SECTION */
 
   section: {
-
-    marginBottom: 20,
-
+    marginBottom: 18,
+      paddingTop:30
   },
 
   smallLabel: {
@@ -97,6 +102,9 @@ export default StyleSheet.create({
     color: "#fff",
 
     fontSize: 16,
+    fontWeight: "600",
+    textTransform:"capitalize",
+    width:"70%",
 
     marginLeft: 10,
 

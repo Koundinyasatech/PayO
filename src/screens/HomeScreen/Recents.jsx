@@ -11,7 +11,7 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import api from "../../api/axios";
 
-export default function Recents({ navigation }) {
+export default function Recents({ navigation, setSelectedUser, setActiveTab }) {
   const [recents, setRecents] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -63,33 +63,35 @@ export default function Recents({ navigation }) {
     return date.toLocaleDateString();
   };
 
+  
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.card}
-      onPress={() =>
-        navigation.navigate("EnterAmount", {
-          address: item.walletAddress,
-          name: item.receiverName,   // ✅ ONLY backend value
-        })
-      }
-    >
-      <View style={styles.left}>
-        <View style={styles.icon}>
-          <Text style={{ fontSize: 12 }}>↗</Text>
-        </View>
+  <TouchableOpacity
+    style={styles.card}
+    onPress={() => {
+      setSelectedUser({
+        name: item.receiverName,
+        address: item.walletAddress,
+      });
 
-        <View>
-          <Text style={styles.name}>{item.receiverName}</Text> {/* ✅ ONLY */}
-          <Text style={styles.address}>{item.walletAddress}</Text>
-        </View>
+      setActiveTab("amount");
+    }}
+  >
+    <View style={styles.left}>
+      <View style={styles.icon}>
+        <Text style={{ fontSize: 12 }}>↗</Text>
       </View>
 
-      <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
-    </TouchableOpacity>
-  );
+      <View>
+        <Text style={styles.name}>{item.receiverName}</Text>
+        <Text style={styles.address}>{item.walletAddress}</Text>
+      </View>
+    </View>
 
+    <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
+  </TouchableOpacity>
+);
   return (
-    <View style={styles.container}>
+   <View style={styles.container}>
       <Text style={styles.section}>Recent Contacts</Text>
 
       {loading ? (
@@ -109,10 +111,9 @@ export default function Recents({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 10,
-  },
+container: {
+  paddingTop: 10,
+},
 
   section: {
     color: "#fff",

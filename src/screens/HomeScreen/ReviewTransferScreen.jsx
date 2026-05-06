@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   StyleSheet,
   Switch,
+  Platform,
+  StatusBar,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import api from "../../api/axios";
@@ -137,6 +139,7 @@ export default function ReviewTransferScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
  
   header: {
@@ -162,6 +165,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 18,
     textAlign: "center",
+    marginLeft:"10%"
   },
  
   avatar: {
@@ -216,6 +220,8 @@ const styles = StyleSheet.create({
   name: {
     color: "#fff",
     fontSize: 16,
+    textTransform:"capitalize",
+    width:"40%"
   },
  
   wallet: {

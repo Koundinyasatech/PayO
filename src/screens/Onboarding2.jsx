@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
 },
 
 nextImage: {
-  width: 100,
-  height: 100,
+ width: 90,
+  height: 90,
   resizeMode: 'contain',
 },
 
