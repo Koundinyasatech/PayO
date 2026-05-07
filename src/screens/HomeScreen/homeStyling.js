@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet } from 'react-native';
+import { StatusBar, StyleSheet,Platform } from 'react-native';
  
 export default StyleSheet.create({
 container: {
@@ -7,12 +7,7 @@ container: {
   paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
 },
  
-  //  actions: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   paddingHorizontal: 20,
-  //   marginTop: 20,
-  // },
+ 
 actions: {
   flexDirection: 'row',
   alignItems: 'center',
@@ -54,14 +49,7 @@ connector: {
 
 
 
-  /* HEADER */
-  // header: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   paddingHorizontal: 20,
-  //   paddingTop: 10,
-  //   alignItems: 'center',
-  // },
+ 
   header: {
   flexDirection: 'row',
   justifyContent: 'space-between',
@@ -94,61 +82,6 @@ walletNumber:{
     alignItems: 'center',
   },
  
-  /* BALANCE CARD */
-//   cardContainer: {
-//     paddingHorizontal: 20,
-//     marginTop: 20,
-//   },
-//   card: {
-//   backgroundColor: '#1C1C1E',
-//   borderRadius: 20,
-//   padding: 18,
-//   flexDirection: 'row',
-//   justifyContent: 'space-between',
-// },
-//   balanceLabel: {
-//     color: '#aaa',
-//     fontSize: 12,
-//   },
-//  balanceAmount: {
-//   color: '#fff',
-//   fontSize: 24,
-//   fontWeight: 'bold',
-//   letterSpacing: 4,
-// },
-//   payoLabel: {
-//     color: '#22c55e',
-//     fontSize: 12,
-//   },
- 
-//   cardRight: {
-//     alignItems: 'flex-end',
-//     justifyContent: 'space-between',
-//   },
- 
-//   /* WALLET */
-//   cardFooter: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     marginTop: 12,
-//     alignItems: 'center',
-//   },
-//   walletLabel: {
-//     color: '#ccc',
-//     fontSize: 12,
-//   },
-//   walletButton: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   walletButtonText: {
-//     color: '#fff',
-//     marginRight: 6,
-//   },
-//   walletArrow: {
-//     color: '#fff',
-//     fontSize: 16,
-//   },
 
 cardContainer: {
   paddingHorizontal: 20,
@@ -326,42 +259,7 @@ actionButton: {
     fontSize: 12,
     fontWeight: '600',
   },
- 
 
-//   statsContainer: {
-//     marginTop: 20,
-//     paddingHorizontal: 20,
-//   },
-//   statsCard: {
-//   backgroundColor: '#1C1C1E',
-//   borderRadius: 16,
-//   paddingVertical: 14,
-//   paddingHorizontal: 20,
-//   flexDirection: 'row',
-//   justifyContent: 'space-between',
-// },
-//   statItem: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     gap: 10,
-//   },
-//   statIcon: {
-//     fontSize: 20,
-//   },
-//   statValue: {
-//     color: '#fff',
-//     fontWeight: 'bold',
-//     fontSize: 16,
-//   },
-//   statLabel: {
-//     color: '#aaa',
-//     fontSize: 11,
-//   },
-//   divider: {
-//     width: 1,
-//     backgroundColor: '#333',
-//   },
- 
 statsContainer: {
   marginTop: 20,
   paddingHorizontal: 20,
@@ -473,51 +371,6 @@ noTransactionText: {
   textAlign: "center",
 },
  
-//  transactionItem: {
-//   flexDirection: 'row',
-//   justifyContent: 'space-between',
-//   marginBottom: 16,
-//   alignItems: 'center',
-// },
- 
-//   transactionLeft: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
- 
-//   transactionAvatar: {
-//     width: 36,
-//     height: 36,
-//     borderRadius: 18,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     marginRight: 10,
-//   },
- 
-//   transactionName: {
-//     color: '#fff',
-//     fontSize: 13,
-//     fontWeight: '600',
-//   },
- 
-//   transactionTime: {
-//     color: '#aaa',
-//     fontSize: 10,
-//   },
- 
-//   transactionAmount: {
-//     fontWeight: 'bold',
-//     fontSize: 14,
-//   },
- 
-//   amountPositive: {
-//     color: '#22c55e',
-//   },
-//   amountNegative: {
-//     color: '#f87171',
-//   },
- 
-
 transactionItem: {
   flexDirection: "row",
   justifyContent: "space-between",
