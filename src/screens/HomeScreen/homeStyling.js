@@ -102,14 +102,15 @@ card: {
 },
 
 balanceLabel: {
-  color: '#aaa',
+  color: '#d8d4d4',
   fontSize: 14,
   marginBottom: 6,
+  fontWeight:"700"
 },
 
 balanceRow: {
   flexDirection: 'row',
-  alignItems: 'center',
+  alignItems: 'baseline', // aligns text nicely
 },
 
 balanceAmount: {
@@ -123,8 +124,8 @@ payoLabel: {
   color: '#22c55e',
   fontSize: 12,
   marginLeft: 6,
-  marginTop:-10,
 },
+
 
 cardRight: {
   justifyContent: 'space-between',
