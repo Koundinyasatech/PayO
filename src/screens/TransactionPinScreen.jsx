@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import api from '../api/axios';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function TransactionPinScreen({ navigation }) {
 
@@ -86,7 +87,9 @@ export default function TransactionPinScreen({ navigation }) {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={styles.back}>
+              <Icon name="arrow-left" size={22} color="#080808" />
+          </Text>
           {/* <Text style={styles.back}>{'<'}</Text> */}
         </TouchableOpacity>
 
@@ -219,7 +222,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    marginLeft: "10%", // balance arrow
+    // marginLeft: "10%", // balance arrow
   },
 
   title: {

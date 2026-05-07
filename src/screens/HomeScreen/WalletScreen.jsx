@@ -16,7 +16,7 @@ import styles from './WalletScreenStyles';
 import Header from '../components/header';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function WalletScreen() {
+export default function WalletScreen({navigation}) {
   const [wallet, setWallet] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -152,10 +152,10 @@ export default function WalletScreen() {
           <View style={styles.bottomButtons}>
 
             <TouchableOpacity style={styles.freezeBtn}>
-              <Text style={styles.freezeText}>Freeze Wallet</Text>
+              {/* <Text style={styles.freezeText}>Freeze Wallet</Text> */}
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.sendBtn}>
+            <TouchableOpacity style={styles.sendBtn} onPress={() => navigation.navigate('SendScreen')}>
               <Text style={styles.sendText}>Send PAYO</Text>
             </TouchableOpacity>
 

@@ -188,7 +188,7 @@ const handleQR = async (value) => {
         )}
       
 
-
+{/* 
       {!scannedData && (
         <TouchableOpacity
           style={styles.simulate}
@@ -197,7 +197,7 @@ const handleQR = async (value) => {
         >
           <Text style={{ color: '#fff' }}>Simulate Scan</Text>
         </TouchableOpacity>
-      )}
+      )} */}
        </SafeAreaView>
    
   );
