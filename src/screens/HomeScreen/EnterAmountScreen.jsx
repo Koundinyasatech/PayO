@@ -5,6 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import api from '../../api/axios';
@@ -57,7 +59,8 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
    <>
     <LinearGradient
       colors={["#6A00F4", "#1A0033"]}
-      style={{ flex: 1 }}
+      style={{ flex: 1, paddingTop:
+                Platform.OS === "android" ? StatusBar.currentHeight : 0, }}
     >
       <View style={styles.container}>
 
@@ -80,9 +83,10 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
                 setAmount(cleaned);
               }}
               keyboardType="numeric"
-              placeholder="0.00"
+              placeholder="0"
               placeholderTextColor="#eee"
               cursorColor="#fff"
+               maxLength={6}
             />
             <Text style={styles.currency}> PAYO</Text>
           </View>

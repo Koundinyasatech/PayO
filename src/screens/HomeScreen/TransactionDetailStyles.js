@@ -1,24 +1,20 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
+container: {
+  flex: 1,
+  paddingHorizontal: 18,
+  paddingTop: 40,
+  paddingBottom: 20,
+},
 
-  container: {
-
-    flex: 1,
-
-    paddingHorizontal: 18,
-
-    paddingTop: 40,
+  header: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
 
   },
-
- header: {
-  height: 50,
-  justifyContent: "center",
-  alignItems: "center",
-  position: "relative",
-
-},
 
   header: {
 
@@ -46,7 +42,7 @@ export default StyleSheet.create({
 
   section: {
     marginBottom: 18,
-      paddingTop:30
+    paddingTop: 30
   },
 
   smallLabel: {
@@ -103,8 +99,8 @@ export default StyleSheet.create({
 
     fontSize: 16,
     fontWeight: "600",
-    textTransform:"capitalize",
-    width:"70%",
+    textTransform: "capitalize",
+    width: "70%",
 
     marginLeft: 10,
 
@@ -131,7 +127,18 @@ export default StyleSheet.create({
     color: "#bbb",
 
   },
-
+  timeText: {
+    fontSize: 12,
+    color: "#f7f4f4",
+    marginTop: 2,
+    marginLeft: 10,
+  },
+  timeText: {
+    fontSize: 12,
+    color: "#f7f4f4",
+    marginTop: 2,
+    marginLeft: 10,
+  },
   /* DIVIDER */
 
   divider: {
@@ -170,7 +177,7 @@ export default StyleSheet.create({
 
   label: {
 
-    color: "#aaa",
+    color: "#f1e7e7",
 
     fontSize: 12,
 
@@ -192,7 +199,7 @@ export default StyleSheet.create({
 
   value: {
 
-    color: "#fff",
+    color: "#0fe93e",
 
     fontSize: 14,
 
@@ -204,53 +211,41 @@ export default StyleSheet.create({
 
   /* ACTIONS */
 
-  actionsRow: {
+ /* ACTIONS */
 
-    flexDirection: "row",
+actionsRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginTop: 10,
+  paddingTop: 20,
+  borderTopWidth: 1,
+  borderTopColor: "rgba(255,255,255,0.15)",
+},
 
-    justifyContent: "space-between",
+actionItem: {
+  alignItems: "center",
+  justifyContent: "center",
+  width: "24%",
+},
 
-    marginTop: 20,
+circle: {
+  width: 52,
+  height: 52,
+  borderRadius: 26,
+  backgroundColor: "#F2F2F2",
+  alignItems: "center",
+  justifyContent: "center",
+  marginBottom: 8,
+},
 
-    marginBottom: 20,
-
-  },
-
-  actionItem: {
-
-    alignItems: "center",
-
-    flex: 1,
-
-  },
-
-  circle: {
-
-    width: 45,
-
-    height: 45,
-
-    borderRadius: 22.5,
-
-    backgroundColor: "#fff",
-
-    alignItems: "center",
-
-    justifyContent: "center",
-
-    marginBottom: 6,
-
-  },
-
-  actionText: {
-
-    color: "#fff",
-
-    fontSize: 12,
-
-    textAlign: "center",
-
-  },
+actionText: {
+  color: "#fff",
+  fontSize: 11,
+  textAlign: "center",
+  marginTop: 2,
+  lineHeight: 15,
+},
 
   /* OPTIONAL: RECEIPT CARD (for better screenshot UI) */
 

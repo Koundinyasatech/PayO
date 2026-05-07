@@ -11,6 +11,7 @@ import {
     ActivityIndicator,
 
     Alert,
+    ToastAndroid,
 
 } from "react-native";
 
@@ -25,12 +26,14 @@ import api from "../../api/axios";
 import styles from "./TransactionDetailStyles";
 
 import { Share } from "react-native";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 // ✅ NEW IMPORTS
 
 import ViewShot from "react-native-view-shot";
 
 import RNFS from "react-native-fs";
+import Header from '../components/header'
 
 export default function TransactionDetailScreen({ navigation }) {
 
@@ -95,9 +98,14 @@ export default function TransactionDetailScreen({ navigation }) {
 
     };
 
-    const handleHistory = () => {
+    const handleHistory = (id,name) => {
 
-        navigation.navigate("Transactions");
+       navigation.navigate("TnsHistorySingleUser", {
+            id: id,
+            name:name,
+
+
+        });
 
     };
 
@@ -138,9 +146,8 @@ export default function TransactionDetailScreen({ navigation }) {
                 message: `Transaction Receipt
  
 To: ${transaction?.name}
-
 Amount: ${transaction?.amount} PAYO
-
+Date: ${formatISTTime(transaction?.timestamp)}
 Transaction ID: ${transaction?._id || transaction?.id}`,
 
             });
@@ -152,6 +159,62 @@ Transaction ID: ${transaction?._id || transaction?.id}`,
         }
 
     };
+
+    const formatISTTime = (utcTime) => {
+  const date = new Date(utcTime);
+
+  const options = {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+
+  const time = new Intl.DateTimeFormat("en-IN", options).format(date);
+
+  const day = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+  }).format(date);
+
+  const month = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    month: "short",
+  }).format(date);
+
+  const year = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+  }).format(date);
+
+  return `${time} on ${day} ${month} ${year}`;
+};
+
+const handleCopyWallet = (walletId) => {
+  const walletAddress = walletId;
+
+  if (!walletAddress) return;
+
+  Clipboard.setString(walletAddress);
+
+  if (Platform.OS === "android") {
+    ToastAndroid.show("Wallet Address copied", ToastAndroid.SHORT);
+  }
+};
+
+
+
+const handleCopyTransactionID = (Id) => {
+  const walletAddress = Id;
+
+  if (!walletAddress) return;
+
+  Clipboard.setString(walletAddress);
+
+  if (Platform.OS === "android") {
+    ToastAndroid.show("Transaction ID copied", ToastAndroid.SHORT);
+  }
+};
 
     if (loading) {
 
@@ -167,7 +230,7 @@ Transaction ID: ${transaction?._id || transaction?.id}`,
     return (
         <LinearGradient colors={["#5B0FD1", "#14002B"]} style={styles.container}>
 
-            {/* HEADER */}
+          
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Icon name="arrow-left" size={22} color="#fff" />
@@ -176,39 +239,42 @@ Transaction ID: ${transaction?._id || transaction?.id}`,
             </View>
 
             {/* ✅ RECEIPT CAPTURE AREA */}
-            <ViewShot
-
-                ref={viewShotRef}
-
-                options={{ format: "png", quality: 1 }}
-
-                style={{ flex: 1 }}
-            >
-                <View style={{ flex: 1 }}>
+           <ViewShot
+  ref={viewShotRef}
+  options={{ format: "png", quality: 1 }}
+>
+  <View>
 
                     {/* PAID TO */}
-                    <View style={styles.section}>
-                        <Text style={styles.smallLabel}>Paid to</Text>
+                 <View style={styles.section}>
+  <Text style={styles.smallLabel}>
+    {transaction?.type ==="sent"? "Paid to": transaction?.type ==="received" ? "Received from" :""}
+    </Text>
 
-                        <View style={styles.row}>
-                            <View style={styles.userRow}>
-                                <View style={styles.iconBox}>
-                                    <Icon name="arrow-up-right" size={14} color="#000" />
-                                </View>
+  <View style={styles.row}>
+    <View style={styles.userRow}>
+      <View style={styles.iconBox}>
+         {transaction?.type ==="sent"? <Icon name="arrow-up-right" size={14} color="#000" /> :
+          transaction?.type ==="received" ?  <Icon name="arrow-down-left" size={14} color="#000" />  :""}
+       
+      </View>
 
-                                <Text style={styles.name}>
+      <View>
+        <Text style={styles.name}>
+          {transaction?.name || "User"}
+        </Text>
 
-                                    {transaction?.name || "Unknown"}
-                                </Text>
-                            </View>
+        <Text style={styles.timeText}>
+          {formatISTTime(transaction?.timestamp)}
+        </Text>
+      </View>
+    </View>
 
-                            <Text style={styles.amount}>
-
-                                {transaction?.amount}{" "}
-                                <Text style={styles.payo}>PAYO</Text>
-                            </Text>
-                        </View>
-                    </View>
+    <Text style={styles.amount}>
+      {transaction?.amount} <Text style={styles.payo}>PAYO</Text>
+    </Text>
+  </View>
+</View>
 
                     <View style={styles.divider} />
 
@@ -225,7 +291,7 @@ Transaction ID: ${transaction?._id || transaction?.id}`,
 
                                 Wallet: {transaction?.wallet}
                             </Text>
-                            <Icon name="copy" size={16} color="#ccc" />
+                            <Icon name="copy" size={16} color="#ccc"  onPress={()=>handleCopyWallet(transaction?.wallet)}/>
                         </View>
 
                         <Text style={styles.label}>Transaction ID</Text>
@@ -234,8 +300,16 @@ Transaction ID: ${transaction?._id || transaction?.id}`,
 
                                 {transaction?._id || transaction?.id}
                             </Text>
-                            <Icon name="copy" size={16} color="#ccc" />
+                            <Icon name="copy" size={16} color="#ccc" onPress={()=>handleCopyTransactionID(transaction?._id || transaction?.id)}/>
                         </View>
+
+{/* <Text style={styles.label}>Date and Time</Text>
+ <View style={styles.valueRow}>
+          <Text style={styles.value}>
+          {formatISTTime(transaction?.timestamp)}
+        </Text>
+ </View> */}
+                   
                     </View>
 
                 </View>
@@ -262,7 +336,7 @@ Transaction ID: ${transaction?._id || transaction?.id}`,
                     <Text style={styles.actionText}>Share</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.actionItem} onPress={handleHistory}>
+                <TouchableOpacity style={styles.actionItem} onPress={()=>handleHistory(transaction?.wallet,transaction?.name)}>
                     <View style={styles.circle}>
                         <Icon name="clock" size={18} color="#000" />
                     </View>

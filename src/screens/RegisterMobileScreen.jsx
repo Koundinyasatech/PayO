@@ -7,11 +7,14 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Platform,
   SafeAreaView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import api from '../api/axios';
-
+import Icon from 'react-native-vector-icons/Feather';
+import { StatusBar } from 'react-native';
+ 
 export default function RegisterMobileScreen({ navigation, route }) {
 
   const { mode = 'register' } = route.params || {};
@@ -55,23 +58,29 @@ export default function RegisterMobileScreen({ navigation, route }) {
   };
 
   return (
-    <View style={styles.root}>
-
-      {/* TOP PURPLE AREA */}
-      <SafeAreaView style={styles.safeTop} />
-
-      {/* MAIN CONTENT */}
-      <View style={styles.container}>
-
-        {/* HEADER */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.back}>←</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.title}>
-            Enter Your Mobile Number
+    <View style={styles.container}>
+ 
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.back}>
+                <Icon name="arrow-left" size={22} color="#080808" />
           </Text>
+        </TouchableOpacity>
+ 
+        <Text style={styles.titleCentered}>
+          {mode === 'login' ? 'Login with Mobile' : 'Enter Your Mobile Number'}
+        </Text>
+      </View>
+ 
+      <Text style={styles.desc}>
+        We will send a one time code to verify your number.Standard rates may apply
+      </Text>
+ 
+      <Text style={styles.label}>Mobile Number</Text>
+ 
+      <View style={styles.inputRow}>
+        <View style={styles.codeBox}>
+          <Text>+91</Text>
         </View>
 
         {/* DESCRIPTION */}
@@ -175,7 +184,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     padding: 20,
-    paddingTop: 25,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
 
   header: {

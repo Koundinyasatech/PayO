@@ -126,7 +126,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.balanceRow}>
                 <Text style={styles.balanceAmount}>
                   {/* {balanceVisible ? `₹ ${balance}` : '* * * * *'} */}
-                  {balanceVisible ? `P ${avaliable}` : '* * * * *'}
+                  {balanceVisible ? ` ${avaliable}` : '* * * * *'}
                 </Text>
                 <Text style={styles.payoLabel}>  PAYO</Text>
               </View>
