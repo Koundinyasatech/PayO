@@ -20,6 +20,7 @@ import api from "../../api/axios";
 export default function TnsHistorySingleUser({ navigation }) {
   const route = useRoute();
   const id = route?.params?.id;
+  const name=route?.params?.name;
 
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,6 +117,8 @@ export default function TnsHistorySingleUser({ navigation }) {
     return `This week, ${d}`;
   };
 
+  console.log(grouped,"grouped")
+
   return (
     <LinearGradient
       colors={["#6A00F4", "#1A0033"]}
@@ -177,38 +180,38 @@ export default function TnsHistorySingleUser({ navigation }) {
           <ActivityIndicator color="#fff" />
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
-            {grouped.today.length > 0 && (
+            {grouped?.today?.length > 0 && (
               <>
                 <Text style={styles.section}>
                   {getTitle("today", grouped.today)}
                 </Text>
 
                 {grouped.today.map((item, i) => (
-                  <Item key={i} item={item} navigation={navigation} />
+                  <Item key={i} item={item} navigation={navigation} name={name} />
                 ))}
               </>
             )}
 
-            {grouped.yesterday.length > 0 && (
+            {grouped?.yesterday?.length > 0 && (
               <>
                 <Text style={styles.section}>
                   {getTitle("yesterday", grouped.yesterday)}
                 </Text>
 
-                {grouped.yesterday.map((item, i) => (
-                  <Item key={i} item={item} navigation={navigation} />
+                {grouped?.yesterday?.map((item, i) => (
+                  <Item key={i} item={item} navigation={navigation} name={name}/>
                 ))}
               </>
             )}
 
-            {grouped.week.length > 0 && (
+            {grouped?.week?.length > 0 && (
               <>
                 <Text style={styles.section}>
                   {getTitle("week", grouped.week)}
                 </Text>
 
-                {grouped.week.map((item, i) => (
-                  <Item key={i} item={item} navigation={navigation} />
+                {grouped?.week?.map((item, i) => (
+                  <Item key={i} item={item} navigation={navigation} name={name}/>
                 ))}
               </>
             )}
@@ -221,62 +224,137 @@ export default function TnsHistorySingleUser({ navigation }) {
 
 /* TRANSACTION ITEM */
 
-const Item = ({ item, navigation }) => {
+// const Item = ({ item, navigation }) => {
+
+
+//   const isReceived = Number(item.amount) > 0;
+
+//   const formatDateTime = (date) =>
+//     new Date(date).toLocaleString("en-IN", {
+//       timeZone: "Asia/Kolkata",
+//       day: "2-digit",
+//       month: "short",
+//       year: "numeric",
+//       hour: "2-digit",
+//       minute: "2-digit",
+//       hour12: true,
+//     });
+
+//   return (
+//     <TouchableOpacity
+//       style={styles.item}
+//       activeOpacity={0.7}
+//       onPress={() =>
+//         navigation.navigate("TransactionDetailScreen", {
+//           transaction_id: item?.id,
+//         })
+//       }
+//     >
+//       <View style={styles.left}>
+//         <View
+//           style={[
+//             styles.avatar,
+//             { backgroundColor: isReceived ? "#22c55e" : "#e5e7eb" },
+//           ]}
+//         >
+//           <Icon
+//             name={isReceived ? "arrow-down" : "arrow-up"}
+//             size={18}
+//             color={isReceived ? "#fff" : "#000"}
+//           />
+//         </View>
+
+//         <View>
+//           {/* AMOUNT */}
+//           <Text
+//             style={[
+//               styles.amount,
+//               { color: isReceived ? "#22c55e" : "#ef4444" },
+//             ]}
+//           >
+//             {isReceived
+//               ? `+${Number(item.amount).toFixed(2)}`
+//               : Number(item.amount).toFixed(2)}{" "}
+//             PAYO
+//           </Text>
+
+//           {/* DATE TIME */}
+//           <Text style={styles.time}>{formatDateTime(item.date)}</Text>
+//         </View>
+//       </View>
+//     </TouchableOpacity>
+//   );
+// };
+
+
+const Item = ({ item, navigation ,name}) => {
+  console.log(item,"9it")
   const isReceived = Number(item.amount) > 0;
 
-  const formatDateTime = (date) =>
-    new Date(date).toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
+  const formatDateTime = (date) => {
+    const now = new Date();
+    const itemDate = new Date(date);
+
+    const diff = now - itemDate;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+
+    if (hours < 24) {
+      return `${hours} hours ago`;
+    }
+
+    return itemDate.toLocaleDateString("en-IN", {
       day: "2-digit",
       month: "short",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
     });
+  };
 
   return (
-    <TouchableOpacity
-      style={styles.item}
-      activeOpacity={0.7}
-      onPress={() =>
-        navigation.navigate("TransactionDetailScreen", {
-          transaction_id: item?.id,
-        })
-      }
+ <TouchableOpacity
+  activeOpacity={0.8}
+  style={styles.historyCard}
+>
+  <View style={styles.historyLeft}>
+    <View style={styles.historyIconBox}>
+      <Icon
+        name={isReceived ? "arrow-down-left" : "arrow-up-right"}
+        size={20}
+        color="#111"
+      />
+    </View>
+
+    <View style={styles.historyUserInfo}>
+      <Text style={styles.historyTypeText}>
+        {isReceived ? "Received from" : "Paid to"}
+      </Text>
+
+      <Text style={styles.historyUserName}>
+        {name || "User"}
+      </Text>
+
+      <Text style={styles.historyDateText}>
+        {formatDateTime(item.date)}
+      </Text>
+    </View>
+  </View>
+
+  <View style={styles.historyAmountContainer}>
+    <Text
+      style={[
+        styles.historyAmountText,
+        {
+          color: isReceived ? "#16a34a" : "#dc2626",
+        },
+      ]}
     >
-      <View style={styles.left}>
-        <View
-          style={[
-            styles.avatar,
-            { backgroundColor: isReceived ? "#22c55e" : "#e5e7eb" },
-          ]}
-        >
-          <Icon
-            name={isReceived ? "arrow-down" : "arrow-up"}
-            size={18}
-            color={isReceived ? "#fff" : "#000"}
-          />
-        </View>
+      {isReceived ? "+" : "-"} ₹
+      {Math.abs(Number(item.amount)).toLocaleString()}
+    </Text>
 
-        <View>
-          {/* AMOUNT */}
-          <Text
-            style={[
-              styles.amount,
-              { color: isReceived ? "#22c55e" : "#ef4444" },
-            ]}
-          >
-            {isReceived
-              ? `+${Number(item.amount).toFixed(2)}`
-              : Number(item.amount).toFixed(2)}{" "}
-            PAYO
-          </Text>
-
-          {/* DATE TIME */}
-          <Text style={styles.time}>{formatDateTime(item.date)}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+    <Text style={styles.historyStatusText}>
+      {isReceived ? "Credited to" : "Debited from"}
+    </Text>
+  </View>
+</TouchableOpacity>
   );
 };
