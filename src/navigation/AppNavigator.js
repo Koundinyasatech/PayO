@@ -41,7 +41,7 @@ import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
 import SendScreen from '../screens/components/sendScreen';
 import BottomNav from '../screens/components/bottomNav';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
-import ScanButtonQRScreen from '../screens/HomeScreen/scanButton';
+
 import Recents from '../screens/HomeScreen/Recents';
 
 import AddBankHome from "../screens/Bank/AddBankHome";
@@ -94,7 +94,7 @@ export default function AppNavigator() {
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
-        <Stack.Screen name="ScanButton" component={ScanButtonQRScreen} />
+        
         <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
         
         
