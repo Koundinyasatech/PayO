@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import styles from './TransactionHistoryStyles';
 import api from '../../api/axios';
 
+
 export default function TransactionHistory({ navigation }) {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,7 +131,9 @@ export default function TransactionHistory({ navigation }) {
         <View style={styles.headerRow}>
           <TouchableOpacity 
   onPress={() => navigation.canGoBack() && navigation.goBack()}          >
-            <Text style={styles.back}>←</Text>
+            <Text style={styles.back}>
+                <Icon name="arrow-left" size={22} color="#faf6f6" />
+            </Text>
           </TouchableOpacity>
           <Text style={styles.header}>Transaction History</Text>
         </View>

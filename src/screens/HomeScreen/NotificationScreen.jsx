@@ -26,7 +26,7 @@ export default function NotificationScreen({ navigation }) {
   // ✅ API CALL HERE (using your axios instance)
   const fetchNotifications = async () => {
     try {
-      const res = await api.get("/api/wallet/notifications");
+      const res = await api.get("/api/notifications/notifications");
       setData(res.data);
     } catch (err) {
       console.log("API ERROR:", err);
