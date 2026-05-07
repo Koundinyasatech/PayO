@@ -159,7 +159,7 @@ const handleNext = async () => {
         {/* BALANCE */}
         <View style={styles.balanceBox}>
           <Text style={styles.balanceText}>Available balance</Text>
-          <Text style={styles.balanceAmount}>{avaliable}</Text>
+          <Text style={styles.balanceAmount}>{avaliable} PAYO</Text>
         </View>
 
         {/* BUTTON */}
