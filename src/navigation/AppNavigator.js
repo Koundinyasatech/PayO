@@ -49,6 +49,8 @@ import AccountNumber from "../screens/Bank/AccountNumber";
 import UpiPin from "../screens/Bank/UpiPin";
 import SuccessScreen from "../screens/Bank/SuccessScreen";
 import UserProfile from '../screens/UserProfile/UserProfile';
+import TransactionHistory from '../screens/HomeScreen/TransactionHistory';
+import TnsHistorySingleUser from '../screens/HomeScreen/TnsHistorySingleUser';
 
 const Stack = createNativeStackNavigator();
 
@@ -94,6 +96,8 @@ export default function AppNavigator() {
         <Stack.Screen name="Receive" component={Receive} />
         <Stack.Screen name="ScanButton" component={ScanButtonQRScreen} />
         <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
+        <Stack.Screen name="TransactionHistory" component={TransactionHistory} />
+        <Stack.Screen name="TnsHistorySingleUser" component={TnsHistorySingleUser} />
         
         
         {/* BANK DETAILS */}
