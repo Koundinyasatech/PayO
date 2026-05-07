@@ -295,69 +295,81 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.transactionsList}>
             {displayedTransactions.map((transaction, index) => (
 
-              <TouchableOpacity
-                key={index}
-                style={styles.transactionItem}
-                activeOpacity={0.7}
-                onPress={() =>
-                  navigation.navigate("TransactionDetailScreen", {
-                    transaction_id: transaction?.id,
-                  })
-                }
-              >
-                {/* LEFT SIDE */}
-                <View style={styles.transactionLeft}>
+          <TouchableOpacity
+  key={index}
+  style={styles.transactionItem}
+  activeOpacity={0.7}
+  onPress={() =>
+    navigation.navigate("TransactionDetailScreen", {
+      transaction_id: transaction?.id,
+    })
+  }
+>
+  {/* LEFT SIDE */}
+  <View style={styles.transactionLeft}>
+    <View
+      style={[
+        styles.transactionAvatar,
+        {
+          backgroundColor:
+            transaction.status === "failed"
+              ? "#FEE2E2"
+              : transaction.amount > 0
+              ? "#56F27B"
+              : "#E5E7EB",
+        },
+      ]}
+    >
+      {transaction.status === "failed" ? (
+        <Icon name="alert-circle" size={18} color="red" />
+      ) : transaction.amount > 0 ? (
+        <Icon name="arrow-down" size={18} color="black" />
+      ) : (
+        <Icon name="arrow-up-right" size={18} color="black" />
+      )}
+    </View>
 
-                  <View
-                    style={[
-                      styles.transactionAvatar,
-                      {
-                        backgroundColor:
-                          transaction.amount > 0 ? "#56F27B" : "#E5E7EB",
-                      },
-                    ]}
-                  >
-                    <Text style={{ fontSize: 20 }}>
-                      {transaction?.amount > 0 ? 
-                      <Icon name="arrow-down" size={18} color="black" /> : 
-                      <Icon name="arrow-up-right" size={18} color="black" />}
-                    </Text>
-                  </View>
+    <View style={styles.transactionInfo}>
+      <Text style={styles.transactionName}>
+        {transaction.name}
+      </Text>
 
-                  <View style={styles.transactionInfo}>
-                    <Text style={styles.transactionName}>
-                      {transaction.name}
-                    </Text>
+      <Text style={styles.transactionTime}>
+        {new Date(transaction.createdAt).toLocaleString()}
+      </Text>
+    </View>
+  </View>
 
-                    <Text style={styles.transactionTime}>
-                      {new Date(transaction.createdAt).toLocaleString()}
-                    </Text>
-                  </View>
-                </View>
+  {/* RIGHT SIDE */}
+  <View style={styles.amountBlock}>
+    <View style={styles.amountRow}>
+      <Text
+        style={[
+          styles.transactionAmount,
+          transaction.amount > 0
+            ? styles.amountPositive
+            : styles.amountNegative,
+        ]}
+      >
+        {transaction.amount > 0 ? "+" : ""}
+        {transaction.amount}
+      </Text>
+    </View>
 
-                {/* RIGHT SIDE */}
-                <View style={styles.amountBlock}>
-                  <View style={styles.amountRow}>
-                    <Text
-                      style={[
-                        styles.transactionAmount,
-                        transaction.amount > 0
-                          ? styles.amountPositive
-                          : styles.amountNegative,
-                      ]}
-                    >
-                      {transaction.amount > 0 ? "+" : ""}
-                      {transaction.amount}
-                    </Text>
-
-                    {/* <Text style={styles.payo}> PAYO</Text> */}
-                  </View>
-
-                  <Text style={styles.statusText}>
-                    {transaction.amount > 0 ? "Received" : "sent"}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+    <Text
+      style={[
+        styles.statusText,
+        transaction.status === "failed" && { color: "red" },
+      ]}
+    >
+      {transaction.status === "failed"
+        ? "Failed"
+        : transaction.amount > 0
+        ? "Received"
+        : "Sent"}
+    </Text>
+  </View>
+</TouchableOpacity>
 
             ))}
           </View>

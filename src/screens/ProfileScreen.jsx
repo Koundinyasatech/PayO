@@ -371,8 +371,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
     padding: 20,
-     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-  },
+   paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
