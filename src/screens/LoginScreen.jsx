@@ -4,10 +4,13 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar
 } from 'react-native';
 import api from '../api/axios';
 import * as Keychain from 'react-native-keychain';
+import Icon from 'react-native-vector-icons/Feather';
+import { Platform } from 'react-native';
  
 export default function LoginScreen({ navigation }) {
  
@@ -72,7 +75,9 @@ export default function LoginScreen({ navigation }) {
  
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={styles.back}>
+              <Icon name="arrow-left" size={22} color="#080808" />
+          </Text>
         </TouchableOpacity>
  
         <Text style={styles.titleCentered}>
@@ -174,6 +179,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EAEAEA',
     padding: 20,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 
   },
  
   header: {

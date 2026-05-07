@@ -121,7 +121,10 @@ const handleNext = async () => {
         {loading ? (
           <Text style={styles.infoText}>Checking...</Text>
         ) : receiverData ? (
-          <Text style={styles.successText}>{receiverData.name}</Text>
+          <Text>
+             <Text style={{color:"white"}}>UserName :</Text>  <Text style={styles.successText}> {receiverData.name}</Text>
+          </Text>
+       
         ) : address.length > 5 ? (
           <Text style={styles.errorText}>User not found</Text>
         ) : null}

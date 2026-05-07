@@ -6,9 +6,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import api from '../api/axios';
+import Icon from 'react-native-vector-icons/Feather';
+import { StatusBar } from 'react-native';
  
 export default function RegisterMobileScreen({ navigation, route }) {
  
@@ -64,7 +67,9 @@ export default function RegisterMobileScreen({ navigation, route }) {
  
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={styles.back}>
+                <Icon name="arrow-left" size={22} color="#080808" />
+          </Text>
         </TouchableOpacity>
  
         <Text style={styles.titleCentered}>
@@ -120,6 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2F2F2',
     padding: 20,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   header: {
     flexDirection: 'row',
