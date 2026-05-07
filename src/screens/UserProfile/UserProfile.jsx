@@ -215,6 +215,20 @@ const handleShare = async () => {
             </TouchableOpacity>
           </View>
 
+                    {/* ADD BANK ACCOUNT BUTTON */}
+          <TouchableOpacity
+            style={styles.addBankBtn}
+            onPress={() => navigation.navigate('AddBankAccount')}
+          >
+            <Icon name="credit-card" size={20} color="#fff" />
+            
+            <Text style={styles.addBankText}>
+              Add Bank Account
+            </Text>
+
+            <Icon name="chevron-right" size={20} color="#fff" />
+          </TouchableOpacity>
+
           {/* ACCOUNT SECTION */}
           <Text style={styles.sectionTitle}>Account</Text>
 

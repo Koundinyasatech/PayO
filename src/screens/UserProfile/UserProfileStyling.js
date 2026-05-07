@@ -136,6 +136,26 @@ export default StyleSheet.create({
   btnText: {
     color: '#fff',
   },
+
+    addBankBtn: {
+    marginTop: 18,
+    marginBottom: 10,
+    backgroundColor: '#5e2bb8',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  addBankText: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 14,
+  },
  
   /* SECTION */
   sectionTitle: {
