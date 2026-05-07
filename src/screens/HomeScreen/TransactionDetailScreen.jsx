@@ -98,10 +98,11 @@ export default function TransactionDetailScreen({ navigation }) {
 
     };
 
-    const handleHistory = (id) => {
+    const handleHistory = (id,name) => {
 
        navigation.navigate("TnsHistorySingleUser", {
             id: id,
+            name:name,
 
 
         });
@@ -335,7 +336,7 @@ const handleCopyTransactionID = (Id) => {
                     <Text style={styles.actionText}>Share</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.actionItem} onPress={()=>handleHistory(transaction?.wallet)}>
+                <TouchableOpacity style={styles.actionItem} onPress={()=>handleHistory(transaction?.wallet,transaction?.name)}>
                     <View style={styles.circle}>
                         <Icon name="clock" size={18} color="#000" />
                     </View>
