@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
-   SafeAreaView,
+  SafeAreaView,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   Camera,
   useCameraDevice,
@@ -21,14 +21,14 @@ import api from '../api/axios';
 
 const { width } = Dimensions.get('window');
 
-export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab }) {
+export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab }) {
   const route = useRoute();
   const device = useCameraDevice('back');
 
   const [hasPermission, setHasPermission] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [torch, setTorch] = useState('off');
- 
+
 
   const scanLine = useRef(new Animated.Value(0)).current;
 
@@ -52,30 +52,38 @@ export default function ScanQRScreen({ navigation,setSelectedUser, setActiveTab 
     getPermission();
   }, []);
 
- 
-  
-const handleQR = async (value) => {
-  if (scannedData) return;
+  useFocusEffect(
+    React.useCallback(() => {
+      setScannedData(null);
 
-  try {
-    const res = await api.post('api/wallet/scan-qr', { qrData: value });
+      return () => { };
+    }, [])
+  );
 
-    const user = {
-      name: res?.data?.name,
-      address: res.data.walletAddress,
-    };
-    console.log(user,"sowmyacheck7")
 
-    setScannedData(user);
 
-    // ✅ directly navigate to amount screen
-    setSelectedUser(user);
-    setActiveTab('amount');
+  const handleQR = async (value) => {
+    if (scannedData) return;
 
-  } catch (err) {
-    alert('Invalid QR');
-  }
-};
+    try {
+      const res = await api.post('api/wallet/scan-qr', { qrData: value });
+
+      const user = {
+        name: res?.data?.name,
+        address: res.data.walletAddress,
+      };
+      console.log(user, "sowmyacheck7")
+
+      setScannedData(user);
+
+      // ✅ directly navigate to amount screen
+      setSelectedUser(user);
+      setActiveTab('amount');
+
+    } catch (err) {
+      alert('Invalid QR');
+    }
+  };
 
   // 🔍 Scanner
   const codeScanner = useCodeScanner({
@@ -95,12 +103,12 @@ const handleQR = async (value) => {
       </View>
     );
   }
-            
-  console.log(scannedData,"999")
+
+  console.log(scannedData, "999")
 
   return (
- 
-       <SafeAreaView style={styles.container}>
+
+    <SafeAreaView style={styles.container}>
       <View style={styles.scanWrapper}>
         {!scannedData && (
           <Camera
@@ -112,7 +120,7 @@ const handleQR = async (value) => {
           />
         )}
 
-       
+
         {!scannedData && (
           <Animated.View
             style={[
@@ -122,7 +130,7 @@ const handleQR = async (value) => {
           />
         )}
 
-       
+
         <View style={styles.cornerTL} />
         <View style={styles.cornerTR} />
         <View style={styles.cornerBL} />
@@ -137,7 +145,7 @@ const handleQR = async (value) => {
           </View>
         )}
       </View>
-   
+
       {!scannedData ? (
         <Text style={styles.scanText}>Scanning QR code...</Text>
       ) : (
@@ -149,7 +157,7 @@ const handleQR = async (value) => {
         </>
       )}
 
-   
+
       {!scannedData && (
         <View style={styles.row}>
           <TouchableOpacity
@@ -178,28 +186,28 @@ const handleQR = async (value) => {
       )}
 
 
-       {!scannedData && (
-          <View style={styles.text}>
-            <Text style={{ fontWeight: '400',color:"white",fontSize:16 ,padding:3}}>
-              Point your camera at a QR code to continue.   </Text>
-<Text style={{ fontWeight: '400',color:"white",fontSize:16,marginLeft:"10%" }}>Hold steady for faster scanning
-            </Text>
-          </View>
-        )}
-      
+      {!scannedData && (
+        <View style={styles.text}>
+          <Text style={{ fontWeight: '400', color: "white", fontSize: 16, padding: 3 }}>
+            Point your camera at a QR code to continue.   </Text>
+          <Text style={{ fontWeight: '400', color: "white", fontSize: 16, marginLeft: "10%" }}>Hold steady for faster scanning
+          </Text>
+        </View>
+      )}
 
-{/* 
+
+
       {!scannedData && (
         <TouchableOpacity
           style={styles.simulate}
           onPress={() => handleQR('test-wallet-address')}
-           
+
         >
           <Text style={{ color: '#fff' }}>Simulate Scan</Text>
         </TouchableOpacity>
-      )} */}
-       </SafeAreaView>
-   
+      )}
+    </SafeAreaView>
+
   );
 }
 
@@ -322,7 +330,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 10,
   },
- text: { color: '#fff',padding:25},
+  text: { color: '#fff', padding: 25 },
   smallText: { color: '#fff' },
 
   simulate: {
