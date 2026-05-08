@@ -39,7 +39,9 @@ export default function PaymentLoading({ route, navigation }) {
       });
 
     } catch (err) {
-      alert('Payment Failed');
+      console.log(err.response.data?.message,"9090")
+      
+      alert(err.response.data?.message);
       
       navigation.goBack();
     }

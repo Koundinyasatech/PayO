@@ -6,9 +6,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  Alert
+  Alert,
+  Platform,
+  StatusBar
 } from 'react-native';
 import api from '../api/axios';
+import Icon from 'react-native-vector-icons/Feather';
  
 export default function RegisterMobileScreen({ navigation, route }) {
  
@@ -64,7 +67,8 @@ export default function RegisterMobileScreen({ navigation, route }) {
  
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={styles.back}>
+<Icon name="chevron-left" size={28} color="#000000" />          </Text>
         </TouchableOpacity>
  
         <Text style={styles.titleCentered}>
@@ -110,16 +114,42 @@ export default function RegisterMobileScreen({ navigation, route }) {
           <Text style={styles.buttonText}>Send OTP</Text>
         )}
       </TouchableOpacity>
+
+              {  mode === 'login'? <Text style={styles.registerText}>
+                    Don’t have an account?{' '}
+                    <Text
+                      style={styles.link}
+                      onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
+                    >
+                      Register
+                    </Text>
+                  </Text>:<Text style={styles.loginText}>
+                 Already have an account?{' '}
+                <Text
+                    style={styles.link}
+                    onPress={() => navigation.navigate('Login')}
+                >
+                    Login
+                </Text>
+            </Text> }
+
+            <Text style={styles.footer}>
+                By Continuing, you agree to our{' '}
+                <Text style={styles.link}>Privacy Policy</Text>
+            </Text>
  
     </View>
   );
 }
  
 const styles = StyleSheet.create({
+  
+   
   container: {
     flex: 1,
     backgroundColor: '#F2F2F2',
     padding: 20,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   header: {
     flexDirection: 'row',
@@ -170,6 +200,33 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
+    fontWeight: '600',
+  },
+   link: {
+        color: '#5A00D1',
+        textDecorationLine: 'underline', // ✅ underline like UI
+    },
+      loginText: {
+        marginTop: 20,
+        textAlign: 'center', // ✅ center
+        color: '#555',
+    },
+
+    footer: {
+        marginTop: 10,
+        textAlign: 'center',
+        color: '#555',
+        fontSize: 12,
+    },
+
+     registerText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#555',
+  },
+
+  link: {
+    color: '#5A00D1',
     fontWeight: '600',
   },
 });

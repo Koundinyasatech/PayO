@@ -15,12 +15,15 @@ import {
   Switch,
 
   ScrollView,
+  Platform,
+  StatusBar,
 
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 
 import api from '../api/axios';
+
 
 export default function ProfileScreen({ navigation }) {
 
@@ -159,7 +162,8 @@ export default function ProfileScreen({ navigation }) {
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}>←</Text>
+          <Text style={styles.back}>
+<Icon name="chevron-left" size={28} color="#000000" />          </Text>
         </TouchableOpacity>
 
         <Text style={styles.titleCentered}>Create your Profile</Text>
@@ -335,7 +339,7 @@ export default function ProfileScreen({ navigation }) {
 
       {/* FACE ID */}
       <View style={styles.switchRow}>
-        <Switch value={faceId} onValueChange={setFaceId} />
+        <Switch value={faceId} onValueChange={setFaceId} disabled={true} />
         <Text style={styles.switchText}>
 
           Enable Face ID login for faster, secure access
@@ -366,7 +370,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
     padding: 20,
-  },
+   paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -384,7 +389,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    marginLeft: "10%", // balance arrow
+   // balance arrow
   },
   title: {
     fontSize: 22,

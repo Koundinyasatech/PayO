@@ -114,4 +114,78 @@ export default StyleSheet.create({
     marginTop: 3,
     textTransform: 'capitalize',
   },
+
+
+  historySection: {
+  color: "#6b7280",
+  marginTop: 28,
+  marginBottom: 18,
+  fontWeight: "700",
+  fontSize: 15,
+  letterSpacing: 3,
+  textTransform: "uppercase",
+},
+
+historyCard: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  paddingVertical: 10,
+  paddingHorizontal: 8,
+  borderBottomWidth: 1,
+  borderBottomColor: "#ececec",
+},
+
+historyLeft: {
+  flexDirection: "row",
+  alignItems: "center",
+  flex: 1,
+},
+
+historyIconBox: {
+  width: 48,
+  height: 48,
+  borderRadius: 16,
+  backgroundColor: "#f7faff",
+  justifyContent: "center",
+  alignItems: "center",
+  marginRight: 16,
+},
+
+historyUserInfo: {
+  flex: 1,
+},
+
+historyTypeText: {
+  color: "#c6cedd",
+  fontSize: 12,
+  marginBottom: 2,
+},
+
+historyUserName: {
+  color: "#fafafa",
+  fontSize: 16,
+  fontWeight: "500",
+},
+
+historyDateText: {
+  color: "#9ca3af",
+  fontSize: 12,
+  marginTop: 8,
+},
+
+historyAmountContainer: {
+  alignItems: "flex-end",
+},
+
+historyAmountText: {
+  fontSize: 20,
+  fontWeight: "700",
+},
+
+historyStatusText: {
+  color: "#9ca3af",
+  fontSize: 14,
+  marginTop: 10,
+},
 });
