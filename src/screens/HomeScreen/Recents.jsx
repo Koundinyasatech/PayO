@@ -10,6 +10,9 @@ import {
 
 import { useFocusEffect } from "@react-navigation/native";
 import api from "../../api/axios";
+import Icon from "react-native-vector-icons/Feather";
+
+
 
 export default function Recents({ navigation, setSelectedUser, setActiveTab }) {
   const [recents, setRecents] = useState([]);
@@ -78,7 +81,9 @@ export default function Recents({ navigation, setSelectedUser, setActiveTab }) {
   >
     <View style={styles.left}>
       <View style={styles.icon}>
-        <Text style={{ fontSize: 12 }}>↗</Text>
+        <Text style={{ fontSize: 12 }}>
+          <Icon name="arrow-up-right" size={18} color="black" />
+        </Text>
       </View>
 
       <View>
@@ -143,7 +148,8 @@ container: {
   },
 
   icon: {
-    backgroundColor: "#7CFC00",
+   
+    backgroundColor: "#fff",
     width: 28,
     height: 28,
     borderRadius: 14,

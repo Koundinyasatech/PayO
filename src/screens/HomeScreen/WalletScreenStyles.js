@@ -153,9 +153,9 @@ export default StyleSheet.create({
   },
 
   freezeBtn: {
-    backgroundColor: '#dc2626',
-    padding: 12,
-    borderRadius: 10,
+    // backgroundColor: '#dc2626',
+    // padding: 12,
+    // borderRadius: 10,
   },
 
   freezeText: {

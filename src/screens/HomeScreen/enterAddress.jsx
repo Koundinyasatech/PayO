@@ -22,6 +22,7 @@ export default function EnterAddressScreen({ navigation }) {
   const [receiverData, setReceiverData] = useState(null);
   const [loading, setLoading] = useState(false);
    const[avaliable,setAvaliable] =useState("");
+   const[message,setMessage]=useState("");
 
   useEffect(() => {
     if (route.params?.address) setAddress(route.params.address);
@@ -69,18 +70,21 @@ const handleNext = async () => {
     console.log("PREVIEW RESPONSE 👉", res.data);
 
    navigation.navigate("review", {
-  receiver: res.data.receiver,
-  address: res.data.address,
-  amount: res.data.amount,
-  sender: res.data.sender,
+  receiver: res?.data?.receiver,
+  address: res?.data?.address,
+  amount: res?.data?.amount,
+  sender: res?.data?.sender,
+  isRecent:res?.data?.isRecent
   
 });
 
   } catch (err) {
-    console.log("ERROR 👉", err.response || err);
-    // alert(err.response?.data?.message || "Error");
+    console.log( err?.response?.data);
+    setMessage(err?.response?.data?.message)
+   
   }
 };
+console.log(message,"00123")
 
    useEffect(() => {
   const fetchBalance = async () => {
@@ -121,7 +125,10 @@ const handleNext = async () => {
         {loading ? (
           <Text style={styles.infoText}>Checking...</Text>
         ) : receiverData ? (
-          <Text style={styles.successText}>{receiverData.name}</Text>
+          <Text>
+             <Text style={{color:"white"}}>UserName :</Text>  <Text style={styles.successText}> {receiverData.name}</Text>
+          </Text>
+       
         ) : address.length > 5 ? (
           <Text style={styles.errorText}>User not found</Text>
         ) : null}
@@ -129,16 +136,21 @@ const handleNext = async () => {
         {/* TOKENS */}
         <Text style={styles.label}>Tokens</Text>
         <View style={styles.amountRow}>
-          <TextInput
-            placeholder="0.00"
-            placeholderTextColor="#aaa"
-            value={amount}
-            onChangeText={setAmount}
-            style={styles.amountInput}
-            keyboardType="numeric"
-          />
+        <TextInput
+  placeholder="0"
+  placeholderTextColor="#aaa"
+  value={amount}
+  onChangeText={(text) => {
+    setAmount(text);
+    setMessage("");
+  }}
+  style={styles.amountInput}
+  keyboardType="numeric"
+/>
           <Text style={styles.token}>PAYO</Text>
         </View>
+
+        {message ? <Text style={{color:"#ff0000"}}>{message}</Text>:""}
 
         {/* QUICK BUTTONS */}
         <View style={styles.quickRow}>
@@ -156,7 +168,7 @@ const handleNext = async () => {
         {/* BALANCE */}
         <View style={styles.balanceBox}>
           <Text style={styles.balanceText}>Available balance</Text>
-          <Text style={styles.balanceAmount}>{avaliable}</Text>
+          <Text style={styles.balanceAmount}>{avaliable} PAYO</Text>
         </View>
 
         {/* BUTTON */}

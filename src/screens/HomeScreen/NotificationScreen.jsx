@@ -26,7 +26,7 @@ export default function NotificationScreen({ navigation }) {
   // ✅ API CALL HERE (using your axios instance)
   const fetchNotifications = async () => {
     try {
-      const res = await api.get("/api/wallet/notifications");
+      const res = await api.get("/api/notifications/notifications");
       setData(res.data);
     } catch (err) {
       console.log("API ERROR:", err);
@@ -103,8 +103,7 @@ export default function NotificationScreen({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Text style={styles.back}>
 
-       <Icon name="arrow-left" size={22} color="#fff" />
-            </Text>
+<Icon name="chevron-left" size={28} color="#ffffff" />            </Text>
           </TouchableOpacity>
  
           <Text style={styles.headerTitle}>Notifications</Text>
