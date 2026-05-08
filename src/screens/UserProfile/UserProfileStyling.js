@@ -43,6 +43,18 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+
+  personalHeading: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "600",
+  marginBottom: 10
+},
+
+labelItem: {
+  color: "#ccc",
+  fontSize: 14
+},
  
   profileText: {
     fontSize: 30,
@@ -82,9 +94,14 @@ export default StyleSheet.create({
  
   token: {
     color: '#00ff99',
-    fontSize: 14,
+    fontSize: 12,
 
   },
+
+  transactionRow: {
+  flexDirection: "row",
+  alignItems: "center",
+},
  
   transactions: {
     color: '#fff',
