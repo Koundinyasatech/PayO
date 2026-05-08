@@ -76,8 +76,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-              <Icon name="arrow-left" size={22} color="#080808" />
-          </Text>
+<Icon name="chevron-left" size={28} color="#050505"/>          </Text>
         </TouchableOpacity>
 
         <Text style={styles.titleCentered}>
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    marginLeft: "0%",
+    marginRight: "5%",
   },
 
   sub: {

@@ -235,7 +235,13 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.labelItem}>Linked Mobile</Text>
               <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
             </View>
-            <View style={styles.row}>
+           
+          </View>
+
+           <Text style={styles.sectionTitle}>Account</Text>
+
+           <View style={styles.card}>
+          <View style={styles.row}>
               <Text style={styles.labelItem}>Wallet Address</Text>
               <Text style={styles.value}>{profiledata?.walletAddress}</Text>
             </View>
@@ -253,11 +259,6 @@ export default function UserProfile({ navigation }) {
             <View style={styles.row}>
               <Text style={styles.item}>KYC Verification</Text>
               <Text style={styles.green}>Approved ›</Text>
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.item}>Personal Information</Text>
-              <Text style={styles.arrow}>›</Text>
             </View>
 
             <View style={styles.row}>

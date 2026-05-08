@@ -85,7 +85,7 @@ export default function ReviewTransferScreen({ route, navigation }) {
         {/* AMOUNT */}
         <Text style={styles.labelCenter}>Total Tokens</Text>
         <Text style={styles.amount}>
-          {amount}.00 <Text style={styles.payo}>PAYO</Text>
+          {amount} <Text style={styles.payo}>PAYO</Text>
         </Text>
  
         {/* FROM */}
