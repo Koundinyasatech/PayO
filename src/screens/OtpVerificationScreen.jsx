@@ -153,7 +153,8 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}><Icon name="arrow-left" size={22} color="#080808" /></Text>
+          <Text style={styles.back}>
+<Icon name="chevron-left" size={28} color="#000000" />            </Text>
         </TouchableOpacity>
 
         <Text style={styles.titleCentered}>
@@ -241,7 +242,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F3F3F3', padding: 20,      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0},
   header: { flexDirection: 'row', alignItems: 'center', marginTop: 20 },
   back: { fontSize: 22 },
-  titleCentered: { flex: 1, textAlign: 'center', fontSize: 22, fontWeight: '700' },
+  titleCentered: { flex: 1, textAlign: 'center', fontSize: 22, fontWeight: '700', marginRight: "5%", },
   sub: { textAlign: 'center', marginTop: 30, color: '#666' },
   otpContainer: { flexDirection: 'row', justifyContent: 'center', marginTop: 30 },
   box: {
