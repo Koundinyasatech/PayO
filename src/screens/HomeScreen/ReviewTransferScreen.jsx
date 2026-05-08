@@ -13,7 +13,8 @@ import LinearGradient from "react-native-linear-gradient";
 import api from "../../api/axios";
  
 export default function ReviewTransferScreen({ route, navigation }) {
-  const { receiver, amount, address, sender ,show} = route.params;
+  const { receiver, amount, address, sender ,show,isRecent} = route.params;
+  console.log(isRecent,"00")
  
   const [save, setSave] = useState(false);
   const [selfUser, setSelfUser] = useState("");
@@ -110,15 +111,16 @@ export default function ReviewTransferScreen({ route, navigation }) {
         <View style={styles.divider} />
  
         {/* SAVE TO RECENTS */}
-        <View style={styles.rowBetween}>
-          <Text style={styles.saveText}>Save to Recents</Text>
-          <Switch
-            value={save}
-            onValueChange={setSave}
-            trackColor={{ false: "#999", true: "#fff" }}
-            thumbColor={save ? "#6A00F4" : "#fff"}
-          />
-        </View>
+      <View style={[styles.rowBetween, isRecent && { opacity: 0.5 }]}>
+  <Text style={styles.saveText}>Save to Recents</Text>
+  <Switch
+    value={save}
+    onValueChange={setSave}
+    disabled={isRecent}   // disables switch when isRecent is true
+    trackColor={{ false: "#999", true: "#fff" }}
+    thumbColor={save ? "#6A00F4" : "#fff"}
+  />
+</View>
  
         <View style={styles.divider} />
  
@@ -215,6 +217,7 @@ const styles = StyleSheet.create({
   rowBetween: {
     flexDirection: "row",
     justifyContent: "space-between",
+    
   },
  
   name: {

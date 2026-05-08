@@ -210,24 +210,35 @@ export default function OtpVerificationScreen({ route, navigation }) {
       </TouchableOpacity>
 
       {/* ✅ HIDE LOGIN OPTION IN LOGIN MODE */}
-      {mode !== 'login' && (
-        <Text style={styles.loginText}>
-          Already have an account?{' '}
-          <Text
-            style={styles.link}
-            onPress={() => navigation.navigate('Login')}
-          >
-            Login
-          </Text>
-        </Text>
-      )}
+        {  mode === 'login'? <Text style={styles.registerText}>
+                         Don’t have an account?{' '}
+                         <Text
+                           style={styles.link}
+                           onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
+                         >
+                           Register
+                         </Text>
+                       </Text>:<Text style={styles.loginText}>
+                      Already have an account?{' '}
+                     <Text
+                         style={styles.link}
+                         onPress={() => navigation.navigate('Login')}
+                     >
+                         Login
+                     </Text>
+                 </Text> }
+
+           <Text style={styles.footer}>
+                      By Continuing, you agree to our{' '}
+                      <Text style={styles.link}>Privacy Policy</Text>
+                  </Text>
 
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F3F3F3', padding: 20,     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 },
+  container: { flex: 1, backgroundColor: '#F3F3F3', padding: 20,      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0},
   header: { flexDirection: 'row', alignItems: 'center', marginTop: 20 },
   back: { fontSize: 22 },
   titleCentered: { flex: 1, textAlign: 'center', fontSize: 22, fontWeight: '700' },
@@ -253,6 +264,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: { color: '#fff' },
-  loginText: { marginTop: 20, textAlign: 'center' }
+  loginText: { marginTop: 20, textAlign: 'center' },
+  footer: {
+        marginTop: 10,
+        textAlign: 'center',
+        color: '#555',
+        fontSize: 12,
+    },
+    registerText: {
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#555',
+  },
+
+  link: {
+    color: '#5A00D1',
+    fontWeight: '600',
+  },
 });
 

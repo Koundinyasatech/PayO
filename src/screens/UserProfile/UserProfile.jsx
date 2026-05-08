@@ -87,25 +87,6 @@ export default function UserProfile({ navigation }) {
     }
   };
 
-  // ================= SHARE =================
-  //   const handleShare = async () => {
-  //   try {
-  //     if (!qr) return;
-  //     // Extract base64 part
-  //     const base64Data = qr.replace(/^data:image\/png;base64,/, "");
-  //     const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
-  //     // Save QR image to file
-  //     await RNFS.writeFile(filePath, base64Data, "base64");
-  //     // Share image + message
-  //     await Share.open({
-  //       url: "file://" + filePath,
-  //       message: `Send PAYO to this address:\n${address}`,
-  //     });
-  //   } catch (error) {
-  //     console.log("Share error:", error);
-  //   }
-  // };
-
   const handleShare = async () => {
     try {
 
@@ -183,7 +164,7 @@ export default function UserProfile({ navigation }) {
           contentContainerStyle={{ paddingBottom: 40 }}
         >
           <View style={styles.balanceCard}>
-            <View>
+            <View style={{ marginLeft: 8 }}>
               <Text style={styles.label}>Balance</Text>
               <Text style={styles.balance}>
                 {profiledata?.balance} <Text style={styles.token}>PAYO</Text>
@@ -191,10 +172,16 @@ export default function UserProfile({ navigation }) {
             </View>
 
             <View style={styles.divider} />
+            <View style={styles.transactionRow}>
+              <Icon name="arrow-up" size={30} color="#E25C5C" />
 
-            <View>
-              <Text style={styles.label}>Transactions</Text>
-              <Text style={styles.transactions}>{profiledata?.transactionCount}</Text>
+
+              <View style={{ marginLeft: 8 }}>
+                <Text style={styles.label}>Transactions</Text>
+                <Text style={styles.transactions}>
+                  {profiledata?.transactionCount}
+                </Text>
+              </View>
             </View>
           </View>
 
@@ -216,22 +203,46 @@ export default function UserProfile({ navigation }) {
           </View>
 
           {/* ACCOUNT SECTION */}
-          <Text style={styles.sectionTitle}>Account</Text>
+          <Text style={styles.sectionTitle}>Personal Information</Text>
 
           <View style={styles.card}>
-            <View style={styles.row}>
-              <Text style={styles.item}>KYC Verification</Text>
-              <Text style={styles.green}>Approved ›</Text>
-            </View>
 
+            {/* 
             <View style={styles.row}>
               <Text style={styles.item}>Personal Information</Text>
               <Text style={styles.arrow}>›</Text>
+            </View> */}
+
+            <View>
+
+
+              <View style={styles.row}>
+                <Text style={styles.labelItem}>Name</Text>
+                <Text style={styles.value}>
+                  {profiledata?.name || "N/A"}
+                </Text>
+              </View>
+
+              <View style={styles.row}>
+                <Text style={styles.labelItem}>Email</Text>
+                <Text style={styles.value}>
+                  {profiledata?.email || "N/A"}
+                </Text>
+              </View>
             </View>
 
             <View style={styles.row}>
-              <Text style={styles.item}>Linked Mobile</Text>
+              <Text style={styles.labelItem}>Linked Mobile</Text>
               <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.labelItem}>Wallet Address</Text>
+              <Text style={styles.value}>{profiledata?.walletAddress}</Text>
+            </View>
+
+             <View style={styles.row}>
+              <Text style={styles.labelItem}>Wallet ID</Text>
+              <Text style={styles.value}>{profiledata?.walletId}</Text>
             </View>
           </View>
 
