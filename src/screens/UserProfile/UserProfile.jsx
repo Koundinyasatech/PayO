@@ -18,52 +18,52 @@ import RNFS from "react-native-fs";
 import Icon from "react-native-vector-icons/Feather";
 
 export default function UserProfile({ navigation }) {
-  const[profiledata,setProfileData]=useState({});
+  const [profiledata, setProfileData] = useState({});
   const [address, setAddress] = useState("");
-const [qr, setQr] = useState(null);
+  const [qr, setQr] = useState(null);
 
-useEffect(() => {
-  const backAction = () => {
-    if (navigation.canGoBack()) {
-      navigation.goBack(); // go to previous screen dynamically
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.canGoBack()) {
+        navigation.goBack(); // go to previous screen dynamically
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [navigation]);
+
+  const fetchQr = async () => {
+    try {
+      const res = await api.get("api/wallet/generate-address");
+
+      const data = res.data;
+
+      const qrImage = data.qr?.startsWith("data:image")
+        ? data.qr
+        : `data:image/png;base64,${data.qr}`;
+
+      setQr(qrImage);
+      setAddress(data.address);
+
+      return { qrImage, address: data.address };
+
+    } catch (err) {
+      console.log("QR ERROR:", err.message);
+      return null;
     }
-    return true;
   };
 
-  const backHandler = BackHandler.addEventListener(
-    "hardwareBackPress",
-    backAction
-  );
-
-  return () => backHandler.remove();
-}, [navigation]);
-
-const fetchQr = async () => {
-  try {
-    const res = await api.get("api/wallet/generate-address");
-
-    const data = res.data;
-
-    const qrImage = data.qr?.startsWith("data:image")
-      ? data.qr
-      : `data:image/png;base64,${data.qr}`;
-
-    setQr(qrImage);
-    setAddress(data.address);
-
-    return { qrImage, address: data.address };
-
-  } catch (err) {
-    console.log("QR ERROR:", err.message);
-    return null;
-  }
-};
-
- useEffect(() => {
+  useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const res = await api.get('/api/wallet/profile');
-        console.log(res.data.data,"9898")
+        console.log(res.data.data, "9898")
         setProfileData(res?.data?.data);
       } catch (err) {
         console.log(err.message);
@@ -75,62 +75,43 @@ const fetchQr = async () => {
 
   // ✅ SECURE LOGOUT (FIXED)
 
-const handleCopy = () => {
-  const walletAddress = profiledata?.walletAddress;
+  const handleCopy = () => {
+    const walletAddress = profiledata?.walletAddress;
 
-  if (!walletAddress) return;
+    if (!walletAddress) return;
 
-  Clipboard.setString(walletAddress);
+    Clipboard.setString(walletAddress);
 
-  if (Platform.OS === "android") {
-    ToastAndroid.show("Address copied", ToastAndroid.SHORT);
-  }
-};
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Address copied", ToastAndroid.SHORT);
+    }
+  };
 
-  // ================= SHARE =================
-//   const handleShare = async () => {
-//   try {
-//     if (!qr) return;
-//     // Extract base64 part
-//     const base64Data = qr.replace(/^data:image\/png;base64,/, "");
-//     const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
-//     // Save QR image to file
-//     await RNFS.writeFile(filePath, base64Data, "base64");
-//     // Share image + message
-//     await Share.open({
-//       url: "file://" + filePath,
-//       message: `Send PAYO to this address:\n${address}`,
-//     });
-//   } catch (error) {
-//     console.log("Share error:", error);
-//   }
-// };
+  const handleShare = async () => {
+    try {
 
-const handleShare = async () => {
-  try {
+      // fetch QR first
+      const result = await fetchQr();
 
-    // fetch QR first
-    const result = await fetchQr();
+      if (!result) return;
 
-    if (!result) return;
+      const { qrImage, address } = result;
 
-    const { qrImage, address } = result;
+      const base64Data = qrImage.replace(/^data:image\/png;base64,/, "");
 
-    const base64Data = qrImage.replace(/^data:image\/png;base64,/, "");
+      const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
 
-    const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
+      await RNFS.writeFile(filePath, base64Data, "base64");
 
-    await RNFS.writeFile(filePath, base64Data, "base64");
+      await Share.open({
+        url: "file://" + filePath,
+        message: `Send PAYO to this address:\n${address}`,
+      });
 
-    await Share.open({
-      url: "file://" + filePath,
-      message: `Send PAYO to this address:\n${address}`,
-    });
-
-  } catch (error) {
-    console.log("Share error:", error);
-  }
-};
+    } catch (error) {
+      console.log("Share error:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -148,53 +129,59 @@ const handleShare = async () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-     
-        <View style={styles.container}>
 
-          {/* HEADER */}
-          <View style={styles.header}>
+      <View style={styles.container}>
+
+        {/* HEADER */}
+        <View style={styles.header}>
           <TouchableOpacity
-  onPress={() => navigation.canGoBack() && navigation.goBack()}
->
-              <Text style={styles.back}>
-                      <Icon name="arrow-left" size={22} color="#fff" />
-              </Text>
-            </TouchableOpacity>
+            onPress={() => navigation.canGoBack() && navigation.goBack()}
+          >
+            <Text style={styles.back}>
+              <Icon name="arrow-left" size={22} color="#fff" />
+            </Text>
+          </TouchableOpacity>
 
-            <Text style={styles.title}>Profile</Text>
+          <Text style={styles.title}>Profile</Text>
 
-            <View style={{ width: 20 }} />
+          <View style={{ width: 20 }} />
+        </View>
+
+        {/* PROFILE SECTION */}
+        <View style={styles.profileSection}>
+          <View style={styles.profileCircle}>
+            <Text style={styles.profileText}>👤</Text>
           </View>
 
-          {/* PROFILE SECTION */}
-          <View style={styles.profileSection}>
-            <View style={styles.profileCircle}>
-              <Text style={styles.profileText}>👤</Text>
-            </View>
+          <Text style={styles.phone}>+91 {profiledata?.mobile}</Text>
+          <Text style={styles.verified}>• KYC VERIFIED</Text>
+        </View>
 
-            <Text style={styles.phone}>+91 {profiledata?.mobile}</Text>
-            <Text style={styles.verified}>• KYC VERIFIED</Text>
-          </View>
+        {/* BALANCE CARD */}
 
-          {/* BALANCE CARD */}
-
-           <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
           <View style={styles.balanceCard}>
-            <View>
+            <View style={{ marginLeft: 8 }}>
               <Text style={styles.label}>Balance</Text>
               <Text style={styles.balance}>
-                  {profiledata?.balance} <Text style={styles.token}>PAYO</Text>
+                {profiledata?.balance} <Text style={styles.token}>PAYO</Text>
               </Text>
             </View>
 
             <View style={styles.divider} />
+            <View style={styles.transactionRow}>
+              <Icon name="arrow-up" size={30} color="#E25C5C" />
 
-            <View>
-              <Text style={styles.label}>Transactions</Text>
-              <Text style={styles.transactions}>{profiledata?.transactionCount}</Text>
+
+              <View style={{ marginLeft: 8 }}>
+                <Text style={styles.label}>Transactions</Text>
+                <Text style={styles.transactions}>
+                  {profiledata?.transactionCount}
+                </Text>
+              </View>
             </View>
           </View>
 
@@ -206,11 +193,11 @@ const handleShare = async () => {
 
           {/* BUTTONS */}
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.btn}  onPress={handleCopy}>
+            <TouchableOpacity style={styles.btn} onPress={handleCopy}>
               <Text style={styles.btnText}>Copy address</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn}  onPress={handleShare}>
+            <TouchableOpacity style={styles.btn} onPress={handleShare}>
               <Text style={styles.btnText}>Share address</Text>
             </TouchableOpacity>
           </View>
@@ -230,22 +217,46 @@ const handleShare = async () => {
           </TouchableOpacity>
 
           {/* ACCOUNT SECTION */}
-          <Text style={styles.sectionTitle}>Account</Text>
+          <Text style={styles.sectionTitle}>Personal Information</Text>
 
           <View style={styles.card}>
-            <View style={styles.row}>
-              <Text style={styles.item}>KYC Verification</Text>
-              <Text style={styles.green}>Approved ›</Text>
-            </View>
 
+            {/* 
             <View style={styles.row}>
               <Text style={styles.item}>Personal Information</Text>
               <Text style={styles.arrow}>›</Text>
+            </View> */}
+
+            <View>
+
+
+              <View style={styles.row}>
+                <Text style={styles.labelItem}>Name</Text>
+                <Text style={styles.value}>
+                  {profiledata?.name || "N/A"}
+                </Text>
+              </View>
+
+              <View style={styles.row}>
+                <Text style={styles.labelItem}>Email</Text>
+                <Text style={styles.value}>
+                  {profiledata?.email || "N/A"}
+                </Text>
+              </View>
             </View>
 
             <View style={styles.row}>
-              <Text style={styles.item}>Linked Mobile</Text>
+              <Text style={styles.labelItem}>Linked Mobile</Text>
               <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.labelItem}>Wallet Address</Text>
+              <Text style={styles.value}>{profiledata?.walletAddress}</Text>
+            </View>
+
+             <View style={styles.row}>
+              <Text style={styles.labelItem}>Wallet ID</Text>
+              <Text style={styles.value}>{profiledata?.walletId}</Text>
             </View>
           </View>
 
@@ -273,9 +284,9 @@ const handleShare = async () => {
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
-</ScrollView>
-        </View>
-      
+        </ScrollView>
+      </View>
+
     </SafeAreaView>
   );
 }
