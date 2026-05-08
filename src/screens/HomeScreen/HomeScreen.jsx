@@ -18,24 +18,16 @@ export default function HomeScreen({ navigation }) {
 
   let navigations;
 
-
-  const transactions = [
-    { id: '1', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
-    { id: '2', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
-    { id: '3', name: 'Priya Mehta', time: 'today 9/10 Pm', amount: -500, type: 'pending', color: '#F59E0B' },
-    { id: '4', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
-    { id: '5', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
-    { id: '6', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
-    { id: '7', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
-    { id: '8', name: 'Priya Mehta', time: 'today 9/10 Pm', amount: -500, type: 'pending', color: '#F59E0B' },
-    { id: '9', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
-    { id: '10', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
-  ];
   const [avaliable, setAvaliable] = useState("");
   const [totalBalance, setTotalBalance] = useState("");
+
+  const filteredTransactions = transactionsList.filter(
+    (item) => !(item.status === "failed" && item.type === "received")
+  );
+  
   const displayedTransactions = showAll
-    ? transactionsList
-    : transactionsList.slice(
+  ? filteredTransactions
+  : filteredTransactions.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );
@@ -108,6 +100,9 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  
+  
+
   return (
     //  <SafeAreaView>
     <View style={styles.container}>
@@ -134,7 +129,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.balanceRow}>
                 <Text style={styles.balanceAmount}>
 
-                  {balanceVisible ? `P ${avaliable}` : '* * * * *'}
+                  {balanceVisible ? `${avaliable}` : '* * * * *'}
                 </Text>
                 <Text style={styles.payoLabel}>  PAYO</Text>
               </View>
@@ -146,7 +141,7 @@ export default function HomeScreen({ navigation }) {
               {/* Eye Icon */}
               <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
                 <Icon
-                  name={balanceVisible ? "eye-off" : "eye"}
+                  name={balanceVisible ? "eye" : "eye-off"}
                   size={18}
                   color="#fff"
                 />
@@ -198,7 +193,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↙ */}
-                  <Icon name="arrow-down" size={14} color="#fff" />
+                  <Icon name="arrow-down-left" size={14} color="#fff" />
                 </Text>
               </View>
               <Text style={styles.label}>Receive</Text>

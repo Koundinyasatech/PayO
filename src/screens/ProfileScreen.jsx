@@ -163,8 +163,7 @@ export default function ProfileScreen({ navigation }) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-            <Icon name="arrow-left" size={22} color="#080808" />
-          </Text>
+<Icon name="chevron-left" size={28} color="#000000" />          </Text>
         </TouchableOpacity>
 
         <Text style={styles.titleCentered}>Create your Profile</Text>
