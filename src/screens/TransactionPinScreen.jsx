@@ -597,7 +597,8 @@ const styles = StyleSheet.create({
     width: '90%',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 40
+    bottom: 40,
+    marginBottom:20
   },
  
   buttonText: {

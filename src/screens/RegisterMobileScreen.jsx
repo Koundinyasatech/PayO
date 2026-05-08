@@ -163,8 +163,10 @@ const styles = StyleSheet.create({
   titleCentered: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
+    marginRight:"10%"
+   
   },
   desc: {
     textAlign: 'center',
