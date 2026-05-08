@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    marginRight: "5%",
+    marginRight: "18%",
   },
 
   sub: {
