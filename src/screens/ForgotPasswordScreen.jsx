@@ -21,7 +21,8 @@ export default function ForgotPassword({ navigation }) {
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
- 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -158,13 +159,18 @@ const [errors, setErrors] = useState('');
   return (
     <SafeAreaView style={styles.container}>
  
-      {/* BACK */}
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.back}>←
-
-          <Icon name="chevron-left" size={28} color="#ffffff" />   
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.header}>
+  <TouchableOpacity
+    style={styles.cancelContainer}
+    onPress={() => navigation.goBack()}
+  >
+    <Icon
+      name="chevron-left"
+      size={28}
+      color="#000000"
+    />
+  </TouchableOpacity>
+</View>
  
       <Text style={styles.title}>Reset Password</Text>
       <Text style={styles.subtitle}>
@@ -233,27 +239,57 @@ const [errors, setErrors] = useState('');
  
       {/* NEW PASSWORD */}
       <Text style={styles.label}>New Password</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Enter your new password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        style={styles.input}
-      />
+      <View style={styles.passwordContainer}>
+  <TextInput
+    value={password}
+    onChangeText={setPassword}
+    placeholder="Enter your new password"
+    placeholderTextColor="#aaa"
+    secureTextEntry={!showPassword}
+    style={styles.passwordInput}
+  />
 
-{errors ? <Text style={styles.error}>{errors}</Text> : null}      
+  <TouchableOpacity
+    onPress={() => setShowPassword(!showPassword)}
+  >
+    <Icon
+      name={showPassword ? 'eye' : 'eye-off'}
+      size={16}
+      color="#555"
+    />
+  </TouchableOpacity>
+</View>
+
+{errors ? <Text style={styles.error}>{errors}</Text> : null}   
  
       {/* CONFIRM PASSWORD */}
       <Text style={styles.label}>Confirm Password</Text>
-      <TextInput
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        placeholder="Confirm password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        style={styles.input}
-      />
+      <View style={styles.passwordContainer}>
+  <TextInput
+    value={confirmPassword}
+    onChangeText={setConfirmPassword}
+    placeholder="Confirm password"
+    placeholderTextColor="#aaa"
+    secureTextEntry={!showConfirmPassword}
+    style={styles.passwordInput}
+  />
+
+  <TouchableOpacity
+    onPress={() =>
+      setShowConfirmPassword(!showConfirmPassword)
+    }
+  >
+    <Icon
+      name={
+        showConfirmPassword
+          ? 'eye'
+          : 'eye-off'
+      }
+      size={16}
+      color="#555"
+    />
+  </TouchableOpacity>
+</View>
  
       {/* SUBMIT */}
       <TouchableOpacity

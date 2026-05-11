@@ -146,7 +146,8 @@ export default function UserProfile({ navigation }) {
             onPress={() => navigation.canGoBack() && navigation.goBack()}
           >
             <Text style={styles.back}>
-              <Icon name="arrow-left" size={22} color="#fff" />
+              <Icon name="chevron-left" size={28} color="#ffffff" /> 
+
             </Text>
           </TouchableOpacity>
 
@@ -209,6 +210,20 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.btnText}>Share address</Text>
             </TouchableOpacity>
           </View>
+
+                    {/* ADD BANK ACCOUNT BUTTON */}
+          <TouchableOpacity
+            style={styles.addBankBtn}
+            onPress={() => navigation.navigate('AddBankAccount')}
+          >
+            <Icon name="credit-card" size={20} color="#fff" />
+            
+            <Text style={styles.addBankText}>
+              Add Bank Account
+            </Text>
+
+            <Icon name="chevron-right" size={20} color="#fff" />
+          </TouchableOpacity>
 
           {/* ACCOUNT SECTION */}
           <Text style={styles.sectionTitle}>Personal Information</Text>
