@@ -12,47 +12,47 @@ import {
 } from 'react-native';
 import api from '../api/axios';
 import Icon from 'react-native-vector-icons/Feather';
- 
+
 export default function RegisterMobileScreen({ navigation, route }) {
- 
+
   const { mode = 'register' } = route.params || {};
- 
+
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
- 
+
   const isValidMobile = mobile?.length === 10;
- 
+
   const handleSendOTP = async () => {
- 
+
     if (!mobile || mobile.length !== 10) {
       Alert.alert('Error', 'Enter valid mobile number');
       return;
     }
- 
+
     try {
       setLoading(true);
- 
+
       let response;
- 
+
       // 🔥 DIFFERENT API BASED ON MODE
       if (mode === 'login') {
         response = await api.post('/api/auth/send-login-otp', { mobile });
       } else {
         response = await api.post('/api/auth/send-otp', { mobile });
       }
- 
+
       console.log("OTP RESPONSE:", response.data);
- 
+
       // 🔥 HANDLE RESPONSE
       if (response.data?.message === "OTP sent") {
         navigation.navigate('OTP', { mobile, mode });
       } else {
         Alert.alert('Error', response.data?.message || 'Something went wrong');
       }
- 
+
     } catch (error) {
       console.log("ERROR:", error?.response?.data || error.message);
- 
+
       Alert.alert(
         'Error',
         error.response?.data?.message || error.message
@@ -61,33 +61,33 @@ export default function RegisterMobileScreen({ navigation, route }) {
       setLoading(false);
     }
   };
- 
+
   return (
     <View style={styles.container}>
- 
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-              <Icon name="arrow-left" size={18} color="#000000" />
+            <Icon name="chevron-left" size={28} color="#000000" />
           </Text>
         </TouchableOpacity>
- 
+
         <Text style={styles.titleCentered}>
           {mode === 'login' ? 'Login with Mobile' : 'Enter Your Mobile Number'}
         </Text>
       </View>
- 
+
       <Text style={styles.desc}>
-        We will send a one time code to verify your number.Standard rates may apply
+        We will send a one time code to verify your number. Standard rates may apply
       </Text>
- 
+
       <Text style={styles.label}>Mobile Number</Text>
- 
+
       <View style={styles.inputRow}>
         <View style={styles.codeBox}>
           <Text>+91</Text>
         </View>
- 
+
         <TextInput
           style={styles.input}
           placeholder="9876543210"
@@ -100,7 +100,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
           maxLength={10}
         />
       </View>
- 
+
       <TouchableOpacity
         style={[
           styles.button,
@@ -116,36 +116,36 @@ export default function RegisterMobileScreen({ navigation, route }) {
         )}
       </TouchableOpacity>
 
-              {  mode === 'login'? <Text style={styles.registerText}>
-                    Don’t have an account?{' '}
-                    <Text
-                      style={styles.link}
-                      onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
-                    >
-                      Register
-                    </Text>
-                  </Text>:<Text style={styles.loginText}>
-                 Already have an account?{' '}
-                <Text
-                    style={styles.link}
-                    onPress={() => navigation.navigate('Login')}
-                >
-                    Login
-                </Text>
-            </Text> }
+      {mode === 'login' ? <Text style={styles.registerText}>
+        Don’t have an account?{' '}
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
+        >
+          Register
+        </Text>
+      </Text> : <Text style={styles.loginText}>
+        Already have an account?{' '}
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate('Login')}
+        >
+          Login
+        </Text>
+      </Text>}
 
-            <Text style={styles.footer}>
-                By Continuing, you agree to our{' '}
-                <Text style={styles.link}>Privacy Policy</Text>
-            </Text>
- 
+      <Text style={styles.footer}>
+        By Continuing, you agree to our{' '}
+        <Text style={styles.link}>Privacy Policy</Text>
+      </Text>
+
     </View>
   );
 }
- 
+
 const styles = StyleSheet.create({
-  
-   
+
+
   container: {
     flex: 1,
     backgroundColor: '#F2F2F2',
@@ -203,24 +203,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-   link: {
-        color: '#5A00D1',
-        textDecorationLine: 'underline', // ✅ underline like UI
-    },
-      loginText: {
-        marginTop: 20,
-        textAlign: 'center', // ✅ center
-        color: '#555',
-    },
+  link: {
+    color: '#5A00D1',
+    textDecorationLine: 'underline', // ✅ underline like UI
+  },
+  loginText: {
+    marginTop: 20,
+    textAlign: 'center', // ✅ center
+    color: '#555',
+  },
 
-    footer: {
-        marginTop: 10,
-        textAlign: 'center',
-        color: '#555',
-        fontSize: 12,
-    },
+  footer: {
+    marginTop: 10,
+    textAlign: 'center',
+    color: '#555',
+    fontSize: 12,
+  },
 
-     registerText: {
+  registerText: {
     textAlign: 'center',
     marginTop: 20,
     color: '#555',
@@ -231,4 +231,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
- 

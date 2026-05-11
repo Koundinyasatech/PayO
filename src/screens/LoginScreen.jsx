@@ -76,7 +76,7 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-              <Icon name="arrow-left" size={22} color="#080808" />
+            <Icon name="chevron-left" size={28} color="#000" />
           </Text>
         </TouchableOpacity>
 

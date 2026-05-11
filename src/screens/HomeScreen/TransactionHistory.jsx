@@ -124,15 +124,15 @@ export default function TransactionHistory({ navigation }) {
   };
 
   return (
-    <LinearGradient colors={['#6A00F4', '#1A0033']} style={{ flex: 1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0}}>
+    <LinearGradient colors={['#6A00F4', '#1A0033']} style={{ flex: 1, paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }}>
       <SafeAreaView style={styles.container}>
 
         {/* HEADER */}
         <View style={styles.headerRow}>
-          <TouchableOpacity 
-  onPress={() => navigation.canGoBack() && navigation.goBack()}          >
+          <TouchableOpacity
+            onPress={() => navigation.canGoBack() && navigation.goBack()}          >
             <Text style={styles.back}>
-                <Icon name="arrow-left" size={22} color="#faf6f6" />
+              <Icon name="arrow-left" size={22} color="#faf6f6" />
             </Text>
           </TouchableOpacity>
           <Text style={styles.header}>Transaction History</Text>
@@ -181,6 +181,36 @@ export default function TransactionHistory({ navigation }) {
           <ActivityIndicator color="#fff" />
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
+
+            {sortedData.length === 0 ? (
+              <View style={{ alignItems: 'center', marginTop: 120 }}>
+                <Icon name="file-text" size={60} color="#c4b5fd" />
+
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 18,
+                    fontWeight: '600',
+                    marginTop: 15,
+                  }}
+                >
+                  No Transactions Found
+                </Text>
+
+                <Text
+                  style={{
+                    color: '#d1d5db',
+                    fontSize: 14,
+                    marginTop: 6,
+                  }}
+                >
+                  Your transaction history will appear here
+                </Text>
+              </View>
+            ) : (
+              <>
+              </>
+            )}
 
             {grouped.today.length > 0 && (
               <>
