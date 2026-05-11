@@ -84,14 +84,14 @@ const handleNext = async () => {
    
   }
 };
-console.log(message,"00123")
+
 
    useEffect(() => {
   const fetchBalance = async () => {
     try {
       const response = await api.get('/api/wallet/balance'); // ✅ await هنا
 
-      console.log(response.data, "997"); // now you'll see real data
+      
 
       // adjust based on API
       setAvaliable(response?.data?.balance || "0");
@@ -137,7 +137,7 @@ console.log(message,"00123")
         <Text style={styles.label}>Tokens</Text>
         <View style={styles.amountRow}>
         <TextInput
-  placeholder="0.00"
+  placeholder="0"
   placeholderTextColor="#aaa"
   value={amount}
   onChangeText={(text) => {

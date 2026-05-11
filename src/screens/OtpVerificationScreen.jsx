@@ -1,6 +1,252 @@
 
 
 
+// import React, { useState, useEffect, useRef } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   TouchableOpacity,
+//   ActivityIndicator,
+//   Platform,
+//   StatusBar
+// } from 'react-native';
+
+// import api from '../api/axios';
+// import * as Keychain from 'react-native-keychain';
+// import Icon from 'react-native-vector-icons/Feather';
+
+// export default function OtpVerificationScreen({ route, navigation }) {
+
+//   const { mobile, mode = 'register' } = route.params;
+
+//   const [otp, setOtp] = useState(['', '', '', '']);
+// const [timer, setTimer] = useState(120); // 2 minutes  const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState('');
+
+//   const inputs = useRef([]);
+
+//   useEffect(() => {
+//     startTimer();
+//   }, []);
+
+//  const startTimer = () => {
+//   setTimer(120); // reset to 2 minutes
+
+//   const interval = setInterval(() => {
+//     setTimer((prev) => {
+//       if (prev <= 1) {
+//         clearInterval(interval);
+//         return 0;
+//       }
+//       return prev - 1;
+//     });
+//   }, 1000);
+// };
+//   const handleChange = (text, index) => {
+//     const newOtp = [...otp];
+//     newOtp[index] = text;
+//     setOtp(newOtp);
+
+//     if (error) setError('');
+
+//     if (text && index < 3) {
+//       inputs.current[index + 1]?.focus();
+//     }
+//   };
+
+//   const handleKeyPress = (e, index) => {
+//     if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
+//       inputs.current[index - 1]?.focus();
+//     }
+//   };
+
+//   const saveToken = async (token) => {
+//     try {
+//       await Keychain.setGenericPassword('user', token);
+//     } catch (e) {
+//       console.log("Token save error:", e);
+//     }
+//   };
+
+//   const handleVerifyOTP = async () => {
+
+//     const finalOtp = otp.join('');
+
+//     if (finalOtp.length < 4) {
+//       setError('Enter valid OTP');
+//       return;
+//     }
+
+//     try {
+//       setLoading(true);
+//       setError('');
+
+//       let response;
+
+//       // ✅ DIFFERENT VERIFY API BASED ON MODE
+//       if (mode === 'login') {
+//         response = await api.post('/api/auth/verify-login-otp', {
+//           mobile,
+//           otp: finalOtp
+//         });
+//       } else {
+//         response = await api.post('/api/auth/verify-otp', {
+//           mobile,
+//           otp: finalOtp
+//         });
+//       }
+
+//       if (response.data.token) {
+
+//         await saveToken(response.data.token);
+
+//         // ✅ NAVIGATION BASED ON MODE
+//         if (mode === 'login') {
+//           navigation.replace('Main');
+//         } else {
+//           navigation.replace('Profile');
+//         }
+
+//       } else {
+//         setError('Invalid OTP');
+//       }
+
+//     } catch (error) {
+//       console.log("VERIFY ERROR:", error?.response?.data || error.message);
+//       setError(error?.response?.data?.message || 'Enter valid OTP');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleResendOTP = async () => {
+//     setError('');
+//     setOtp(['', '', '', '']);
+
+//     if (inputs.current[0]) {
+//       inputs.current[0].focus();
+//     }
+
+//     try {
+
+//       // ✅ DIFFERENT RESEND API BASED ON MODE
+//       if (mode === 'login') {
+//         await api.post('/api/auth/login-otp', { mobile });
+//       } else {
+//         await api.post('/api/auth/send-otp', { mobile });
+//       }
+
+//       startTimer();
+
+//     } catch (error) {
+//       console.log("RESEND ERROR:", error);
+//       setError('Resend failed');
+//     }
+//   };
+
+//   const formatTime = () => {
+//   const minutes = Math.floor(timer / 60);
+//   const seconds = timer % 60;
+
+//   return `${minutes < 10 ? "0" : ""}${minutes}:${
+//     seconds < 10 ? "0" : ""
+//   }${seconds}`;
+// };
+
+//   return (
+//     <View style={styles.container}>
+
+//       <View style={styles.header}>
+//         <TouchableOpacity onPress={() => navigation.goBack()}>
+//           <Text style={styles.back}>
+// <Icon name="chevron-left" size={28} color="#000000" />            </Text>
+//         </TouchableOpacity>
+
+//         <Text style={styles.titleCentered}>
+//           Verify Your Number
+//         </Text>
+//       </View>
+
+//       <Text style={styles.sub}>
+//         Enter the 4 digit code sent to +91 {mobile}
+//       </Text>
+
+//       <View style={styles.otpContainer}>
+//         {otp.map((digit, index) => (
+//           <TextInput
+//             key={index}
+//             ref={(ref) => (inputs.current[index] = ref)}
+//             style={styles.box}
+//             keyboardType="number-pad"
+//             maxLength={1}
+//             value={digit}
+//             onChangeText={(text) => handleChange(text, index)}
+//             onKeyPress={(e) => handleKeyPress(e, index)}
+//           />
+//         ))}
+//       </View>
+
+//       {error ? (
+//         <Text style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>
+//           {error}
+//         </Text>
+//       ) : null}
+
+//       <Text style={styles.timer}>
+    
+//   Code expires in : {formatTime()}
+
+//       </Text>
+
+//       <Text style={styles.resend}>
+//         Didn’t receive code?{' '}
+//         <Text style={styles.link} onPress={handleResendOTP}>
+//           Resend Code
+//         </Text>
+//       </Text>
+
+//       <TouchableOpacity
+//         style={styles.button}
+//         onPress={handleVerifyOTP}
+//         disabled={loading}
+//       >
+//         {loading ? (
+//           <ActivityIndicator color="#fff" />
+//         ) : (
+//           <Text style={styles.buttonText}>Verify OTP</Text>
+//         )}
+//       </TouchableOpacity>
+
+//       {/* ✅ HIDE LOGIN OPTION IN LOGIN MODE */}
+//         {  mode === 'login'? <Text style={styles.registerText}>
+//                          Don’t have an account?{' '}
+//                          <Text
+//                            style={styles.link}
+//                            onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
+//                          >
+//                            Register
+//                          </Text>
+//                        </Text>:<Text style={styles.loginText}>
+//                       Already have an account?{' '}
+//                      <Text
+//                          style={styles.link}
+//                          onPress={() => navigation.navigate('Login')}
+//                      >
+//                          Login
+//                      </Text>
+//                  </Text> }
+
+//            <Text style={styles.footer}>
+//                       By Continuing, you agree to our{' '}
+//                       <Text style={styles.link}>Privacy Policy</Text>
+//                   </Text>
+
+//     </View>
+//   );
+// }
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -22,28 +268,46 @@ export default function OtpVerificationScreen({ route, navigation }) {
   const { mobile, mode = 'register' } = route.params;
 
   const [otp, setOtp] = useState(['', '', '', '']);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(120); // 2 minutes
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const inputs = useRef([]);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     startTimer();
+
+    return () => {
+      clearInterval(intervalRef.current);
+    };
   }, []);
 
+  // TIMER FUNCTION
   const startTimer = () => {
-    setTimer(30);
 
-    const interval = setInterval(() => {
-      setTimer((prev) => {
+    clearInterval(intervalRef.current);
+
+    setTimer(120);
+
+    intervalRef.current = setInterval(() => {
+      setTimer(prev => {
         if (prev <= 1) {
-          clearInterval(interval);
+          clearInterval(intervalRef.current);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
+
+  };
+
+  // FORMAT TIMER
+  const formatTime = () => {
+    const minutes = Math.floor(timer / 60);
+    const seconds = timer % 60;
+
+    return `${minutes < 10 ? "0" : ""}${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   const handleChange = (text, index) => {
@@ -72,6 +336,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
     }
   };
 
+  // VERIFY OTP
   const handleVerifyOTP = async () => {
 
     const finalOtp = otp.join('');
@@ -82,29 +347,22 @@ export default function OtpVerificationScreen({ route, navigation }) {
     }
 
     try {
+
       setLoading(true);
       setError('');
 
       let response;
 
-      // ✅ DIFFERENT VERIFY API BASED ON MODE
       if (mode === 'login') {
-        response = await api.post('/api/auth/verify-login-otp', {
-          mobile,
-          otp: finalOtp
-        });
+        response = await api.post('/api/auth/verify-login-otp', { mobile, otp: finalOtp });
       } else {
-        response = await api.post('/api/auth/verify-otp', {
-          mobile,
-          otp: finalOtp
-        });
+        response = await api.post('/api/auth/verify-otp', { mobile, otp: finalOtp });
       }
 
       if (response.data.token) {
 
         await saveToken(response.data.token);
 
-        // ✅ NAVIGATION BASED ON MODE
         if (mode === 'login') {
           navigation.replace('Main');
         } else {
@@ -116,24 +374,27 @@ export default function OtpVerificationScreen({ route, navigation }) {
       }
 
     } catch (error) {
+
       console.log("VERIFY ERROR:", error?.response?.data || error.message);
       setError(error?.response?.data?.message || 'Enter valid OTP');
+
     } finally {
       setLoading(false);
     }
   };
 
+  // RESEND OTP
   const handleResendOTP = async () => {
+
+    if (timer !== 0) return;
+
     setError('');
     setOtp(['', '', '', '']);
 
-    if (inputs.current[0]) {
-      inputs.current[0].focus();
-    }
+    inputs.current[0]?.focus();
 
     try {
 
-      // ✅ DIFFERENT RESEND API BASED ON MODE
       if (mode === 'login') {
         await api.post('/api/auth/login-otp', { mobile });
       } else {
@@ -143,22 +404,27 @@ export default function OtpVerificationScreen({ route, navigation }) {
       startTimer();
 
     } catch (error) {
+
       console.log("RESEND ERROR:", error);
       setError('Resend failed');
+
     }
+
   };
 
   return (
     <View style={styles.container}>
 
       <View style={styles.header}>
+
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.back}><Icon name="arrow-left" size={22} color="#080808" /></Text>
+          <Icon name="chevron-left" size={28} color="#000" />
         </TouchableOpacity>
 
         <Text style={styles.titleCentered}>
           Verify Your Number
         </Text>
+
       </View>
 
       <Text style={styles.sub}>
@@ -187,12 +453,15 @@ export default function OtpVerificationScreen({ route, navigation }) {
       ) : null}
 
       <Text style={styles.timer}>
-        Code expires in : 00:{timer < 10 ? `0${timer}` : timer}
+        Code expires in : {formatTime()}
       </Text>
 
       <Text style={styles.resend}>
-        Didn’t receive code?{' '}
-        <Text style={styles.link} onPress={handleResendOTP}>
+        Didn’t receive code?{" "}
+        <Text
+          style={[styles.link, timer !== 0 && { color: "#999" }]}
+          onPress={handleResendOTP}
+        >
           Resend Code
         </Text>
       </Text>
@@ -208,11 +477,9 @@ export default function OtpVerificationScreen({ route, navigation }) {
           <Text style={styles.buttonText}>Verify OTP</Text>
         )}
       </TouchableOpacity>
-
-      {/* ✅ HIDE LOGIN OPTION IN LOGIN MODE */}
         {  mode === 'login'? <Text style={styles.registerText}>
                          Don’t have an account?{' '}
-                         <Text
+                        <Text
                            style={styles.link}
                            onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}
                          >
@@ -232,7 +499,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
                       By Continuing, you agree to our{' '}
                       <Text style={styles.link}>Privacy Policy</Text>
                   </Text>
-
     </View>
   );
 }
@@ -241,8 +507,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F3F3F3', padding: 20,      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0},
   header: { flexDirection: 'row', alignItems: 'center', marginTop: 20 },
   back: { fontSize: 22 },
-  titleCentered: { flex: 1, textAlign: 'center', fontSize: 22, fontWeight: '700' },
-  sub: { textAlign: 'center', marginTop: 30, color: '#666' },
+  titleCentered: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '600',
+    marginRight: "20%",
+  },  sub: { textAlign: 'center', marginTop: 30, color: '#666' },
   otpContainer: { flexDirection: 'row', justifyContent: 'center', marginTop: 30 },
   box: {
     width: 55,

@@ -6,6 +6,17 @@ export default StyleSheet.create({
     backgroundColor: '#F2F2F2',
     padding: 20,
   },
+  
+  header: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: 20,
+},
+
+cancelContainer: {
+  justifyContent: 'center',
+  alignItems: 'center',
+},
  
   back: {
     fontSize: 20,
@@ -87,4 +98,20 @@ export default StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
   },
+
+  passwordContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: '#ddd',
+  borderRadius: 10,
+  paddingHorizontal: 12,
+  marginBottom: 15,
+  backgroundColor: '#fff',
+},
+
+passwordInput: {
+  flex: 1,
+  paddingVertical: 14,
+},
 });

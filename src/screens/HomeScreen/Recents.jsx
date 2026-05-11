@@ -82,7 +82,7 @@ export default function Recents({ navigation, setSelectedUser, setActiveTab }) {
     <View style={styles.left}>
       <View style={styles.icon}>
         <Text style={{ fontSize: 12 }}>
-          <Icon name="arrow-left" size={22} color="#ffffff" />
+          <Icon name="arrow-up-right" size={18} color="black" />
         </Text>
       </View>
 
@@ -148,7 +148,8 @@ container: {
   },
 
   icon: {
-    backgroundColor: "#7CFC00",
+   
+    backgroundColor: "#fff",
     width: 28,
     height: 28,
     borderRadius: 14,
