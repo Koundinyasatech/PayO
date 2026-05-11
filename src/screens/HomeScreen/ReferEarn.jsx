@@ -145,7 +145,7 @@ export default function ReferEarn({ navigation }) {
             </Text>
  
           </View>
- 
+
           {/* REFERRAL CODE */}
           <View style={styles.codeBox}>
  
@@ -158,7 +158,7 @@ export default function ReferEarn({ navigation }) {
             </Text>
  
           </View>
- 
+
           {/* BUTTONS */}
           <View style={styles.buttonRow}>
  
@@ -181,7 +181,7 @@ export default function ReferEarn({ navigation }) {
             </TouchableOpacity>
  
           </View>
- 
+
           {/* STATS */}
           <View style={styles.statsRow}>
  
@@ -229,7 +229,7 @@ export default function ReferEarn({ navigation }) {
             </Text>
  
           </View>
- 
+
           {/* HOW IT WORKS */}
           <View style={styles.info}>
  
@@ -253,7 +253,7 @@ export default function ReferEarn({ navigation }) {
             </Text>
  
           </View>
- 
+
         </ScrollView>
  
         {/* BOTTOM NAV */}
