@@ -68,8 +68,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-              <Icon name="arrow-left" size={18} color="#000000" />
-          </Text>
+<Icon name="chevron-left" size={28} color="#000000" />          </Text>
         </TouchableOpacity>
  
         <Text style={styles.titleCentered}>
@@ -164,8 +163,10 @@ const styles = StyleSheet.create({
   titleCentered: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
+    marginRight:"10%"
+   
   },
   desc: {
     textAlign: 'center',
