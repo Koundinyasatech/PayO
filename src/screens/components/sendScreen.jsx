@@ -170,11 +170,14 @@ export default function SendScreen({ navigation, route }) {
   const [activeTab, setActiveTab] = useState('scan');
   const [selectedUser, setSelectedUser] = useState(null);
 
-  useEffect(() => {
-    if (route?.params?.tab) {
-      setActiveTab(route.params.tab);
-    }
-  }, [route?.params?.tab]);
+  // const [activeTab, setActiveTab] = useState('scan');
+  // const [selectedUser, setSelectedUser] = useState(null);
+console.log(route,"99")
+useEffect(() => {
+  if (route?.params?.tab) {
+    setActiveTab(route.params.tab);
+  }
+}, [route]);
 
   const getHeaderTitle = () => {
     switch (activeTab) {

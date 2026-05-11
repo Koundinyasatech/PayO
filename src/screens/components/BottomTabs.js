@@ -45,17 +45,18 @@ function CustomTabBar({ state, navigation }) {
 
         // ⭐ Center Button
         if (route.name === "Send") {
-          return (
-            <TouchableOpacity
-              key={route.name}
-              style={styles.centerIcon}
-              onPress={onPress}
-            >
-              <Icon name="maximize" size={26} color="#fff" />
-            </TouchableOpacity>
-          );
-        }
-
+  return (
+    <TouchableOpacity
+      key={route.name}
+      style={styles.centerIcon}
+      onPress={() =>
+        navigation.navigate("Send", { tab: "scan" }) // ✅ force scan tab
+      }
+    >
+      <Icon name="maximize" size={26} color="#fff" />
+    </TouchableOpacity>
+  );
+}
         return (
           <TouchableOpacity
             key={route.name}

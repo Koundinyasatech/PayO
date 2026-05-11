@@ -17,6 +17,9 @@ import Share from "react-native-share";
 import RNFS from "react-native-fs";
 import Icon from "react-native-vector-icons/Feather";
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 export default function UserProfile({ navigation }) {
   const [profiledata, setProfileData] = useState({});
   const [address, setAddress] = useState("");
@@ -59,7 +62,7 @@ export default function UserProfile({ navigation }) {
     }
   };
 
-  useEffect(() => {
+ 
     const fetchProfileData = async () => {
       try {
         const res = await api.get('/api/wallet/profile');
@@ -69,8 +72,13 @@ export default function UserProfile({ navigation }) {
         console.log(err.message);
       }
     };
-    fetchProfileData();
-  }, [navigation]);
+   
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileData();
+    }, [])
+  );
 
 
   // ✅ SECURE LOGOUT (FIXED)
@@ -250,18 +258,18 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.labelItem}>Linked Mobile</Text>
               <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
             </View>
-           
+
           </View>
 
-           <Text style={styles.sectionTitle}>Account</Text>
+          <Text style={styles.sectionTitle}>Account</Text>
 
-           <View style={styles.card}>
-          <View style={styles.row}>
+          <View style={styles.card}>
+            <View style={styles.row}>
               <Text style={styles.labelItem}>Wallet Address</Text>
               <Text style={styles.value}>{profiledata?.walletAddress}</Text>
             </View>
 
-             <View style={styles.row}>
+            <View style={styles.row}>
               <Text style={styles.labelItem}>Wallet ID</Text>
               <Text style={styles.value}>{profiledata?.walletId}</Text>
             </View>
