@@ -12,6 +12,8 @@ import {
  
 import styles from "./ForgotPasswordStyles";
 import api from '../api/axios';
+import Icon from "react-native-vector-icons/Feather";
+
  
 export default function ForgotPassword({ navigation }) {
  
@@ -19,11 +21,13 @@ export default function ForgotPassword({ navigation }) {
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
- 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
- 
+  const [resetToken, setResetToken] = useState('');
+const [errors, setErrors] = useState(''); 
   // BACK HANDLER
   useEffect(() => {
     const backAction = () => {
@@ -51,7 +55,7 @@ export default function ForgotPassword({ navigation }) {
     try {
       setLoading(true);
  
-      const res = await api.post('/api/auth/send-otp', {
+      const res = await api.post('/api/auth/reset-send-otp', {
         mobile: phone,
       });
  
@@ -67,86 +71,106 @@ export default function ForgotPassword({ navigation }) {
     }
   };
  
-  // ✅ VERIFY OTP
+
+
   const handleVerifyOtp = async () => {
-    if (!otpSent) {
-      Alert.alert('Error', 'Please send OTP first');
-      return;
-    }
- 
-    if (otp.length < 4) {
-      Alert.alert('Error', 'Enter valid OTP');
-      return;
-    }
- 
-    try {
-      setLoading(true);
- 
-      const res = await api.post('/api/auth/verify-otp', {
-        mobile: phone,
-        otp: otp,
-      });
- 
-      setOtpVerified(true);
- 
-      Alert.alert('Success', res?.data?.message || 'OTP Verified');
- 
-    } catch (error) {
-      console.log(error?.response?.data || error.message);
-      Alert.alert('Error', 'Invalid OTP');
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!otpSent) {
+    Alert.alert('Error', 'Please send OTP first');
+    return;
+  }
+
+  if (otp.length < 4) {
+    Alert.alert('Error', 'Enter valid OTP');
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await api.post('/api/auth/reset-verify-otp', {
+      mobile: phone,
+      otp: otp,
+    });
+
+    setOtpVerified(true);
+
+    // ✅ SAVE TOKEN
+    setResetToken(res?.data?.token);
+
+    Alert.alert('Success', res?.data?.message || 'OTP Verified');
+
+  } catch (error) {
+    console.log(error?.response?.data || error.message);
+    Alert.alert('Error', 'Invalid OTP');
+  } finally {
+    setLoading(false);
+  }
+};
  
   // ✅ RESET PASSWORD
-  const handleSubmit = async () => {
- 
-    if (!otpVerified) {
-      Alert.alert('Error', 'Please verify OTP first');
-      return;
-    }
- 
-    if (!password || !confirmPassword) {
-      Alert.alert('Error', 'Enter all fields');
-      return;
-    }
- 
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
- 
-    try {
-      setLoading(true);
- 
-      const res = await api.post('/api/auth/reset-password', {
+ const handleSubmit = async () => {
+
+  if (!otpVerified) {
+    Alert.alert('Error', 'Please verify OTP first');
+    return;
+  }
+
+  if (!password || !confirmPassword) {
+    Alert.alert('Error', 'Enter all fields');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    Alert.alert('Error', 'Passwords do not match');
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await api.post(
+      '/api/auth/reset-password',
+      {
         mobile: phone,
         password: password,
-      });
- 
-      Alert.alert('Success', res?.data?.message || 'Password Reset', [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('Login'),
+        confirmPassword: confirmPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${resetToken}`, // ✅ TOKEN SENT
         },
-      ]);
- 
-    } catch (error) {
-      console.log(error?.response?.data || error.message);
-      Alert.alert('Error', 'Reset failed');
-    } finally {
-      setLoading(false);
-    }
-  };
- 
+      }
+    );
+
+    Alert.alert('Success', res?.data?.message || 'Password Reset', [
+      {
+        text: 'OK',
+        onPress: () => navigation.navigate('Login'),
+      },
+    ]);
+
+  } catch (error) {
+    console.log(error?.response?.data || error.message);
+  setErrors(error?.response?.data?.message || error.message)
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <SafeAreaView style={styles.container}>
  
-      {/* BACK */}
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.back}>←</Text>
-      </TouchableOpacity>
+      <View style={styles.header}>
+  <TouchableOpacity
+    style={styles.cancelContainer}
+    onPress={() => navigation.goBack()}
+  >
+    <Icon
+      name="chevron-left"
+      size={28}
+      color="#000000"
+    />
+  </TouchableOpacity>
+</View>
  
       <Text style={styles.title}>Reset Password</Text>
       <Text style={styles.subtitle}>
@@ -215,25 +239,57 @@ export default function ForgotPassword({ navigation }) {
  
       {/* NEW PASSWORD */}
       <Text style={styles.label}>New Password</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Enter your new password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        style={styles.input}
-      />
+      <View style={styles.passwordContainer}>
+  <TextInput
+    value={password}
+    onChangeText={setPassword}
+    placeholder="Enter your new password"
+    placeholderTextColor="#aaa"
+    secureTextEntry={!showPassword}
+    style={styles.passwordInput}
+  />
+
+  <TouchableOpacity
+    onPress={() => setShowPassword(!showPassword)}
+  >
+    <Icon
+      name={showPassword ? 'eye' : 'eye-off'}
+      size={16}
+      color="#555"
+    />
+  </TouchableOpacity>
+</View>
+
+{errors ? <Text style={styles.error}>{errors}</Text> : null}   
  
       {/* CONFIRM PASSWORD */}
       <Text style={styles.label}>Confirm Password</Text>
-      <TextInput
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        placeholder="Confirm password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
-        style={styles.input}
-      />
+      <View style={styles.passwordContainer}>
+  <TextInput
+    value={confirmPassword}
+    onChangeText={setConfirmPassword}
+    placeholder="Confirm password"
+    placeholderTextColor="#aaa"
+    secureTextEntry={!showConfirmPassword}
+    style={styles.passwordInput}
+  />
+
+  <TouchableOpacity
+    onPress={() =>
+      setShowConfirmPassword(!showConfirmPassword)
+    }
+  >
+    <Icon
+      name={
+        showConfirmPassword
+          ? 'eye'
+          : 'eye-off'
+      }
+      size={16}
+      color="#555"
+    />
+  </TouchableOpacity>
+</View>
  
       {/* SUBMIT */}
       <TouchableOpacity

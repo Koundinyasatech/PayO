@@ -16,6 +16,9 @@ import Icon from 'react-native-vector-icons/Feather';
 import styles from './TransactionHistoryStyles';
 import api from '../../api/axios';
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 
 export default function TransactionHistory({ navigation }) {
   const [transactions, setTransactions] = useState([]);
@@ -25,22 +28,25 @@ export default function TransactionHistory({ navigation }) {
   const [statusFilter, setStatusFilter] = useState(null);
 
   /* 🔥 FETCH */
-  const fetchTransactions = async () => {
-    try {
-      const res = await api.get('/api/wallet/transaction-list');
-      setTransactions(res.data.transactions || []);
-    } catch (err) {
-      console.log(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchTransactions = async () => {
+  setLoading(true);
 
-  useEffect(() => {
+  try {
+    const res = await api.get('/api/wallet/transaction-list');
+    setTransactions(res?.data?.transactions || []);
+  } catch (err) {
+    console.log(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+ 
+
+  useFocusEffect(
+  useCallback(() => {
     fetchTransactions();
-    // const interval = setInterval(fetchTransactions, 5000);
-    // return () => clearInterval(interval);
-  }, []);
+  }, [])
+);
 
   /* 🔥 DROPDOWN DATA */
   const dateOptions = [
@@ -182,6 +188,37 @@ const filteredData = transactions.filter((item) => {
           <ActivityIndicator color="#fff" />
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
+
+              {sortedData.length === 0 ? (
+              <View style={{ alignItems: 'center', marginTop: 120 }}>
+                <Icon name="file-text" size={60} color="#c4b5fd" />
+ 
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 18,
+                    fontWeight: '600',
+                    marginTop: 15,
+                  }}
+                >
+                  No Transactions Found
+                </Text>
+ 
+                <Text
+                  style={{
+                    color: '#d1d5db',
+                    fontSize: 14,
+                    marginTop: 6,
+                  }}
+                >
+                  Your transaction history will appear here
+                </Text>
+              </View>
+            ) : (
+              <>
+              </>
+            )}
+ 
 
             {grouped.today.length > 0 && (
               <>
