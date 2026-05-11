@@ -3,104 +3,89 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 
+
 export default function BottomNav({ navigation, currentRoute }) {
   const insets = useSafeAreaInsets();
 
   const goToTab = (screen) => {
-    navigation.navigate('Main', { screen });
+
+    // ⭐ Scan Button
+    console.log(screen,"screen1")
+    if (screen === 'ScanButton') {
+      navigation.navigate('SendScreen', { tab: 'scan' });
+      return;
+    }
+
+    // ⭐ Profile screen name fix
+    if (screen === 'Profile') {
+      navigation.navigate('UserProfile');
+      return;
+    }
+
+    navigation.navigate(screen);
   };
+
+  const getColor = (route) =>
+    currentRoute === route ? '#FF7FD8' : '#ccc';
 
   return (
     <View style={[styles.bottomNav, { paddingBottom: insets.bottom || 10 }]}>
-      
-      {/* HOME */}
-      <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Home')}>
-        <Text style={[
-          styles.navIcon,
-          currentRoute === 'Home' ? styles.navActive : styles.navInactive
-        ]}>
-                   <Icon
-            name="home"
-            size={22}
-            color=
-             '#FF7FD8' 
-          />
 
-        </Text>
+      {/* HOME */}
+      <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Main')}>
+        <Icon name="home" size={22} color={getColor('Home')} />
         <Text style={[
           styles.navLabel,
           currentRoute === 'Home' ? styles.navActive : styles.navInactive
-        ]}>Home</Text>
+        ]}>
+          Home
+        </Text>
       </TouchableOpacity>
 
       {/* WALLETS */}
       <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Wallets')}>
-        <Text style={[
-          styles.navIcon,
-          currentRoute === 'Wallets' ? styles.navActive : styles.navInactive
-        ]}>
-                <Icon
-            name="credit-card"
-            size={22}
-            color=
-             '#ccc'
-          />
-        </Text>
+        <Icon name="credit-card" size={22} color={getColor('Wallets')} />
         <Text style={[
           styles.navLabel,
           currentRoute === 'Wallets' ? styles.navActive : styles.navInactive
-        ]}>Wallets</Text>
+        ]}>
+          Wallets
+        </Text>
       </TouchableOpacity>
 
-      {/* CENTER BUTTON */}
-      <TouchableOpacity style={styles.centerIcon} onPress={() => goToTab('ScanButton')}>
-        <Text style={{ fontSize: 28, color: '#fff' }}>
-          <Icon name="maximize" size={26} color="#fff" />
-        </Text>
+      {/* CENTER SCAN BUTTON */}
+      <TouchableOpacity
+        style={styles.centerIcon}
+        onPress={() => goToTab('ScanButton')}
+      >
+        <Icon name="maximize" size={26} color="#fff" />
       </TouchableOpacity>
 
       {/* TRANSACTIONS */}
       <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Transactions')}>
-        <Text style={[
-          styles.navIcon,
-          currentRoute === 'Transactions' ? styles.navActive : styles.navInactive
-        ]}>
-                <Icon
-            name="bar-chart-2"
-            size={22}
-            color=
-             '#ccc'
-          />
-        </Text>
+        <Icon name="bar-chart-2" size={22} color={getColor('Transactions')} />
         <Text style={[
           styles.navLabel,
           currentRoute === 'Transactions' ? styles.navActive : styles.navInactive
-        ]}>Transactions</Text>
+        ]}>
+          Transactions
+        </Text>
       </TouchableOpacity>
 
       {/* PROFILE */}
       <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Profile')}>
-        <Text style={[
-          styles.navIcon,
-          currentRoute === 'Profile' ? styles.navActive : styles.navInactive
-        ]}>
-                <Icon
-            name="settings"
-            size={22}
-            color=
-             '#ccc'
-          />
-        </Text>
+        <Icon name="settings" size={22} color={getColor('Profile')} />
         <Text style={[
           styles.navLabel,
           currentRoute === 'Profile' ? styles.navActive : styles.navInactive
-        ]}>Profile</Text>
+        ]}>
+          Profile
+        </Text>
       </TouchableOpacity>
 
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   bottomNav: {
     position: 'absolute',
