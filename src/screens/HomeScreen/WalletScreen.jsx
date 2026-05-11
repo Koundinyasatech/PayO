@@ -20,6 +20,10 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Share from "react-native-share";
 import RNFS from "react-native-fs";
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
+
 export default function WalletScreen({navigation}) {
   const [wallet, setWallet] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,9 +32,6 @@ export default function WalletScreen({navigation}) {
     
   
 
-  useEffect(() => {
-    fetchWallet();
-  }, []);
 
   const fetchWallet = async () => {
     try {
@@ -45,6 +46,11 @@ export default function WalletScreen({navigation}) {
     }
   };
 
+    useFocusEffect(
+  useCallback(() => {
+    fetchWallet();
+  }, [])
+);
 
   const progress =
     wallet?.dailyLimit > 0
