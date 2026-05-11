@@ -136,13 +136,33 @@ console.log(message,"00123")
         {/* TOKENS */}
         <Text style={styles.label}>Tokens</Text>
         <View style={styles.amountRow}>
-        <TextInput
+   <TextInput
   placeholder="0"
   placeholderTextColor="#aaa"
   value={amount}
   onChangeText={(text) => {
-    setAmount(text);
-    setMessage("");
+
+    // remove all characters except numbers and dot
+    let cleaned = text.replace(/[^0-9.]/g, "");
+
+    const parts = cleaned.split(".");
+    const integerPart = parts[0];
+
+    // ❌ If integer part already 6 digits → block decimal
+    if (integerPart.length > 6) return;
+
+    if (integerPart.length === 6 && cleaned.includes(".")) {
+      cleaned = integerPart; // remove decimal
+    }
+
+    // allow max 2 digits after decimal
+    const regex = /^\d{0,6}(\.\d{0,2})?$/;
+
+    if (regex.test(cleaned)) {
+      setAmount(cleaned);
+      setMessage("");
+    }
+
   }}
   style={styles.amountInput}
   keyboardType="numeric"
