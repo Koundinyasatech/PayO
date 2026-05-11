@@ -6,6 +6,34 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  walletHeader: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingHorizontal: 20,
+  marginTop: 10,
+},
+
+headerLeft: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+cancelContainer: {
+  marginRight: 10,
+},
+
+walletTitle: {
+  color: '#fff',
+  fontSize: 20,
+  fontWeight: '700',
+},
+
+walletId: {
+  color: '#fff',
+  fontSize: 14,
+  marginTop: 2,
+},
 
   header: {
     flexDirection: 'row',

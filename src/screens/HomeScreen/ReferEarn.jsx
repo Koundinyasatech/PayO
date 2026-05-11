@@ -116,7 +116,7 @@ export default function ReferEarn({ navigation }) {
               For every friend who joins payo and completes their first transaction
             </Text>
           </View>
- 
+
           {/* REFERRAL CODE */}
           <View style={styles.codeBox}>
             <Text style={styles.codeLabel}>Your Referral code</Text>
@@ -124,7 +124,7 @@ export default function ReferEarn({ navigation }) {
               {data.referralCode}
             </Text>
           </View>
- 
+
           {/* BUTTONS */}
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.btn} onPress={copyCode}>
@@ -135,7 +135,7 @@ export default function ReferEarn({ navigation }) {
               <Text style={styles.btnText}>Share Link</Text>
             </TouchableOpacity>
           </View>
- 
+
           {/* STATS */}
           <View style={styles.statsRow}>
             <View style={styles.statBox}>
@@ -144,7 +144,7 @@ export default function ReferEarn({ navigation }) {
               </Text>
               <Text style={styles.statLabel}>Total Referrals</Text>
             </View>
- 
+
             <View style={styles.statBox}>
               <Text style={styles.statValueGreen}>
                 {data.totalRewards}
@@ -152,7 +152,7 @@ export default function ReferEarn({ navigation }) {
               <Text style={styles.statLabel}>Total rewards</Text>
             </View>
           </View>
- 
+
           {/* HOW IT WORKS */}
           <View style={styles.info}>
             <Text style={styles.infoTitle}>How it works :</Text>
@@ -169,7 +169,7 @@ export default function ReferEarn({ navigation }) {
               3. Friend makes first transaction - you earn 50 PAYO instantly.
             </Text>
           </View>
- 
+
         </ScrollView>
  
         <BottomNav
