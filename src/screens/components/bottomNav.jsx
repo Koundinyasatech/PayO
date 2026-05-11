@@ -22,6 +22,32 @@ export default function BottomNav({ navigation, currentRoute }) {
       return;
     }
 
+    //  if (screen === 'Wallets') {
+    //   navigation.navigate('WalletScreen');
+    //   return;
+    // }
+
+    
+    //  if (screen === 'Transactions') {
+    //   navigation.navigate('TransactionHistory');
+    //   return;
+    // }
+
+
+     
+    //  if (screen === 'Home') {
+    //   navigation.navigate('Main');
+    //   return;
+    // }
+
+// const goToTab = (screen) => {
+    navigation.navigate('Main', { screen });
+  // };
+
+
+
+
+
     navigation.navigate(screen);
   };
 
@@ -32,7 +58,7 @@ export default function BottomNav({ navigation, currentRoute }) {
     <View style={[styles.bottomNav, { paddingBottom: insets.bottom || 10 }]}>
 
       {/* HOME */}
-      <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Main')}>
+      <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Home')}>
         <Icon name="home" size={22} color={getColor('Home')} />
         <Text style={[
           styles.navLabel,

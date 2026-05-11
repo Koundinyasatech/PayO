@@ -52,6 +52,7 @@ import SuccessScreen from "../screens/Bank/SuccessScreen";
 import UserProfile from '../screens/UserProfile/UserProfile';
 import TransactionHistory from '../screens/HomeScreen/TransactionHistory';
 import TnsHistorySingleUser from '../screens/HomeScreen/TnsHistorySingleUser';
+import WalletScreen from '../screens/HomeScreen/WalletScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -83,6 +84,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Buttom" component={BottomNav} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
+          <Stack.Screen name="WalletScreen" component={WalletScreen} />
 
         {/* SEND FLOW */}
         <Stack.Screen name="SendScreen" component={SendScreen} />
