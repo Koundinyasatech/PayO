@@ -132,11 +132,35 @@ export default function WalletScreen({navigation}) {
         <ScrollView showsVerticalScrollIndicator={false}>
 
           {/* HEADER */}
-          <Header
-            type="wallet"
-            title="My Wallet"
-            id={wallet?.id}
-          />
+<View style={styles.walletHeader}>
+
+  <View style={styles.headerLeft}>
+    <TouchableOpacity
+      style={styles.cancelContainer}
+      onPress={() => navigation.goBack()}
+    >
+      <Icon
+        name="chevron-left"
+        size={28}
+        color="#ffffff"
+        style={{ marginRight: 20 }}
+      />
+    </TouchableOpacity>
+
+    <View>
+      <Text style={styles.walletTitle}>
+        My Wallet
+      </Text>
+
+      <Text style={styles.walletId}>
+        {wallet?.id}
+      </Text>
+    </View>
+  </View>
+
+  <Header type="" />
+
+</View>
 
           {/* WALLET CARD */}
           <View style={styles.card}>

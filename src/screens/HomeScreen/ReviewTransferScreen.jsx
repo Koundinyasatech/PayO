@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import api from "../../api/axios";
- 
+import Icon from 'react-native-vector-icons/Feather';
 export default function ReviewTransferScreen({ route, navigation }) {
   const { receiver, amount, address, sender ,show,isRecent} = route.params;
   console.log(isRecent,"00")
@@ -65,9 +65,10 @@ export default function ReviewTransferScreen({ route, navigation }) {
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.cancelContainer}
-            onPress={() => navigation.navigate("Main")}
-          >
-            <Text style={styles.cancel}>Cancel</Text>
+            onPress={() => navigation.goBack()}>
+          
+            <Icon name="chevron-left" size={28} color="#ffffff" /> 
+
           </TouchableOpacity>
  
           <Text style={styles.headerTitle}>

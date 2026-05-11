@@ -75,7 +75,7 @@ header: {
   },
 
   code: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: '700',
   },
@@ -122,7 +122,7 @@ header: {
   },
 
   statValueGreen: {
-    color: '#00ff99',
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: '700',
   },
