@@ -163,7 +163,7 @@ export default function ProfileScreen({ navigation }) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-            <Icon name="arrow-left" size={22} color="#080808" />
+            <Icon name="chevron-left" size={28} color="#000000" />
           </Text>
         </TouchableOpacity>
 
@@ -255,7 +255,7 @@ export default function ProfileScreen({ navigation }) {
 
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name={showPassword ? 'eye-off' : 'eye'} size={20} color="#555" />
+          <Icon name={showPassword ? 'eye' : 'eye-off'} size={20} color="#555" />
         </TouchableOpacity>
       </View>
 
@@ -390,6 +390,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
+    marginBottom:20,
    // balance arrow
   },
   title: {

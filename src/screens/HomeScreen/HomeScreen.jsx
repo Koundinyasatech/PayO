@@ -42,6 +42,24 @@ export default function HomeScreen({ navigation }) {
 
   const totalPages = Math.ceil(transactionsList.length / itemsPerPage);
 
+  const getVisiblePages = () => {
+
+    let startPage = Math.floor((currentPage - 1) / 5) * 5 + 1;
+
+    let endPage = startPage + 4;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+    }
+
+    let pages = [];
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
 
   useEffect(() => {
     const fetchTotalBalance = async () => {
@@ -134,7 +152,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.balanceRow}>
                 <Text style={styles.balanceAmount}>
 
-                  {balanceVisible ? `P ${avaliable}` : '* * * * *'}
+                  {balanceVisible ? ` ${avaliable}` : '* * * * *'}
                 </Text>
                 <Text style={styles.payoLabel}>  PAYO</Text>
               </View>
@@ -146,7 +164,7 @@ export default function HomeScreen({ navigation }) {
               {/* Eye Icon */}
               <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
                 <Icon
-                  name={balanceVisible ? "eye-off" : "eye"}
+                  name={balanceVisible ? "eye" : "eye-off"}
                   size={18}
                   color="#fff"
                 />
@@ -198,7 +216,7 @@ export default function HomeScreen({ navigation }) {
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↙ */}
-                  <Icon name="arrow-down" size={14} color="#fff" />
+                  <Icon name="arrow-down-left" size={14} color="#fff" />
                 </Text>
               </View>
               <Text style={styles.label}>Receive</Text>
@@ -281,81 +299,81 @@ export default function HomeScreen({ navigation }) {
             <View style={styles.transactionsList}>
               {displayedTransactions.map((transaction, index) => (
 
-              <TouchableOpacity
-  key={index}
-  style={styles.transactionItem}
-  activeOpacity={0.7}
-  onPress={() =>
-    navigation.navigate("TransactionDetailScreen", {
-      transaction_id: transaction?.id,
-    })
-  }
->
-  {/* LEFT SIDE */}
-  <View style={styles.transactionLeft}>
-    <View
-      style={[
-        styles.transactionAvatar,
-        {
-          backgroundColor:
-            transaction.status === "failed"
-              ? "#FEE2E2"
-              : transaction.amount > 0
-              ? "#56F27B"
-              : "#E5E7EB",
-        },
-      ]}
-    >
-      {transaction.status === "failed" ? (
-        <Icon name="alert-circle" size={18} color="red" />
-      ) : transaction.amount > 0 ? (
-        <Icon name="arrow-down" size={18} color="black" />
-      ) : (
-        <Icon name="arrow-up-right" size={18} color="black" />
-      )}
-    </View>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.transactionItem}
+                  activeOpacity={0.7}
+                  onPress={() =>
+                    navigation.navigate("TransactionDetailScreen", {
+                      transaction_id: transaction?.id,
+                    })
+                  }
+                >
+                  {/* LEFT SIDE */}
+                  <View style={styles.transactionLeft}>
+                    <View
+                      style={[
+                        styles.transactionAvatar,
+                        {
+                          backgroundColor:
+                            transaction.status === "failed"
+                              ? "#FEE2E2"
+                              : transaction.amount > 0
+                                ? "#56F27B"
+                                : "#E5E7EB",
+                        },
+                      ]}
+                    >
+                      {transaction.status === "failed" ? (
+                        <Icon name="alert-circle" size={18} color="red" />
+                      ) : transaction.amount > 0 ? (
+                        <Icon name="arrow-down" size={18} color="black" />
+                      ) : (
+                        <Icon name="arrow-up-right" size={18} color="black" />
+                      )}
+                    </View>
 
-    <View style={styles.transactionInfo}>
-      <Text style={styles.transactionName}>
-        {transaction.name}
-      </Text>
+                    <View style={styles.transactionInfo}>
+                      <Text style={styles.transactionName}>
+                        {transaction.name}
+                      </Text>
 
-      <Text style={styles.transactionTime}>
-        {new Date(transaction.createdAt).toLocaleString()}
-      </Text>
-    </View>
-  </View>
+                      <Text style={styles.transactionTime}>
+                        {new Date(transaction.createdAt).toLocaleString()}
+                      </Text>
+                    </View>
+                  </View>
 
-  {/* RIGHT SIDE */}
-  <View style={styles.amountBlock}>
-    <View style={styles.amountRow}>
-      <Text
-        style={[
-          styles.transactionAmount,
-          transaction.amount > 0
-            ? styles.amountPositive
-            : styles.amountNegative,
-        ]}
-      >
-        {transaction.amount > 0 ? "+" : ""}
-        {transaction.amount}
-      </Text>
-    </View>
+                  {/* RIGHT SIDE */}
+                  <View style={styles.amountBlock}>
+                    <View style={styles.amountRow}>
+                      <Text
+                        style={[
+                          styles.transactionAmount,
+                          transaction.amount > 0
+                            ? styles.amountPositive
+                            : styles.amountNegative,
+                        ]}
+                      >
+                        {transaction.amount > 0 ? "+" : ""}
+                        {transaction.amount}
+                      </Text>
+                    </View>
 
-    <Text
-      style={[
-        styles.statusText,
-        transaction.status === "failed" && { color: "red" },
-      ]}
-    >
-      {transaction.status === "failed"
-        ? "Failed"
-        : transaction.amount > 0
-        ? "Received"
-        : "Sent"}
-    </Text>
-  </View>
-</TouchableOpacity>
+                    <Text
+                      style={[
+                        styles.statusText,
+                        transaction.status === "failed" && { color: "red" },
+                      ]}
+                    >
+                      {transaction.status === "failed"
+                        ? "Failed"
+                        : transaction.amount > 0
+                          ? "Received"
+                          : "Sent"}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
 
               ))}
             </View>
@@ -371,24 +389,28 @@ export default function HomeScreen({ navigation }) {
                 }}
               >
 
-                {/* LEFT */}
-                <TouchableOpacity
-                  disabled={currentPage === 1}
-                  onPress={() => setCurrentPage(currentPage - 1)}
-                  style={{
-                    paddingHorizontal: 10,
-                  }}
-                >
-                  <Text
+                {currentPage > 1 && (
+                  <TouchableOpacity
+                    onPress={() => setCurrentPage(currentPage - 1)}
                     style={{
-                      color: "#fff",
-                      fontSize: 28,
-                      fontWeight: "300",
+                      width: 34,
+                      height: 34,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginRight: 6,
                     }}
                   >
-                    ‹
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 26,
+                        fontWeight: "300",
+                      }}
+                    >
+                      ‹
+                    </Text>
+                  </TouchableOpacity>
+                )}
 
                 {/* PAGE NUMBERS */}
                 <View
@@ -397,116 +419,68 @@ export default function HomeScreen({ navigation }) {
                     alignItems: "center",
                   }}
                 >
-
-                  {/* FIRST 3 PAGES */}
-                  {[1, 2, 3]
-                    .filter(page => page <= totalPages)
-                    .map(page => (
-                      <TouchableOpacity
-                        key={page}
-                        onPress={() => setCurrentPage(page)}
-                        style={{
-                          width: 42,
-                          height: 42,
-                          borderRadius: 14,
-
-                          justifyContent: "center",
-                          alignItems: "center",
-
-                          backgroundColor:
-                            currentPage === page
-                              ? "#fff"
-                              : "transparent",
-
-                          marginHorizontal: 4,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color:
-                              currentPage === page
-                                ? "#000"
-                                : "#fff",
-
-                            fontSize: 16,
-                            fontWeight: "700",
-                          }}
-                        >
-                          {page}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-
-                  {/* DOTS */}
-                  {totalPages > 4 && (
-                    <Text
-                      style={{
-                        color: "#fff",
-                        fontSize: 18,
-                        marginHorizontal: 10,
-                        marginTop: -4,
-                      }}
-                    >
-                      ...
-                    </Text>
-                  )}
-
-                  {/* LAST PAGE */}
-                  {totalPages > 3 && (
+                  {getVisiblePages().map((page) => (
                     <TouchableOpacity
-                      onPress={() => setCurrentPage(totalPages)}
+                      key={page}
+                      onPress={() => setCurrentPage(page)}
                       style={{
-                        width: 42,
-                        height: 42,
-                        borderRadius: 14,
-
+                        width: 36,
+                        height: 36,
+                        borderRadius: 10,
                         justifyContent: "center",
                         alignItems: "center",
-
                         backgroundColor:
-                          currentPage === totalPages
+                          currentPage === page
                             ? "#fff"
                             : "transparent",
-
-                        marginHorizontal: 4,
+                        marginHorizontal: 2,
                       }}
                     >
                       <Text
                         style={{
                           color:
-                            currentPage === totalPages
+                            currentPage === page
                               ? "#000"
                               : "#fff",
-
                           fontSize: 16,
                           fontWeight: "700",
                         }}
                       >
-                        {totalPages}
+                        {page}
                       </Text>
                     </TouchableOpacity>
-                  )}
+                  ))}
+
+
+
+
+
+
 
                 </View>
 
-                {/* RIGHT */}
-                <TouchableOpacity
-                  disabled={currentPage === totalPages}
-                  onPress={() => setCurrentPage(currentPage + 1)}
-                  style={{
-                    paddingHorizontal: 10,
-                  }}
-                >
-                  <Text
+                {currentPage < totalPages && (
+                  <TouchableOpacity
+                    onPress={() => setCurrentPage(currentPage + 1)}
                     style={{
-                      color: "#fff",
-                      fontSize: 28,
-                      fontWeight: "300",
+                      width: 34,
+                      height: 34,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginLeft: 6,
                     }}
                   >
-                    ›
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: 26,
+                        fontWeight: "300",
+                      }}
+                    >
+                      ›
+                    </Text>
+                  </TouchableOpacity>
+                )}
 
               </View>
             ) : null}

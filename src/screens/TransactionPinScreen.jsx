@@ -15,7 +15,7 @@ import Icon from 'react-native-vector-icons/Feather';
 export default function TransactionPinScreen({ navigation }) {
 
   const [pin, setPin] = useState('');
-   const [error, setError] = useState('');
+  const [error, setError] = useState('');
 
   // ✅ ADD DIGIT (SAFE)
   const handlePress = (num) => {
@@ -40,8 +40,8 @@ export default function TransactionPinScreen({ navigation }) {
 
     if (pin.length !== 4) {
       // Alert.alert('Error', 'Enter 4 digit PIN');
-         setError('Enter 4 digit PIN');
-      
+      setError('Enter 4 digit PIN');
+
       return;
     }
 
@@ -71,13 +71,17 @@ export default function TransactionPinScreen({ navigation }) {
     }
   };
 
-  const Key = ({ num, onPress }) => {
+  const Key = ({ num, letters, onPress }) => {
     return (
       <TouchableOpacity
         style={styles.key}
         onPress={() => onPress(num)}
       >
         <Text style={styles.keyText}>{num}</Text>
+
+        {letters ? (
+          <Text style={styles.keyLetters}>{letters}</Text>
+        ) : null}
       </TouchableOpacity>
     );
   };
@@ -88,7 +92,7 @@ export default function TransactionPinScreen({ navigation }) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
-              <Icon name="arrow-left" size={22} color="#080808" />
+            <Icon name="chevron-left" size={28} color="#000000" />
           </Text>
           {/* <Text style={styles.back}>{'<'}</Text> */}
         </TouchableOpacity>
@@ -99,7 +103,7 @@ export default function TransactionPinScreen({ navigation }) {
 
 
       <Text style={styles.desc}>
-        This 4-digit pin secures every payment. Keep it private.
+        This 4-digit pin secures every payment. Keep it private and memorable.
       </Text>
 
       {/* PIN BOXES */}
@@ -118,69 +122,36 @@ export default function TransactionPinScreen({ navigation }) {
         </Text>
       ) : null}
 
-      {/* KEYPAD */}
-      {/* <View style={styles.keypad}>
-
-        {[1,2,3,4,5,6,7,8,9].map(num => (
-          <TouchableOpacity
-            key={num}
-            style={styles.key}
-            onPress={() => handlePress(num.toString())}
-          >
-            <Text style={styles.keyText}>{num}</Text>
-          </TouchableOpacity>
-        ))}
-
-        <View style={styles.emptyKey} />
-
-       
-        <TouchableOpacity
-          style={styles.key}
-          onPress={() => handlePress('0')}
-        >
-          <Text style={styles.keyText}>0</Text>
-        </TouchableOpacity>
-
-       
-        <TouchableOpacity
-          style={styles.key}
-          onPress={handleDelete}
-        >
-          <Text style={styles.keyText}>×</Text>
-        </TouchableOpacity>
-
-      </View> */}
-
       <View style={styles.keypad}>
 
         {/* ROW 1 */}
         <View style={styles.row}>
           <Key num="1" onPress={handlePress} />
-          <Key num="2" onPress={handlePress} />
-          <Key num="3" onPress={handlePress} />
+          <Key num="2" letters="ABC" onPress={handlePress} />
+          <Key num="3" letters="DEF" onPress={handlePress} />
         </View>
 
         {/* ROW 2 */}
         <View style={styles.row}>
-          <Key num="4" onPress={handlePress} />
-          <Key num="5" onPress={handlePress} />
-          <Key num="6" onPress={handlePress} />
+          <Key num="4" letters="GHI" onPress={handlePress} />
+          <Key num="5" letters="JKL" onPress={handlePress} />
+          <Key num="6" letters="MNO" onPress={handlePress} />
         </View>
 
         {/* ROW 3 */}
         <View style={styles.row}>
-          <Key num="7" onPress={handlePress} />
-          <Key num="8" onPress={handlePress} />
-          <Key num="9" onPress={handlePress} />
+          <Key num="7" letters="PQRS" onPress={handlePress} />
+          <Key num="8" letters="TUV" onPress
+          ={handlePress} />
+          <Key num="9" letters="WXYZ" onPress={handlePress} />
         </View>
 
         {/* ROW 4 */}
         <View style={styles.row}>
           <View style={styles.emptyKey} />
-          <Key num="0" onPress={handlePress} />
+          <Key num="0" letters="+" onPress={handlePress} />
           <Key num="×" onPress={handleDelete} />
         </View>
-
       </View>
 
       {/* BUTTON */}
@@ -202,14 +173,11 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
 
-  // back: {
-  //   alignSelf: 'flex-start',
-  //   fontSize: 22,
-  // },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
     marginTop: 20,
   },
 
@@ -218,11 +186,9 @@ const styles = StyleSheet.create({
   },
 
   titleCentered: {
-    flex: 1,
-    textAlign: 'center',
     fontSize: 22,
     fontWeight: '700',
-    // marginLeft: "10%", // balance arrow
+    marginLeft: 10,
   },
 
   title: {
@@ -277,10 +243,10 @@ const styles = StyleSheet.create({
   },
 
   key: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#F2F2F2', // light gray like UI
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -296,8 +262,16 @@ const styles = StyleSheet.create({
   },
 
   keyText: {
-    fontSize: 22,
-    fontWeight: '600'
+    fontSize: 30,
+    fontWeight: '500',
+    color: '#000',
+  },
+
+  keyLetters: {
+    fontSize: 10,
+    color: '#555',
+    marginTop: 2,
+    fontWeight: '500',
   },
 
   button: {

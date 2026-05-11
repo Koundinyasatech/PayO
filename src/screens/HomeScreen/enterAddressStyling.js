@@ -15,10 +15,12 @@ export default StyleSheet.create({
   },
 
   label: {
-    color: "#ddd",
+    color: "#fff",
+    fontWeight: "600",
     marginBottom: 6,
     marginTop: 14,
     fontSize: 13,
+    
   },
 
   input: {
@@ -107,7 +109,7 @@ export default StyleSheet.create({
   },
 
   balanceText: {
-    color: "#ddd",
+    color: "#fff",
     fontSize: 12,
   },
 
