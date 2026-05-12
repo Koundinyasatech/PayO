@@ -115,8 +115,13 @@ export default function ReferEarn({ navigation }) {
 
       <SafeAreaView style={{ flex: 1 }}>
 
-        <ScrollView contentContainerStyle={styles.container}>
-
+<ScrollView
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={{
+    paddingHorizontal: 20,
+    paddingBottom: 140
+  }}
+>
           {/* HEADER */}
           <View style={styles.headerRow}>
 
@@ -236,6 +241,8 @@ export default function ReferEarn({ navigation }) {
             </Text>
 
           </View>
+
+          
 
           {/* HOW IT WORKS */}
           <View style={styles.info}>
