@@ -189,9 +189,9 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
 
       {!scannedData && (
         <View style={styles.text}>
-          <Text style={{ fontWeight: '400', color: "white", fontSize: 16, padding: 3 }}>
+          <Text style={{ fontWeight: '400', color: "white", fontSize: 14, paddingBottom: 5,textAlign:"center" }}>
             Point your camera at a QR code to continue.   </Text>
-          <Text style={{ fontWeight: '400', color: "white", fontSize: 16, marginLeft: "10%" }}>Hold steady for faster scanning
+          <Text style={{ fontWeight: '400', color: "white", fontSize: 14, textAlign:"center" }}>Hold steady for faster scanning
           </Text>
         </View>
       )}
