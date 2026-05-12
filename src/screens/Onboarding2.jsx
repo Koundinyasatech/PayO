@@ -20,7 +20,7 @@ export default function Onboarding2({ navigation }) {
       </View> */}
 
       <View style={styles.header}>
-       <Image source={require('../../assets/images/payo_Text.png')} style={{ width: 86, height: 36 }} />
+        <Image source={require('../../assets/images/LogoContainer.png')} style={{ width: 120, height: 40 }} />
         <TouchableOpacity style={styles.skipBtn} 
         onPress={() => navigation.navigate('Onboarding3')}
         >
@@ -31,7 +31,7 @@ export default function Onboarding2({ navigation }) {
       <View style={styles.content}>
         <View style={styles.imageContainer}>
           {/* <Text style={styles.icon}>�</Text> */}
-          {<Image source={require('..//../assets/images/work_flow.png')} style={{ width: 215, height: 200 }} />}
+          {<Image source={require('..//../assets/images/onboardingScreen1.png')} style={{ width: 325, height: 230, paddingBottom:100 }}/>}
 
         </View>
         <Text style={styles.title}>Instant QR{'\n'}Payments</Text>
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
     lineHeight: 34,
+    marginTop:30
   },
   description: {
     fontSize: 17,

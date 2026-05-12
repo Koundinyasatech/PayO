@@ -20,7 +20,7 @@ export default function Onboarding1({ navigation }) {
 
       <View style={styles.header}>
         {/* <Text style={styles.logo}>PAYO</Text> */}
-        <Image source={require('../../assets/images/payo_Text.png')} style={{ width: 86, height: 36 }} />
+        <Image source={require('../../assets/images/LogoContainer.png')} style={{ width: 120, height: 40 }} />
         <TouchableOpacity style={styles.skipBtn}
           onPress={() => navigation.navigate('Onboarding3')}
         >
@@ -30,7 +30,7 @@ export default function Onboarding1({ navigation }) {
 
       <View style={styles.content}>
         <View style={styles.imageContainer}>
-          {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
+          {<Image source={require('../../assets/images/onboardingScreen2.png')} style={{ width: 315, height: 200 }} />}
 
         </View>
         <Text style={styles.title}>Your Digital{'\n'}Wallet, Simplified</Text>
