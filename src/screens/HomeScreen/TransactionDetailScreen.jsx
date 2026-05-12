@@ -259,7 +259,7 @@ const handleCopyTransactionID = (Id) => {
     <View style={styles.userRow}>
     <View style={styles.iconBox}>
   {transaction?.status === "failed" ? (
-    <Icon name="x" size={14} color="red" />
+    <Icon name="x" size={16} color="red" />
   ) : transaction?.type === "sent" ? (
     <Icon name="arrow-up-right" size={14} color="#000" />
   ) : transaction?.type === "received" ? (

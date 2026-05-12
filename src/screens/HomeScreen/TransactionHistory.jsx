@@ -58,7 +58,7 @@ export default function TransactionHistory({ navigation }) {
   const statusOptions = [
     { label: 'Sent', value: 'sent' },
     { label: 'Received', value: 'received' },
-    { label: 'Processing', value: 'processing' },
+    
   ];
 
   /* 🔥 FILTER LOGIC */
@@ -299,9 +299,9 @@ export const Item = ({ item, formatTime, navigation }) => {
             styles.avatar,
             {
               backgroundColor: isFailed
-                ? "#ef4444"
+                ? "#e5e7eb"
                 : isReceived
-                ? "#22c55e"
+                ? "#e5e7eb"
                 : "#e5e7eb",
             },
           ]}
@@ -311,11 +311,11 @@ export const Item = ({ item, formatTime, navigation }) => {
               isFailed
                 ? "x"
                 : isReceived
-                ? "arrow-down"
-                : "arrow-up"
+                ? "arrow-down-left"
+                : "arrow-up-right"
             }
             size={18}
-            color={isFailed || isReceived ? "#fff" : "#000"}
+            color={isFailed ? '#ef4444' :  isReceived ? "#000" : "#000"}
           />
         </View>
 
