@@ -6,12 +6,12 @@ export default function Onboarding3({ navigation }) {
     <View style={styles.container}>
 
       <View style={styles.header}>
-       <Image source={require('../../assets/images/payo_Text.png')} style={{ width: 86, height: 36 }} />
+        <Image source={require('../../assets/images/LogoContainer.png')} style={{ width: 120, height: 40 }} />
       </View>
 
       <View style={styles.content}>
          <View style={styles.imageContainer}>
-                  {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
+                  {<Image source={require('..//../assets/images/onboardingScreen3.png')} style={{ width: 325, height: 230, paddingBottom:100 }} />}
                   
                 </View>
         <Text style={styles.title}>Earn with Every Referral</Text>
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     color: '#6C2BD9',
     marginBottom: 16,
     textAlign: 'center',
+    marginTop:30
   },
   description: {
     fontSize: 17,
