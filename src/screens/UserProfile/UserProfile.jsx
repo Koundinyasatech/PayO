@@ -91,7 +91,7 @@ export default function UserProfile({ navigation }) {
     Clipboard.setString(walletAddress);
 
     if (Platform.OS === "android") {
-      ToastAndroid.show("Address copied", ToastAndroid.SHORT);
+      ToastAndroid.show("WalletID copied", ToastAndroid.SHORT);
     }
   };
 
@@ -113,7 +113,7 @@ export default function UserProfile({ navigation }) {
 
       await Share.open({
         url: "file://" + filePath,
-        message: `Send PAYO to this address:\n${address}`,
+        message: `Send PAYO to this WalletID:\n${address}`,
       });
 
     } catch (error) {
@@ -203,11 +203,11 @@ export default function UserProfile({ navigation }) {
           {/* BUTTONS */}
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.btn} onPress={handleCopy}>
-              <Text style={styles.btnText}>Copy address</Text>
+              <Text style={styles.btnText}>Copy WalletID</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.btn} onPress={handleShare}>
-              <Text style={styles.btnText}>Share address</Text>
+              <Text style={styles.btnText}>Share WalletID</Text>
             </TouchableOpacity>
           </View>
 

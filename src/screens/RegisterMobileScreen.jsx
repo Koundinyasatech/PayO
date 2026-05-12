@@ -19,48 +19,48 @@ export default function RegisterMobileScreen({ navigation, route }) {
  
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
  
   const isValidMobile = mobile?.length === 10;
  
-  const handleSendOTP = async () => {
- 
-    if (!mobile || mobile.length !== 10) {
-      Alert.alert('Error', 'Enter valid mobile number');
-      return;
+const handleSendOTP = async () => {
+
+  if (!mobile || mobile.length !== 10) {
+    setError('Enter valid mobile number');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError('');
+
+    let response;
+
+    if (mode === 'login') {
+      response = await api.post('/api/auth/send-login-otp', { mobile });
+    } else {
+      response = await api.post('/api/auth/send-otp', { mobile });
     }
- 
-    try {
-      setLoading(true);
- 
-      let response;
- 
-      // 🔥 DIFFERENT API BASED ON MODE
-      if (mode === 'login') {
-        response = await api.post('/api/auth/send-login-otp', { mobile });
-      } else {
-        response = await api.post('/api/auth/send-otp', { mobile });
-      }
- 
-      console.log("OTP RESPONSE:", response.data);
- 
-      // 🔥 HANDLE RESPONSE
-      if (response.data?.message === "OTP sent") {
-        navigation.navigate('OTP', { mobile, mode });
-      } else {
-        Alert.alert('Error', response.data?.message || 'Something went wrong');
-      }
- 
-    } catch (error) {
-      console.log("ERROR:", error?.response?.data || error.message);
- 
-      Alert.alert(
-        'Error',
-        error.response?.data?.message || error.message
-      );
-    } finally {
-      setLoading(false);
+
+    console.log("OTP RESPONSE:", response.data);
+
+    if (response.data?.message === "OTP sent") {
+      navigation.navigate('OTP', { mobile, mode });
+    } else {
+      setError(response.data?.message || 'Something went wrong');
     }
-  };
+
+  } catch (error) {
+    console.log("ERROR:", error?.response?.data || error.message);
+
+    setError(
+      error.response?.data?.message || 'Something went wrong'
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
  
   return (
     <View style={styles.container}>
@@ -70,7 +70,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
           <Text style={styles.back}>
 <Icon name="chevron-left" size={28} color="#000000" />          </Text>
         </TouchableOpacity>
- 
+
         <Text style={styles.titleCentered}>
           {mode === 'login' ? 'Login with Mobile' : 'Enter Your Mobile Number'}
         </Text>
@@ -80,6 +80,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
         We will send a one time code to verify your number.Standard rates may apply
       </Text>
  
+  {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <Text style={styles.label}>Mobile Number</Text>
  
       <View style={styles.inputRow}>
@@ -95,6 +96,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
           onChangeText={(text) => {
             const numeric = text.replace(/[^0-9]/g, '');
             setMobile(numeric);
+            setError("")
           }}
           maxLength={10}
         />
@@ -162,12 +164,18 @@ const styles = StyleSheet.create({
   },
   titleCentered: {
     flex: 1,
-    textAlign: 'center',
+    // textAlign: 'center',
     fontSize: 20,
     fontWeight: '700',
-    marginRight:"10%"
+   
    
   },
+  errorText: {
+  color: 'red',
+  fontSize: 14,
+  marginBottom: 10,
+  textAlign: 'center'
+},
   desc: {
     textAlign: 'center',
     color: '#555',

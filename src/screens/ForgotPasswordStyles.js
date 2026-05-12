@@ -23,13 +23,22 @@ cancelContainer: {
     marginBottom: 20,
     color: '#000',
   },
- 
+ errorText: {
+  color: 'red',
+  fontSize: 13,
+  marginTop: 5
+},
   title: {
     fontSize: 20,
     fontWeight: '700',
     color: '#6D28D9',
     textAlign: 'center',
     marginBottom: 10,
+  },
+    errorText: {
+    color: 'red',
+    marginTop: -10,
+    marginBottom:10
   },
  
   subtitle: {
