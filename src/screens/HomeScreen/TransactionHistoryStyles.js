@@ -12,6 +12,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    
   },
  
   back: {
@@ -24,6 +25,7 @@ export default StyleSheet.create({
     color: '#fff',
     fontSize: 22,
     fontWeight: '700',
+    
   },
  
   filterRow: {
