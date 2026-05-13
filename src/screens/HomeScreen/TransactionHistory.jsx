@@ -16,6 +16,9 @@ import Icon from 'react-native-vector-icons/Feather';
 import styles from './TransactionHistoryStyles';
 import api from '../../api/axios';
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 
 export default function TransactionHistory({ navigation }) {
   const [transactions, setTransactions] = useState([]);
@@ -25,22 +28,25 @@ export default function TransactionHistory({ navigation }) {
   const [statusFilter, setStatusFilter] = useState(null);
 
   /* 🔥 FETCH */
-  const fetchTransactions = async () => {
-    try {
-      const res = await api.get('/api/wallet/transaction-list');
-      setTransactions(res.data.transactions || []);
-    } catch (err) {
-      console.log(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchTransactions = async () => {
+  setLoading(true);
 
-  useEffect(() => {
+  try {
+    const res = await api.get('/api/wallet/transaction-list');
+    setTransactions(res?.data?.transactions || []);
+  } catch (err) {
+    console.log(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+ 
+
+  useFocusEffect(
+  useCallback(() => {
     fetchTransactions();
-    // const interval = setInterval(fetchTransactions, 5000);
-    // return () => clearInterval(interval);
-  }, []);
+  }, [])
+);
 
   /* 🔥 DROPDOWN DATA */
   const dateOptions = [
@@ -52,7 +58,7 @@ export default function TransactionHistory({ navigation }) {
   const statusOptions = [
     { label: 'Sent', value: 'sent' },
     { label: 'Received', value: 'received' },
-    { label: 'Processing', value: 'processing' },
+    
   ];
 
   /* 🔥 FILTER LOGIC */
@@ -183,10 +189,10 @@ const filteredData = transactions.filter((item) => {
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
 
-            {sortedData.length === 0 ? (
+              {sortedData.length === 0 ? (
               <View style={{ alignItems: 'center', marginTop: 120 }}>
                 <Icon name="file-text" size={60} color="#c4b5fd" />
-
+ 
                 <Text
                   style={{
                     color: '#fff',
@@ -197,7 +203,7 @@ const filteredData = transactions.filter((item) => {
                 >
                   No Transactions Found
                 </Text>
-
+ 
                 <Text
                   style={{
                     color: '#d1d5db',
@@ -212,6 +218,7 @@ const filteredData = transactions.filter((item) => {
               <>
               </>
             )}
+ 
 
             {grouped.today.length > 0 && (
               <>
@@ -292,9 +299,9 @@ export const Item = ({ item, formatTime, navigation }) => {
             styles.avatar,
             {
               backgroundColor: isFailed
-                ? "#ef4444"
+                ? "#e5e7eb"
                 : isReceived
-                ? "#22c55e"
+                ? "#e5e7eb"
                 : "#e5e7eb",
             },
           ]}
@@ -304,11 +311,11 @@ export const Item = ({ item, formatTime, navigation }) => {
               isFailed
                 ? "x"
                 : isReceived
-                ? "arrow-down"
-                : "arrow-up"
+                ? "arrow-down-left"
+                : "arrow-up-right"
             }
             size={18}
-            color={isFailed || isReceived ? "#fff" : "#000"}
+            color={isFailed ? '#ef4444' :  isReceived ? "#000" : "#000"}
           />
         </View>
 

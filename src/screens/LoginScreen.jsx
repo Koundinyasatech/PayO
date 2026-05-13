@@ -13,12 +13,11 @@ import Icon from 'react-native-vector-icons/Feather';
 import React, { useState } from 'react';
 
 
-
-
 export default function LoginScreen({ navigation }) {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
 
   const [errors, setErrors] = useState({
@@ -119,16 +118,33 @@ export default function LoginScreen({ navigation }) {
       {/* PASSWORD */}
       <Text style={styles.label}>Password</Text>
 
-      <TextInput
-        style={[styles.input, errors.password && { borderColor: 'red' }]}
-        placeholder="Your password"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => {
-          setPassword(text);
-          setErrors(prev => ({ ...prev, password: '' }));
-        }}
-      />
+      <View
+  style={[
+    styles.passwordContainer,
+    errors.password && { borderColor: 'red' },
+  ]}
+>
+  <TextInput
+    style={styles.passwordInput}
+    placeholder="Your password"
+    secureTextEntry={!showPassword}
+    value={password}
+    onChangeText={(text) => {
+      setPassword(text);
+      setErrors(prev => ({ ...prev, password: '' }));
+    }}
+  />
+
+  <TouchableOpacity
+    onPress={() => setShowPassword(!showPassword)}
+  >
+    <Icon
+      name={showPassword ? 'eye' : 'eye-off'}
+      size={16}
+      color="#555"
+    />
+  </TouchableOpacity>
+</View>
 
       {errors.password ? (
         <Text style={{ color: 'red', marginBottom: 5 }}>
@@ -275,6 +291,20 @@ const styles = StyleSheet.create({
 
     marginBottom: hp('1%'),
   },
+  passwordContainer: {
+  backgroundColor: '#fff',
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: '#E0E0E0',
+  paddingHorizontal: 14,
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+passwordInput: {
+  flex: 1,
+  paddingVertical: 14,
+},
 
   forgot: {
     textAlign: 'right',

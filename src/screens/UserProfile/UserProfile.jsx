@@ -17,6 +17,9 @@ import Share from "react-native-share";
 import RNFS from "react-native-fs";
 import Icon from "react-native-vector-icons/Feather";
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 export default function UserProfile({ navigation }) {
   const [profiledata, setProfileData] = useState({});
   const [address, setAddress] = useState("");
@@ -59,7 +62,7 @@ export default function UserProfile({ navigation }) {
     }
   };
 
-  useEffect(() => {
+ 
     const fetchProfileData = async () => {
       try {
         const res = await api.get('/api/wallet/profile');
@@ -69,8 +72,13 @@ export default function UserProfile({ navigation }) {
         console.log(err.message);
       }
     };
-    fetchProfileData();
-  }, [navigation]);
+   
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileData();
+    }, [])
+  );
 
 
   // ✅ SECURE LOGOUT (FIXED)
@@ -83,7 +91,7 @@ export default function UserProfile({ navigation }) {
     Clipboard.setString(walletAddress);
 
     if (Platform.OS === "android") {
-      ToastAndroid.show("Address copied", ToastAndroid.SHORT);
+      ToastAndroid.show("WalletID copied", ToastAndroid.SHORT);
     }
   };
 
@@ -105,7 +113,7 @@ export default function UserProfile({ navigation }) {
 
       await Share.open({
         url: "file://" + filePath,
-        message: `Send PAYO to this address:\n${address}`,
+        message: `Send PAYO to this WalletID:\n${address}`,
       });
 
     } catch (error) {
@@ -138,7 +146,8 @@ export default function UserProfile({ navigation }) {
             onPress={() => navigation.canGoBack() && navigation.goBack()}
           >
             <Text style={styles.back}>
-              <Icon name="arrow-left" size={22} color="#fff" />
+              <Icon name="chevron-left" size={28} color="#ffffff" /> 
+
             </Text>
           </TouchableOpacity>
 
@@ -194,13 +203,27 @@ export default function UserProfile({ navigation }) {
           {/* BUTTONS */}
           <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.btn} onPress={handleCopy}>
-              <Text style={styles.btnText}>Copy address</Text>
+              <Text style={styles.btnText}>Copy WalletID</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.btn} onPress={handleShare}>
-              <Text style={styles.btnText}>Share address</Text>
+              <Text style={styles.btnText}>Share WalletID</Text>
             </TouchableOpacity>
           </View>
+
+                    {/* ADD BANK ACCOUNT BUTTON */}
+          <TouchableOpacity
+            style={styles.addBankBtn}
+            onPress={() => navigation.navigate('AddBankAccount')}
+          >
+            <Icon name="credit-card" size={20} color="#fff" />
+            
+            <Text style={styles.addBankText}>
+              Add Bank Account
+            </Text>
+
+            <Icon name="chevron-right" size={20} color="#fff" />
+          </TouchableOpacity>
 
           {/* ACCOUNT SECTION */}
           <Text style={styles.sectionTitle}>Personal Information</Text>
@@ -235,18 +258,18 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.labelItem}>Linked Mobile</Text>
               <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
             </View>
-           
+
           </View>
 
-           <Text style={styles.sectionTitle}>Account</Text>
+          <Text style={styles.sectionTitle}>Account</Text>
 
-           <View style={styles.card}>
-          <View style={styles.row}>
+          <View style={styles.card}>
+            <View style={styles.row}>
               <Text style={styles.labelItem}>Wallet Address</Text>
               <Text style={styles.value}>{profiledata?.walletAddress}</Text>
             </View>
 
-             <View style={styles.row}>
+            <View style={styles.row}>
               <Text style={styles.labelItem}>Wallet ID</Text>
               <Text style={styles.value}>{profiledata?.walletId}</Text>
             </View>

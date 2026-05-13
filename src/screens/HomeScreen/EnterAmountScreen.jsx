@@ -20,10 +20,11 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
   const[senderData,setSenderData]=useState({});
     const route = useRoute();
 
-      const Transname = route?.params?.name;
+    const Transname = route?.params?.name;
   const Transaddress =  route?.params?.address;
   const TransrouteAmount = route?.params?.amount;
   const TransShow = route?.params?.show;
+  const[message,setMessage]=useState("");
 
   console.log(TransShow,"9994")
 
@@ -54,6 +55,44 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
     fetchProfileData();
   }, [navigation]);
 
+  const handleContinue=async ()=>{
+    const data=address || Transaddress
+   
+  if (! data) {
+    alert("Enter valid wallet address");
+    return;
+  }
+
+  try {
+    const res = await api.post("/api/wallet/transfer/preview", {
+      toAddress: data,
+      amount: amount,
+    });
+
+    console.log("PREVIEW RESPONSE 👉", res.data);
+TransShow ? 
+    navigation.navigate('SendPin', {
+    amount: TransrouteAmount,
+    name: Transname,
+    address: Transaddress,
+    senderData
+  }) :
+      navigation.navigate('SendPin', {
+              amount,
+              name,
+              address,
+              senderData
+            })
+
+
+  } catch (err) {
+    console.log( err?.response?.data);
+    setMessage(err?.response?.data?.message)
+   
+  }
+};
+  
+
   return (
     TransShow ?
    <>
@@ -81,6 +120,7 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
               onChangeText={(text) => {
                 const cleaned = text.replace(/[^0-9]/g, '');
                 setAmount(cleaned);
+                 setMessage("");
               }}
               keyboardType="numeric"
               placeholder="0"
@@ -93,10 +133,13 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
         </View>
 
         {/* User Details */}
+          {message ? <Text style={{color:"#ff0000"}}>{message}</Text>:""}
         <Text style={styles.toText}>To - {name || Transname}</Text>
         <Text style={styles.address}>{address || Transaddress }</Text>
 
         {/* Quick Amount Buttons */}
+
+           
         <View style={styles.row}>
           {['100', '300', '500', '700'].map((val) => (
             <TouchableOpacity
@@ -118,14 +161,15 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
         {/* Continue Button */}
         <TouchableOpacity
           style={styles.continueBtn}
-         onPress={() =>
-  navigation.navigate('SendPin', {
-    amount: TransrouteAmount,
-    name: Transname,
-    address: Transaddress,
-    senderData
-  })
-}
+         onPress={handleContinue}
+//          {() =>
+//   navigation.navigate('SendPin', {
+//     amount: TransrouteAmount,
+//     name: Transname,
+//     address: Transaddress,
+//     senderData
+//   })
+// }
         >
           <Text style={styles.continueText}>Continue</Text>
         </TouchableOpacity>
@@ -154,6 +198,7 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
               onChangeText={(text) => {
                 const cleaned = text.replace(/[^0-9]/g, '');
                 setAmount(cleaned);
+                 setMessage("");
               }}
               keyboardType="numeric"
               placeholder="0"
@@ -166,8 +211,11 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
         </View>
 
         {/* User Details */}
+         {message ? <Text style={{color:"#ff0000",textAlign: 'center',marginBottom:10,fontSize:18}}>{message}</Text>:""}
         <Text style={styles.toText}>To - {name || Transname}</Text>
         <Text style={styles.address}>{address || Transaddress }</Text>
+
+        
 
         {/* Quick Amount Buttons */}
         <View style={styles.row}>
@@ -191,14 +239,16 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
         {/* Continue Button */}
         <TouchableOpacity
           style={styles.continueBtn}
-          onPress={() =>
-            navigation.navigate('SendPin', {
-              amount,
-              name,
-              address,
-              senderData
-            })
-          }
+          onPress={handleContinue}
+          
+          // {() =>
+          //   // navigation.navigate('SendPin', {
+          //   //   amount,
+          //   //   name,
+          //   //   address,
+          //   //   senderData
+          //   // })
+          // }
         >
           <Text style={styles.continueText}>Continue</Text>
         </TouchableOpacity>
