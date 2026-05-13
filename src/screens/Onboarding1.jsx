@@ -1,140 +1,360 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, { useEffect, useRef } from 'react';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Animated,
+  Dimensions,
+} from 'react-native';
 
-
-
+const { width } = Dimensions.get('window');
 
 export default function Onboarding1({ navigation }) {
+  const title = "Your Digital Wallet, Simplified";
+  const letters = title.split('');
+
+  const logoY = useRef(new Animated.Value(-80)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
+
+  const skipX = useRef(new Animated.Value(80)).current;
+  const skipOpacity = useRef(new Animated.Value(0)).current;
+
+  const imageScale = useRef(new Animated.Value(0.3)).current;
+  const imageOpacity = useRef(new Animated.Value(0)).current;
+  const imageFloat = useRef(new Animated.Value(0)).current;
+  const imageRotate = useRef(new Animated.Value(-15)).current;
+  const imagePulse = useRef(new Animated.Value(1)).current;
+
+  const descX = useRef(new Animated.Value(120)).current;
+  const descOpacity = useRef(new Animated.Value(0)).current;
+
+  const buttonScale = useRef(new Animated.Value(0)).current;
+  const buttonOpacity = useRef(new Animated.Value(0)).current;
+
+  const letterAnimations = useRef(
+    letters.map(() => ({
+      translateY: new Animated.Value(-60),
+      opacity: new Animated.Value(0),
+    }))
+  ).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(logoY, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(logoOpacity, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(skipX, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(skipOpacity, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+
+      Animated.parallel([
+        Animated.spring(imageScale, {
+          toValue: 1,
+          friction: 4,
+          tension: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(imageOpacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.spring(imageRotate, {
+          toValue: 0,
+          friction: 5,
+          useNativeDriver: true,
+        }),
+      ]),
+
+      Animated.stagger(
+        60,
+        letterAnimations.map(anim =>
+          Animated.parallel([
+            Animated.spring(anim.translateY, {
+              toValue: 0,
+              friction: 6,
+              useNativeDriver: true,
+            }),
+            Animated.timing(anim.opacity, {
+              toValue: 1,
+              duration: 250,
+              useNativeDriver: true,
+            }),
+          ])
+        )
+      ),
+
+      Animated.parallel([
+        Animated.timing(descX, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(descOpacity, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+
+      Animated.parallel([
+        Animated.spring(buttonScale, {
+          toValue: 1,
+          friction: 4,
+          tension: 120,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start(() => {
+      startFloatingAnimation();
+    });
+  }, []);
+
+  const startFloatingAnimation = () => {
+    Animated.loop(
+      Animated.parallel([
+        Animated.sequence([
+          Animated.timing(imageFloat, {
+            toValue: -12,
+            duration: 1800,
+            useNativeDriver: true,
+          }),
+          Animated.timing(imageFloat, {
+            toValue: 0,
+            duration: 1800,
+            useNativeDriver: true,
+          }),
+        ]),
+
+        Animated.sequence([
+          Animated.timing(imagePulse, {
+            toValue: 1.04,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(imagePulse, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    ).start();
+  };
+
   return (
-    <View style={styles.container}>
-
-      {/* <Text style={styles.logo}>PAYO</Text>
-
-      <View style={styles.content}>
-        <Text style={styles.title}>Your Digital Wallet, Simplified</Text>
-        <Text style={styles.desc}>
-          Store, send & receive PAYO tokens instantly. No bank account needed.
-        </Text>
-      </View> */}
-
+    <SafeAreaView style={styles.container}>
+      {/* HEADER */}
       <View style={styles.header}>
-        {/* <Text style={styles.logo}>PAYO</Text> */}
-        <Image source={require('../../assets/images/payo_Text.png')} style={{ width: 86, height: 36 }} />
-        <TouchableOpacity style={styles.skipBtn}
-          onPress={() => navigation.navigate('Onboarding3')}
+        <Animated.View
+          style={{
+            transform: [{ translateY: logoY }],
+            opacity: logoOpacity,
+          }}
         >
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
+          <Image
+            source={require('../../assets/images/LogoContainer.png')}
+            style={styles.logoImage}
+          />
+        </Animated.View>
+
+        <Animated.View
+          style={{
+            position: 'absolute',
+            right: 24,
+            top: 25,
+            transform: [{ translateX: skipX }],
+            opacity: skipOpacity,
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate('Onboarding3')}>
+            <Text style={styles.skipText}>Skip</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
 
+      {/* CONTENT */}
       <View style={styles.content}>
-        <View style={styles.imageContainer}>
-          {<Image source={require('..//../assets/images/wallet.png')} style={{ width: 215, height: 200 }} />}
+        <Animated.View
+          style={[
+            styles.imageContainer,
+            {
+              opacity: imageOpacity,
+              transform: [
+                { scale: imageScale },
+                { scale: imagePulse },
+                { translateY: imageFloat },
+                {
+                  rotate: imageRotate.interpolate({
+                    inputRange: [-15, 0],
+                    outputRange: ['-15deg', '0deg'],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          <Image
+            source={require('../../assets/images/onboardingScreen2.png')}
+            style={styles.mainImage}
+          />
+        </Animated.View>
 
+        <View style={styles.titleContainer}>
+          {letters.map((letter, index) => (
+            <Animated.Text
+              key={index}
+              style={[
+                styles.title,
+                {
+                  opacity: letterAnimations[index].opacity,
+                  transform: [
+                    { translateY: letterAnimations[index].translateY },
+                  ],
+                },
+              ]}
+            >
+              {letter === ' ' ? '\u00A0' : letter}
+            </Animated.Text>
+          ))}
         </View>
-        <Text style={styles.title}>Your Digital{'\n'}Wallet, Simplified</Text>
-        <Text style={styles.description}>
-          Store, send &amp; receive Payo tokens instantly. No bank account needed  - just your phone.
-        </Text>
+
+        <Animated.Text
+          style={[
+            styles.description,
+            {
+              opacity: descOpacity,
+              transform: [{ translateX: descX }],
+            },
+          ]}
+        >
+          Store, send & receive Payo tokens instantly.
+          No bank account needed — just your phone.
+        </Animated.Text>
       </View>
 
-  
-
-<View style={styles.footer}>
-  <TouchableOpacity
-    onPress={() => navigation.navigate('Onboarding2')}
-    activeOpacity={0.8}
-  >
-    <Image
-      source={require('../../assets/images/half_load.png')}
-      style={styles.nextImage}
-    />
-  </TouchableOpacity>
-</View>
-
-    </View>
+      {/* FOOTER */}
+      <Animated.View
+        style={[
+          styles.footer,
+          {
+            opacity: buttonOpacity,
+            transform: [{ scale: buttonScale }],
+          },
+        ]}
+      >
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('Onboarding2')}
+        >
+          <Image
+            source={require('../../assets/images/half_load.png')}
+            style={styles.nextImage}
+          />
+        </TouchableOpacity>
+      </Animated.View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#fff',
-    margin: 20
+    backgroundColor: '#fff',
   },
+
   header: {
     paddingHorizontal: 24,
-    marginTop: 10,
-    paddingTop: 40,
-    alignItems: 'center', // ✅ center PAYO
+    paddingTop: 20,
+    alignItems: 'center',
     justifyContent: 'center',
   },
 
-  logo: {
-
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#6C2BD9',
-    letterSpacing: 3,
-    fontFamily: 'serif',
+  logoImage: {
+    width: 120,
+    height: 40,
+    resizeMode: 'contain',
   },
 
-  skipBtn: {
-    position: 'absolute', // ✅ take it out of flow
-    right: 24,
-    top: 40,
-  },
   skipText: {
-    fontSize: 12,
-    color: '#111010',
+    fontSize: 14,
+    color: '#111',
     fontWeight: '600',
   },
+
   content: {
     flex: 1,
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   imageContainer: {
-    width: 240,
-    height: 240,
-    borderRadius: 110,
-    // backgroundColor: '#F3E5FF',
-    alignItems: 'center',
+    marginBottom: 30,
+  },
+
+  mainImage: {
+    width: width * 0.8,
+    height: undefined,
+    aspectRatio: 1.5,
+    resizeMode: 'contain',
+  },
+
+  titleContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'center',
-    marginBottom: 32,
-  
+    marginBottom: 16,
+    paddingHorizontal: 20,
   },
-  icon: {
-    fontSize: 100,
-  },
+
   title: {
-    fontSize: 28,
+    fontSize: width < 360 ? 24 : 28,
     fontWeight: 'bold',
     color: '#6C2BD9',
-    marginBottom: 16,
-    textAlign: 'center',
     lineHeight: 34,
   },
+
   description: {
-    fontSize: 17,
-    fontWeight:400,
-    lineHeight: 20,
+    fontSize: width < 360 ? 15 : 17,
+    lineHeight: 24,
     textAlign: 'center',
-    marginBottom: 48,
+    color: '#333',
+    paddingHorizontal: 12,
   },
- footer: {
-  alignItems: 'center',
-  marginBottom: 40,
-},
 
-nextImage: {
-  width: 90,
-  height: 90,
-  resizeMode: 'contain',
-},
+  footer: {
+    alignItems: 'center',
+    paddingBottom: 30,
+  },
 
-  
-
+  nextImage: {
+    width: width < 360 ? 70 : 85,
+    height: width < 360 ? 70 : 85,
+    resizeMode: 'contain',
+  },
 });

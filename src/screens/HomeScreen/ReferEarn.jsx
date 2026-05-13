@@ -9,6 +9,7 @@ import {
   Platform,
   StatusBar,
   Share,
+  ToastAndroid,
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -50,13 +51,23 @@ export default function ReferEarn({ navigation }) {
   };
 
   // COPY CODE
-  const copyCode = () => {
-    Clipboard.setString(data.referralCode || 'PAYO0872');
+  // const copyCode = () => {
+  //   Clipboard.setString(data.referralCode || 'PAYO0872');
 
-    Alert.alert(
-      'Copied',
-      'Referral code copied successfully'
-    );
+  //   Alert.alert(
+  //     'Copied',
+  //     'Referral code copied successfully'
+  //   );
+  // };
+
+  const copyCode = () => {
+    const code = data.referralCode;
+    Clipboard.setString(code);
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Referral code copied", ToastAndroid.SHORT);
+    } else {
+      Alert.alert('Copied', 'Referral code copied');
+    }
   };
 
   // SHARE CODE
@@ -104,8 +115,13 @@ export default function ReferEarn({ navigation }) {
 
       <SafeAreaView style={{ flex: 1 }}>
 
-        <ScrollView contentContainerStyle={styles.container}>
-
+<ScrollView
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={{
+    paddingHorizontal: 20,
+    paddingBottom: 140
+  }}
+>
           {/* HEADER */}
           <View style={styles.headerRow}>
 
@@ -114,11 +130,7 @@ export default function ReferEarn({ navigation }) {
               onPress={() => navigation.goBack()}
             >
               <Text style={styles.back}>
-                <Icon
-                  name="arrow-left"
-                  size={22}
-                  color="#fff"
-                />
+                <Icon name="chevron-left" size={28} color="#ffffff" />    
               </Text>
             </TouchableOpacity>
 
@@ -230,6 +242,8 @@ export default function ReferEarn({ navigation }) {
 
           </View>
 
+          
+
           {/* HOW IT WORKS */}
           <View style={styles.info}>
 
@@ -264,4 +278,4 @@ export default function ReferEarn({ navigation }) {
     </LinearGradient>
   );
 }
- 
+

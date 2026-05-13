@@ -88,27 +88,24 @@ export default function ProfileScreen({ navigation }) {
   };
  
   // ✅ REAL-TIME ERROR CLEARING
- 
-  const handleChange = (field, value) => {
- 
-    if (field === "name") setName(value);
- 
-    if (field === "email") setEmail(value);
- 
-    if (field === "password") setPassword(value);
- 
-    if (field === "confirmPassword") setConfirmPassword(value);
- 
-    if (field === "referral") setReferral(value);
- 
-    if (errors[field]) {
- 
-      setErrors(prev => ({ ...prev, [field]: "" }));
- 
-    }
- 
-  };
- 
+
+ const handleChange = (field, value) => {
+
+  if (field === "name") {
+    const filteredValue = value.replace(/[^a-zA-Z\s]/g, ""); // allows only alphabets and space
+    setName(filteredValue);
+  }
+
+  if (field === "email") setEmail(value);
+  if (field === "password") setPassword(value);
+  if (field === "confirmPassword") setConfirmPassword(value);
+  if (field === "referral") setReferral(value);
+
+  if (errors[field]) {
+    setErrors(prev => ({ ...prev, [field]: "" }));
+  }
+};
+
   const handleContinue = async () => {
  
     setMessage("");

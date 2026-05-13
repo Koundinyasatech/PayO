@@ -3,13 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 /* AUTH */
-
-import SplashScreen1 from '../screens/SplashScreen-1';
-import SplashScreen2 from '../screens/SplashScreen-2';
-import SplashScreen3 from '../screens/SplashScreen-3';
-import SplashScreen4 from '../screens/SplashScreen-4';
-import SplashScreen5 from '../screens/SplashScreen-5';
-import SplashScreen6 from '../screens/SplashScreen-6';
+import SplashScreen from '../screens/SplashScreen';
 import AnimationScreen from '../screens/AnimationScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import Onboarding1 from '../screens/Onboarding1';
@@ -58,35 +52,17 @@ import SuccessScreen from "../screens/Bank/SuccessScreen";
 import UserProfile from '../screens/UserProfile/UserProfile';
 import TransactionHistory from '../screens/HomeScreen/TransactionHistory';
 import TnsHistorySingleUser from '../screens/HomeScreen/TnsHistorySingleUser';
+import WalletScreen from '../screens/HomeScreen/WalletScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SplashScreen1" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
 
         {/* AUTH */}
-        <Stack.Screen
-          name="SplashScreen1"
-          component={SplashScreen1}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SplashScreen2"
-          component={SplashScreen2}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="SplashScreen3"
-          component={SplashScreen3}
-          options={{ headerShown: false }}
-        />
-
-        <Stack.Screen name="SplashScreen4" component={SplashScreen4} />
-        <Stack.Screen name="SplashScreen5" component={SplashScreen5} />
-        <Stack.Screen name="SplashScreen6" component={SplashScreen6} />
-
+        <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Animation" component={AnimationScreen} />
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Onboarding1" component={Onboarding1} />
@@ -108,25 +84,26 @@ export default function AppNavigator() {
         <Stack.Screen name="Buttom" component={BottomNav} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
+          <Stack.Screen name="WalletScreen" component={WalletScreen} />
 
         {/* SEND FLOW */}
         <Stack.Screen name="SendScreen" component={SendScreen} />
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
-        <Stack.Screen name="recents" component={Recents} />
-
-
+         <Stack.Screen name="recents" component={Recents} />
+        
+        
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
-
+        
         <Stack.Screen name="TransactionDetailScreen" component={TransactionDetailScreen} />
         <Stack.Screen name="TransactionHistory" component={TransactionHistory} />
         <Stack.Screen name="TnsHistorySingleUser" component={TnsHistorySingleUser} />
-
-
+        
+        
         {/* BANK DETAILS */}
         <Stack.Screen name="AddBankHome" component={AddBankHome} />
         <Stack.Screen name="AccountDetails" component={AccountDetails} />
@@ -134,7 +111,7 @@ export default function AppNavigator() {
         <Stack.Screen name="UpiPin" component={UpiPin} />
         <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
         <Stack.Screen name="Notifications" component={NotificationScreen} />
-
+          
 
 
       </Stack.Navigator>
