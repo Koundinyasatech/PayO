@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  Platform,
 } from 'react-native';
 import api from '../api/axios';
 import * as Keychain from 'react-native-keychain';
 import Icon from 'react-native-vector-icons/Feather';
-import { Platform } from 'react-native';
- 
+import React, { useState } from 'react';
+
+
+
+
 export default function LoginScreen({ navigation }) {
 
   const [email, setEmail] = useState('');
@@ -22,7 +25,6 @@ export default function LoginScreen({ navigation }) {
     email: '',
     password: '',
   });
-
   const validate = () => {
     let valid = true;
     let newErrors = { email: '', password: '' };
@@ -176,117 +178,191 @@ export default function LoginScreen({ navigation }) {
 
 /* ================= STYLES ================= */
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
+import { moderateScale } from 'react-native-size-matters';
+
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
+
     backgroundColor: '#EAEAEA',
-    padding: 20,
-  paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
-  
-    },
+
+    paddingHorizontal: wp('5%'),
+
+    paddingBottom: hp('4%'),
+
+    paddingTop:
+      Platform.OS === 'android'
+        ? StatusBar.currentHeight + hp('2%')
+        : hp('6%'),
+  },
 
   header: {
     flexDirection: 'row',
+
     alignItems: 'center',
-    marginTop: 20,
+
+    marginTop: hp('1%'),
+
+    marginBottom: hp('2%'),
   },
 
   back: {
-    fontSize: 22,
+    fontSize: moderateScale(22),
+
+    color: '#000',
   },
 
   titleCentered: {
     flex: 1,
+
     textAlign: 'center',
-    fontSize: 22,
+
+    fontSize: moderateScale(22),
+
     fontWeight: '700',
-    marginLeft: "0%",
+
+    marginRight: wp('6%'),
   },
 
   sub: {
     textAlign: 'center',
-    margin: 10,
+
+    marginTop: hp('1%'),
+
+    marginBottom: hp('4%'),
+
     color: '#666',
-    fontSize: 13,
-    lineHeight: 18,
-    marginBottom: 30
+
+    fontSize: moderateScale(13),
+
+    lineHeight: moderateScale(20),
+
+    paddingHorizontal: wp('3%'),
   },
 
   label: {
-    fontSize: 12,
+    fontSize: moderateScale(12),
+
     color: '#333',
-    marginBottom: 5,
-    fontWeight: 700,
-    padding: 10,
+
+    marginBottom: hp('0.7%'),
+
+    fontWeight: '700',
+
+    paddingLeft: wp('1%'),
   },
 
   input: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 14,
+
+    borderRadius: moderateScale(12),
+
+    paddingVertical: hp('1.8%'),
+
+    paddingHorizontal: wp('4%'),
+
     borderWidth: 1,
+
     borderColor: '#E0E0E0',
+
+    fontSize: moderateScale(14),
+
+    marginBottom: hp('1%'),
   },
 
   forgot: {
     textAlign: 'right',
-    marginTop: 5,
+
+    marginTop: hp('0.5%'),
+
     color: '#5A00D1',
-    fontSize: 12,
+
+    fontSize: moderateScale(12),
   },
 
   button: {
     backgroundColor: '#5A00D1',
-    padding: 14,
-    borderRadius: 10,
+
+    paddingVertical: hp('2%'),
+
+    borderRadius: moderateScale(10),
+
     alignItems: 'center',
-    marginTop: 25,
+
+    marginTop: hp('3%'),
   },
 
   buttonText: {
     color: '#fff',
+
     fontWeight: '600',
+
+    fontSize: moderateScale(15),
   },
 
   orRow: {
     flexDirection: 'row',
+
     alignItems: 'center',
-    marginVertical: 20,
+
+    marginVertical: hp('3%'),
   },
 
   line: {
     flex: 1,
+
     height: 1,
+
     backgroundColor: '#ccc',
   },
 
   or: {
-    marginHorizontal: 10,
+    marginHorizontal: wp('3%'),
+
     color: '#777',
+
+    fontSize: moderateScale(13),
   },
 
   otpBtn: {
     borderWidth: 2,
+
     borderColor: '#5A00D1',
-    padding: 14,
-    borderRadius: 10,
+
+    paddingVertical: hp('2%'),
+
+    borderRadius: moderateScale(10),
+
     alignItems: 'center',
   },
 
   otpText: {
     color: '#5A00D1',
+
     fontWeight: '600',
+
+    fontSize: moderateScale(15),
   },
 
   registerText: {
     textAlign: 'center',
-    marginTop: 20,
+
+    marginTop: hp('3%'),
+
     color: '#555',
+
+    fontSize: moderateScale(13),
   },
 
   link: {
     color: '#5A00D1',
+
     fontWeight: '600',
   },
 });
-

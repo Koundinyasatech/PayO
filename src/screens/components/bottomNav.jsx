@@ -34,7 +34,7 @@ export default function BottomNav({ navigation, currentRoute }) {
       </TouchableOpacity>
 
       {/* WALLETS */}
-      <TouchableOpacity style={styles.navItem} onPress={() => goToTab('Wallets')}>
+      <TouchableOpacity style={styles.navItem} onPress={() => goToTab(' +')}>
         <Text style={[
           styles.navIcon,
           currentRoute === 'Wallets' ? styles.navActive : styles.navInactive

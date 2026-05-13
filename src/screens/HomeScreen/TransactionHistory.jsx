@@ -56,24 +56,26 @@ export default function TransactionHistory({ navigation }) {
   ];
 
   /* 🔥 FILTER LOGIC */
-  const filteredData = transactions.filter((item) => {
-    const amount = Number(item.amount);
+const filteredData = transactions.filter((item) => {
 
-    // STATUS
-    if (statusFilter === 'sent' && amount >= 0) return false;
-    if (statusFilter === 'received' && amount <= 0) return false;
-    if (statusFilter === 'processing' && item.status !== 'processing') return false;
+  // ❌ hide failed received transactions
+  if (item.status === 'failed' && item.type === 'received') return false;
 
-    // DATE
-    const itemDate = new Date(item.createdAt).toDateString();
-    const today = new Date().toDateString();
-    const yesterday = new Date(Date.now() - 86400000).toDateString();
+  // STATUS FILTER
+  if (statusFilter === 'sent' && item.type !== 'sent') return false;
+  if (statusFilter === 'received' && item.type !== 'received') return false;
+  if (statusFilter === 'processing' && item.status !== 'processing') return false;
 
-    if (dateFilter === 'today' && itemDate !== today) return false;
-    if (dateFilter === 'yesterday' && itemDate !== yesterday) return false;
+  // DATE FILTER
+  const itemDate = new Date(item.createdAt).toDateString();
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
 
-    return true;
-  });
+  if (dateFilter === 'today' && itemDate !== today) return false;
+  if (dateFilter === 'yesterday' && itemDate !== yesterday) return false;
+
+  return true;
+});
 
   /* 🔥 SORT */
   const sortedData = [...filteredData].sort(
@@ -132,8 +134,7 @@ export default function TransactionHistory({ navigation }) {
           <TouchableOpacity
             onPress={() => navigation.canGoBack() && navigation.goBack()}          >
             <Text style={styles.back}>
-              <Icon name="arrow-left" size={22} color="#faf6f6" />
-            </Text>
+<Icon name="chevron-left" size={28} color="#ffffff" />            </Text>
           </TouchableOpacity>
           <Text style={styles.header}>Transaction History</Text>
         </View>
@@ -270,51 +271,90 @@ export default function TransactionHistory({ navigation }) {
 
 /* 🔥 ITEM */
 export const Item = ({ item, formatTime, navigation }) => {
-  const isReceived = Number(item.amount) > 0;
+
+  const isReceived = item.type === "received";
+  const isFailed = item.status === "failed";
 
   return (
     <TouchableOpacity
       style={styles.item}
       onPress={() =>
         navigation.navigate("TransactionDetailScreen", {
-          transaction_id: item?.id,  // 🔥 send id to detail screen
+          transaction_id: item?.id,
         })
       }
       activeOpacity={0.7}
     >
 
       <View style={styles.left}>
-        <View style={[
-          styles.avatar,
-          { backgroundColor: isReceived ? '#22c55e' : '#e5e7eb' }
-        ]}>
+        <View
+          style={[
+            styles.avatar,
+            {
+              backgroundColor: isFailed
+                ? "#ef4444"
+                : isReceived
+                ? "#22c55e"
+                : "#e5e7eb",
+            },
+          ]}
+        >
           <Icon
-            name={isReceived ? 'arrow-down' : 'arrow-up'}
+            name={
+              isFailed
+                ? "x"
+                : isReceived
+                ? "arrow-down"
+                : "arrow-up"
+            }
             size={18}
-            color={isReceived ? '#fff' : '#000'}
+            color={isFailed || isReceived ? "#fff" : "#000"}
           />
         </View>
 
         <View>
           <Text style={styles.name}>{item.name}</Text>
+
           <Text style={styles.time}>
-            {isReceived ? 'Received' : 'Sent'} · {formatTime(item.createdAt)}
+            {isFailed
+              ? "Failed"
+              : isReceived
+              ? "Received"
+              : "Sent"}{" "}
+            · {formatTime(item.createdAt)}
           </Text>
         </View>
       </View>
 
       <View style={styles.right}>
-        <Text style={[
-          styles.amount,
-          { color: isReceived ? '#22c55e' : '#ef4444' }
-        ]}>
+        <Text
+          style={[
+            styles.amount,
+            {
+              color: isFailed
+                ? "#ef4444"
+                : isReceived
+                ? "#22c55e"
+                : "#ef4444",
+            },
+          ]}
+        >
           {isReceived
             ? `+${Number(item.amount).toFixed(2)}`
             : Number(item.amount).toFixed(2)}
         </Text>
 
-        <Text style={styles.status}>
-          {isReceived ? 'received' : 'sent'}
+        <Text
+          style={[
+            styles.status,
+            { color: isFailed ? "#ef4444" : "#9ca3af" },
+          ]}
+        >
+          {isFailed
+            ? "failed"
+            : isReceived
+            ? "received"
+            : "sent"}
         </Text>
       </View>
 

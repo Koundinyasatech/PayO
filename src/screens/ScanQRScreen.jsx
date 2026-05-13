@@ -197,7 +197,7 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
 
 
 
-      {!scannedData && (
+      {/* {!scannedData && (
         <TouchableOpacity
           style={styles.simulate}
           onPress={() => handleQR('test-wallet-address')}
@@ -205,7 +205,7 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
         >
           <Text style={{ color: '#fff' }}>Simulate Scan</Text>
         </TouchableOpacity>
-      )}
+      )} */}
     </SafeAreaView>
 
   );

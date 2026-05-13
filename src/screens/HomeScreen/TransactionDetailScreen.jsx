@@ -233,8 +233,7 @@ const handleCopyTransactionID = (Id) => {
           
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-left" size={22} color="#fff" />
-                </TouchableOpacity>
+<Icon name="chevron-left" size={28} color="#ffffff" />                </TouchableOpacity>
                 <Text style={styles.headerText}>Transaction Details</Text>
             </View>
 
@@ -248,16 +247,25 @@ const handleCopyTransactionID = (Id) => {
                     {/* PAID TO */}
                  <View style={styles.section}>
   <Text style={styles.smallLabel}>
-    {transaction?.type ==="sent"? "Paid to": transaction?.type ==="received" ? "Received from" :""}
-    </Text>
+{transaction?.status === "failed"
+  ? "Payment Failed"
+  : transaction?.type === "sent"
+  ? "Paid to"
+  : transaction?.type === "received"
+  ? "Received from"
+  : ""}    </Text>
 
   <View style={styles.row}>
     <View style={styles.userRow}>
-      <View style={styles.iconBox}>
-         {transaction?.type ==="sent"? <Icon name="arrow-up-right" size={14} color="#000" /> :
-          transaction?.type ==="received" ?  <Icon name="arrow-down-left" size={14} color="#000" />  :""}
-       
-      </View>
+    <View style={styles.iconBox}>
+  {transaction?.status === "failed" ? (
+    <Icon name="x" size={14} color="red" />
+  ) : transaction?.type === "sent" ? (
+    <Icon name="arrow-up-right" size={14} color="#000" />
+  ) : transaction?.type === "received" ? (
+    <Icon name="arrow-down-left" size={14} color="#000" />
+  ) : null}
+</View>
 
       <View>
         <Text style={styles.name}>
@@ -303,12 +311,7 @@ const handleCopyTransactionID = (Id) => {
                             <Icon name="copy" size={16} color="#ccc" onPress={()=>handleCopyTransactionID(transaction?._id || transaction?.id)}/>
                         </View>
 
-{/* <Text style={styles.label}>Date and Time</Text>
- <View style={styles.valueRow}>
-          <Text style={styles.value}>
-          {formatISTTime(transaction?.timestamp)}
-        </Text>
- </View> */}
+
                    
                     </View>
 

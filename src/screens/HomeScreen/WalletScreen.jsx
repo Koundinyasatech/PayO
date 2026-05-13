@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   StatusBar,
   Platform,
+  ToastAndroid,
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -15,10 +16,17 @@ import api from '../../api/axios';
 import styles from './WalletScreenStyles';
 import Header from '../components/header';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Share from "react-native-share";
+import RNFS from "react-native-fs";
 
 export default function WalletScreen({ navigation }) {
   const [wallet, setWallet] = useState(null);
   const [loading, setLoading] = useState(true);
+    const [qr, setQr] = useState(null);
+      const [address, setAddress] = useState("");
+    
+  
 
   useEffect(() => {
     fetchWallet();
@@ -58,6 +66,66 @@ export default function WalletScreen({ navigation }) {
     );
   }
 
+   const fetchQr = async () => {
+    try {
+      const res = await api.get("api/wallet/generate-address");
+
+      const data = res.data;
+
+      const qrImage = data.qr?.startsWith("data:image")
+        ? data.qr
+        : `data:image/png;base64,${data.qr}`;
+
+      setQr(qrImage);
+      setAddress(data.address);
+
+      return { qrImage, address: data.address };
+
+    } catch (err) {
+      console.log("QR ERROR:", err.message);
+      return null;
+    }
+  };
+
+   const handleCopy = () => {
+    console.log(wallet,"wallet")
+    const walletAddress = wallet?.id;
+
+    if (!walletAddress) return;
+
+    Clipboard.setString(walletAddress);
+
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Address copied", ToastAndroid.SHORT);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+
+      // fetch QR first
+      const result = await fetchQr();
+
+      if (!result) return;
+
+      const { qrImage, address } = result;
+
+      const base64Data = qrImage.replace(/^data:image\/png;base64,/, "");
+
+      const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
+
+      await RNFS.writeFile(filePath, base64Data, "base64");
+
+      await Share.open({
+        url: "file://" + filePath,
+        message: `Send PAYO to this address:\n${address}`,
+      });
+
+    } catch (error) {
+      console.log("Share error:", error);
+    }
+  };
+
   return (
     <LinearGradient
       colors={['#7B2CFF', '#1C0033']}
@@ -91,19 +159,17 @@ export default function WalletScreen({ navigation }) {
             </Text>
 
             <Text style={styles.balance}>
-              {wallet?.balance?.toLocaleString()} PAYO
+              {wallet?.balance?.toLocaleString()}
+              <Text style={{fontSize:16,color:"#74FFA3"}}>  PAYO</Text> 
             </Text>
 
             <View style={styles.actions}>
-
-              <TouchableOpacity style={styles.btnWhite}>
-                <Text>WalletAddres</Text>
+              <TouchableOpacity style={styles.btnWhite} onPress={handleCopy}>
+                <Text>Copy Address</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.btnOutline}>
-                <Text style={{ color: '#fff' }}>
-                  Share QR
-                </Text>
+              <TouchableOpacity style={styles.btnOutline} onPress={handleShare}>
+                <Text style={{ color: '#fff' }}>Share QR</Text>
               </TouchableOpacity>
 
             </View>

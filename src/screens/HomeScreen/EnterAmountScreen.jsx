@@ -156,9 +156,10 @@ export default function EnterAmountScreen({ navigation, name, address,setActiveT
                 setAmount(cleaned);
               }}
               keyboardType="numeric"
-              placeholder="0.00"
+              placeholder="0"
               placeholderTextColor="#eee"
               cursorColor="#fff"
+                 maxLength={6}
             />
             <Text style={styles.currency}> PAYO</Text>
           </View>
