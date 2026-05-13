@@ -137,7 +137,7 @@ console.log(message,"00123")
         <Text style={styles.label}>Tokens</Text>
         <View style={styles.amountRow}>
         <TextInput
-  placeholder="0.00"
+  placeholder="0"
   placeholderTextColor="#aaa"
   value={amount}
   onChangeText={(text) => {

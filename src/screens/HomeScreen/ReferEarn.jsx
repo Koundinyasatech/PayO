@@ -17,7 +17,6 @@ import api from '../../api/axios';
 import Clipboard from '@react-native-clipboard/clipboard';
 import BottomNav from '../components/bottomNav';
 import Icon from "react-native-vector-icons/Feather";
-
 export default function ReferEarn({ navigation }) {
 
   const [data, setData] = useState({
@@ -155,7 +154,7 @@ export default function ReferEarn({ navigation }) {
             </Text>
 
             <Text style={styles.code}>
-              {data.referralCode || 'PAYO0872'}
+              {data.referralCode}
             </Text>
 
           </View>
@@ -241,7 +240,6 @@ export default function ReferEarn({ navigation }) {
             <Text style={styles.infoText}>
               1. Share your referral code with friends.
             </Text>
-
             <Text style={styles.infoText}>
               2. Friend signs up using your code.
             </Text>
@@ -266,3 +264,4 @@ export default function ReferEarn({ navigation }) {
     </LinearGradient>
   );
 }
+ 

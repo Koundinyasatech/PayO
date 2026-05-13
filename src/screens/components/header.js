@@ -24,7 +24,6 @@ export default function Header({ type = "default", title, id }) {
           <Icon name="menu" size={22} color="#fff" />
         </TouchableOpacity>
       )} */}
-
       {type === "wallet" ? (
         <View>
           <Text style={{ color: "#fff", fontSize: 18, fontWeight: "600" }}>
@@ -36,8 +35,6 @@ export default function Header({ type = "default", title, id }) {
       ) : (
         <View />
       )}
-
-
       {/* RIGHT SIDE */}
       <View style={styles.headerRight}>
 

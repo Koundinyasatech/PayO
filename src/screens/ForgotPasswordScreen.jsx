@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
   BackHandler,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  
 } from 'react-native';
+
+import Icon from 'react-native-vector-icons/Feather';
  
 import styles from "./ForgotPasswordStyles";
 import api from '../api/axios';
@@ -145,7 +147,8 @@ export default function ForgotPassword({ navigation }) {
  
       {/* BACK */}
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Text style={styles.back}>←</Text>
+        <Icon name="chevron-left" size={28} color="#000" />
+ 
       </TouchableOpacity>
  
       <Text style={styles.title}>Reset Password</Text>

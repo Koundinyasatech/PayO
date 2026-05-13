@@ -5,7 +5,7 @@ import api, { getToken } from '../../api/axios';
 import Header from '../components/header';
 import { SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
-
+ 
 export default function HomeScreen({ navigation }) {
   const [balance, setBalance] = useState(0);
   const [income] = useState(20000);
@@ -15,10 +15,10 @@ export default function HomeScreen({ navigation }) {
   const [showAll, setShowAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-
+ 
   let navigations;
-
-
+ 
+ 
   const transactions = [
     { id: '1', name: 'Priya Mehta', time: 'Today 9:10 Pm', amount: 1000, type: 'received', color: '#10B981' },
     { id: '2', name: 'Priya Mehta', time: 'Yesterday - 9:10 Pm', amount: -250, type: 'sent', color: '#EF4444' },
@@ -39,8 +39,45 @@ export default function HomeScreen({ navigation }) {
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );
-
+ 
   const totalPages = Math.ceil(transactionsList.length / itemsPerPage);
+const getVisiblePages = () => {
+ 
+  let pages = [];
+ 
+  // TOTAL BUTTONS TO SHOW
+
+  const visibleCount = 5;
+ 
+  let startPage = currentPage - 2;
+
+  let endPage = currentPage + 2;
+ 
+  // START FIX
+
+  if (startPage < 1) {
+
+    startPage = 1;
+
+    endPage = visibleCount;
+
+  }
+ 
+  // END FIX
+
+  if (endPage > totalPages) {
+
+    endPage = totalPages;
+
+    startPage = totalPages - visibleCount + 1;
+ 
+    if (startPage < 1) {
+
+      startPage = 1;
+
+    }
+
+  }
 
   const getVisiblePages = () => {
 
@@ -61,53 +98,64 @@ export default function HomeScreen({ navigation }) {
     return pages;
   };
 
+  for (let i = startPage; i <= endPage; i++) {
+
+    pages.push(i);
+
+  }
+ 
+  return pages;
+
+};
+ 
+ 
   useEffect(() => {
     const fetchTotalBalance = async () => {
       try {
         const res = await api.get('/api/wallet/income-outcome'); // ✅ await
-
+ 
         console.log(res.data, "000"); // ✅ actual data
-
+ 
         setTotalBalance(res?.data || []);
-
+ 
       } catch (err) {
         console.log('Transaction error:', err.message);
       }
     };
-
+ 
     fetchTotalBalance();
   }, []);
-
+ 
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const res = await api.get('/api/wallet/transaction-list');
-
+ 
         setTransactionsList(res?.data?.transactions || []);
-
+ 
       } catch (err) {
         console.log('Transaction error:', err.message);
       }
     };
-
+ 
     fetchTransactions();
   }, []);
-
+ 
   useEffect(() => {
     const fetchBalance = async () => {
       try {
         const response = await api.get('/api/wallet/balance');
         setAvaliable(response?.data?.balance || "0");
-
+ 
       } catch (error) {
         console.log("Error fetching balance:", error);
       }
     };
-
+ 
     fetchBalance();
   }, []);
-
-
+ 
+ 
   const getTransactionIcon = (type) => {
     switch (type) {
       case 'received': return '✓';
@@ -116,7 +164,7 @@ export default function HomeScreen({ navigation }) {
       default: return '●';
     }
   };
-
+ 
   const getAvatarBackgroundColor = (type) => {
     switch (type) {
       case 'received': return '#10B98180';
@@ -125,42 +173,42 @@ export default function HomeScreen({ navigation }) {
       default: return '#6B7280';
     }
   };
-
+ 
   return (
     //  <SafeAreaView>
     <View style={styles.container}>
-
+ 
       <Header />
-
+ 
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{}}
         contentContainerStyle={{ paddingBottom: 120 }}
       >
-
+ 
         <View style={styles.cardContainer}>
           <View style={styles.card}>
-
-
+ 
+ 
             <View style={styles.topRightCurve} />
             <View style={styles.bottomLeftCurve} />
-
-
+ 
+ 
             <View>
               <Text style={styles.balanceLabel}>Total Balance</Text>
-
+ 
               <View style={styles.balanceRow}>
                 <Text style={styles.balanceAmount}>
-
+ 
                   {balanceVisible ? ` ${avaliable}` : '* * * * *'}
                 </Text>
                 <Text style={styles.payoLabel}>  PAYO</Text>
               </View>
             </View>
-
-
+ 
+ 
             <View style={styles.cardRight}>
-
+ 
               {/* Eye Icon */}
               <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
                 <Icon
@@ -169,47 +217,47 @@ export default function HomeScreen({ navigation }) {
                   color="#fff"
                 />
               </TouchableOpacity>
-
+ 
               {/* Wallet Row */}
               <TouchableOpacity style={styles.walletRow} onPress={() => navigation.navigate('Wallets')} >
                 <Text style={styles.walletText}>My Wallet</Text>
-
+ 
                 <View style={styles.arrowCircle}>
                   <Icon name="arrow-right" size={14} color="#000" />
                 </View>
               </TouchableOpacity>
-
+ 
             </View>
           </View>
-
-
+ 
+ 
         </View>
-
+ 
         <View style={styles.actionsContainer}>
-
-
-
+ 
+ 
+ 
           <View style={styles.actions}>
-
-
+ 
+ 
             <TouchableOpacity style={styles.button}
-
+ 
               onPress={() => navigation.navigate('SendScreen', { tab: 'scan' })}
             >
               <View style={styles.iconCircle}>
                 <Text style={{ color: '#fff' }}>
                   {/* ↗ */}
                   <Icon name="arrow-up-right" size={14} color="#fff" />
-
+ 
                 </Text>
               </View>
               <Text style={styles.label}>Send</Text>
             </TouchableOpacity>
-
-
+ 
+ 
             <View style={styles.connector} />
-
-
+ 
+ 
             <TouchableOpacity style={styles.button}
               onPress={() => navigation.navigate('Receive')}
             >
@@ -221,10 +269,10 @@ export default function HomeScreen({ navigation }) {
               </View>
               <Text style={styles.label}>Receive</Text>
             </TouchableOpacity>
-
-
+ 
+ 
             <View style={styles.connector} />
-
+ 
             {/* REFER */}
             <View style={styles.actionBlock}>
               <TouchableOpacity
@@ -237,68 +285,67 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.label}>Refer</Text>
               </TouchableOpacity>
             </View>
-
+ 
           </View>
-
+ 
         </View>
-
-
+ 
+ 
         <View style={styles.statsContainer}>
           <View style={styles.statsCard}>
-
+ 
             {/* Income */}
             <View style={styles.statItem}>
               <Icon name="arrow-down" size={28} color="#53D258" />
-
+ 
               <View style={styles.textBlock}>
                 <Text style={styles.statLabel}>Income</Text>
-
+ 
                 <View style={styles.amountRow}>
                   <Text style={styles.statValue}>{totalBalance?.income}</Text>
                   <Text style={styles.unit}> PAYO</Text>
                 </View>
               </View>
             </View>
-
+ 
             <View style={styles.divider} />
-
+ 
             {/* Outcome */}
             <View style={styles.statItem}>
               <Icon name="arrow-up" size={28} color="#FF6B6B" />
-
+ 
               <View style={styles.textBlock}>
                 <Text style={styles.statLabel}>Outcome</Text>
-
+ 
                 <View style={styles.amountRow}>
                   <Text style={styles.statValue}>{totalBalance?.outcome}</Text>
                   <Text style={styles.unit}> PAYO</Text>
                 </View>
               </View>
             </View>
-
+ 
           </View>
-
-
+ 
+ 
         </View>
-
-
-
-
+ 
+ 
+ 
+ 
         <View style={styles.transactionsHeader}>
           <Text style={styles.transactionsTitle}>Recent Transactions</Text>
-
+ 
           <TouchableOpacity onPress={() => setShowAll(!showAll)}>
             <Text style={styles.viewAllText}>
               {showAll ? "Show Less ›" : "View All ›"}
             </Text>
           </TouchableOpacity>
         </View>
-
+ 
         {transactionsList?.length > 0 ? (
           <>
             <View style={styles.transactionsList}>
               {displayedTransactions.map((transaction, index) => (
-
                 <TouchableOpacity
                   key={index}
                   style={styles.transactionItem}
@@ -332,18 +379,17 @@ export default function HomeScreen({ navigation }) {
                         <Icon name="arrow-up-right" size={18} color="black" />
                       )}
                     </View>
-
+ 
                     <View style={styles.transactionInfo}>
                       <Text style={styles.transactionName}>
                         {transaction.name}
                       </Text>
-
+ 
                       <Text style={styles.transactionTime}>
                         {new Date(transaction.createdAt).toLocaleString()}
                       </Text>
                     </View>
                   </View>
-
                   {/* RIGHT SIDE */}
                   <View style={styles.amountBlock}>
                     <View style={styles.amountRow}>
@@ -359,7 +405,6 @@ export default function HomeScreen({ navigation }) {
                         {transaction.amount}
                       </Text>
                     </View>
-
                     <Text
                       style={[
                         styles.statusText,
@@ -374,7 +419,6 @@ export default function HomeScreen({ navigation }) {
                     </Text>
                   </View>
                 </TouchableOpacity>
-
               ))}
             </View>
             {/* PAGINATION */}
@@ -388,7 +432,6 @@ export default function HomeScreen({ navigation }) {
                   marginBottom: 75,
                 }}
               >
-
                 {currentPage > 1 && (
                   <TouchableOpacity
                     onPress={() => setCurrentPage(currentPage - 1)}
@@ -411,7 +454,6 @@ export default function HomeScreen({ navigation }) {
                     </Text>
                   </TouchableOpacity>
                 )}
-
                 {/* PAGE NUMBERS */}
                 <View
                   style={{
@@ -481,7 +523,6 @@ export default function HomeScreen({ navigation }) {
                     </Text>
                   </TouchableOpacity>
                 )}
-
               </View>
             ) : null}
           </>
@@ -492,12 +533,14 @@ export default function HomeScreen({ navigation }) {
             </Text>
           </View>
         )}
-
+ 
       </ScrollView>
-
-
+ 
+ 
     </View>
-
+ 
     //  </SafeAreaView>
   );
 }
+ 
+ 
