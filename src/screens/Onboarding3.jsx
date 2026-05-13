@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     fontWeight:400
   },
 registerBtn: {
-  backgroundColor: '#008431',
+  backgroundColor: '#4E00C2',
   borderRadius: 8,
   paddingVertical: 12,   // reduced from 20
   alignItems: 'center',
@@ -104,7 +104,7 @@ registerBtn: {
 
 loginBtn: {
   borderWidth: 2,
-  borderColor: '#21793E',
+  borderColor: '#4E00C2',
   borderRadius: 8,
   paddingVertical: 12,   // reduced from 18
   alignItems: 'center',
@@ -119,7 +119,7 @@ btnText: {
 loginBtnText: {
   fontSize: 16,
   fontWeight: '600',
-  color: '#21793E',
+  color: '#4E00C2',
 },
 
 buttonContainer: {
