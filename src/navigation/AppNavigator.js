@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 /* AUTH */
 import SplashScreen from '../screens/SplashScreen';
 import AnimationScreen from '../screens/AnimationScreen';
-import WelcomeScreen from '../screens/WelcomeScreen';
+//import WelcomeScreen from '../screens/WelcomeScreen';
 import Onboarding1 from '../screens/Onboarding1';
 import Onboarding2 from '../screens/Onboarding2';
 import Onboarding3 from '../screens/Onboarding3';
@@ -65,7 +65,7 @@ export default function AppNavigator() {
         {/* AUTH */}
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Animation" component={AnimationScreen} />
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+        {/* <Stack.Screen name="Welcome" component={WelcomeScreen} /> */}
         <Stack.Screen name="Onboarding1" component={Onboarding1} />
         <Stack.Screen name="Onboarding2" component={Onboarding2} />
         <Stack.Screen name="Onboarding3" component={Onboarding3} />

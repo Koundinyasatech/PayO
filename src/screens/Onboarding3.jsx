@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   },
 
   skipText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#000',
   },

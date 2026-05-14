@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
 
   skipText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: '#000',
   },
