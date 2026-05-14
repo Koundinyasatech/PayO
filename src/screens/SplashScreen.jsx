@@ -107,11 +107,13 @@ const SplashScreen = ({ navigation }) => {
 
   const dotFade = useRef(new Animated.Value(0)).current;
   const expandAnim = useRef(new Animated.Value(1)).current;
-
   const logoAnim = useRef(new Animated.Value(0)).current;
 
-  // FINAL SCREEN ANIMATION
   const finalLogoAnim = useRef(new Animated.Value(0)).current;
+
+  // Diagonal animation values
+  const translateX = useRef(new Animated.Value(-200)).current;
+  const translateY = useRef(new Animated.Value(200)).current;
 
   useEffect(() => {
     const timers = [];
@@ -134,7 +136,6 @@ const SplashScreen = ({ navigation }) => {
           easing: Easing.out(Easing.exp),
           useNativeDriver: true,
         }).start(() => {
-
           setScreenStep(3);
 
           Animated.timing(logoAnim, {
@@ -142,25 +143,37 @@ const SplashScreen = ({ navigation }) => {
             duration: 1200,
             useNativeDriver: true,
           }).start();
-
         });
-
       }, 1200),
     );
 
     // SCREEN 4
     timers.push(
       setTimeout(() => {
-
         setScreenStep(4);
 
-        Animated.timing(finalLogoAnim, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }).start();
+        Animated.parallel([
+          Animated.timing(finalLogoAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
 
-        // NAVIGATE
+          Animated.timing(translateX, {
+            toValue: 0,
+            duration: 1000,
+            easing: Easing.out(Easing.exp),
+            useNativeDriver: true,
+          }),
+
+          Animated.timing(translateY, {
+            toValue: 0,
+            duration: 1000,
+            easing: Easing.out(Easing.exp),
+            useNativeDriver: true,
+          }),
+        ]).start();
+
         setTimeout(() => {
           navigation.replace('Welcome');
         }, 2000);
@@ -175,10 +188,7 @@ const SplashScreen = ({ navigation }) => {
   if (screenStep === 1) {
     return (
       <View style={styles.whiteContainer}>
-        <StatusBar
-          backgroundColor="#F8F8F8"
-          barStyle="dark-content"
-        />
+        <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
         <Animated.View
           style={[
@@ -196,10 +206,7 @@ const SplashScreen = ({ navigation }) => {
   if (screenStep === 2) {
     return (
       <View style={styles.whiteContainer}>
-        <StatusBar
-          backgroundColor="#F8F8F8"
-          barStyle="dark-content"
-        />
+        <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
         <Animated.View
           style={[
@@ -228,10 +235,7 @@ const SplashScreen = ({ navigation }) => {
         end={{ x: 1, y: 1 }}
         style={styles.gradientContainer}>
 
-        <StatusBar
-          backgroundColor="#8427F7"
-          barStyle="light-content"
-        />
+        <StatusBar backgroundColor="#8427F7" barStyle="light-content" />
 
         <Animated.Image
           source={require('../../assets/images/icongroup.png')}
@@ -258,18 +262,16 @@ const SplashScreen = ({ navigation }) => {
   // SCREEN 4
   return (
     <View style={styles.blackContainer}>
-      <StatusBar
-        backgroundColor="#02040D"
-        barStyle="light-content"
-      />
+      <StatusBar backgroundColor="#02040D" barStyle="light-content" />
 
-      {/* LOGO + TAGLINE SAME TIME */}
       <Animated.View
         style={[
           styles.logoWrapper,
           {
             opacity: finalLogoAnim,
             transform: [
+              { translateX: translateX },
+              { translateY: translateY },
               {
                 scale: finalLogoAnim.interpolate({
                   inputRange: [0, 1],
@@ -280,14 +282,12 @@ const SplashScreen = ({ navigation }) => {
           },
         ]}>
 
-        {/* PAYO LOGO */}
         <Animated.Image
           source={require('../../assets/images/icongroup.png')}
           resizeMode="contain"
           style={styles.finalLogo}
         />
 
-        {/* TAGLINE */}
         <Animated.Image
           source={require('../../assets/images/tag.png')}
           resizeMode="contain"
