@@ -22,31 +22,48 @@ const MarketScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchMarketData();
+    fetchExpertCoins();
   }, []);
 
-  const fetchMarketData = async () => {
+  const fetchExpertCoins = async () => {
+  try {
+    const res = await fetch("http://payo-app.duckdns.org:3001/api/market/overview");
 
-    try {
+    const result = await res.json();
+    console.log(result, "data");
 
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
-      );
+    // access result.data (array)
+    setCoins(result.data.slice(0, 50));
+    setLoading(false)
 
-      const data = await response.json();
+  } catch (error) {
+    console.log("Expert picks error:", error);
+  }
+};
 
-      setCoins(data || []);
 
-    } catch (error) {
+  // const fetchMarketData = async () => {
 
-      console.log("Market API Error:", error);
+  //   try {
 
-    } finally {
+  //     const response = await fetch(
+  //       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
+  //     );
 
-      setLoading(false);
+  //     const data = await response.json();
 
-    }
-  };
+  //     setCoins(data || []);
+
+  //   } catch (error) {
+
+  //     console.log("Market API Error:", error);
+
+  //   } finally {
+
+  //     setLoading(false);
+
+  //   }
+  // };
 
 //   const renderItem = ({ item }) => {
 
@@ -146,9 +163,89 @@ const MarketScreen = ({navigation}) => {
 //       </View>
 //     );
 //   };
+// const renderItem = ({ item }) => {
+
+//   const isLong = item?.price_change_percentage_24h >= 0;
+
+//   return (
+//     <TouchableOpacity
+//       style={styles.card}
+//       activeOpacity={0.8}
+//       onPress={() =>
+//         navigation.navigate("CoinDetailsScreen", {
+//           coin: item,
+//         })
+//       }
+//     >
+
+//       {/* TOP ROW */}
+//       <View style={styles.topRow}>
+
+//         <View style={styles.coinInfo}>
+
+//           <Image
+//             source={{ uri: item.image }}
+//             style={styles.coinImage}
+//           />
+
+//           <Text style={styles.symbol}>
+//             {item.symbol?.toUpperCase()}
+//           </Text>
+
+//         </View>
+
+//         <View
+//           style={[
+//             styles.badge,
+//             isLong ? styles.longBadge : styles.shortBadge,
+//           ]}
+//         >
+//           <Text style={styles.badgeText}>
+//             {isLong ? "Long 5x" : "Short 5x"}
+//           </Text>
+//         </View>
+
+//       </View>
+
+//       <Text style={styles.label}>
+//         Entry Price
+//       </Text>
+
+//       <Text style={styles.price}>
+//         ${item.price}
+//       </Text>
+
+//       <View style={styles.actionRow}>
+
+//         <View style={styles.profitBox}>
+//           <Text style={styles.profitText}>
+//             {Math.abs(
+//               item.price_change_percentage_24h || 0
+//             ).toFixed(2)}
+//             % Expected profit
+//           </Text>
+//         </View>
+
+//         <TouchableOpacity
+//           style={[
+//             styles.actionButton,
+//             isLong ? styles.buyButton : styles.sellButton,
+//           ]}
+//         >
+//           <Text style={styles.actionText}>
+//             {isLong ? "Buy / Long" : "Sell / Short"}
+//           </Text>
+//         </TouchableOpacity>
+
+//       </View>
+
+//     </TouchableOpacity>
+//   );
+// };
+
 const renderItem = ({ item }) => {
 
-  const isLong = item?.price_change_percentage_24h >= 0;
+  const isLong = item?.priceChangePercentage24h >= 0;
 
   return (
     <TouchableOpacity
@@ -167,7 +264,9 @@ const renderItem = ({ item }) => {
         <View style={styles.coinInfo}>
 
           <Image
-            source={{ uri: item.image }}
+            source={{
+              uri: item.image || "https://via.placeholder.com/40"
+            }}
             style={styles.coinImage}
           />
 
@@ -195,7 +294,7 @@ const renderItem = ({ item }) => {
       </Text>
 
       <Text style={styles.price}>
-        ${item.current_price}
+        ${item.price?.toLocaleString()}
       </Text>
 
       <View style={styles.actionRow}>
@@ -203,7 +302,7 @@ const renderItem = ({ item }) => {
         <View style={styles.profitBox}>
           <Text style={styles.profitText}>
             {Math.abs(
-              item.price_change_percentage_24h || 0
+              item.priceChangePercentage24h || 0
             ).toFixed(2)}
             % Expected profit
           </Text>
@@ -225,6 +324,7 @@ const renderItem = ({ item }) => {
     </TouchableOpacity>
   );
 };
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
