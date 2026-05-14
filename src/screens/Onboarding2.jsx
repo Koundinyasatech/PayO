@@ -221,7 +221,7 @@ export default function Onboarding2({ navigation }) {
           activeOpacity={0.8}
         >
           <Image
-            source={require('../../assets/images/full_load.png')}
+            source={require('../../assets/images/half_load1.png')}
             style={styles.nextImage}
           />
         </TouchableOpacity>
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   },
 
   skipText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#000',
   },
