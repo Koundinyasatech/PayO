@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
   /* REGISTER BUTTON */
   registerBtn: {
     backgroundColor: '#6200EE',
-    height: 58,
-    borderRadius: 16,
+    height: 40,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 18,
@@ -129,14 +129,14 @@ const styles = StyleSheet.create({
 
   registerText: {
     color: '#FFFFFF',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '600',
   },
 
   /* LOGIN BUTTON */
   loginBtn: {
-    height: 58,
-    borderRadius: 16,
+    height: 40,
+    borderRadius: 14,
     borderWidth: 1.5,
     borderColor: '#7B4DFF',
     justifyContent: 'center',
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
 
   loginText: {
     color: '#6200EE',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '600',
   },
 });

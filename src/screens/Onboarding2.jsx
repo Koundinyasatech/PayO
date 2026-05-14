@@ -156,7 +156,6 @@
 
 // });
 
-
 import React, { useEffect, useRef } from 'react';
 import {
   View,
@@ -201,11 +200,14 @@ export default function Onboarding2({ navigation }) {
       translateX: new Animated.Value(Math.random() * width),
       size: Math.random() * 35 + 25,
       opacity: Math.random() * 0.3 + 0.1,
-      duration: Math.random() * 4000 + 5000,
+      duration: Math.random() * 2000 + 2500,
     }))
   ).current;
 
   useEffect(() => {
+
+    // START COIN RAIN IMMEDIATELY
+    startCoinRain();
 
     Animated.sequence([
 
@@ -213,12 +215,13 @@ export default function Onboarding2({ navigation }) {
       Animated.parallel([
         Animated.timing(logoOpacity, {
           toValue: 1,
-          duration: 700,
+          duration: 350,
           useNativeDriver: true,
         }),
         Animated.spring(logoTranslateY, {
           toValue: 0,
-          friction: 6,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
@@ -227,12 +230,13 @@ export default function Onboarding2({ navigation }) {
       Animated.parallel([
         Animated.timing(imageOpacity, {
           toValue: 1,
-          duration: 700,
+          duration: 400,
           useNativeDriver: true,
         }),
         Animated.spring(imageScale, {
           toValue: 1,
-          friction: 5,
+          friction: 6,
+          tension: 100,
           useNativeDriver: true,
         }),
       ]),
@@ -241,12 +245,13 @@ export default function Onboarding2({ navigation }) {
       Animated.parallel([
         Animated.timing(titleOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 250,
           useNativeDriver: true,
         }),
         Animated.spring(titleTranslateY, {
           toValue: 0,
-          friction: 6,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
@@ -255,12 +260,13 @@ export default function Onboarding2({ navigation }) {
       Animated.parallel([
         Animated.timing(descOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 250,
           useNativeDriver: true,
         }),
         Animated.spring(descTranslateY, {
           toValue: 0,
-          friction: 6,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
@@ -268,13 +274,12 @@ export default function Onboarding2({ navigation }) {
       // FOOTER
       Animated.timing(footerOpacity, {
         toValue: 1,
-        duration: 600,
+        duration: 300,
         useNativeDriver: true,
       }),
 
     ]).start(() => {
       startFloatingAnimation();
-      startCoinRain();
     });
 
   }, []);
@@ -285,12 +290,12 @@ export default function Onboarding2({ navigation }) {
       Animated.sequence([
         Animated.timing(imageFloat, {
           toValue: -10,
-          duration: 1800,
+          duration: 800,
           useNativeDriver: true,
         }),
         Animated.timing(imageFloat, {
           toValue: 0,
-          duration: 1800,
+          duration: 800,
           useNativeDriver: true,
         }),
       ])
@@ -510,8 +515,7 @@ const styles = StyleSheet.create({
   },
 });
 
-
-// import React from 'react';
+// import React, { useEffect, useRef } from 'react';
 // import {
 //   View,
 //   Text,
@@ -520,45 +524,249 @@ const styles = StyleSheet.create({
 //   Image,
 //   SafeAreaView,
 //   StatusBar,
+//   Animated,
+//   Dimensions,
 // } from 'react-native';
 
+// const { width, height } = Dimensions.get('window');
+
 // export default function Onboarding2({ navigation }) {
+
+//   // LOGO
+//   const logoOpacity = useRef(new Animated.Value(0)).current;
+//   const logoTranslateY = useRef(new Animated.Value(-40)).current;
+
+//   // IMAGE
+//   const imageOpacity = useRef(new Animated.Value(0)).current;
+//   const imageScale = useRef(new Animated.Value(0.8)).current;
+//   const imageFloat = useRef(new Animated.Value(0)).current;
+
+//   // TITLE
+//   const titleOpacity = useRef(new Animated.Value(0)).current;
+//   const titleTranslateY = useRef(new Animated.Value(30)).current;
+
+//   // DESCRIPTION
+//   const descOpacity = useRef(new Animated.Value(0)).current;
+//   const descTranslateY = useRef(new Animated.Value(30)).current;
+
+//   // FOOTER
+//   const footerOpacity = useRef(new Animated.Value(0)).current;
+
+//   // COINS
+//   const coins = useRef(
+//     Array.from({ length: 10 }).map(() => ({
+//       translateY: new Animated.Value(-height),
+//       translateX: new Animated.Value(Math.random() * width),
+//       size: Math.random() * 35 + 25,
+//       opacity: Math.random() * 0.3 + 0.1,
+//       duration: Math.random() * 4000 + 5000,
+//     }))
+//   ).current;
+
+//   useEffect(() => {
+
+//     Animated.sequence([
+
+//       // LOGO
+//       Animated.parallel([
+//         Animated.timing(logoOpacity, {
+//           toValue: 1,
+//           duration: 700,
+//           useNativeDriver: true,
+//         }),
+//         Animated.spring(logoTranslateY, {
+//           toValue: 0,
+//           friction: 6,
+//           useNativeDriver: true,
+//         }),
+//       ]),
+
+//       // IMAGE
+//       Animated.parallel([
+//         Animated.timing(imageOpacity, {
+//           toValue: 1,
+//           duration: 700,
+//           useNativeDriver: true,
+//         }),
+//         Animated.spring(imageScale, {
+//           toValue: 1,
+//           friction: 5,
+//           useNativeDriver: true,
+//         }),
+//       ]),
+
+//       // TITLE
+//       Animated.parallel([
+//         Animated.timing(titleOpacity, {
+//           toValue: 1,
+//           duration: 500,
+//           useNativeDriver: true,
+//         }),
+//         Animated.spring(titleTranslateY, {
+//           toValue: 0,
+//           friction: 6,
+//           useNativeDriver: true,
+//         }),
+//       ]),
+
+//       // DESCRIPTION
+//       Animated.parallel([
+//         Animated.timing(descOpacity, {
+//           toValue: 1,
+//           duration: 500,
+//           useNativeDriver: true,
+//         }),
+//         Animated.spring(descTranslateY, {
+//           toValue: 0,
+//           friction: 6,
+//           useNativeDriver: true,
+//         }),
+//       ]),
+
+//       // FOOTER
+//       Animated.timing(footerOpacity, {
+//         toValue: 1,
+//         duration: 600,
+//         useNativeDriver: true,
+//       }),
+
+//     ]).start(() => {
+//       startFloatingAnimation();
+//       startCoinRain();
+//     });
+
+//   }, []);
+
+//   // FLOATING IMAGE
+//   const startFloatingAnimation = () => {
+//     Animated.loop(
+//       Animated.sequence([
+//         Animated.timing(imageFloat, {
+//           toValue: -10,
+//           duration: 1800,
+//           useNativeDriver: true,
+//         }),
+//         Animated.timing(imageFloat, {
+//           toValue: 0,
+//           duration: 1800,
+//           useNativeDriver: true,
+//         }),
+//       ])
+//     ).start();
+//   };
+
+//   // COIN RAIN
+//   const startCoinRain = () => {
+//     coins.forEach((coin) => {
+//       Animated.loop(
+//         Animated.sequence([
+//           Animated.timing(coin.translateY, {
+//             toValue: height + 100,
+//             duration: coin.duration,
+//             useNativeDriver: true,
+//           }),
+//           Animated.timing(coin.translateY, {
+//             toValue: -100,
+//             duration: 0,
+//             useNativeDriver: true,
+//           }),
+//         ])
+//       ).start();
+//     });
+//   };
+
 //   return (
 //     <SafeAreaView style={styles.container}>
 //       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
+//       {/* FALLING COINS */}
+//       {coins.map((coin, index) => (
+//         <Animated.Image
+//           key={index}
+//           source={require('../../assets/images/coin.png')}
+//           style={{
+//             position: 'absolute',
+//             width: coin.size,
+//             height: coin.size,
+//             opacity: coin.opacity,
+//             transform: [
+//               { translateX: coin.translateX },
+//               { translateY: coin.translateY },
+//             ],
+//           }}
+//         />
+//       ))}
+
 //       <View style={styles.content}>
 
 //         {/* LOGO */}
-//         <Image
+//         <Animated.Image
 //           source={require('../../assets/images/LogoContainer.png')}
-//           style={styles.logo}
+//           style={[
+//             styles.logo,
+//             {
+//               opacity: logoOpacity,
+//               transform: [{ translateY: logoTranslateY }],
+//             },
+//           ]}
 //         />
 
 //         {/* MAIN IMAGE */}
-//         <Image
+//         <Animated.Image
 //           source={require('../../assets/images/onboardingScreen1.png')}
-//           style={styles.mainImage}
+//           style={[
+//             styles.mainImage,
+//             {
+//               opacity: imageOpacity,
+//               transform: [
+//                 { scale: imageScale },
+//                 { translateY: imageFloat },
+//               ],
+//             },
+//           ]}
 //         />
 
 //         {/* TITLE */}
-//         <Text style={styles.title}>
+//         <Animated.Text
+//           style={[
+//             styles.title,
+//             {
+//               opacity: titleOpacity,
+//               transform: [{ translateY: titleTranslateY }],
+//             },
+//           ]}
+//         >
 //           Instant QR{'\n'}Payments
-//         </Text>
+//         </Animated.Text>
 
 //         {/* DESCRIPTION */}
-//         <Text style={styles.description}>
+//         <Animated.Text
+//           style={[
+//             styles.description,
+//             {
+//               opacity: descOpacity,
+//               transform: [{ translateY: descTranslateY }],
+//             },
+//           ]}
+//         >
 //           Scan a QR code to send tokens in seconds.
 //           {'\n'}
 //           Safe, secure, and lightning-fast
 //           {'\n'}
 //           wallet-to-wallet transfers.
-//         </Text>
+//         </Animated.Text>
 
 //       </View>
 
 //       {/* FOOTER */}
-//       <View style={styles.footer}>
+//       <Animated.View
+//         style={[
+//           styles.footer,
+//           {
+//             opacity: footerOpacity,
+//           },
+//         ]}
+//       >
 
 //         {/* SKIP BUTTON */}
 //         <TouchableOpacity
@@ -580,7 +788,7 @@ const styles = StyleSheet.create({
 //           />
 //         </TouchableOpacity>
 
-//       </View>
+//       </Animated.View>
 //     </SafeAreaView>
 //   );
 // }
@@ -595,6 +803,7 @@ const styles = StyleSheet.create({
 //     flex: 1,
 //     alignItems: 'center',
 //     paddingTop: 40,
+//     zIndex: 2,
 //   },
 
 //   logo: {
@@ -636,6 +845,7 @@ const styles = StyleSheet.create({
 //     flexDirection: 'row',
 //     justifyContent: 'space-between',
 //     alignItems: 'center',
+//     zIndex: 2,
 //   },
 
 //   skipBtn: {
@@ -657,3 +867,5 @@ const styles = StyleSheet.create({
 //     resizeMode: 'contain',
 //   },
 // });
+
+

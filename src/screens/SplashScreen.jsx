@@ -699,7 +699,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textTransform: 'lowercase',
 
-    // GLOW REMOVED
   },
 });
 
