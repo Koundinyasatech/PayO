@@ -13,6 +13,8 @@ import SendScreen from './sendScreen';
 import TransactionHistory from '../HomeScreen/TransactionHistory';
 import WalletScreen from '../HomeScreen/WalletScreen';
 import UserProfile from '../UserProfile/UserProfile';
+import MarketScreen from '../Market/market';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +26,7 @@ function CustomTabBar({ state, navigation }) {
     Wallets: "Wallets",
     Transactions: "Transactions",
     UserProfile: "Profile", // ✅ change label here
+    market:"Market"
   };
 
   return (
@@ -40,8 +43,9 @@ function CustomTabBar({ state, navigation }) {
 
         if (route.name === "Home") icon = "home";
         if (route.name === "Wallets") icon = "credit-card";
-        if (route.name === "Transactions") icon = "bar-chart-2";
+        if (route.name === "Transactions") icon = "repeat";
         if (route.name === "UserProfile") icon = "settings";
+          if (route.name === "MarketScreen") icon = "trending-up";
 
         // ⭐ Center Button
         if (route.name === "Send") {
@@ -98,7 +102,10 @@ export default function BottomTabs() {
       <Tab.Screen name="Wallets" component={WalletScreen} />
       <Tab.Screen name="Send" component={SendScreen} />
       <Tab.Screen name="Transactions" component={TransactionHistory} />
-      <Tab.Screen name="UserProfile" component={UserProfile} />
+      {/* <Tab.Screen name="UserProfile" component={UserProfile} /> */}
+      <Tab.Screen name="MarketScreen"
+       component={MarketScreen}
+        />
     </Tab.Navigator>
   );
 }
