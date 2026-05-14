@@ -368,7 +368,6 @@
 
 
 
-
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
@@ -377,10 +376,11 @@ import {
   Dimensions,
   StatusBar,
   Easing,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const SplashScreen = ({ navigation }) => {
   const [screenStep, setScreenStep] = useState(1);
@@ -389,17 +389,17 @@ const SplashScreen = ({ navigation }) => {
   const expandAnim = useRef(new Animated.Value(1)).current;
   const logoAnim = useRef(new Animated.Value(0)).current;
 
+  // BLACK TRANSITION
+  const blackOverlayScale = useRef(new Animated.Value(0)).current;
+
   // SCREEN 4 ANIMATIONS
   const finalLogoOpacity = useRef(new Animated.Value(0)).current;
   const taglineOpacity = useRef(new Animated.Value(0)).current;
   const welcomeOpacity = useRef(new Animated.Value(0)).current;
+  const loadingOpacity = useRef(new Animated.Value(0)).current;
 
   // FINAL FADE OUT
   const finalFadeOut = useRef(new Animated.Value(1)).current;
-
-  // Diagonal animation values
-  const translateX = useRef(new Animated.Value(-200)).current;
-  const translateY = useRef(new Animated.Value(200)).current;
 
   useEffect(() => {
     const timers = [];
@@ -434,57 +434,80 @@ const SplashScreen = ({ navigation }) => {
       }, 1200),
     );
 
-    // SCREEN 4
+    // TRANSITION TO SCREEN 4
     timers.push(
       setTimeout(() => {
-        setScreenStep(4);
 
-        // PAYO LOGO FADE IN
-        Animated.timing(finalLogoOpacity, {
+        // BLACK COVER ANIMATION
+        Animated.timing(blackOverlayScale, {
           toValue: 1,
-          duration: 800,
-          easing: Easing.linear,
+          duration: 900,
+          easing: Easing.out(Easing.exp),
           useNativeDriver: true,
         }).start(() => {
 
-          // TAGLINE FADE IN AFTER HALF SEC
-          setTimeout(() => {
-            Animated.timing(taglineOpacity, {
-              toValue: 1,
-              duration: 700,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }).start(() => {
+          setScreenStep(4);
 
-              // WELCOME TEXT AFTER HALF SEC
-              setTimeout(() => {
-                Animated.timing(welcomeOpacity, {
-                  toValue: 1,
-                  duration: 700,
-                  easing: Easing.linear,
-                  useNativeDriver: true,
-                }).start(() => {
+          // PAYO LOGO
+          Animated.timing(finalLogoOpacity, {
+            toValue: 1,
+            duration: 800,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }).start(() => {
 
-                  // WAIT LITTLE
-                  setTimeout(() => {
+            // TAGLINE
+            setTimeout(() => {
+              Animated.timing(taglineOpacity, {
+                toValue: 1,
+                duration: 700,
+                easing: Easing.linear,
+                useNativeDriver: true,
+              }).start(() => {
 
-                    // ALL FADE OUT TOGETHER
-                    Animated.timing(finalFadeOut, {
-                      toValue: 0,
-                      duration: 900,
-                      easing: Easing.linear,
-                      useNativeDriver: true,
-                    }).start(() => {
-                      navigation.replace('Onboarding1');
-                    });
+                // WELCOME TEXT
+                setTimeout(() => {
+                  Animated.timing(welcomeOpacity, {
+                    toValue: 1,
+                    duration: 700,
+                    easing: Easing.linear,
+                    useNativeDriver: true,
+                  }).start(() => {
 
-                  }, 800);
+                    // LOADER
+                    setTimeout(() => {
 
-                });
-              }, 500);
+                      Animated.timing(loadingOpacity, {
+                        toValue: 1,
+                        duration: 500,
+                        easing: Easing.linear,
+                        useNativeDriver: true,
+                      }).start();
 
-            });
-          }, 500);
+                      // WAIT
+                      setTimeout(() => {
+
+                        // FADE OUT
+                        Animated.timing(finalFadeOut, {
+                          toValue: 0,
+                          duration: 900,
+                          easing: Easing.linear,
+                          useNativeDriver: true,
+                        }).start(() => {
+                          navigation.replace('Onboarding1');
+                        });
+
+                      }, 1400);
+
+                    }, 500);
+
+                  });
+                }, 500);
+
+              });
+            }, 500);
+
+          });
 
         });
 
@@ -565,6 +588,24 @@ const SplashScreen = ({ navigation }) => {
             },
           ]}
         />
+
+        {/* BLACK TRANSITION */}
+        <Animated.View
+          style={[
+            styles.blackTransition,
+            {
+              transform: [
+                {
+                  scale: blackOverlayScale.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 15],
+                  }),
+                },
+              ],
+            },
+          ]}
+        />
+
       </LinearGradient>
     );
   }
@@ -619,6 +660,22 @@ const SplashScreen = ({ navigation }) => {
         welcome
       </Animated.Text>
 
+      {/* LOADER */}
+      <Animated.View
+        style={[
+          styles.loaderContainer,
+          {
+            opacity: loadingOpacity,
+          },
+        ]}>
+
+        <ActivityIndicator
+          size="large"
+          color="#8B5CF6"
+        />
+
+      </Animated.View>
+
     </Animated.View>
   );
 };
@@ -637,6 +694,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
 
   blackContainer: {
@@ -674,8 +732,8 @@ const styles = StyleSheet.create({
   },
 
   finalLogo: {
-    width: width * 0.72,
-    height: 140,
+    width: width * 0.58,
+    height: 120,
   },
 
   tagLine: {
@@ -692,11 +750,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textTransform: 'lowercase',
+  },
 
+  loaderContainer: {
+    position: 'absolute',
+    bottom: 90,
+  },
+
+  blackTransition: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 140,
+    backgroundColor: '#02040D',
+    bottom: -60,
+    left: -60,
   },
 });
-
-
 
 // import React, { useEffect, useRef, useState } from 'react';
 // import {
@@ -706,7 +776,7 @@ const styles = StyleSheet.create({
 //   Dimensions,
 //   StatusBar,
 //   Easing,
-//   Text,
+//   ActivityIndicator,
 // } from 'react-native';
 // import LinearGradient from 'react-native-linear-gradient';
 
@@ -717,14 +787,16 @@ const styles = StyleSheet.create({
 
 //   const dotFade = useRef(new Animated.Value(0)).current;
 //   const expandAnim = useRef(new Animated.Value(1)).current;
-
 //   const logoAnim = useRef(new Animated.Value(0)).current;
 
-//   // FINAL SCREEN ANIMATION
-//   const finalLogoAnim = useRef(new Animated.Value(0)).current;
-
-//   // WELCOME TEXT ANIMATION
+//   // SCREEN 4 ANIMATIONS
+//   const finalLogoOpacity = useRef(new Animated.Value(0)).current;
+//   const taglineOpacity = useRef(new Animated.Value(0)).current;
 //   const welcomeOpacity = useRef(new Animated.Value(0)).current;
+//   const loadingOpacity = useRef(new Animated.Value(0)).current;
+
+//   // FINAL FADE OUT
+//   const finalFadeOut = useRef(new Animated.Value(1)).current;
 
 //   useEffect(() => {
 //     const timers = [];
@@ -747,57 +819,83 @@ const styles = StyleSheet.create({
 //           easing: Easing.out(Easing.exp),
 //           useNativeDriver: true,
 //         }).start(() => {
-
 //           setScreenStep(3);
 
 //           Animated.timing(logoAnim, {
 //             toValue: 1,
 //             duration: 1200,
+//             easing: Easing.linear,
 //             useNativeDriver: true,
 //           }).start();
-
 //         });
-
 //       }, 1200),
 //     );
 
 //     // SCREEN 4
 //     timers.push(
 //       setTimeout(() => {
-
 //         setScreenStep(4);
 
-//         // LOGO FADE IN
-//         Animated.timing(finalLogoAnim, {
+//         // PAYO LOGO
+//         Animated.timing(finalLogoOpacity, {
 //           toValue: 1,
-//           duration: 1000,
+//           duration: 800,
 //           easing: Easing.linear,
 //           useNativeDriver: true,
-//         }).start();
+//         }).start(() => {
 
-//         // WELCOME GLASS FADE IN + FADE OUT
-//         Animated.sequence([
-//           Animated.timing(welcomeOpacity, {
-//             toValue: 1,
-//             duration: 1200,
-//             easing: Easing.linear,
-//             useNativeDriver: true,
-//           }),
+//           // TAGLINE
+//           setTimeout(() => {
+//             Animated.timing(taglineOpacity, {
+//               toValue: 1,
+//               duration: 700,
+//               easing: Easing.linear,
+//               useNativeDriver: true,
+//             }).start(() => {
 
-//           Animated.delay(700),
+//               // WELCOME TEXT
+//               setTimeout(() => {
+//                 Animated.timing(welcomeOpacity, {
+//                   toValue: 1,
+//                   duration: 700,
+//                   easing: Easing.linear,
+//                   useNativeDriver: true,
+//                 }).start(() => {
 
-//           Animated.timing(welcomeOpacity, {
-//             toValue: 0,
-//             duration: 1200,
-//             easing: Easing.linear,
-//             useNativeDriver: true,
-//           }),
-//         ]).start();
+//                   // LOADER AFTER HALF SEC
+//                   setTimeout(() => {
 
-//         // NAVIGATE
-//         setTimeout(() => {
-//           navigation.replace('Onboarding1');
-//         }, 3500);
+//                     Animated.timing(loadingOpacity, {
+//                       toValue: 1,
+//                       duration: 500,
+//                       easing: Easing.linear,
+//                       useNativeDriver: true,
+//                     }).start();
+
+//                     // WAIT LITTLE
+//                     setTimeout(() => {
+
+//                       // FADE OUT ALL
+//                       Animated.timing(finalFadeOut, {
+//                         toValue: 0,
+//                         duration: 900,
+//                         easing: Easing.linear,
+//                         useNativeDriver: true,
+//                       }).start(() => {
+//                         navigation.replace('Onboarding1');
+//                       });
+
+//                     }, 1400);
+
+//                   }, 500);
+
+//                 });
+//               }, 500);
+
+//             });
+//           }, 500);
+
+//         });
 
 //       }, 5000),
 //     );
@@ -809,10 +907,7 @@ const styles = StyleSheet.create({
 //   if (screenStep === 1) {
 //     return (
 //       <View style={styles.whiteContainer}>
-//         <StatusBar
-//           backgroundColor="#F8F8F8"
-//           barStyle="dark-content"
-//         />
+//         <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
 //         <Animated.View
 //           style={[
@@ -830,10 +925,7 @@ const styles = StyleSheet.create({
 //   if (screenStep === 2) {
 //     return (
 //       <View style={styles.whiteContainer}>
-//         <StatusBar
-//           backgroundColor="#F8F8F8"
-//           barStyle="dark-content"
-//         />
+//         <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
 //         <Animated.View
 //           style={[
@@ -862,10 +954,7 @@ const styles = StyleSheet.create({
 //         end={{ x: 1, y: 1 }}
 //         style={styles.gradientContainer}>
 
-//         <StatusBar
-//           backgroundColor="#8427F7"
-//           barStyle="light-content"
-//         />
+//         <StatusBar backgroundColor="#8427F7" barStyle="light-content" />
 
 //         <Animated.Image
 //           source={require('../../assets/images/icongroup.png')}
@@ -891,36 +980,42 @@ const styles = StyleSheet.create({
 
 //   // SCREEN 4
 //   return (
-//     <View style={styles.blackContainer}>
+//     <Animated.View
+//       style={[
+//         styles.blackContainer,
+//         {
+//           opacity: finalFadeOut,
+//         },
+//       ]}>
+
 //       <StatusBar
 //         backgroundColor="#02040D"
 //         barStyle="light-content"
 //       />
 
-//       {/* LOGO + TAGLINE */}
-//       <Animated.View
+//       {/* PAYO LOGO */}
+//       <Animated.Image
+//         source={require('../../assets/images/icongroup.png')}
+//         resizeMode="contain"
 //         style={[
-//           styles.logoWrapper,
+//           styles.finalLogo,
 //           {
-//             opacity: finalLogoAnim,
+//             opacity: finalLogoOpacity,
 //           },
-//         ]}>
+//         ]}
+//       />
 
-//         {/* PAYO LOGO */}
-//         <Animated.Image
-//           source={require('../../assets/images/icongroup.png')}
-//           resizeMode="contain"
-//           style={styles.finalLogo}
-//         />
-
-//         {/* TAGLINE */}
-//         <Animated.Image
-//           source={require('../../assets/images/tag.png')}
-//           resizeMode="contain"
-//           style={styles.tagLine}
-//         />
-
-//       </Animated.View>
+//       {/* TAGLINE */}
+//       <Animated.Image
+//         source={require('../../assets/images/tag.png')}
+//         resizeMode="contain"
+//         style={[
+//           styles.tagLine,
+//           {
+//             opacity: taglineOpacity,
+//           },
+//         ]}
+//       />
 
 //       {/* WELCOME TEXT */}
 //       <Animated.Text
@@ -933,7 +1028,23 @@ const styles = StyleSheet.create({
 //         welcome
 //       </Animated.Text>
 
-//     </View>
+//       {/* LOADER */}
+//       <Animated.View
+//         style={[
+//           styles.loaderContainer,
+//           {
+//             opacity: loadingOpacity,
+//           },
+//         ]}>
+
+//         <ActivityIndicator
+//           size="large"
+//           color="#8B5CF6"
+//         />
+
+//       </Animated.View>
+
+//     </Animated.View>
 //   );
 // };
 
@@ -987,11 +1098,6 @@ const styles = StyleSheet.create({
 //     height: 120,
 //   },
 
-//   logoWrapper: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-
 //   finalLogo: {
 //     width: width * 0.72,
 //     height: 140,
@@ -1011,13 +1117,10 @@ const styles = StyleSheet.create({
 //     fontWeight: '600',
 //     letterSpacing: 1,
 //     textTransform: 'lowercase',
+//   },
 
-//     // GLASS BLUR EFFECT
-//     textShadowColor: 'rgba(255,255,255,0.9)',
-//     textShadowOffset: {
-//       width: 0,
-//       height: 0,
-//     },
-//     textShadowRadius: 12,
+//   loaderContainer: {
+//     position: 'absolute',
+//     bottom: 90,
 //   },
 // });
