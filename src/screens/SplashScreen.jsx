@@ -387,7 +387,6 @@ const SplashScreen = ({ navigation }) => {
 
   const dotFade = useRef(new Animated.Value(0)).current;
   const expandAnim = useRef(new Animated.Value(1)).current;
-
   const logoAnim = useRef(new Animated.Value(0)).current;
 
   // SCREEN 4 ANIMATIONS
@@ -397,6 +396,10 @@ const SplashScreen = ({ navigation }) => {
 
   // FINAL FADE OUT
   const finalFadeOut = useRef(new Animated.Value(1)).current;
+
+  // Diagonal animation values
+  const translateX = useRef(new Animated.Value(-200)).current;
+  const translateY = useRef(new Animated.Value(200)).current;
 
   useEffect(() => {
     const timers = [];
@@ -495,10 +498,7 @@ const SplashScreen = ({ navigation }) => {
   if (screenStep === 1) {
     return (
       <View style={styles.whiteContainer}>
-        <StatusBar
-          backgroundColor="#F8F8F8"
-          barStyle="dark-content"
-        />
+        <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
         <Animated.View
           style={[
@@ -516,10 +516,7 @@ const SplashScreen = ({ navigation }) => {
   if (screenStep === 2) {
     return (
       <View style={styles.whiteContainer}>
-        <StatusBar
-          backgroundColor="#F8F8F8"
-          barStyle="dark-content"
-        />
+        <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
         <Animated.View
           style={[
@@ -548,10 +545,7 @@ const SplashScreen = ({ navigation }) => {
         end={{ x: 1, y: 1 }}
         style={styles.gradientContainer}>
 
-        <StatusBar
-          backgroundColor="#8427F7"
-          barStyle="light-content"
-        />
+        <StatusBar backgroundColor="#8427F7" barStyle="light-content" />
 
         <Animated.Image
           source={require('../../assets/images/icongroup.png')}
