@@ -1,278 +1,91 @@
 // import React, { useEffect, useRef, useState } from 'react';
 // import {
 //   View,
-//   Animated,
 //   StyleSheet,
+//   Animated,
 //   Dimensions,
-//   StatusBar,
-//   Easing,
 // } from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
 
 // const { width } = Dimensions.get('window');
 
-// const SplashScreen = ({ navigation }) => {
-//   const [screenStep, setScreenStep] = useState(1);
+// export default function SplashScreen({ navigation }) {
 
-//   const dotFade = useRef(new Animated.Value(0)).current;
-//   const expandAnim = useRef(new Animated.Value(1)).current;
-
-//   const logoAnim = useRef(new Animated.Value(0)).current;
-
-//   // FINAL SCREEN ANIMATION
-//   const finalLogoAnim = useRef(new Animated.Value(0)).current;
+//   const [showLogo, setShowLogo] = useState(false);
+//   const slideAnim = useRef(new Animated.Value(0)).current;
 
 //   useEffect(() => {
-//     const timers = [];
 
-//     // SCREEN 1
-//     Animated.timing(dotFade, {
-//       toValue: 1,
-//       duration: 1000,
-//       useNativeDriver: true,
-//     }).start();
+//     // 1️⃣ Violet screen for 2 seconds
+//     const violetTimer = setTimeout(() => {
+//       setShowLogo(true);
 
-//     // SCREEN 2
-//     timers.push(
-//       setTimeout(() => {
-//         setScreenStep(2);
+//       // start logo animation
+//       Animated.timing(slideAnim, {
+//         toValue: 140,
+//         duration: 1000,
+//         useNativeDriver: true,
+//       }).start();
 
-//         Animated.timing(expandAnim, {
-//           toValue: 80,
-//           duration: 1600,
-//           easing: Easing.out(Easing.exp),
-//           useNativeDriver: true,
-//         }).start(() => {
+//     }, 2000);
 
-//           setScreenStep(3);
+//     // 2️⃣ After total 5 seconds go to Welcome
+//     const navTimer = setTimeout(() => {
+//       navigation.replace('Welcome');
+//     }, 5000);
 
-//           Animated.timing(logoAnim, {
-//             toValue: 1,
-//             duration: 1200,
-//             useNativeDriver: true,
-//           }).start();
+//     return () => {
+//       clearTimeout(violetTimer);
+//       clearTimeout(navTimer);
+//     };
 
-//         });
-
-//       }, 1200),
-//     );
-
-//     // SCREEN 4
-//     timers.push(
-//       setTimeout(() => {
-
-//         setScreenStep(4);
-
-//         Animated.timing(finalLogoAnim, {
-//           toValue: 1,
-//           duration: 1000,
-//           useNativeDriver: true,
-//         }).start();
-
-//         // NAVIGATE
-//         setTimeout(() => {
-//           navigation.replace('Welcome');
-//         }, 2000);
-
-//       }, 5000),
-//     );
-
-//     return () => timers.forEach(clearTimeout);
 //   }, []);
 
-//   // SCREEN 1
-//   if (screenStep === 1) {
-//     return (
-//       <View style={styles.whiteContainer}>
-//         <StatusBar
-//           backgroundColor="#F8F8F8"
-//           barStyle="dark-content"
-//         />
-
-//         <Animated.View
-//           style={[
-//             styles.smallDot,
-//             {
-//               opacity: dotFade,
-//             },
-//           ]}
-//         />
-//       </View>
-//     );
-//   }
-
-//   // SCREEN 2
-//   if (screenStep === 2) {
-//     return (
-//       <View style={styles.whiteContainer}>
-//         <StatusBar
-//           backgroundColor="#F8F8F8"
-//           barStyle="dark-content"
-//         />
-
-//         <Animated.View
-//           style={[
-//             styles.expandCircleWrapper,
-//             {
-//               transform: [{ scale: expandAnim }],
-//             },
-//           ]}>
-//           <LinearGradient
-//             colors={['#8427F7', '#0DB6E8']}
-//             start={{ x: 0, y: 0 }}
-//             end={{ x: 1, y: 1 }}
-//             style={styles.expandCircle}
-//           />
-//         </Animated.View>
-//       </View>
-//     );
-//   }
-
-//   // SCREEN 3
-//   if (screenStep === 3) {
-//     return (
-//       <LinearGradient
-//         colors={['#8427F7', '#0DB6E8']}
-//         start={{ x: 0, y: 0 }}
-//         end={{ x: 1, y: 1 }}
-//         style={styles.gradientContainer}>
-
-//         <StatusBar
-//           backgroundColor="#8427F7"
-//           barStyle="light-content"
-//         />
-
-//         <Animated.Image
-//           source={require('../../assets/images/icongroup.png')}
-//           resizeMode="contain"
-//           style={[
-//             styles.logo,
-//             {
-//               opacity: logoAnim,
-//               transform: [
-//                 {
-//                   scale: logoAnim.interpolate({
-//                     inputRange: [0, 1],
-//                     outputRange: [0.7, 1],
-//                   }),
-//                 },
-//               ],
-//             },
-//           ]}
-//         />
-//       </LinearGradient>
-//     );
-//   }
-
-//   // SCREEN 4
 //   return (
-//     <View style={styles.blackContainer}>
-//       <StatusBar
-//         backgroundColor="#02040D"
-//         barStyle="light-content"
-//       />
+//     <View style={styles.container}>
 
-//       {/* LOGO + TAGLINE SAME TIME */}
-//       <Animated.View
-//         style={[
-//           styles.logoWrapper,
-//           {
-//             opacity: finalLogoAnim,
-//             transform: [
-//               {
-//                 scale: finalLogoAnim.interpolate({
-//                   inputRange: [0, 1],
-//                   outputRange: [0.8, 1],
-//                 }),
-//               },
-//             ],
-//           },
-//         ]}>
+//       {/* Violet Screen */}
+//       {!showLogo && (
+//         <View style={styles.violetScreen} />
+//       )}
 
-//         {/* PAYO LOGO */}
+//       {/* Logo Screen */}
+//       {showLogo && (
 //         <Animated.Image
-//           source={require('../../assets/images/icongroup.png')}
-//           resizeMode="contain"
-//           style={styles.finalLogo}
+//           source={require('../../assets/images/payoLogo.png')}
+//           style={[
+//             styles.logoImage,
+//             {
+//               transform: [{ translateY: slideAnim }],
+//             },
+//           ]}
 //         />
+//       )}
 
-//         {/* TAGLINE */}
-//         <Animated.Image
-//           source={require('../../assets/images/tag.png')}
-//           resizeMode="contain"
-//           style={styles.tagLine}
-//         />
-
-//       </Animated.View>
 //     </View>
 //   );
-// };
-
-// export default SplashScreen;
+// }
 
 // const styles = StyleSheet.create({
-//   whiteContainer: {
+
+//   container: {
 //     flex: 1,
-//     backgroundColor: '#F8F8F8',
+//     backgroundColor: '#6C2BD9',
 //     justifyContent: 'center',
 //     alignItems: 'center',
 //   },
 
-//   gradientContainer: {
+//   violetScreen: {
 //     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
+//     width: '100%',
+//     backgroundColor: '#6C2BD9',
 //   },
 
-//   blackContainer: {
-//     flex: 1,
-//     backgroundColor: '#02040D',
-//     justifyContent: 'center',
-//     alignItems: 'center',
+//   logoImage: {
+//     width: width * 1.1,
+//     height: width * 1.2,
+//     resizeMode: 'contain',
 //   },
 
-//   smallDot: {
-//     width: 12,
-//     height: 12,
-//     borderRadius: 100,
-//     backgroundColor: '#7B2CF4',
-//     shadowColor: '#00B7F1',
-//     shadowOpacity: 0.8,
-//     shadowRadius: 10,
-//     elevation: 10,
-//   },
-
-//   expandCircleWrapper: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-
-//   expandCircle: {
-//     width: 14,
-//     height: 14,
-//     borderRadius: 100,
-//   },
-
-//   logo: {
-//     width: width * 0.58,
-//     height: 120,
-//   },
-
-//   logoWrapper: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-
-//   finalLogo: {
-//     width: width * 0.72,
-//     height: 140,
-//   },
-
-//   tagLine: {
-//     width: width * 0.55,
-//     height: 24,
-//     marginTop: -18,
-//   },
 // });
 
 
@@ -552,3 +365,5 @@ const styles = StyleSheet.create({
     marginTop: -18,
   },
 });
+
+
