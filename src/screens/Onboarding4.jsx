@@ -1,148 +1,20 @@
-// import React from 'react';
-// import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-
-// export default function Onboarding4({ navigation }) {
-//   return (
-//     <View style={styles.container}>
-
-//       <View style={styles.header}>
-//         <Image source={require('../../assets/images/LogoContainer.png')} style={{ width: 120, height: 40 }} />
-//       </View>
-
-//       <View style={styles.content}>
-//          <View style={styles.imageContainer}>
-//                   {<Image source={require('..//../assets/images/onboardingScreen3.png')} style={{ width: 325, height: 230, paddingBottom:100 }} />}
-                  
-//                 </View>
-//         <Text style={styles.title}>Earn with Every Referral</Text>
-//         <Text style={styles.description}>
-//           Invite friends and earn PAYO tokens when they join and transact. Grow your network, Grow your wallet.
-//         </Text>
-//       </View>
-
-//       <View style={styles.buttonContainer}>
-//         <TouchableOpacity
-//           style={styles.registerBtn}
-//           onPress={() => navigation.navigate('RegisterMobile')}
-//         >
-//           <Text style={styles.btnText}>Register</Text>
-//         </TouchableOpacity>
-
-//         <TouchableOpacity
-//           style={styles.loginBtn}
-//           onPress={() => navigation.navigate('Login')}
-//         >
-//           <Text  style={styles.loginBtnText}>Login</Text>
-//         </TouchableOpacity>
-//       </View>
-
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     // backgroundColor: '#fff',
-  
-//     marginTop:20,
-//     marginBottom:50,
-//     marginLeft:50,
-//     marginRight:50
-
-    
-    
-//   },
-//   header: {
-//   //  paddingHorizontal: 24,
-//     marginTop:10,
-//   paddingTop: 40,
-//   alignItems: 'center', // ✅ center PAYO
-//   justifyContent: 'center',
-//   },
-//   logo: {
-//     fontSize: 22,
-//   fontWeight: 'bold',
-//   color: '#6C2BD9',
-//   letterSpacing: 3,
-//   fontFamily: 'serif',
-//   },
-//    content: {
-//     flex: 1,
-//     paddingHorizontal: 24,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   imageContainer: {
-//     width: 240,
-//     height: 240,
-//     borderRadius: 110,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     marginBottom: 32,
-//   },
-//   title: {
-//     fontSize: 28,
-//     fontWeight: 'bold',
-//     color: '#6C2BD9',
-//     marginBottom: 16,
-//     textAlign: 'center',
-//     marginTop:30
-//   },
-//   description: {
-//     fontSize: 17,
-//     textAlign: 'center',
-//     lineHeight: 20,
-//     fontWeight:400
-//   },
-// registerBtn: {
-//   backgroundColor: '#008431',
-//   borderRadius: 8,
-//   paddingVertical: 12,   // reduced from 20
-//   alignItems: 'center',
-// },
-
-// loginBtn: {
-//   borderWidth: 2,
-//   borderColor: '#21793E',
-//   borderRadius: 8,
-//   paddingVertical: 12,   // reduced from 18
-//   alignItems: 'center',
-// },
-
-// btnText: {
-//   fontSize: 16,   // slightly smaller
-//   fontWeight: '600',
-//   color: '#fff',
-// },
-
-// loginBtnText: {
-//   fontSize: 16,
-//   fontWeight: '600',
-//   color: '#21793E',
-// },
-
-// buttonContainer: {
-//   gap: 12,
-// },
-// });
 
 
 import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
+ StyleSheet,
   TouchableOpacity,
   Image,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
 
-export default function Onboarding4({ navigation }) {
+export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#F4F7F5" barStyle="dark-content" />
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
       <View style={styles.content}>
 
@@ -171,20 +43,20 @@ export default function Onboarding4({ navigation }) {
       {/* BUTTONS */}
       <View style={styles.buttonContainer}>
 
-        {/* REGISTER BUTTON */}
+        {/* REGISTER */}
         <TouchableOpacity
           style={styles.registerBtn}
-          onPress={() => navigation.navigate('RegisterMobile')}
           activeOpacity={0.8}
+          onPress={() => navigation.navigate('RegisterMobile')}
         >
           <Text style={styles.registerText}>Register</Text>
         </TouchableOpacity>
 
-        {/* LOGIN BUTTON */}
+        {/* LOGIN */}
         <TouchableOpacity
           style={styles.loginBtn}
-          onPress={() => navigation.navigate('Login')}
           activeOpacity={0.8}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
@@ -197,75 +69,83 @@ export default function Onboarding4({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F7F5',
+    backgroundColor: '#FFFFFF',
   },
 
   content: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 45,
+    paddingTop: 40,
   },
 
+  /* LOGO */
   logo: {
-    width: 145,
-    height: 45,
+    width: 110,
+    height: 40,
     resizeMode: 'contain',
-    marginBottom: 55,
+    marginBottom: 40,
   },
 
+  /* MAIN IMAGE */
   mainImage: {
-    width: 340,
-    height: 300,
+    width: 285,
+    height: 285,
     resizeMode: 'contain',
     marginBottom: 45,
   },
 
+  /* TITLE */
   title: {
-    fontSize: 34,
+    fontSize: 30,
     fontWeight: '700',
     color: '#7B4DFF',
-    marginBottom: 30,
+    marginBottom: 12,
     textAlign: 'center',
   },
 
+  /* DESCRIPTION */
   description: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#444',
     textAlign: 'center',
-    fontWeight: '400',
+    lineHeight: 26,
   },
 
+  /* BUTTON CONTAINER */
   buttonContainer: {
-    paddingHorizontal: 12,
-    paddingBottom: 35,
-    gap: 18,
+    paddingHorizontal: 40,
+    paddingBottom: 50,
   },
 
+  /* REGISTER BUTTON */
   registerBtn: {
-    backgroundColor: '#5B00D6',
-    borderRadius: 12,
-    paddingVertical: 16,
+    backgroundColor: '#6200EE',
+    height: 40,
+    borderRadius: 14,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 18,
   },
 
   registerText: {
     color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
   },
 
+  /* LOGIN BUTTON */
   loginBtn: {
+    height: 40,
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#6C2BD9',
-    borderRadius: 12,
-    paddingVertical: 16,
+    borderColor: '#7B4DFF',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
   },
 
   loginText: {
-    color: '#5B00D6',
-    fontSize: 20,
-    fontWeight: '500',
+    color: '#6200EE',
+    fontSize: 18,
+    fontWeight: '600',
   },
 });
