@@ -123,15 +123,15 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  const fetchExpertCoins = async () => {
+const fetchExpertCoins = async () => {
   try {
+    const res = await fetch("http://payo-app.duckdns.org:3001/api/market/overview");
 
-    const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd");
+    const result = await res.json();
+    console.log(result, "data");
 
-    const data = await res.json();
-
-    // take first 10 coins
-    setExpertCoins(data.slice(0, 50));
+    // access result.data (array)
+    setExpertCoins(result.data.slice(0, 50));
 
   } catch (error) {
     console.log("Expert picks error:", error);
@@ -435,81 +435,79 @@ export default function HomeScreen({ navigation }) {
 
 </View>
 
-  <ScrollView
-    horizontal
-    showsHorizontalScrollIndicator={false}
-  >
-
-    {expertCoins.map((coin, index) => {
-
-      const isLong = coin.price_change_percentage_24h >= 0;
-
-      return (
-       <TouchableOpacity
-  key={index}
-  style={styles.expertCard}
-  activeOpacity={0.8}
-  onPress={() =>
-    navigation.navigate(
-      "CoinDetailsScreen",
-      { coin }
-    )
-  }
+ <ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
 >
 
-       
-          <View style={styles.expertTopRow}>
+  {expertCoins.map((coin, index) => {
 
-            <View style={styles.coinInfo}>
+    const isLong = coin?.priceChangePercentage24h >= 0;
 
-              <Image
-                source={{ uri: coin.image }}
-                style={styles.coinImage}
-              />
+    return (
+      <TouchableOpacity
+        key={index}
+        style={styles.expertCard}
+        activeOpacity={0.8}
+        onPress={() =>
+          navigation.navigate("CoinDetailsScreen", { coin })
+        }
+      >
 
-              <Text style={styles.coinSymbol}>
-                {coin.symbol.toUpperCase()}
-              </Text>
+        <View style={styles.expertTopRow}>
 
-            </View>
+          <View style={styles.coinInfo}>
 
-            <View style={[
-              styles.badge,
-              isLong ? styles.longBadge : styles.shortBadge
-            ]}>
+            <Image
+              source={{
+                uri:
+                  coin.image ||
+                  "https://cdn-icons-png.flaticon.com/512/825/825508.png",
+              }}
+              style={styles.coinImage}
+            />
 
-              <Text style={styles.badgeText}>
-                {isLong ? "Long 5x" : "Short 5x"}
-              </Text>
-
-            </View>
-
-          </View>
-
-        
-          <Text style={styles.entryLabel}>
-            Entry
-          </Text>
-
-          <Text style={styles.entryPrice}>
-            ${coin.current_price}
-          </Text>
-
-          
-          <View style={styles.profitBox}>
-
-            <Text style={styles.profitText}>
-              {coin.price_change_percentage_24h?.toFixed(2)}% Expected profit
+            <Text style={styles.coinSymbol}>
+              {coin.symbol?.toUpperCase()}
             </Text>
 
           </View>
 
-        </TouchableOpacity>
-      );
+          <View
+            style={[
+              styles.badge,
+              isLong ? styles.longBadge : styles.shortBadge,
+            ]}
+          >
+            <Text style={styles.badgeText}>
+              {isLong ? "Long 5x" : "Short 5x"}
+            </Text>
+          </View>
 
-    })}
+        </View>
 
-  </ScrollView>
+        <Text style={styles.entryLabel}>
+          Entry
+        </Text>
+
+        <Text style={styles.entryPrice}>
+          ${coin.price?.toLocaleString()}
+        </Text>
+
+        <View style={styles.profitBox}>
+          <Text style={styles.profitText}>
+            {Math.abs(
+              coin.priceChangePercentage24h || 0
+            ).toFixed(2)}% Expected profit
+          </Text>
+        </View>
+
+      </TouchableOpacity>
+    );
+
+  })}
+
+</ScrollView>
 
 </View>
 
@@ -521,17 +519,17 @@ export default function HomeScreen({ navigation }) {
   {expertCoins.slice(0, 1).map((coin, index) => {
 
     const isNegative =
-      coin.price_change_percentage_24h < 0;
+      coin?.priceChangePercentage24h < 0;
 
     const graphData = [
-      coin.current_price + 1200,
-      coin.current_price + 900,
-      coin.current_price + 700,
-      coin.current_price + 300,
-      coin.current_price - 100,
-      coin.current_price + 200,
-      coin.current_price - 400,
-      coin.current_price - 250,
+      coin.price + 1200,
+      coin.price + 900,
+      coin.price + 700,
+      coin.price + 300,
+      coin.price - 100,
+      coin.price + 200,
+      coin.price - 400,
+      coin.price - 250,
     ];
 
     return (
@@ -548,7 +546,11 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.marketCoinRow}>
 
             <Image
-              source={{ uri: coin.image }}
+              source={{
+                uri:
+                  coin.image ||
+                  "https://cdn-icons-png.flaticon.com/512/825/825508.png",
+              }}
               style={styles.marketCoinImage}
             />
 
@@ -559,7 +561,7 @@ export default function HomeScreen({ navigation }) {
               </Text>
 
               <Text style={styles.marketCoinSymbol}>
-                {coin.symbol.toUpperCase()}
+                {coin.symbol?.toUpperCase()}
               </Text>
 
             </View>
@@ -571,8 +573,8 @@ export default function HomeScreen({ navigation }) {
               styles.marketBadge,
               {
                 backgroundColor: isNegative
-                  ? '#FFE5EA'
-                  : '#E7FFF1',
+                  ? "#FFE5EA"
+                  : "#E7FFF1",
               },
             ]}
           >
@@ -580,12 +582,12 @@ export default function HomeScreen({ navigation }) {
             <Text
               style={{
                 color: isNegative
-                  ? '#FF4D6D'
-                  : '#00C853',
-                fontWeight: '700',
+                  ? "#FF4D6D"
+                  : "#00C853",
+                fontWeight: "700",
               }}
             >
-              {isNegative ? 'Bearish' : 'Bullish'}
+              {isNegative ? "Bearish" : "Bullish"}
             </Text>
 
           </View>
@@ -597,7 +599,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.priceSection}>
 
           <Text style={styles.marketPrice}>
-            ${coin.current_price.toLocaleString()}
+            ${coin?.price?.toLocaleString()}
           </Text>
 
           <Text
@@ -605,15 +607,16 @@ export default function HomeScreen({ navigation }) {
               styles.marketChange,
               {
                 color: isNegative
-                  ? '#FF4D6D'
-                  : '#00C853',
+                  ? "#FF4D6D"
+                  : "#00C853",
               },
             ]}
           >
-            {isNegative ? '▼' : '▲'}{" "}
+            {isNegative ? "▼" : "▲"}{" "}
             {Math.abs(
-              coin.price_change_percentage_24h
-            ).toFixed(2)}%
+              coin.priceChangePercentage24h || 0
+            ).toFixed(2)}
+            %
           </Text>
 
         </View>
@@ -639,16 +642,16 @@ export default function HomeScreen({ navigation }) {
           transparent
           bezier
           chartConfig={{
-            backgroundGradientFrom: '#fff',
-            backgroundGradientTo: '#fff',
+            backgroundGradientFrom: "#fff",
+            backgroundGradientTo: "#fff",
             decimalPlaces: 0,
             color: () =>
               isNegative
-                ? '#FF4D6D'
-                : '#00C853',
+                ? "#FF4D6D"
+                : "#00C853",
             strokeWidth: 3,
             propsForBackgroundLines: {
-              stroke: 'transparent',
+              stroke: "transparent",
             },
           }}
           style={{
