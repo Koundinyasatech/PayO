@@ -21,13 +21,13 @@ const Tab = createBottomTabNavigator();
 // 🔥 Custom Bottom Tab Bar
 function CustomTabBar({ state, navigation }) {
 
-  const labels = {
-    Home: "Home",
-    Wallets: "Wallets",
-    Transactions: "Transactions",
-    UserProfile: "Profile", // ✅ change label here
-    market:"Market"
-  };
+ const labels = {
+  Home: "Home",
+  Wallets: "Wallets",
+  Transactions: "Transactions",
+  UserProfile: "Profile",
+  MarketScreen: "Market"
+};
 
   return (
     <View style={styles.bottomNav}>
