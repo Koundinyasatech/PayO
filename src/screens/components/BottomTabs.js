@@ -57,7 +57,7 @@ function CustomTabBar({ state, navigation }) {
         navigation.navigate("Send", { tab: "scan" }) // ✅ force scan tab
       }
     >
-      <Icon name="maximize" size={26} color="#fff" />
+      <Icon name="maximize" size={24} color="#fff" />
     </TouchableOpacity>
   );
 }
@@ -69,7 +69,7 @@ function CustomTabBar({ state, navigation }) {
           >
             <Icon
               name={icon}
-              size={22}
+              size={20}
               color={isFocused ? '#FF7FD8' : '#ccc'}
             />
 
