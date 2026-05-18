@@ -215,7 +215,7 @@ export default function UserProfile({ navigation }) {
                     {/* ADD BANK ACCOUNT BUTTON */}
           <TouchableOpacity
             style={styles.addBankBtn}
-            onPress={() => navigation.navigate('AddBankAccount')}
+            onPress={() => navigation.navigate('AddBankHome')}
           >
             <Icon name="plus-circle" size={20} color="#fff" />
             
