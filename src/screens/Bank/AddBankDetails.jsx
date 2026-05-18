@@ -263,16 +263,22 @@
 
 
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   FlatList,
+  StatusBar,
+  Platform,
 } from "react-native";
 import axios from "axios"; // ✅ added
+import Icon from "react-native-vector-icons/Feather";
+
 import styles from "./AddBankDetailsStyles";
+import { useFocusEffect } from "@react-navigation/native";
+import api from "../../api/axios";
 
 const AddBankDetails = ({ navigation }) => {
   const [form, setForm] = useState({
@@ -296,6 +302,25 @@ const AddBankDetails = ({ navigation }) => {
     "UCO Bank","Bank of India","Federal Bank","South Indian Bank",
     "RBL Bank","Bandhan Bank",
   ];
+
+  const[banksList,setBanksList]=useState([]);
+
+   const fetchBankListData = async () => {
+      try {
+        const res = await api.get('/api/wallet/all-banks');
+        console.log(res?.data?.data, "9898")
+        setBanksList(res?.data?.data);
+      } catch (err) {
+        console.log(err.message);
+      }
+    };
+   
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchBankListData();
+    }, [])
+  );
 
   const handleChange = (name, value) => {
     if (name === "name") {
@@ -325,6 +350,7 @@ const AddBankDetails = ({ navigation }) => {
       confirmAccount,
       ifsc,
       accountType,
+
     } = form;
 
     if (
@@ -365,35 +391,35 @@ const AddBankDetails = ({ navigation }) => {
       alert("Invalid IFSC code");
       return;
     }
+try {
+  setLoading(true);
 
-    try {
-      setLoading(true);
-      navigation.navigate("TpinScreen", { account: form.account.trim() }); 
+  const res = await api.post("api/bank/add-bank", {
+    name,
+    mobile,
+    bank,
+    account,
+    ifsc,
+    accountType,
+    confirmAccount
+  });
 
-//       const res =  await api.post('api/wallet/add-bank',
-//         {
-//           name,
-//           mobile,
-//           bank,
-//           account,
-//           ifsc,
-//           accountType,
-//         }
-//       );
+  console.log("BANK API RESPONSE:", res?.data);
 
-//       // ✅ ONLY ONE ALERT + NAVIGATION
-//       if (res && res.data && res.data.success) {
-//         alert("Bank Details Saved Successfully!");
-      
-// navigation.navigate("TpinScreen", { account: form.account.trim() });        //navigate("TpinScreen", { mobile }); // keep your original navigation style
-//       }
+  if (res?.data?.success) {
+    alert("Bank Details Saved Successfully!");
 
-    } catch (err) {
-      // console.log("API ERROR:", err?.message);
-      // alert("API Error");
-    } finally {
-      setLoading(false);
-    }
+    navigation.navigate("TpinScreen", {
+      account: account.trim(),
+      bankResponse: res?.data?.data   // ✅ send full API response
+    });
+  }
+
+} catch (err) {
+  console.log("BANK API ERROR:", err?.response?.data || err.message);
+} finally {
+  setLoading(false);
+}
   };
 
   const Label = ({ text }) => (
@@ -403,8 +429,24 @@ const AddBankDetails = ({ navigation }) => {
   );
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Text style={styles.title}>Add Bank Details</Text>
+    <View style={{ flex: 1, padding: 20,     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0, }}>
+
+           <View style={styles.header}>
+      
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.navigate('UserProfile')}
+              >
+                <Text style={styles.back}>
+                  <Icon name="chevron-left" size={28} color="#000000" />     
+                </Text>
+              </TouchableOpacity>
+      
+              <Text style={styles.title}>Add Bank Account</Text>
+      
+            </View>
+
+      {/* <Text style={styles.title}>Add Bank Details</Text> */}
       
 
       <Label text="Account Holder Name" />
