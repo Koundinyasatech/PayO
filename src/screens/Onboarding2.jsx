@@ -1,16 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import {
-  SafeAreaView,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
+  SafeAreaView,
+  StatusBar,
   Animated,
   Dimensions,
 } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function Onboarding2({ navigation }) {
   const title = "Instant QR Payments";
@@ -19,7 +20,7 @@ export default function Onboarding2({ navigation }) {
   const logoY = useRef(new Animated.Value(-80)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
 
-  const skipX = useRef(new Animated.Value(80)).current;
+  const skipX = useRef(new Animated.Value(-80)).current;
   const skipOpacity = useRef(new Animated.Value(0)).current;
 
   const imageScale = useRef(new Animated.Value(0.3)).current;
@@ -28,11 +29,11 @@ export default function Onboarding2({ navigation }) {
   const imageRotate = useRef(new Animated.Value(-15)).current;
   const imagePulse = useRef(new Animated.Value(1)).current;
 
-  const descX = useRef(new Animated.Value(120)).current;
+  const descX = useRef(new Animated.Value(80)).current;
   const descOpacity = useRef(new Animated.Value(0)).current;
 
-  const buttonScale = useRef(new Animated.Value(0)).current;
-  const buttonOpacity = useRef(new Animated.Value(0)).current;
+  const nextScale = useRef(new Animated.Value(0)).current;
+  const nextOpacity = useRef(new Animated.Value(0)).current;
 
   const letterAnimations = useRef(
     letters.map(() => ({
@@ -41,7 +42,20 @@ export default function Onboarding2({ navigation }) {
     }))
   ).current;
 
+  const rainCoins = useRef(
+    Array.from({ length: 10 }).map(() => ({
+      translateY: new Animated.Value(-height),
+      translateX: new Animated.Value(Math.random() * width),
+      opacity: Math.random() * 0.25 + 0.08,
+      size: Math.random() * 50 + 60,
+      duration: Math.random() * 5000 + 6000,
+    }))
+  ).current;
+
   useEffect(() => {
+    // START COINS IMMEDIATELY
+    startCoinRain();
+
     Animated.sequence([
       Animated.parallel([
         Animated.timing(logoY, {
@@ -54,14 +68,17 @@ export default function Onboarding2({ navigation }) {
           duration: 500,
           useNativeDriver: true,
         }),
+      ]),
+
+      Animated.parallel([
         Animated.timing(skipX, {
           toValue: 0,
-          duration: 500,
+          duration: 400,
           useNativeDriver: true,
         }),
         Animated.timing(skipOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 400,
           useNativeDriver: true,
         }),
       ]),
@@ -73,20 +90,20 @@ export default function Onboarding2({ navigation }) {
           tension: 100,
           useNativeDriver: true,
         }),
-        Animated.timing(imageOpacity, {
-          toValue: 1,
-          duration: 700,
-          useNativeDriver: true,
-        }),
         Animated.spring(imageRotate, {
           toValue: 0,
           friction: 5,
           useNativeDriver: true,
         }),
+        Animated.timing(imageOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
       ]),
 
       Animated.stagger(
-        60,
+        18,
         letterAnimations.map(anim =>
           Animated.parallel([
             Animated.spring(anim.translateY, {
@@ -96,7 +113,7 @@ export default function Onboarding2({ navigation }) {
             }),
             Animated.timing(anim.opacity, {
               toValue: 1,
-              duration: 250,
+              duration: 120,
               useNativeDriver: true,
             }),
           ])
@@ -106,40 +123,40 @@ export default function Onboarding2({ navigation }) {
       Animated.parallel([
         Animated.timing(descX, {
           toValue: 0,
-          duration: 500,
+          duration: 350,
           useNativeDriver: true,
         }),
         Animated.timing(descOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 350,
           useNativeDriver: true,
         }),
       ]),
 
       Animated.parallel([
-        Animated.spring(buttonScale, {
+        Animated.spring(nextScale, {
           toValue: 1,
           friction: 4,
           tension: 120,
           useNativeDriver: true,
         }),
-        Animated.timing(buttonOpacity, {
+        Animated.timing(nextOpacity, {
           toValue: 1,
-          duration: 400,
+          duration: 300,
           useNativeDriver: true,
         }),
       ]),
     ]).start(() => {
-      startFloatingAnimation();
+      startImageLoop();
     });
   }, []);
 
-  const startFloatingAnimation = () => {
+  const startImageLoop = () => {
     Animated.loop(
       Animated.parallel([
         Animated.sequence([
           Animated.timing(imageFloat, {
-            toValue: -12,
+            toValue: -10,
             duration: 1800,
             useNativeDriver: true,
           }),
@@ -165,57 +182,74 @@ export default function Onboarding2({ navigation }) {
     ).start();
   };
 
+  const startCoinRain = () => {
+    rainCoins.forEach((coin) => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(coin.translateY, {
+            toValue: height + 100,
+            duration: coin.duration,
+            useNativeDriver: true,
+          }),
+          Animated.timing(coin.translateY, {
+            toValue: -100,
+            duration: 0,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* HEADER */}
-      <View style={styles.header}>
+      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+
+      {rainCoins.map((coin, index) => (
+        <Animated.Image
+          key={index}
+          source={require('../../assets/images/coin.png')}
+          style={{
+            position: 'absolute',
+            width: coin.size,
+            height: coin.size,
+            opacity: coin.opacity,
+            transform: [
+              { translateX: coin.translateX },
+              { translateY: coin.translateY },
+            ],
+          }}
+        />
+      ))}
+
+      <View style={styles.content}>
         <Animated.View
           style={{
-            transform: [{ translateY: logoY }],
             opacity: logoOpacity,
+            transform: [{ translateY: logoY }],
           }}
         >
           <Image
             source={require('../../assets/images/LogoContainer.png')}
-            style={styles.logoImage}
+            style={styles.logo}
           />
         </Animated.View>
 
         <Animated.View
           style={{
-            position: 'absolute',
-            right: 24,
-            top: 25,
-            transform: [{ translateX: skipX }],
-            opacity: skipOpacity,
+            opacity: imageOpacity,
+            transform: [
+              { scale: imageScale },
+              { scale: imagePulse },
+              { translateY: imageFloat },
+              {
+                rotate: imageRotate.interpolate({
+                  inputRange: [-15, 0],
+                  outputRange: ['-15deg', '0deg'],
+                }),
+              },
+            ],
           }}
-        >
-          <TouchableOpacity onPress={() => navigation.navigate('Onboarding3')}>
-            <Text style={styles.skipText}>Skip</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
-
-      {/* CONTENT */}
-      <View style={styles.content}>
-        <Animated.View
-          style={[
-            styles.imageContainer,
-            {
-              opacity: imageOpacity,
-              transform: [
-                { scale: imageScale },
-                { scale: imagePulse },
-                { translateY: imageFloat },
-                {
-                  rotate: imageRotate.interpolate({
-                    inputRange: [-15, 0],
-                    outputRange: ['-15deg', '0deg'],
-                  }),
-                },
-              ],
-            },
-          ]}
         >
           <Image
             source={require('../../assets/images/onboardingScreen1.png')}
@@ -231,9 +265,7 @@ export default function Onboarding2({ navigation }) {
                 styles.title,
                 {
                   opacity: letterAnimations[index].opacity,
-                  transform: [
-                    { translateY: letterAnimations[index].translateY },
-                  ],
+                  transform: [{ translateY: letterAnimations[index].translateY }],
                 },
               ]}
             >
@@ -252,30 +284,42 @@ export default function Onboarding2({ navigation }) {
           ]}
         >
           Scan a QR code to send tokens in seconds.
-          Safe, secure, and lightning-fast wallet-to-wallet transfers.
+          {'\n'}
+          Safe, secure, and lightning-fast
+          {'\n'}
+          wallet-to-wallet transfers.
         </Animated.Text>
       </View>
 
-      {/* FOOTER */}
-      <Animated.View
-        style={[
-          styles.footer,
-          {
-            opacity: buttonOpacity,
-            transform: [{ scale: buttonScale }],
-          },
-        ]}
-      >
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => navigation.navigate('Onboarding3')}
+      <View style={styles.footer}>
+        <Animated.View
+          style={{
+            opacity: skipOpacity,
+            transform: [{ translateX: skipX }],
+          }}
         >
-          <Image
-            source={require('../../assets/images/full_load.png')}
-            style={styles.nextImage}
-          />
-        </TouchableOpacity>
-      </Animated.View>
+          <TouchableOpacity
+            style={styles.skipBtn}
+            onPress={() => navigation.navigate('Onboarding4')}
+          >
+            <Text style={styles.skipText}>Skip</Text>
+          </TouchableOpacity>
+        </Animated.View>
+
+        <Animated.View
+          style={{
+            opacity: nextOpacity,
+            transform: [{ scale: nextScale }],
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate('Onboarding3')}>
+            <Image
+              source={require('../../assets/images/full_load.png')}
+              style={styles.nextImage}
+            />
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -283,79 +327,77 @@ export default function Onboarding2({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  logoImage: {
-    width: 120,
-    height: 40,
-    resizeMode: 'contain',
-  },
-
-  skipText: {
-    fontSize: 14,
-    color: '#111',
-    fontWeight: '700',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: width * 0.06,
   },
 
   content: {
     flex: 1,
-    paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 2,
   },
 
-  imageContainer: {
-    marginBottom: 30,
+  logo: {
+    width: width * 0.28,
+    height: height * 0.05,
+    resizeMode: 'contain',
+    marginBottom: height * 0.04,
   },
 
   mainImage: {
-    width: width * 0.82,
-    height: undefined,
-    aspectRatio: 1.4,
+    width: width * 0.72,
+    height: width * 0.72,
     resizeMode: 'contain',
+    marginBottom: height * 0.03,
   },
 
   titleContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    marginBottom: 16,
-    paddingHorizontal: 20,
-    marginTop: 10,
+    marginBottom: height * 0.02,
   },
 
   title: {
-    fontSize: width < 360 ? 24 : 28,
-    fontWeight: 'bold',
-    color: '#6C2BD9',
-    lineHeight: 34,
+    fontSize: width < 360 ? 24 : 30,
+    fontWeight: '700',
+    color: '#7B4DFF',
+    lineHeight: width < 360 ? 30 : 36,
   },
 
   description: {
-    fontSize: width < 360 ? 15 : 17,
-    fontWeight: '400',
-    lineHeight: 24,
+    fontSize: width < 360 ? 14 : 16,
+    color: '#444',
     textAlign: 'center',
-    color: '#333',
-    paddingHorizontal: 12,
+    lineHeight: 24,
+    paddingHorizontal: 10,
   },
 
   footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: 30,
+    paddingBottom: height * 0.04,
+    zIndex: 2,
+  },
+
+  skipBtn: {
+    backgroundColor: '#C9F0FF',
+    paddingHorizontal: width * 0.05,
+    paddingVertical: height * 0.012,
+    borderRadius: 14,
+  },
+
+  skipText: {
+    fontSize: width < 360 ? 16 : 18,
+    fontWeight: '600',
+    color: '#000',
   },
 
   nextImage: {
-    width: width < 360 ? 70 : 85,
-    height: width < 360 ? 70 : 85,
+    width: width < 360 ? 70 : 80,
+    height: width < 360 ? 70 : 80,
     resizeMode: 'contain',
   },
 });
