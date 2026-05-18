@@ -5,6 +5,22 @@ const styles = {
     padding: 20,
   },
 
+    header: {
+    marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  backButton: {
+    position: 'absolute',
+    left: 0,
+  },
+
+  back: {
+    fontSize: 24,
+    color: '#4B0082',
+  },
+
   card: {
     width: "100%",
     padding: 20,
