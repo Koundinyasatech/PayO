@@ -1,4 +1,6 @@
 
+
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import styles from './homeStyling';
@@ -368,7 +370,7 @@ export default function HomeScreen({ navigation }) {
 
           <>
 
-            <View
+       <View
               style={[
                 styles.transactionsList,
                 {
@@ -665,4 +667,5 @@ export default function HomeScreen({ navigation }) {
     </View>
   );
 }
-
+ 
+ 

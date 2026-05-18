@@ -159,6 +159,7 @@ export default function ProfileScreen({ navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.back}>
             <Icon name="chevron-left" size={28} color="#000" />
+            
           </Text>
         </TouchableOpacity>
  

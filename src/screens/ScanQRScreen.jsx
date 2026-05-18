@@ -18,6 +18,7 @@ import { useRoute } from '@react-navigation/native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../api/axios';
+import { Alert } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -28,6 +29,7 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
   const [hasPermission, setHasPermission] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [torch, setTorch] = useState('off');
+  const [isProcessingScan, setIsProcessingScan] = useState(false);
 
 
   const scanLine = useRef(new Animated.Value(0)).current;
@@ -63,26 +65,44 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
 
 
   const handleQR = async (value) => {
-    if (scannedData) return;
+    // Prevent multiple API hits
+    if (scannedData || isProcessingScan) return;
+
+    setIsProcessingScan(true);
 
     try {
       const res = await api.post('api/wallet/scan-qr', { qrData: value });
 
       const user = {
         name: res?.data?.name,
-        address: res.data.walletAddress,
+        address: res?.data?.walletAddress,
       };
-      
 
       setScannedData(user);
 
-      // ✅ directly navigate to amount screen
+      // Navigate to amount screen
       setSelectedUser(user);
       setActiveTab('amount');
 
     } catch (err) {
-      alert('Invalid QR');
+      Alert.alert(
+        'Invalid QR',
+        'The scanned QR code is invalid.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Resume scanner only after user clicks OK
+              setIsProcessingScan(false);
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      return;
     }
+
+    // Keep scanner blocked after successful scan
   };
 
   // 🔍 Scanner
@@ -109,7 +129,7 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
   return (
 
     <SafeAreaView style={styles.container}>
-      
+
       <View style={styles.scanWrapper}>
         {!scannedData && (
           <Camera
@@ -189,9 +209,9 @@ export default function ScanQRScreen({ navigation, setSelectedUser, setActiveTab
 
       {!scannedData && (
         <View style={styles.text}>
-          <Text style={{ fontWeight: '400', color: "white", fontSize: 14, paddingBottom: 5,textAlign:"center" }}>
+          <Text style={{ fontWeight: '400', color: "white", fontSize: 14, paddingBottom: 5, textAlign: "center" }}>
             Point your camera at a QR code to continue.   </Text>
-          <Text style={{ fontWeight: '400', color: "white", fontSize: 14, textAlign:"center" }}>Hold steady for faster scanning
+          <Text style={{ fontWeight: '400', color: "white", fontSize: 14, textAlign: "center" }}>Hold steady for faster scanning
           </Text>
         </View>
       )}
@@ -227,7 +247,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginBottom: 20,
   },
-  
+
 
   tab: { flex: 1, alignItems: 'center', padding: 8 },
 

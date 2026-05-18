@@ -13,15 +13,12 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-export default function Onboarding3({ navigation }) {
-  const title = "Earn with Every Referral";
+export default function Onboarding4({ navigation }) {
+  const title = "Welcome!";
   const letters = title.split('');
 
   const logoY = useRef(new Animated.Value(-80)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
-
-  const skipX = useRef(new Animated.Value(-80)).current;
-  const skipOpacity = useRef(new Animated.Value(0)).current;
 
   const imageScale = useRef(new Animated.Value(0.3)).current;
   const imageOpacity = useRef(new Animated.Value(0)).current;
@@ -32,8 +29,11 @@ export default function Onboarding3({ navigation }) {
   const descX = useRef(new Animated.Value(80)).current;
   const descOpacity = useRef(new Animated.Value(0)).current;
 
-  const nextScale = useRef(new Animated.Value(0)).current;
-  const nextOpacity = useRef(new Animated.Value(0)).current;
+  const registerX = useRef(new Animated.Value(-120)).current;
+  const registerOpacity = useRef(new Animated.Value(0)).current;
+
+  const loginX = useRef(new Animated.Value(120)).current;
+  const loginOpacity = useRef(new Animated.Value(0)).current;
 
   const letterAnimations = useRef(
     letters.map(() => ({
@@ -46,9 +46,9 @@ export default function Onboarding3({ navigation }) {
     Array.from({ length: 10 }).map(() => ({
       translateY: new Animated.Value(-height),
       translateX: new Animated.Value(Math.random() * width),
-      opacity: Math.random() * 0.25 + 0.08,
-      size: Math.random() * 50 + 70,
-      duration: Math.random() * 5000 + 6000,
+      opacity: Math.random() * 0.35 + 0.12,
+      size: Math.random() * 70 + 80,
+      duration: Math.random() * 7000 + 8000,
     }))
   ).current;
 
@@ -71,19 +71,6 @@ export default function Onboarding3({ navigation }) {
       ]),
 
       Animated.parallel([
-        Animated.timing(skipX, {
-          toValue: 0,
-          duration: 400,
-          useNativeDriver: true,
-        }),
-        Animated.timing(skipOpacity, {
-          toValue: 1,
-          duration: 400,
-          useNativeDriver: true,
-        }),
-      ]),
-
-      Animated.parallel([
         Animated.spring(imageScale, {
           toValue: 1,
           friction: 4,
@@ -97,13 +84,13 @@ export default function Onboarding3({ navigation }) {
         }),
         Animated.timing(imageOpacity, {
           toValue: 1,
-          duration: 600,
+          duration: 700,
           useNativeDriver: true,
         }),
       ]),
 
       Animated.stagger(
-        18,
+        70,
         letterAnimations.map(anim =>
           Animated.parallel([
             Animated.spring(anim.translateY, {
@@ -113,7 +100,7 @@ export default function Onboarding3({ navigation }) {
             }),
             Animated.timing(anim.opacity, {
               toValue: 1,
-              duration: 120,
+              duration: 250,
               useNativeDriver: true,
             }),
           ])
@@ -123,26 +110,38 @@ export default function Onboarding3({ navigation }) {
       Animated.parallel([
         Animated.timing(descX, {
           toValue: 0,
-          duration: 350,
+          duration: 500,
           useNativeDriver: true,
         }),
         Animated.timing(descOpacity, {
           toValue: 1,
-          duration: 350,
+          duration: 500,
           useNativeDriver: true,
         }),
       ]),
 
       Animated.parallel([
-        Animated.spring(nextScale, {
-          toValue: 1,
-          friction: 4,
-          tension: 120,
+        Animated.timing(registerX, {
+          toValue: 0,
+          duration: 500,
           useNativeDriver: true,
         }),
-        Animated.timing(nextOpacity, {
+        Animated.timing(registerOpacity, {
           toValue: 1,
-          duration: 300,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+
+      Animated.parallel([
+        Animated.timing(loginX, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(loginOpacity, {
+          toValue: 1,
+          duration: 500,
           useNativeDriver: true,
         }),
       ]),
@@ -203,8 +202,9 @@ export default function Onboarding3({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+      <StatusBar backgroundColor="#F4F7F5" barStyle="dark-content" />
 
+      {/* COIN RAIN BACKGROUND */}
       {rainCoins.map((coin, index) => (
         <Animated.Image
           key={index}
@@ -252,7 +252,7 @@ export default function Onboarding3({ navigation }) {
           }}
         >
           <Image
-            source={require('../../assets/images/onboardingScreen3.png')}
+            source={require('../../assets/images/onboarding4.png')}
             style={styles.mainImage}
           />
         </Animated.View>
@@ -265,11 +265,13 @@ export default function Onboarding3({ navigation }) {
                 styles.title,
                 {
                   opacity: letterAnimations[index].opacity,
-                  transform: [{ translateY: letterAnimations[index].translateY }],
+                  transform: [
+                    { translateY: letterAnimations[index].translateY },
+                  ],
                 },
               ]}
             >
-              {letter === ' ' ? '\u00A0' : letter}
+              {letter}
             </Animated.Text>
           ))}
         </View>
@@ -283,40 +285,36 @@ export default function Onboarding3({ navigation }) {
             },
           ]}
         >
-          Invite friends and earn PAYO tokens
-          {'\n'}
-          when they join and transact. Grow
-          {'\n'}
-          your network, Grow your wallet.
+          Scan. Pay. Earn Payo.
         </Animated.Text>
       </View>
 
-      <View style={styles.footer}>
+      <View style={styles.buttonContainer}>
         <Animated.View
           style={{
-            opacity: skipOpacity,
-            transform: [{ translateX: skipX }],
+            opacity: registerOpacity,
+            transform: [{ translateX: registerX }],
           }}
         >
           <TouchableOpacity
-            style={styles.skipBtn}
-            onPress={() => navigation.navigate('Onboarding4')}
+            style={styles.registerBtn}
+            onPress={() => navigation.navigate('RegisterMobile')}
           >
-            <Text style={styles.skipText}>Skip</Text>
+            <Text style={styles.registerText}>Register</Text>
           </TouchableOpacity>
         </Animated.View>
 
         <Animated.View
           style={{
-            opacity: nextOpacity,
-            transform: [{ scale: nextScale }],
+            opacity: loginOpacity,
+            transform: [{ translateX: loginX }],
           }}
         >
-          <TouchableOpacity onPress={() => navigation.navigate('Onboarding4')}>
-            <Image
-              source={require('../../assets/images/full_load.png')}
-              style={styles.nextImage}
-            />
+          <TouchableOpacity
+            style={styles.loginBtn}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.loginText}>Login</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>
@@ -327,7 +325,7 @@ export default function Onboarding3({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F4F7F5',
     paddingHorizontal: width * 0.06,
   },
 
@@ -339,65 +337,69 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    width: width * 0.28,
-    height: height * 0.05,
+    width: width * 0.35,
+    height: height * 0.06,
     resizeMode: 'contain',
     marginBottom: height * 0.04,
   },
 
   mainImage: {
-    width: width * 0.72,
-    height: width * 0.72,
+    width: width * 0.78,
+    height: width * 0.78,
     resizeMode: 'contain',
     marginBottom: height * 0.03,
   },
 
   titleContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     justifyContent: 'center',
-    marginBottom: height * 0.02,
+    marginBottom: 20,
   },
 
   title: {
-    fontSize: width < 360 ? 24 : 30,
+    fontSize: width < 360 ? 28 : 34,
     fontWeight: '700',
     color: '#7B4DFF',
-    lineHeight: width < 360 ? 30 : 36,
   },
 
   description: {
-    fontSize: width < 360 ? 14 : 16,
+    fontSize: width < 360 ? 16 : 20,
     color: '#444',
     textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 10,
+    fontWeight: '400',
   },
 
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  buttonContainer: {
     paddingBottom: height * 0.04,
+    gap: 18,
     zIndex: 2,
   },
 
-  skipBtn: {
-    backgroundColor: '#C9F0FF',
-    paddingHorizontal: width * 0.05,
-    paddingVertical: height * 0.012,
-    borderRadius: 14,
+  registerBtn: {
+    backgroundColor: '#5B00D6',
+    borderRadius: 12,
+    paddingVertical: height * 0.02,
+    alignItems: 'center',
   },
 
-  skipText: {
-    fontSize: width < 360 ? 16 : 18,
-    fontWeight: '600',
-    color: '#000',
+  registerText: {
+    color: '#FFFFFF',
+    fontSize: width < 360 ? 18 : 20,
+    fontWeight: '500',
   },
 
-  nextImage: {
-    width: width < 360 ? 70 : 80,
-    height: width < 360 ? 70 : 80,
-    resizeMode: 'contain',
+  loginBtn: {
+    borderWidth: 1.5,
+    borderColor: '#6C2BD9',
+    borderRadius: 12,
+    paddingVertical: height * 0.02,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+
+  loginText: {
+    color: '#5B00D6',
+    fontSize: width < 360 ? 18 : 20,
+    fontWeight: '500',
   },
 });
