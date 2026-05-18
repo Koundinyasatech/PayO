@@ -157,7 +157,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  SafeAreaView,
+ SafeAreaView,
   StatusBar,
   Animated,
   Dimensions,
@@ -194,15 +194,24 @@ export default function Onboarding4({ navigation }) {
     }))
   ).current;
  
-  const rainCoins = useRef(
-    Array.from({ length: 10 }).map(() => ({
-      translateY: new Animated.Value(-height),
-      translateX: new Animated.Value(Math.random() * width),
-      opacity: Math.random() * 0.35 + 0.12,
-      size: Math.random() * 70 + 80,
-      duration: Math.random() * 5000+4000,
-    }))
-  ).current;
+  // const rainCoins = useRef(
+  //   Array.from({ length: 10 }).map(() => ({
+  //     translateY: new Animated.Value(-height),
+  //     translateX: new Animated.Value(Math.random() * width),
+  //     opacity: Math.random() * 0.35 + 0.12,
+  //     size: Math.random() * 70 + 80,
+  //     duration: Math.random() * 5000+4000,
+  //   }))
+  // ).current;
+    const rainCoins = useRef(
+      Array.from({ length: 10 }).map(() => ({
+        translateY: new Animated.Value(-height),
+        translateX: new Animated.Value(Math.random() * width),
+        size: Math.random() * 35 + 25,
+        opacity: Math.random() * 0.3 + 0.1,
+        duration: Math.random() * 2000 + 2500,
+      }))
+    ).current;
  
   useEffect(() => {
     Animated.sequence([
@@ -524,38 +533,42 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
  
-  buttonContainer: {
-    paddingBottom: height * 0.04,
-    gap: 18,
-    zIndex: 2,
+ 
+ 
+buttonContainer: {
+    paddingHorizontal: 40,
+    paddingBottom: 50,
   },
  
   registerBtn: {
-    backgroundColor: '#5B00D6',
-    borderRadius: 12,
-    paddingVertical: height * 0.02,
+    backgroundColor: '#6200EE',
+    height: 40,
+    borderRadius: 14,
+    justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 18,
   },
  
   registerText: {
     color: '#FFFFFF',
-    fontSize: width < 360 ? 18 : 20,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
   },
  
   loginBtn: {
+    height: 40,
+    borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#6C2BD9',
-    borderRadius: 12,
-    paddingVertical: height * 0.02,
+    borderColor: '#7B4DFF',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
   },
  
   loginText: {
-    color: '#5B00D6',
-    fontSize: width < 360 ? 18 : 20,
-    fontWeight: '500',
+    color: '#6200EE',
+    fontSize: 18,
+    fontWeight: '600',
   },
+ 
 });
  
