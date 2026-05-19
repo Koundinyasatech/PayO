@@ -5,185 +5,142 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   StatusBar,
-  Dimensions,
   Animated,
+  Dimensions,
 } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
 
+const guidelineBaseWidth = 375;
+const guidelineBaseHeight = 812;
+
+const scale = size => (width / guidelineBaseWidth) * size;
+const verticalScale = size => (height / guidelineBaseHeight) * size;
+const moderateScale = (size, factor = 0.5) =>
+  size + (scale(size) - size) * factor;
+
 export default function Onboarding1({ navigation }) {
-  const title = "Your Digital Wallet, Simplified";
-  const letters = title.split('');
+  const insets = useSafeAreaInsets();
 
-  const logoY = useRef(new Animated.Value(-80)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
+  const logoTranslateY = useRef(new Animated.Value(-40)).current;
 
-  const skipX = useRef(new Animated.Value(-80)).current;
-  const skipOpacity = useRef(new Animated.Value(0)).current;
-
-  const imageScale = useRef(new Animated.Value(0.3)).current;
   const imageOpacity = useRef(new Animated.Value(0)).current;
+  const imageScale = useRef(new Animated.Value(0.8)).current;
   const imageFloat = useRef(new Animated.Value(0)).current;
-  const imageRotate = useRef(new Animated.Value(-15)).current;
-  const imagePulse = useRef(new Animated.Value(1)).current;
 
-  const descX = useRef(new Animated.Value(80)).current;
+  const titleOpacity = useRef(new Animated.Value(0)).current;
+  const titleTranslateY = useRef(new Animated.Value(30)).current;
+
   const descOpacity = useRef(new Animated.Value(0)).current;
+  const descTranslateY = useRef(new Animated.Value(30)).current;
 
-  const nextScale = useRef(new Animated.Value(0)).current;
-  const nextOpacity = useRef(new Animated.Value(0)).current;
+  const footerOpacity = useRef(new Animated.Value(0)).current;
 
-  const letterAnimations = useRef(
-    letters.map(() => ({
-      translateY: new Animated.Value(-60),
-      opacity: new Animated.Value(0),
-    }))
-  ).current;
-
-  const rainCoins = useRef(
-    Array.from({ length: 10 }).map(() => ({
+  const coins = useRef(
+    Array.from({ length: width > 400 ? 12 : 8 }).map(() => ({
       translateY: new Animated.Value(-height),
       translateX: new Animated.Value(Math.random() * width),
-      opacity: Math.random() * 0.25 + 0.08,
-      size: Math.random() * 70 + 60,
-      duration: Math.random() * 5000 + 6000,
+      size: Math.random() * moderateScale(20) + moderateScale(18),
+      opacity: Math.random() * 0.3 + 0.1,
+      duration: Math.random() * 2000 + 2500,
     }))
   ).current;
 
   useEffect(() => {
-    // START COIN RAIN IMMEDIATELY
     startCoinRain();
 
     Animated.sequence([
       Animated.parallel([
-        Animated.timing(logoY, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
         Animated.timing(logoOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 350,
+          useNativeDriver: true,
+        }),
+        Animated.spring(logoTranslateY, {
+          toValue: 0,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
 
       Animated.parallel([
-        Animated.timing(skipX, {
-          toValue: 0,
-          duration: 400,
-          useNativeDriver: true,
-        }),
-        Animated.timing(skipOpacity, {
+        Animated.timing(imageOpacity, {
           toValue: 1,
           duration: 400,
           useNativeDriver: true,
         }),
-      ]),
-
-      Animated.parallel([
         Animated.spring(imageScale, {
           toValue: 1,
-          friction: 4,
+          friction: 6,
           tension: 100,
           useNativeDriver: true,
         }),
-        Animated.spring(imageRotate, {
-          toValue: 0,
-          friction: 5,
+      ]),
+
+      Animated.parallel([
+        Animated.timing(titleOpacity, {
+          toValue: 1,
+          duration: 250,
           useNativeDriver: true,
         }),
-        Animated.timing(imageOpacity, {
-          toValue: 1,
-          duration: 600,
+        Animated.spring(titleTranslateY, {
+          toValue: 0,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
 
-      Animated.stagger(
-        18,
-        letterAnimations.map(anim =>
-          Animated.parallel([
-            Animated.spring(anim.translateY, {
-              toValue: 0,
-              friction: 6,
-              useNativeDriver: true,
-            }),
-            Animated.timing(anim.opacity, {
-              toValue: 1,
-              duration: 120,
-              useNativeDriver: true,
-            }),
-          ])
-        )
-      ),
-
       Animated.parallel([
-        Animated.timing(descX, {
-          toValue: 0,
-          duration: 350,
-          useNativeDriver: true,
-        }),
         Animated.timing(descOpacity, {
           toValue: 1,
-          duration: 350,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.spring(descTranslateY, {
+          toValue: 0,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
 
-      Animated.parallel([
-        Animated.spring(nextScale, {
-          toValue: 1,
-          friction: 4,
-          tension: 120,
-          useNativeDriver: true,
-        }),
-        Animated.timing(nextOpacity, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }),
-      ]),
+      Animated.timing(footerOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
     ]).start(() => {
-      startImageLoop();
+      startFloatingAnimation();
     });
   }, []);
 
-  const startImageLoop = () => {
+  const startFloatingAnimation = () => {
     Animated.loop(
-      Animated.parallel([
-        Animated.sequence([
-          Animated.timing(imageFloat, {
-            toValue: -10,
-            duration: 1800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(imageFloat, {
-            toValue: 0,
-            duration: 1800,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(imagePulse, {
-            toValue: 1.04,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-          Animated.timing(imagePulse, {
-            toValue: 1,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-        ]),
+      Animated.sequence([
+        Animated.timing(imageFloat, {
+          toValue: -10,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(imageFloat, {
+          toValue: 0,
+          duration: 800,
+          useNativeDriver: true,
+        }),
       ])
     ).start();
   };
 
   const startCoinRain = () => {
-    rainCoins.forEach((coin) => {
+    coins.forEach((coin) => {
       Animated.loop(
         Animated.sequence([
           Animated.timing(coin.translateY, {
@@ -202,11 +159,13 @@ export default function Onboarding1({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <StatusBar
+        backgroundColor="#FFFFFF"
+        barStyle="dark-content"
+      />
 
-      {/* COIN RAIN */}
-      {rainCoins.map((coin, index) => (
+      {coins.map((coin, index) => (
         <Animated.Image
           key={index}
           source={require('../../assets/images/coin.png')}
@@ -223,66 +182,57 @@ export default function Onboarding1({ navigation }) {
         />
       ))}
 
-      <View style={styles.content}>
-        <Animated.View
-          style={{
-            opacity: logoOpacity,
-            transform: [{ translateY: logoY }],
-          }}
-        >
-          <Image
-            source={require('../../assets/images/LogoContainer.png')}
-            style={styles.logo}
-          />
-        </Animated.View>
+      <View
+        style={[
+          styles.content,
+          {
+            paddingTop: insets.top + verticalScale(10),
+          },
+        ]}
+      >
+        <Animated.Image
+          source={require('../../assets/images/LogoContainer.png')}
+          style={[
+            styles.logo,
+            {
+              opacity: logoOpacity,
+              transform: [{ translateY: logoTranslateY }],
+            },
+          ]}
+        />
 
-        <Animated.View
-          style={{
-            opacity: imageOpacity,
-            transform: [
-              { scale: imageScale },
-              { scale: imagePulse },
-              { translateY: imageFloat },
-              {
-                rotate: imageRotate.interpolate({
-                  inputRange: [-15, 0],
-                  outputRange: ['-15deg', '0deg'],
-                }),
-              },
-            ],
-          }}
-        >
-          <Image
-            source={require('../../assets/images/onboardingScreen2.png')}
-            style={styles.mainImage}
-          />
-        </Animated.View>
+        <Animated.Image
+          source={require('../../assets/images/onboardingScreen2.png')}
+          style={[
+            styles.mainImage,
+            {
+              opacity: imageOpacity,
+              transform: [
+                { scale: imageScale },
+                { translateY: imageFloat },
+              ],
+            },
+          ]}
+        />
 
-        <View style={styles.titleContainer}>
-          {letters.map((letter, index) => (
-            <Animated.Text
-              key={index}
-              style={[
-                styles.title,
-                {
-                  opacity: letterAnimations[index].opacity,
-                  transform: [
-                    { translateY: letterAnimations[index].translateY },
-                  ],
-                },
-              ]}
-            >
-              {letter === ' ' ? '\u00A0' : letter}
-            </Animated.Text>
-          ))}
-        </View>
+        <Animated.Text
+          style={[
+            styles.title,
+            {
+              opacity: titleOpacity,
+              transform: [{ translateY: titleTranslateY }],
+            },
+          ]}
+        >
+          Your Digital Wallet,{'\n'}Simplified
+        </Animated.Text>
 
         <Animated.Text
           style={[
             styles.description,
             {
               opacity: descOpacity,
-              transform: [{ translateX: descX }],
+              transform: [{ translateY: descTranslateY }],
             },
           ]}
         >
@@ -292,35 +242,36 @@ export default function Onboarding1({ navigation }) {
         </Animated.Text>
       </View>
 
-      <View style={styles.footer}>
-        <Animated.View
-          style={{
-            opacity: skipOpacity,
-            transform: [{ translateX: skipX }],
-          }}
+      <Animated.View
+        style={[
+          styles.footer,
+          {
+            opacity: footerOpacity,
+            bottom:
+              insets.bottom > 0
+                ? insets.bottom + moderateScale(12)
+                : moderateScale(20),
+          },
+        ]}
+      >
+        <TouchableOpacity
+          style={styles.skipBtn}
+          onPress={() => navigation.navigate('Onboarding4')}
+          activeOpacity={0.8}
         >
-          <TouchableOpacity
-            style={styles.skipBtn}
-            onPress={() => navigation.navigate('Onboarding4')}
-          >
-            <Text style={styles.skipText}>Skip</Text>
-          </TouchableOpacity>
-        </Animated.View>
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
 
-        <Animated.View
-          style={{
-            opacity: nextOpacity,
-            transform: [{ scale: nextScale }],
-          }}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Onboarding2')}
+          activeOpacity={0.8}
         >
-          <TouchableOpacity onPress={() => navigation.navigate('Onboarding2')}>
-            <Image
-              source={require('../../assets/images/half_load.png')}
-              style={styles.nextImage}
-            />
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
+          <Image
+            source={require('../../assets/images/half_load.png')}
+            style={styles.nextImage}
+          />
+        </TouchableOpacity>
+      </Animated.View>
     </SafeAreaView>
   );
 }
@@ -329,76 +280,77 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: width * 0.06,
   },
 
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: moderateScale(20),
     zIndex: 2,
   },
 
   logo: {
-    width: width * 0.28,
-    height: height * 0.05,
+    width: moderateScale(120),
+    height: moderateScale(45),
     resizeMode: 'contain',
-    marginBottom: height * 0.04,
+    marginBottom: verticalScale(30),
+    marginTop: verticalScale(8),
   },
 
   mainImage: {
-    width: width * 0.7,
-    height: width * 0.7,
+    width: width < 360 ? width * 0.60 : width * 0.68,
+    height: width < 360 ? width * 0.60 : width * 0.68,
     resizeMode: 'contain',
-    marginBottom: height * 0.03,
-  },
-
-  titleContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginBottom: height * 0.02,
+    marginBottom: verticalScale(25),
   },
 
   title: {
-    fontSize: width < 360 ? 24 : 30,
+    fontSize: moderateScale(28),
     fontWeight: '700',
     color: '#7B4DFF',
-    lineHeight: width < 360 ? 30 : 36,
+    textAlign: 'center',
+    lineHeight: moderateScale(38),
+    marginBottom: verticalScale(15),
+    paddingHorizontal: moderateScale(10),
   },
 
   description: {
-    fontSize: width < 360 ? 14 : 16,
+    fontSize: moderateScale(15),
     color: '#444',
     textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 10,
+    lineHeight: moderateScale(26),
+    paddingHorizontal: moderateScale(20),
   },
 
   footer: {
+    position: 'absolute',
+    left: moderateScale(25),
+    right: moderateScale(25),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: height * 0.04,
     zIndex: 2,
   },
 
   skipBtn: {
     backgroundColor: '#C9F0FF',
-    paddingHorizontal: width * 0.05,
-    paddingVertical: height * 0.012,
-    borderRadius: 14,
+    paddingHorizontal: moderateScale(20),
+    paddingVertical: verticalScale(10),
+    borderRadius: moderateScale(14),
+    minWidth: moderateScale(85),
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   skipText: {
-    fontSize: width < 360 ? 16 : 18,
-    fontWeight: '500',
+    fontSize: moderateScale(16),
+    fontWeight: '600',
     color: '#000',
   },
 
   nextImage: {
-    width: width < 360 ? 70 : 80,
-    height: width < 360 ? 70 : 80,
+    width: moderateScale(78),
+    height: moderateScale(78),
     resizeMode: 'contain',
   },
 });

@@ -1,129 +1,47 @@
-// import React, { useEffect, useRef, useState } from 'react';
-// import {
-//   View,
-//   StyleSheet,
-//   Animated,
-//   Dimensions,
-// } from 'react-native';
-
-// const { width } = Dimensions.get('window');
-
-// export default function SplashScreen({ navigation }) {
-
-//   const [showLogo, setShowLogo] = useState(false);
-//   const slideAnim = useRef(new Animated.Value(0)).current;
-
-//   useEffect(() => {
-
-//     // 1️⃣ Violet screen for 2 seconds
-//     const violetTimer = setTimeout(() => {
-//       setShowLogo(true);
-
-//       // start logo animation
-//       Animated.timing(slideAnim, {
-//         toValue: 140,
-//         duration: 1000,
-//         useNativeDriver: true,
-//       }).start();
-
-//     }, 2000);
-
-//     // 2️⃣ After total 5 seconds go to Welcome
-//     const navTimer = setTimeout(() => {
-//       navigation.replace('Welcome');
-//     }, 5000);
-
-//     return () => {
-//       clearTimeout(violetTimer);
-//       clearTimeout(navTimer);
-//     };
-
-//   }, []);
-
-//   return (
-//     <View style={styles.container}>
-
-//       {/* Violet Screen */}
-//       {!showLogo && (
-//         <View style={styles.violetScreen} />
-//       )}
-
-//       {/* Logo Screen */}
-//       {showLogo && (
-//         <Animated.Image
-//           source={require('../../assets/images/payoLogo.png')}
-//           style={[
-//             styles.logoImage,
-//             {
-//               transform: [{ translateY: slideAnim }],
-//             },
-//           ]}
-//         />
-//       )}
-
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#6C2BD9',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-
-//   violetScreen: {
-//     flex: 1,
-//     width: '100%',
-//     backgroundColor: '#6C2BD9',
-//   },
-
-//   logoImage: {
-//     width: width * 1.1,
-//     height: width * 1.2,
-//     resizeMode: 'contain',
-//   },
-
-// });
-
-
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Animated,
   StyleSheet,
-  Dimensions,
   StatusBar,
   Easing,
+  ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
-const { width } = Dimensions.get('window');
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
+import { moderateScale } from 'react-native-size-matters';
 
 const SplashScreen = ({ navigation }) => {
   const [screenStep, setScreenStep] = useState(1);
 
   const dotFade = useRef(new Animated.Value(0)).current;
   const expandAnim = useRef(new Animated.Value(1)).current;
-
   const logoAnim = useRef(new Animated.Value(0)).current;
 
-  // FINAL SCREEN ANIMATION
-  const finalLogoAnim = useRef(new Animated.Value(0)).current;
+  const blackOverlayScale = useRef(new Animated.Value(0)).current;
+
+  const finalLogoOpacity = useRef(new Animated.Value(0)).current;
+  const taglineOpacity = useRef(new Animated.Value(0)).current;
+  const welcomeOpacity = useRef(new Animated.Value(0)).current;
+  const loadingOpacity = useRef(new Animated.Value(0)).current;
+
+  const finalFadeOut = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const timers = [];
 
-    // SCREEN 1
     Animated.timing(dotFade, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: true,
     }).start();
 
-    // SCREEN 2
     timers.push(
       setTimeout(() => {
         setScreenStep(2);
@@ -134,51 +52,83 @@ const SplashScreen = ({ navigation }) => {
           easing: Easing.out(Easing.exp),
           useNativeDriver: true,
         }).start(() => {
-
           setScreenStep(3);
 
           Animated.timing(logoAnim, {
             toValue: 1,
             duration: 1200,
+            easing: Easing.linear,
             useNativeDriver: true,
           }).start();
-
         });
-
       }, 1200),
     );
 
-    // SCREEN 4
     timers.push(
       setTimeout(() => {
-
-        setScreenStep(4);
-
-        Animated.timing(finalLogoAnim, {
+        Animated.timing(blackOverlayScale, {
           toValue: 1,
-          duration: 1000,
+          duration: 900,
+          easing: Easing.out(Easing.exp),
           useNativeDriver: true,
-        }).start();
+        }).start(() => {
+          setScreenStep(4);
 
-        // NAVIGATE
-        setTimeout(() => {
-          navigation.replace('Welcome');
-        }, 2000);
+          Animated.timing(finalLogoOpacity, {
+            toValue: 1,
+            duration: 800,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }).start(() => {
+            setTimeout(() => {
+              Animated.timing(taglineOpacity, {
+                toValue: 1,
+                duration: 700,
+                easing: Easing.linear,
+                useNativeDriver: true,
+              }).start(() => {
+                setTimeout(() => {
+                  Animated.timing(welcomeOpacity, {
+                    toValue: 1,
+                    duration: 700,
+                    easing: Easing.linear,
+                    useNativeDriver: true,
+                  }).start(() => {
+                    setTimeout(() => {
+                      Animated.timing(loadingOpacity, {
+                        toValue: 1,
+                        duration: 500,
+                        easing: Easing.linear,
+                        useNativeDriver: true,
+                      }).start();
 
+                      setTimeout(() => {
+                        Animated.timing(finalFadeOut, {
+                          toValue: 0,
+                          duration: 900,
+                          easing: Easing.linear,
+                          useNativeDriver: true,
+                        }).start(() => {
+                          navigation.replace('Onboarding1');
+                        });
+                      }, 1400);
+                    }, 500);
+                  });
+                }, 500);
+              });
+            }, 500);
+          });
+        });
       }, 5000),
     );
 
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [navigation]);
 
-  // SCREEN 1
   if (screenStep === 1) {
     return (
-      <View style={styles.whiteContainer}>
-        <StatusBar
-          backgroundColor="#F8F8F8"
-          barStyle="dark-content"
-        />
+      <SafeAreaView style={styles.whiteContainer}>
+        <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
         <Animated.View
           style={[
@@ -188,18 +138,14 @@ const SplashScreen = ({ navigation }) => {
             },
           ]}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
-  // SCREEN 2
   if (screenStep === 2) {
     return (
-      <View style={styles.whiteContainer}>
-        <StatusBar
-          backgroundColor="#F8F8F8"
-          barStyle="dark-content"
-        />
+      <SafeAreaView style={styles.whiteContainer}>
+        <StatusBar backgroundColor="#F8F8F8" barStyle="dark-content" />
 
         <Animated.View
           style={[
@@ -215,93 +161,129 @@ const SplashScreen = ({ navigation }) => {
             style={styles.expandCircle}
           />
         </Animated.View>
-      </View>
+      </SafeAreaView>
     );
   }
 
-  // SCREEN 3
   if (screenStep === 3) {
     return (
-      <LinearGradient
-        colors={['#8427F7', '#0DB6E8']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.gradientContainer}>
+      <SafeAreaView style={styles.safeAreaGradient}>
+        <StatusBar backgroundColor="#8427F7" barStyle="light-content" />
 
-        <StatusBar
-          backgroundColor="#8427F7"
-          barStyle="light-content"
-        />
+        <LinearGradient
+          colors={['#8427F7', '#0DB6E8']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.gradientContainer}>
+          <Animated.Image
+            source={require('../../assets/images/icongroup.png')}
+            resizeMode="contain"
+            style={[
+              styles.logo,
+              {
+                opacity: logoAnim,
+                transform: [
+                  {
+                    scale: logoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.7, 1],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
 
+          <Animated.View
+            style={[
+              styles.blackTransition,
+              {
+                transform: [
+                  {
+                    scale: blackOverlayScale.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, 15],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
+        </LinearGradient>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.safeAreaBlack}>
+      <StatusBar backgroundColor="#02040D" barStyle="light-content" />
+
+      <Animated.View
+        style={[
+          styles.blackContainer,
+          {
+            opacity: finalFadeOut,
+          },
+        ]}>
         <Animated.Image
           source={require('../../assets/images/icongroup.png')}
           resizeMode="contain"
           style={[
-            styles.logo,
+            styles.finalLogo,
             {
-              opacity: logoAnim,
-              transform: [
-                {
-                  scale: logoAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.7, 1],
-                  }),
-                },
-              ],
+              opacity: finalLogoOpacity,
             },
           ]}
         />
-      </LinearGradient>
-    );
-  }
 
-  // SCREEN 4
-  return (
-    <View style={styles.blackContainer}>
-      <StatusBar
-        backgroundColor="#02040D"
-        barStyle="light-content"
-      />
-
-      {/* LOGO + TAGLINE SAME TIME */}
-      <Animated.View
-        style={[
-          styles.logoWrapper,
-          {
-            opacity: finalLogoAnim,
-            transform: [
-              {
-                scale: finalLogoAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0.8, 1],
-                }),
-              },
-            ],
-          },
-        ]}>
-
-        {/* PAYO LOGO */}
-        <Animated.Image
-          source={require('../../assets/images/icongroup.png')}
-          resizeMode="contain"
-          style={styles.finalLogo}
-        />
-
-        {/* TAGLINE */}
         <Animated.Image
           source={require('../../assets/images/tag.png')}
           resizeMode="contain"
-          style={styles.tagLine}
+          style={[
+            styles.tagLine,
+            {
+              opacity: taglineOpacity,
+            },
+          ]}
         />
 
+        <Animated.Text
+          style={[
+            styles.welcomeText,
+            {
+              opacity: welcomeOpacity,
+            },
+          ]}>
+          welcome
+        </Animated.Text>
+
+        <Animated.View
+          style={[
+            styles.loaderContainer,
+            {
+              opacity: loadingOpacity,
+            },
+          ]}>
+          <ActivityIndicator size="large" color="#8B5CF6" />
+        </Animated.View>
       </Animated.View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default SplashScreen;
 
 const styles = StyleSheet.create({
+  safeAreaGradient: {
+    flex: 1,
+    backgroundColor: '#8427F7',
+  },
+
+  safeAreaBlack: {
+    flex: 1,
+    backgroundColor: '#02040D',
+  },
+
   whiteContainer: {
     flex: 1,
     backgroundColor: '#F8F8F8',
@@ -313,6 +295,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
 
   blackContainer: {
@@ -323,13 +306,13 @@ const styles = StyleSheet.create({
   },
 
   smallDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 100,
+    width: moderateScale(12),
+    height: moderateScale(12),
+    borderRadius: moderateScale(100),
     backgroundColor: '#7B2CF4',
     shadowColor: '#00B7F1',
     shadowOpacity: 0.8,
-    shadowRadius: 10,
+    shadowRadius: moderateScale(10),
     elevation: 10,
   },
 
@@ -339,31 +322,49 @@ const styles = StyleSheet.create({
   },
 
   expandCircle: {
-    width: 14,
-    height: 14,
-    borderRadius: 100,
+    width: moderateScale(14),
+    height: moderateScale(14),
+    borderRadius: moderateScale(100),
   },
 
   logo: {
-    width: width * 0.58,
-    height: 120,
-  },
-
-  logoWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: wp('58%'),
+    height: hp('14%'),
   },
 
   finalLogo: {
-    width: width * 0.72,
-    height: 140,
+    width: wp('58%'),
+    height: hp('14%'),
   },
 
   tagLine: {
-    width: width * 0.55,
-    height: 24,
-    marginTop: -18,
+    width: wp('55%'),
+    height: hp('3%'),
+    marginTop: hp('-2%'),
+  },
+
+  welcomeText: {
+    position: 'absolute',
+    bottom: hp('18%'),
+    color: '#FFFFFF',
+    fontSize: moderateScale(28),
+    fontWeight: '600',
+    letterSpacing: 1,
+    textTransform: 'lowercase',
+  },
+
+  loaderContainer: {
+    position: 'absolute',
+    bottom: hp('10%'),
+  },
+
+  blackTransition: {
+    position: 'absolute',
+    width: moderateScale(140),
+    height: moderateScale(140),
+    borderRadius: moderateScale(140),
+    backgroundColor: '#02040D',
+    bottom: hp('-7%'),
+    left: wp('-15%'),
   },
 });
-
-

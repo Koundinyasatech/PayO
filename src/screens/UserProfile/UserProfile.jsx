@@ -3,12 +3,20 @@ import {
   View,
   Text,
   TouchableOpacity,
-  SafeAreaView,
+
   BackHandler,
   ScrollView,
   ToastAndroid,
   Platform,
 } from 'react-native';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
 import * as Keychain from 'react-native-keychain'; // ✅ added
 import styles from './UserProfileStyling';
 import api from '../../api/axios';
@@ -19,6 +27,7 @@ import Icon from "react-native-vector-icons/Feather";
 
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import BottomNav from '../components/bottomNav';
 
 export default function UserProfile({ navigation }) {
   const [profiledata, setProfileData] = useState({});
@@ -62,17 +71,17 @@ export default function UserProfile({ navigation }) {
     }
   };
 
- 
-    const fetchProfileData = async () => {
-      try {
-        const res = await api.get('/api/wallet/profile');
-        console.log(res.data.data, "9898")
-        setProfileData(res?.data?.data);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
-   
+
+  const fetchProfileData = async () => {
+    try {
+      const res = await api.get('/api/wallet/profile');
+      console.log(res.data.data, "9898")
+      setProfileData(res?.data?.data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
 
   useFocusEffect(
     useCallback(() => {
@@ -136,7 +145,9 @@ export default function UserProfile({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      edges={['top', 'bottom']}>
 
       <View style={styles.container}>
 
@@ -146,7 +157,7 @@ export default function UserProfile({ navigation }) {
             onPress={() => navigation.canGoBack() && navigation.goBack()}
           >
             <Text style={styles.back}>
-              <Icon name="chevron-left" size={28} color="#ffffff" /> 
+              <Icon name="chevron-left" size={28} color="#ffffff" />
 
             </Text>
           </TouchableOpacity>
@@ -170,7 +181,8 @@ export default function UserProfile({ navigation }) {
 
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 40 }}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: hp('20%') }}
         >
           <View style={styles.balanceCard}>
             <View style={{ marginLeft: 8 }}>
@@ -211,13 +223,13 @@ export default function UserProfile({ navigation }) {
             </TouchableOpacity>
           </View>
 
-                    {/* ADD BANK ACCOUNT BUTTON */}
+          {/* ADD BANK ACCOUNT BUTTON */}
           <TouchableOpacity
             style={styles.addBankBtn}
-            onPress={() => navigation.navigate('AddBankAccount')}
+            onPress={() => navigation.navigate('AddBankHome')}
           >
-            <Icon name="credit-card" size={20} color="#fff" />
-            
+            <Icon name="plus-circle" size={20} color="#fff" />
+
             <Text style={styles.addBankText}>
               Add Bank Account
             </Text>
@@ -296,6 +308,11 @@ export default function UserProfile({ navigation }) {
           </TouchableOpacity>
         </ScrollView>
       </View>
+
+      <BottomNav
+        navigation={navigation}
+        currentRoute="Scan"
+      />
 
     </SafeAreaView>
   );

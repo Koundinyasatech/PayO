@@ -5,283 +5,210 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  SafeAreaView,
   StatusBar,
   Animated,
   Dimensions,
 } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
 
-export default function Onboarding4({ navigation }) {
-  const title = "Welcome!";
-  const letters = title.split('');
+const guidelineBaseWidth = 375;
+const guidelineBaseHeight = 812;
 
-  const logoY = useRef(new Animated.Value(-80)).current;
+const scale = size => (width / guidelineBaseWidth) * size;
+const verticalScale = size => (height / guidelineBaseHeight) * size;
+const moderateScale = (size, factor = 0.5) =>
+  size + (scale(size) - size) * factor;
+
+export default function WelcomeScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+
+  // LOGO
   const logoOpacity = useRef(new Animated.Value(0)).current;
+  const logoTranslateY = useRef(new Animated.Value(-30)).current;
 
-  const imageScale = useRef(new Animated.Value(0.3)).current;
+  // IMAGE
   const imageOpacity = useRef(new Animated.Value(0)).current;
-  const imageFloat = useRef(new Animated.Value(0)).current;
-  const imageRotate = useRef(new Animated.Value(-15)).current;
+  const imageScale = useRef(new Animated.Value(0.9)).current;
+
+  // SMOOTH HEARTBEAT
   const imagePulse = useRef(new Animated.Value(1)).current;
 
-  const descX = useRef(new Animated.Value(80)).current;
+  // TITLE
+  const titleOpacity = useRef(new Animated.Value(0)).current;
+  const titleTranslateY = useRef(new Animated.Value(20)).current;
+
+  // DESCRIPTION
   const descOpacity = useRef(new Animated.Value(0)).current;
+  const descTranslateY = useRef(new Animated.Value(20)).current;
 
-  const registerX = useRef(new Animated.Value(-120)).current;
-  const registerOpacity = useRef(new Animated.Value(0)).current;
-
-  const loginX = useRef(new Animated.Value(120)).current;
-  const loginOpacity = useRef(new Animated.Value(0)).current;
-
-  const letterAnimations = useRef(
-    letters.map(() => ({
-      translateY: new Animated.Value(-60),
-      opacity: new Animated.Value(0),
-    }))
-  ).current;
-
-  const rainCoins = useRef(
-    Array.from({ length: 10 }).map(() => ({
-      translateY: new Animated.Value(-height),
-      translateX: new Animated.Value(Math.random() * width),
-      opacity: Math.random() * 0.35 + 0.12,
-      size: Math.random() * 70 + 80,
-      duration: Math.random() * 7000 + 8000,
-    }))
-  ).current;
+  // BUTTONS
+  const buttonOpacity = useRef(new Animated.Value(0)).current;
+  const buttonTranslateY = useRef(new Animated.Value(25)).current;
 
   useEffect(() => {
-    // START COINS IMMEDIATELY
-    startCoinRain();
-
     Animated.sequence([
+      // LOGO
       Animated.parallel([
-        Animated.timing(logoY, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
         Animated.timing(logoOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.spring(logoTranslateY, {
+          toValue: 0,
+          friction: 7,
+          tension: 90,
           useNativeDriver: true,
         }),
       ]),
 
+      // IMAGE
       Animated.parallel([
-        Animated.spring(imageScale, {
-          toValue: 1,
-          friction: 4,
-          tension: 100,
-          useNativeDriver: true,
-        }),
-        Animated.spring(imageRotate, {
-          toValue: 0,
-          friction: 5,
-          useNativeDriver: true,
-        }),
         Animated.timing(imageOpacity, {
           toValue: 1,
-          duration: 700,
+          duration: 450,
+          useNativeDriver: true,
+        }),
+        Animated.spring(imageScale, {
+          toValue: 1,
+          friction: 6,
+          tension: 80,
           useNativeDriver: true,
         }),
       ]),
 
-      Animated.stagger(
-        70,
-        letterAnimations.map(anim =>
-          Animated.parallel([
-            Animated.spring(anim.translateY, {
-              toValue: 0,
-              friction: 6,
-              useNativeDriver: true,
-            }),
-            Animated.timing(anim.opacity, {
-              toValue: 1,
-              duration: 250,
-              useNativeDriver: true,
-            }),
-          ])
-        )
-      ),
-
+      // TITLE
       Animated.parallel([
-        Animated.timing(descX, {
-          toValue: 0,
-          duration: 500,
+        Animated.timing(titleOpacity, {
+          toValue: 1,
+          duration: 250,
           useNativeDriver: true,
         }),
+        Animated.spring(titleTranslateY, {
+          toValue: 0,
+          friction: 7,
+          tension: 80,
+          useNativeDriver: true,
+        }),
+      ]),
+
+      // DESCRIPTION
+      Animated.parallel([
         Animated.timing(descOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 250,
+          useNativeDriver: true,
+        }),
+        Animated.spring(descTranslateY, {
+          toValue: 0,
+          friction: 7,
+          tension: 80,
           useNativeDriver: true,
         }),
       ]),
 
+      // BUTTONS
       Animated.parallel([
-        Animated.timing(registerX, {
-          toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(registerOpacity, {
+        Animated.timing(buttonOpacity, {
           toValue: 1,
-          duration: 500,
+          duration: 300,
           useNativeDriver: true,
         }),
-      ]),
-
-      Animated.parallel([
-        Animated.timing(loginX, {
+        Animated.spring(buttonTranslateY, {
           toValue: 0,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(loginOpacity, {
-          toValue: 1,
-          duration: 500,
+          friction: 7,
+          tension: 80,
           useNativeDriver: true,
         }),
       ]),
     ]).start(() => {
-      startImageLoop();
+      startHeartbeatAnimation();
     });
   }, []);
 
-  const startImageLoop = () => {
+  const startHeartbeatAnimation = () => {
     Animated.loop(
-      Animated.parallel([
-        Animated.sequence([
-          Animated.timing(imageFloat, {
-            toValue: -10,
-            duration: 1800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(imageFloat, {
-            toValue: 0,
-            duration: 1800,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.sequence([
-          Animated.timing(imagePulse, {
-            toValue: 1.04,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-          Animated.timing(imagePulse, {
-            toValue: 1,
-            duration: 1500,
-            useNativeDriver: true,
-          }),
-        ]),
+      Animated.sequence([
+        Animated.timing(imagePulse, {
+          toValue: 1.04,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(imagePulse, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }),
       ])
     ).start();
   };
 
-  const startCoinRain = () => {
-    rainCoins.forEach((coin) => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(coin.translateY, {
-            toValue: height + 100,
-            duration: coin.duration,
-            useNativeDriver: true,
-          }),
-          Animated.timing(coin.translateY, {
-            toValue: -100,
-            duration: 0,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    });
-  };
-
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#F4F7F5" barStyle="dark-content" />
+    <SafeAreaView
+      style={styles.container}
+      edges={['top', 'bottom']}
+    >
+      <StatusBar
+        backgroundColor="#FFFFFF"
+        barStyle="dark-content"
+      />
 
-      {/* COIN RAIN BACKGROUND */}
-      {rainCoins.map((coin, index) => (
+      <View
+        style={[
+          styles.content,
+          {
+            paddingTop: insets.top + verticalScale(10),
+          },
+        ]}
+      >
         <Animated.Image
-          key={index}
-          source={require('../../assets/images/coin.png')}
-          style={{
-            position: 'absolute',
-            width: coin.size,
-            height: coin.size,
-            opacity: coin.opacity,
-            transform: [
-              { translateX: coin.translateX },
-              { translateY: coin.translateY },
-            ],
-          }}
+          source={require('../../assets/images/LogoContainer.png')}
+          style={[
+            styles.logo,
+            {
+              opacity: logoOpacity,
+              transform: [{ translateY: logoTranslateY }],
+            },
+          ]}
         />
-      ))}
 
-      <View style={styles.content}>
-        <Animated.View
-          style={{
-            opacity: logoOpacity,
-            transform: [{ translateY: logoY }],
-          }}
+        <Animated.Image
+          source={require('../../assets/images/onboarding4.png')}
+          style={[
+            styles.mainImage,
+            {
+              opacity: imageOpacity,
+              transform: [
+                { scale: imageScale },
+                { scale: imagePulse },
+              ],
+            },
+          ]}
+        />
+
+        <Animated.Text
+          style={[
+            styles.title,
+            {
+              opacity: titleOpacity,
+              transform: [{ translateY: titleTranslateY }],
+            },
+          ]}
         >
-          <Image
-            source={require('../../assets/images/LogoContainer.png')}
-            style={styles.logo}
-          />
-        </Animated.View>
-
-        <Animated.View
-          style={{
-            opacity: imageOpacity,
-            transform: [
-              { scale: imageScale },
-              { scale: imagePulse },
-              { translateY: imageFloat },
-              {
-                rotate: imageRotate.interpolate({
-                  inputRange: [-15, 0],
-                  outputRange: ['-15deg', '0deg'],
-                }),
-              },
-            ],
-          }}
-        >
-          <Image
-            source={require('../../assets/images/onboarding4.png')}
-            style={styles.mainImage}
-          />
-        </Animated.View>
-
-        <View style={styles.titleContainer}>
-          {letters.map((letter, index) => (
-            <Animated.Text
-              key={index}
-              style={[
-                styles.title,
-                {
-                  opacity: letterAnimations[index].opacity,
-                  transform: [
-                    { translateY: letterAnimations[index].translateY },
-                  ],
-                },
-              ]}
-            >
-              {letter}
-            </Animated.Text>
-          ))}
-        </View>
+          Welcome!
+        </Animated.Text>
 
         <Animated.Text
           style={[
             styles.description,
             {
               opacity: descOpacity,
-              transform: [{ translateX: descX }],
+              transform: [{ translateY: descTranslateY }],
             },
           ]}
         >
@@ -289,35 +216,34 @@ export default function Onboarding4({ navigation }) {
         </Animated.Text>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <Animated.View
-          style={{
-            opacity: registerOpacity,
-            transform: [{ translateX: registerX }],
-          }}
+      <Animated.View
+        style={[
+          styles.buttonContainer,
+          {
+            opacity: buttonOpacity,
+            transform: [{ translateY: buttonTranslateY }],
+            paddingBottom: insets.bottom > 0
+              ? insets.bottom + moderateScale(16)
+              : moderateScale(20),
+          },
+        ]}
+      >
+        <TouchableOpacity
+          style={styles.registerBtn}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('RegisterMobile')}
         >
-          <TouchableOpacity
-            style={styles.registerBtn}
-            onPress={() => navigation.navigate('RegisterMobile')}
-          >
-            <Text style={styles.registerText}>Register</Text>
-          </TouchableOpacity>
-        </Animated.View>
+          <Text style={styles.registerText}>Register</Text>
+        </TouchableOpacity>
 
-        <Animated.View
-          style={{
-            opacity: loginOpacity,
-            transform: [{ translateX: loginX }],
-          }}
+        <TouchableOpacity
+          style={styles.loginBtn}
+          activeOpacity={0.85}
+          onPress={() => navigation.navigate('Login')}
         >
-          <TouchableOpacity
-            style={styles.loginBtn}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.loginText}>Login</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
+          <Text style={styles.loginText}>Login</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </SafeAreaView>
   );
 }
@@ -325,81 +251,78 @@ export default function Onboarding4({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F7F5',
-    paddingHorizontal: width * 0.06,
+    backgroundColor: '#FFFFFF',
   },
 
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 2,
+    paddingHorizontal: moderateScale(20),
   },
 
   logo: {
-    width: width * 0.35,
-    height: height * 0.06,
+    width: moderateScale(120),
+    height: moderateScale(45),
     resizeMode: 'contain',
-    marginBottom: height * 0.04,
+    marginBottom: verticalScale(30),
+    marginTop: verticalScale(8),
   },
 
   mainImage: {
-    width: width * 0.78,
-    height: width * 0.78,
+    width: width < 360 ? width * 0.62 : width * 0.72,
+    height: width < 360 ? width * 0.62 : width * 0.72,
     resizeMode: 'contain',
-    marginBottom: height * 0.03,
-  },
-
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: verticalScale(30),
   },
 
   title: {
-    fontSize: width < 360 ? 28 : 34,
+    fontSize: moderateScale(30),
     fontWeight: '700',
     color: '#7B4DFF',
+    textAlign: 'center',
+    marginBottom: verticalScale(12),
   },
 
   description: {
-    fontSize: width < 360 ? 16 : 20,
+    fontSize: moderateScale(16),
     color: '#444',
     textAlign: 'center',
-    fontWeight: '400',
+    lineHeight: moderateScale(26),
+    paddingHorizontal: moderateScale(10),
   },
 
   buttonContainer: {
-    paddingBottom: height * 0.04,
-    gap: 18,
-    zIndex: 2,
+    width: '100%',
+    paddingHorizontal: moderateScale(30),
   },
 
   registerBtn: {
-    backgroundColor: '#5B00D6',
-    borderRadius: 12,
-    paddingVertical: height * 0.02,
+    backgroundColor: '#6200EE',
+    height: verticalScale(50),
+    borderRadius: moderateScale(14),
+    justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: verticalScale(18),
   },
 
   registerText: {
     color: '#FFFFFF',
-    fontSize: width < 360 ? 18 : 20,
-    fontWeight: '500',
+    fontSize: moderateScale(18),
+    fontWeight: '600',
   },
 
   loginBtn: {
+    height: verticalScale(50),
+    borderRadius: moderateScale(14),
     borderWidth: 1.5,
-    borderColor: '#6C2BD9',
-    borderRadius: 12,
-    paddingVertical: height * 0.02,
+    borderColor: '#7B4DFF',
+    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
   },
 
   loginText: {
-    color: '#5B00D6',
-    fontSize: width < 360 ? 18 : 20,
-    fontWeight: '500',
+    color: '#6200EE',
+    fontSize: moderateScale(18),
+    fontWeight: '600',
   },
 });
