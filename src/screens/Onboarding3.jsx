@@ -576,6 +576,7 @@ export default function Onboarding3({ navigation }) {
           styles.content,
           {
             paddingTop: insets.top + verticalScale(10),
+            marginBottom:100
           },
         ]}
       >
@@ -695,27 +696,29 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: moderateScale(28),
+    fontSize: moderateScale(30),
     fontWeight: '700',
     color: '#7B4DFF',
     textAlign: 'center',
     lineHeight: moderateScale(38),
     marginBottom: verticalScale(15),
     paddingHorizontal: moderateScale(10),
+    marginBottom:verticalScale(12)
   },
 
   description: {
-    fontSize: moderateScale(15),
+    fontSize: moderateScale(16),
     color: '#444',
     textAlign: 'center',
     lineHeight: moderateScale(26),
-    paddingHorizontal: moderateScale(20),
+    paddingHorizontal: moderateScale(10),
+    marginBottom:verticalScale(12)
   },
 
   buttonContainer: {
     width: '100%',
     paddingHorizontal: moderateScale(30),
-    marginBottom: verticalScale(20),
+    marginBottom: verticalScale(-20),
   },
 
   registerBtn: {
