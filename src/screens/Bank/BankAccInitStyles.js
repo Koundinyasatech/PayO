@@ -1,14 +1,23 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StatusBar, StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
+     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 
   header: {
     marginTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  backButton: {
+    position: 'absolute',
+    left: 0,
   },
 
   back: {
@@ -19,8 +28,6 @@ export default StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 10,
     color: '#1a1a1a',
   },
 
@@ -55,14 +62,14 @@ export default StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#E6D9FF', // light purple
+    backgroundColor: '#E6D9FF',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
   },
 
   circleIcon: {
-    color: '#6A0DAD', // purple
+    color: '#6A0DAD',
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -80,7 +87,7 @@ export default StyleSheet.create({
   },
 
   button: {
-    backgroundColor: '#6A0DAD', // MAIN PURPLE
+    backgroundColor: '#6A0DAD',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
@@ -93,4 +100,5 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
 });
