@@ -256,7 +256,7 @@ export default function Onboarding1({ navigation }) {
       >
         <TouchableOpacity
           style={styles.skipBtn}
-          onPress={() => navigation.navigate('Onboarding4')}
+          onPress={() => navigation.navigate('Onboarding3')}
           activeOpacity={0.8}
         >
           <Text style={styles.skipText}>Skip</Text>

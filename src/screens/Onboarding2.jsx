@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+
 import {
   View,
   Text,
@@ -264,7 +265,7 @@ export default function Onboarding2({ navigation }) {
       >
         <TouchableOpacity
           style={styles.skipBtn}
-          onPress={() => navigation.navigate('Onboarding4')}
+          onPress={() => navigation.navigate('Onboarding3')}
           activeOpacity={0.8}
         >
           <Text style={styles.skipText}>Skip</Text>
@@ -287,7 +288,7 @@ export default function Onboarding2({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#ffffff',
   },
 
   content: {
