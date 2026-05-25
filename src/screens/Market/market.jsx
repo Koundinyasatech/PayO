@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,31 +20,34 @@ import {
 } from 'react-native-responsive-screen';
 
 import { moderateScale } from 'react-native-size-matters';
+import { useFocusEffect } from '@react-navigation/native';
+import api from '../../api/axios';
 
 const MarketScreen = ({ navigation }) => {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchExpertCoins();
-  }, []);
+   useFocusEffect(
+     useCallback(() => {
+       fetchExpertCoins();
+     }, []),
+   );
 
   const fetchExpertCoins = async () => {
-    try {
-      const res = await fetch(
-        'http://payo-app.duckdns.org:3001/api/market/overview',
-      );
+  try {
+    setLoading(true);
 
-      const result = await res.json();
+    const res = await api.get('/api/market/overview');
 
-      console.log(result, 'data');
+    console.log(res.data, 'data');
 
-      setCoins(result.data.slice(0, 50));
-      setLoading(false);
-    } catch (error) {
-      console.log('Expert picks error:', error);
-    }
-  };
+    setCoins(res?.data?.data?.slice(0, 50));
+    setLoading(false);
+  } catch (error) {
+    console.log('Expert picks error:', error);
+    setLoading(false);
+  }
+};
 
   const renderItem = ({ item }) => {
     const isLong =
