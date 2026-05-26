@@ -920,7 +920,7 @@ export default function CoinDetailsScreen({ route }) {
         </View>
 
         <View style={styles.timeframeContainer}>
-          {["1H", "4H", "1D", "1W", "1M"]?.map((tf) => (
+          {["1D", "1W", "1M"]?.map((tf) => (
             <TouchableOpacity
               key={tf}
               onPress={() => {
