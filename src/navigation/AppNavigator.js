@@ -23,9 +23,10 @@ import ReferEarn from '../screens/HomeScreen/ReferEarn';
 import TransactionDetailScreen from '../screens/HomeScreen/TransactionDetailScreen';
 import NotificationScreen from '../screens/HomeScreen/NotificationScreen';
 import ForgotPassword from '../screens/ForgotPasswordScreen';
-
-
-
+import KYCVerification from '../screens/kycVerify/KYCVerification';
+import KycUnderReview from '../screens/kycVerify/KycUnderReview';
+import KycComplete from '../screens/kycVerify/KycComplete';
+import KycFail from '../screens/kycVerify/KycFail';
 /* ✅ IMPORT BOTTOM TABS */
 import BottomTabs from '../screens/components/BottomTabs';
 
@@ -87,8 +88,10 @@ export default function AppNavigator() {
         <Stack.Screen name="review" component={ReviewTransferScreen} />
         <Stack.Screen name="ReferEarn" component={ReferEarn} />
         <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
-
-        {/* ✅ MAIN APP WITH BOTTOM TABS */}
+        <Stack.Screen name="KYCVerification" component={KYCVerification} />
+        <Stack.Screen name="KycUnderReview" component={KycUnderReview} />
+        <Stack.Screen name="KycComplete" component={KycComplete} />
+        <Stack.Screen name="KycFail" component={KycFail} />
         <Stack.Screen name="Main" component={BottomTabs} />
         <Stack.Screen name="Buttom" component={BottomNav} />
         <Stack.Screen name="Home" component={HomeScreen} />

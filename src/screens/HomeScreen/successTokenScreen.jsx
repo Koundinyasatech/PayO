@@ -78,7 +78,7 @@ export default function PaymentSuccess({
     return () =>
       clearTimeout(timer);
   }, []);
-
+ 
   return (
     <SafeAreaView
       style={styles.container}

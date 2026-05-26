@@ -112,7 +112,7 @@ export default function HomeScreen({ navigation }) {
   const fetchExpertCoins = async () => {
     try {
       const res = await fetch(
-        'http://payo-app.duckdns.org:3001/api/market/overview',
+        'http://payo-new.duckdns.org:3001/api/market/overview',
       );
 
       const result = await res.json();
@@ -361,7 +361,7 @@ export default function HomeScreen({ navigation }) {
                       <Image
                         source={{
                           uri:
-                            coin.image ||
+                            coin?.image ||
                             'https://cdn-icons-png.flaticon.com/512/825/825508.png',
                         }}
                         style={styles.coinImage}
@@ -396,10 +396,9 @@ export default function HomeScreen({ navigation }) {
 
                   <View style={styles.profitBox}>
                     <Text style={styles.profitText}>
-                      {Math.abs(
-                        coin.priceChangePercentage24h ||
-                          0,
-                      ).toFixed(2)}
+                      {(
+  coin.priceChangePercentage24h || 0
+).toFixed(2)}
                       % Expected profit
                     </Text>
                   </View>

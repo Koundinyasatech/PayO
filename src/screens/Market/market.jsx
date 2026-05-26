@@ -70,8 +70,8 @@ const MarketScreen = ({ navigation }) => {
             <Image
               source={{
                 uri:
-                  item.image ||
-                  'https://via.placeholder.com/40',
+                  item?.image ||
+                  'https://cdn-icons-png.flaticon.com/512/825/825508.png',
               }}
               style={styles.coinImage}
             />
@@ -107,10 +107,14 @@ const MarketScreen = ({ navigation }) => {
         <View style={styles.actionRow}>
           <View style={styles.profitBox}>
             <Text style={styles.profitText}>
-              {Math.abs(
+              {/* {Math.abs(
                 item.priceChangePercentage24h ||
                   0,
-              ).toFixed(2)}
+              ).toFixed(2)} */}
+
+                     {(
+  item.priceChangePercentage24h || 0
+).toFixed(2)}
               % Expected profit
             </Text>
           </View>

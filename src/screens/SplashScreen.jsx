@@ -51,16 +51,7 @@ const SplashScreen = ({ navigation }) => {
           duration: 1600,
           easing: Easing.out(Easing.exp),
           useNativeDriver: true,
-        }).start(() => {
-          setScreenStep(3);
-
-          Animated.timing(logoAnim, {
-            toValue: 1,
-            duration: 1200,
-            easing: Easing.linear,
-            useNativeDriver: true,
-          }).start();
-        });
+        }).start();
       }, 1200),
     );
 
@@ -165,54 +156,6 @@ const SplashScreen = ({ navigation }) => {
     );
   }
 
-  // if (screenStep === 3) {
-  //   return (
-  //     <SafeAreaView style={styles.safeAreaGradient}>
-  //       <StatusBar backgroundColor="#8427F7" barStyle="light-content" />
-
-  //       <LinearGradient
-  //         colors={['#8427F7', '#0DB6E8']}
-  //         start={{ x: 0, y: 0 }}
-  //         end={{ x: 1, y: 1 }}
-  //         style={styles.gradientContainer}>
-  //         <Animated.Image
-  //           source={require('../../assets/images/icongroup.png')}
-  //           resizeMode="contain"
-  //           style={[
-  //             styles.logo,
-  //             {
-  //               opacity: logoAnim,
-  //               transform: [
-  //                 {
-  //                   scale: logoAnim.interpolate({
-  //                     inputRange: [0, 1],
-  //                     outputRange: [0.7, 1],
-  //                   }),
-  //                 },
-  //               ],
-  //             },
-  //           ]}
-  //         />
-
-  //         <Animated.View
-  //           style={[
-  //             styles.blackTransition,
-  //             {
-  //               transform: [
-  //                 {
-  //                   scale: blackOverlayScale.interpolate({
-  //                     inputRange: [0, 1],
-  //                     outputRange: [0, 15],
-  //                   }),
-  //                 },
-  //               ],
-  //             },
-  //           ]}
-  //         />
-  //       </LinearGradient>
-  //     </SafeAreaView>
-  //   );
-  // }
 
   return (
     <SafeAreaView style={styles.safeAreaBlack}>
@@ -254,7 +197,7 @@ const SplashScreen = ({ navigation }) => {
               opacity: welcomeOpacity,
             },
           ]}>
-          welcome
+          Welcome
         </Animated.Text>
 
         <Animated.View
