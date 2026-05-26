@@ -26,6 +26,7 @@ import ForgotPassword from '../screens/ForgotPasswordScreen';
 
 
 
+
 /* ✅ IMPORT BOTTOM TABS */
 import BottomTabs from '../screens/components/BottomTabs';
 
@@ -60,6 +61,7 @@ import BankAccInit from '../screens/Bank/BankAccInit';
 import AddBankDetails from '../screens/Bank/AddBankDetails';
 import TpinScreen from '../screens/Bank/TpinScreen';
 import BankAddedScreen from '../screens/Bank/BankAddedScreen';
+import KYCVerification from '../screens/kycVerify/KYCVerification';
 
 
 const Stack = createNativeStackNavigator();
@@ -87,6 +89,11 @@ export default function AppNavigator() {
         <Stack.Screen name="review" component={ReviewTransferScreen} />
         <Stack.Screen name="ReferEarn" component={ReferEarn} />
         <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
+
+
+        {/* /// KYC VERIFICATION //////// */}
+
+        <Stack.Screen name="KYCVerification" component={KYCVerification} />
 
         {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />
