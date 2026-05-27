@@ -53,6 +53,12 @@ export default function CoinDetailsScreen({ route }) {
   const maxTranslateX = useRef(0);
   const minTranslateX = useRef(0);
 
+  const translateY = useRef(new Animated.Value(0)).current;
+const lastTranslateY = useRef(0);
+
+const maxTranslateY = useRef(0);
+const minTranslateY = useRef(0);
+
   const symbol = `${route?.params?.coin?.symbol?.toUpperCase()}USDT`;
   
   // Responsive chart size
@@ -170,14 +176,19 @@ export default function CoinDetailsScreen({ route }) {
     resetZoomAndPan();
   };
 
-  const resetZoomAndPan = () => {
-    scale.setValue(1);
-    translateX.setValue(0);
-    lastScale.current = 1;
-    lastTranslateX.current = 0;
-    setZoomLevel(1);
-    setPanOffset(0);
-  };
+ const resetZoomAndPan = () => {
+  scale.setValue(1);
+
+  translateX.setValue(0);
+  translateY.setValue(0);
+
+  lastScale.current = 1;
+
+  lastTranslateX.current = 0;
+  lastTranslateY.current = 0;
+
+  setZoomLevel(1);
+};
 
   const handleChartTouch = (event, index, point) => {
     const { locationX, locationY } = event.nativeEvent;
@@ -209,7 +220,16 @@ export default function CoinDetailsScreen({ route }) {
       }
       
       lastScale.current = newScale;
-      scale.setValue(lastScale.current);
+      // scale.setValue(lastScale.current);
+
+      Animated.spring(scale, {
+  toValue: lastScale.current,
+  useNativeDriver: true,
+  tension: 40,
+  friction: 7,
+}).start();
+
+
       setZoomLevel(lastScale.current);
       
       // Update max translate constraints based on zoom level
@@ -225,49 +245,147 @@ export default function CoinDetailsScreen({ route }) {
         lastTranslateX.current = minTranslateX.current;
         translateX.setValue(lastTranslateX.current);
       }
+
+      const maxPanX = (chartWidth * (lastScale.current - 1)) / 2;
+const maxPanY = (chartHeight * (lastScale.current - 1)) / 2;
+
+maxTranslateX.current = maxPanX;
+minTranslateX.current = -maxPanX;
+
+maxTranslateY.current = maxPanY;
+minTranslateY.current = -maxPanY;
+
+if (newScale <= 1) {
+  lastTranslateX.current = 0;
+  lastTranslateY.current = 0;
+
+  translateX.setValue(0);
+  translateY.setValue(0);
+
+  maxTranslateX.current = 0;
+  minTranslateX.current = 0;
+
+  maxTranslateY.current = 0;
+  minTranslateY.current = 0;
+}
     }
   };
 
-  const panResponder = PanResponder.create({
-    onMoveShouldSetPanResponder: () => zoomLevel > 1,
+  // const panResponder = PanResponder.create({
+  //   onMoveShouldSetPanResponder: () => zoomLevel > 1,
     
-    onPanResponderGrant: () => {
-      translateX.setOffset(lastTranslateX.current);
-      translateX.setValue(0);
-    },
+  //   onPanResponderGrant: () => {
+  //     translateX.setOffset(lastTranslateX.current);
+  //     translateX.setValue(0);
+  //   },
     
-    onPanResponderMove: (evt, gestureState) => {
-      if (zoomLevel > 1) {
-        let newTranslateX = gestureState.dx;
+  //   onPanResponderMove: (evt, gestureState) => {
+  //     if (zoomLevel > 1) {
+  //       let newTranslateX = gestureState.dx;
         
-        // Apply constraints
-        if (newTranslateX > maxTranslateX.current) {
-          newTranslateX = maxTranslateX.current;
-        } else if (newTranslateX < minTranslateX.current) {
-          newTranslateX = minTranslateX.current;
-        }
+  //       // Apply constraints
+  //       if (newTranslateX > maxTranslateX.current) {
+  //         newTranslateX = maxTranslateX.current;
+  //       } else if (newTranslateX < minTranslateX.current) {
+  //         newTranslateX = minTranslateX.current;
+  //       }
         
-        translateX.setValue(newTranslateX);
-      }
-    },
+  //       translateX.setValue(newTranslateX);
+  //     }
+  //   },
     
-    onPanResponderRelease: (evt, gestureState) => {
-      translateX.flattenOffset();
-      lastTranslateX.current += gestureState.dx;
+  //   onPanResponderRelease: (evt, gestureState) => {
+  //     translateX.flattenOffset();
+  //     lastTranslateX.current += gestureState.dx;
       
-      // Clamp final position
-      if (lastTranslateX.current > maxTranslateX.current) {
-        lastTranslateX.current = maxTranslateX.current;
-        translateX.setValue(lastTranslateX.current);
-      } else if (lastTranslateX.current < minTranslateX.current) {
-        lastTranslateX.current = minTranslateX.current;
-        translateX.setValue(lastTranslateX.current);
-      }
+  //     // Clamp final position
+  //     if (lastTranslateX.current > maxTranslateX.current) {
+  //       lastTranslateX.current = maxTranslateX.current;
+  //       translateX.setValue(lastTranslateX.current);
+  //     } else if (lastTranslateX.current < minTranslateX.current) {
+  //       lastTranslateX.current = minTranslateX.current;
+  //       translateX.setValue(lastTranslateX.current);
+  //     }
       
-      setPanOffset(lastTranslateX.current);
-    },
-  });
+  //     setPanOffset(lastTranslateX.current);
+  //   },
+  // });
 
+ const panResponder = PanResponder.create({
+  onMoveShouldSetPanResponder: () => zoomLevel > 1,
+
+  onPanResponderGrant: () => {
+    translateX.setOffset(lastTranslateX.current);
+    translateY.setOffset(lastTranslateY.current);
+
+    translateX.setValue(0);
+    translateY.setValue(0);
+  },
+
+  onPanResponderMove: (evt, gestureState) => {
+    if (zoomLevel > 1) {
+      let newTranslateX = gestureState.dx;
+      let newTranslateY = gestureState.dy;
+
+      // X LIMIT
+      if (newTranslateX > maxTranslateX.current) {
+        newTranslateX = maxTranslateX.current;
+      }
+
+      if (newTranslateX < minTranslateX.current) {
+        newTranslateX = minTranslateX.current;
+      }
+
+      // Y LIMIT
+      if (newTranslateY > maxTranslateY.current) {
+        newTranslateY = maxTranslateY.current;
+      }
+
+      if (newTranslateY < minTranslateY.current) {
+        newTranslateY = minTranslateY.current;
+      }
+
+      translateX.setValue(newTranslateX);
+      translateY.setValue(newTranslateY);
+    }
+  },
+
+  onPanResponderRelease: (evt, gestureState) => {
+    translateX.flattenOffset();
+    translateY.flattenOffset();
+
+    lastTranslateX.current += gestureState.dx;
+    lastTranslateY.current += gestureState.dy;
+
+    // CLAMP X
+    if (lastTranslateX.current > maxTranslateX.current) {
+      lastTranslateX.current = maxTranslateX.current;
+    }
+
+    if (lastTranslateX.current < minTranslateX.current) {
+      lastTranslateX.current = minTranslateX.current;
+    }
+
+    // CLAMP Y
+    if (lastTranslateY.current > maxTranslateY.current) {
+      lastTranslateY.current = maxTranslateY.current;
+    }
+
+    if (lastTranslateY.current < minTranslateY.current) {
+      lastTranslateY.current = minTranslateY.current;
+    }
+
+    Animated.spring(translateX, {
+      toValue: lastTranslateX.current,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.spring(translateY, {
+      toValue: lastTranslateY.current,
+      useNativeDriver: true,
+    }).start();
+  },
+});
   const getCubicBezierPath = (points, minValue, maxValue, graphHeight, graphWidth) => {
     if (points.length < 2) return '';
     
@@ -414,377 +532,809 @@ export default function CoinDetailsScreen({ route }) {
     return labels;
   };
 
-  const renderSmoothLineChart = () => {
-    if (!chartData.length) return null;
+//   const renderSmoothLineChart = () => {
+//     if (!chartData.length) return null;
 
-    const graphHeight = chartHeight - hp('2.5%');
-    const graphWidth = chartWidth * zoomLevel;
-    const visibleWidth = chartWidth;
+//     const graphHeight = chartHeight - hp('2.5%');
+//     // const graphWidth = chartWidth * zoomLevel;
+//     const graphWidth = chartWidth * lastScale.current;
+//     const visibleWidth = chartWidth;
 
-    const values = chartData.map(d => d.value);
-    const minValue = Math.min(...values);
-    const maxValue = Math.max(...values);
-    const isProfit = chartData[chartData.length - 1].value > chartData[0].value;
-    const lineColor = isProfit ? "#00C853" : "#FF4D6D";
+//     const values = chartData.map(d => d.value);
+//     const minValue = Math.min(...values);
+//     const maxValue = Math.max(...values);
+//     const isProfit = chartData[chartData.length - 1].value > chartData[0].value;
+//     const lineColor = isProfit ? "#00C853" : "#FF4D6D";
 
-    const smoothPath = getCubicBezierPath(chartData, minValue, maxValue, graphHeight, graphWidth);
-    const firstX = 0;
-    const lastX = graphWidth;
-    const bottomY = graphHeight;
-    const fillPath = `${smoothPath} L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
+//     const smoothPath = getCubicBezierPath(chartData, minValue, maxValue, graphHeight, graphWidth);
+//     const firstX = 0;
+//     const lastX = graphWidth;
+//     const bottomY = graphHeight;
+//     const fillPath = `${smoothPath} L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
 
-    const step = (maxValue - minValue) / 4;
-    const yAxisValues = [
-      maxValue.toFixed(0),
-      (maxValue - step).toFixed(0),
-      (maxValue - step * 2).toFixed(0),
-      (maxValue - step * 3).toFixed(0),
-      minValue.toFixed(0),
-    ];
+//     const step = (maxValue - minValue) / 4;
+//     const yAxisValues = [
+//       maxValue.toFixed(0),
+//       (maxValue - step).toFixed(0),
+//       (maxValue - step * 2).toFixed(0),
+//       (maxValue - step * 3).toFixed(0),
+//       minValue.toFixed(0),
+//     ];
 
-    const xAxisLabels = getXAxisLabels();
+//     const xAxisLabels = getXAxisLabels();
 
-    return (
-      <View style={{ marginTop: hp('1.5%') }}>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ justifyContent: 'space-between', height: chartHeight, marginRight: wp('2%'), width: wp('12%') }}>
-            {yAxisValues.map((price, index) => (
-              <Text key={index} style={{ color: "#6B7280", fontSize: moderateScale(10), textAlign: 'right' }}>
-                ${price}
-              </Text>
-            ))}
-          </View>
+//     return (
+//       <View style={{ marginTop: hp('1.5%') }}>
+//         <View style={{ flexDirection: 'row' }}>
+//           <View style={{ justifyContent: 'space-between', height: chartHeight, marginRight: wp('2%'), width: wp('12%') }}>
+//             {yAxisValues.map((price, index) => (
+//               <Text key={index} style={{ color: "#6B7280", fontSize: moderateScale(10), textAlign: 'right' }}>
+//                 ${price}
+//               </Text>
+//             ))}
+//           </View>
 
-          <View style={{ flex: 1, overflow: 'hidden' }}>
-            <PinchGestureHandler
-              onGestureEvent={onPinchEvent}
-              onHandlerStateChange={onPinchStateChange}
-            >
-              <Animated.View
-                {...(zoomLevel > 1 ? panResponder.panHandlers : {})}
-                style={{
-                  transform: [
-                    { scale: scale },
-                    { translateX: translateX },
-                  ],
-                }}
-              >
-                <Svg
-                  height={chartHeight}
-                  width={graphWidth}
-                  onTouchStart={(e) => {
-                    if (zoomLevel === 1) {
-                      const touchX = e.nativeEvent.locationX;
-                      const pointIndex = Math.floor((touchX / visibleWidth) * chartData.length);
-                      if (pointIndex >= 0 && pointIndex < chartData.length) {
-                        handleChartTouch(e, pointIndex, chartData[pointIndex]);
-                      }
-                    }
-                  }}
-                >
-                  <Defs>
-                    <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                      <Stop offset="0%" stopColor={lineColor} stopOpacity="0.3" />
-                      <Stop offset="100%" stopColor={lineColor} stopOpacity="0.0" />
-                    </LinearGradient>
-                  </Defs>
+//           <View style={{ flex: 1, overflow: 'hidden' }}>
+//             <PinchGestureHandler
+//               onGestureEvent={onPinchEvent}
+//               onHandlerStateChange={onPinchStateChange}
+//             >
+//               <Animated.View
+//                 {...(zoomLevel > 1 ? panResponder.panHandlers : {})}
+//      style={{
+//   transform: [
+//     { scale: scale },
+//     { translateX: translateX },
+//     { translateY: translateY },
+//   ],
+// }}
+//               >
+//                 {/* <Svg
+//                   height={chartHeight}
+//                   width={graphWidth}
+//                   onTouchStart={(e) => {
+//                     if (zoomLevel === 1) {
+//                    const touchX =
+//   (e.nativeEvent.locationX - lastTranslateX.current) /
+//   lastScale.current;
 
-                  {yAxisValues.map((_, index) => {
-                    const y = (index / 4) * graphHeight;
-                    return (
-                      <SvgLine
-                        key={`grid-${index}`}
-                        x1={0}
-                        y1={y}
-                        x2={graphWidth}
-                        y2={y}
-                        stroke="#1F2937"
-                        strokeWidth={1}
-                        strokeDasharray="5,5"
-                      />
-                    );
-                  })}
+// const pointIndex = Math.floor(
+//   (touchX / chartWidth) * chartData.length
+// );
+//                       if (pointIndex >= 0 && pointIndex < chartData.length) {
+//                         handleChartTouch(e, pointIndex, chartData[pointIndex]);
+//                       }
+//                     }
+//                   }}
+//                 >
+//                   <Defs>
+//                     <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+//                       <Stop offset="0%" stopColor={lineColor} stopOpacity="0.3" />
+//                       <Stop offset="100%" stopColor={lineColor} stopOpacity="0.0" />
+//                     </LinearGradient>
+//                   </Defs>
 
-                  <Path d={fillPath} fill="url(#gradient)" />
-                  <Path
-                    d={smoothPath}
-                    stroke={lineColor}
-                    strokeWidth={moderateScale(3)}
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
+//                   {yAxisValues.map((_, index) => {
+//                     const y = (index / 4) * graphHeight;
+//                     return (
+//                       <SvgLine
+//                         key={`grid-${index}`}
+//                         x1={0}
+//                         y1={y}
+//                         x2={graphWidth}
+//                         y2={y}
+//                         stroke="#1F2937"
+//                         strokeWidth={1}
+//                         strokeDasharray="5,5"
+//                       />
+//                     );
+//                   })}
 
-                  {chartData.map((point, index) => {
-                    if (selectedPoint === index && tooltipVisible && zoomLevel === 1) {
-                      const valueRange = maxValue - minValue;
-                      const x = (index / (chartData.length - 1)) * visibleWidth;
-                      const y = graphHeight - ((point.value - minValue) / valueRange) * graphHeight;
+//                   <Path d={fillPath} fill="url(#gradient)" />
+//                   <Path
+//                     d={smoothPath}
+//                     stroke={lineColor}
+//                     strokeWidth={moderateScale(3)}
+//                     fill="none"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+
+//                   {chartData.map((point, index) => {
+//                     if (selectedPoint === index && tooltipVisible && zoomLevel === 1) {
+//                       const valueRange = maxValue - minValue;
+//                       const x = (index / (chartData.length - 1)) * visibleWidth;
+//                       const y = graphHeight - ((point.value - minValue) / valueRange) * graphHeight;
                       
-                      return (
-                        <Circle
-                          key={`point-${index}`}
-                          cx={x}
-                          cy={y}
-                          r={moderateScale(6)}
-                          fill="#FCD535"
-                          stroke={lineColor}
-                          strokeWidth="2"
-                        />
-                      );
-                    }
-                    return null;
-                  })}
-                </Svg>
-              </Animated.View>
-            </PinchGestureHandler>
+//                       return (
+//                         <Circle
+//                           key={`point-${index}`}
+//                           cx={x}
+//                           cy={y}
+//                           r={moderateScale(6)}
+//                           fill="#FCD535"
+//                           stroke={lineColor}
+//                           strokeWidth="2"
+//                         />
+//                       );
+//                     }
+//                     return null;
+//                   })}
+//                 </Svg> */}
 
-            {tooltipVisible && tooltipValue && zoomLevel === 1 && (
-              <View
-                style={[
-                  styles.tooltip,
-                  {
-                    position: 'absolute',
-                    left: Math.max(10, Math.min(tooltipPosition.x - 50, visibleWidth - 110)),
-                    top: tooltipPosition.y,
-                  },
-                ]}
-              >
-                <Text style={styles.tooltipText}>
-                  ${tooltipValue?.value?.toLocaleString()}
-                </Text>
-                <Text style={styles.tooltipSubtext}>
-                  {formatXAxis(tooltipValue.timestamp)}
-                </Text>
-                <View style={styles.tooltipArrow} />
-              </View>
-            )}
+//                 <Svg
+//   height={chartHeight}
+//   width={graphWidth}
+//   onTouchStart={(e) => {
+//     const touchX =
+//       (e.nativeEvent.locationX - lastTranslateX.current) /
+//       lastScale.current;
 
-            {/* Zoom indicator */}
-            {zoomLevel > 1 && (
-              <View style={styles.zoomIndicator}>
-                <Text style={styles.zoomIndicatorText}>
-                  Zoom: {zoomLevel.toFixed(1)}x
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
+//     const pointIndex = Math.floor(
+//       (touchX / graphWidth) * chartData.length
+//     );
 
-        <View style={{ marginLeft: wp('10%'), marginTop: hp('1%'), flexDirection: 'row', justifyContent: 'space-between', paddingRight: 0 }}>
-          {xAxisLabels.map((item, index) => {
-            const labelText = formatXAxis(item.timestamp);
-            const isMonthName = selectedTF === "1M" && (labelText.length <= 3);
+//     if (pointIndex >= 0 && pointIndex < chartData.length) {
+//       handleChartTouch(e, pointIndex, chartData[pointIndex]);
+//     }
+//   }}
+// ></Svg>
+//               </Animated.View>
+//             </PinchGestureHandler>
+
+//             {/* {tooltipVisible && tooltipValue && zoomLevel === 1 && ( */}
+//             {tooltipVisible && tooltipValue && (
+//               <View
+//                 style={[
+//                   styles.tooltip,
+//                   {
+//                     position: 'absolute',
+//                     left: Math.max(10, Math.min(tooltipPosition.x - 50, visibleWidth - 110)),
+//                     top: tooltipPosition.y,
+//                   },
+//                 ]}
+//               >
+//                 <Text style={styles.tooltipText}>
+//                   ${tooltipValue?.value?.toLocaleString()}
+//                 </Text>
+//                 <Text style={styles.tooltipSubtext}>
+//                   {formatXAxis(tooltipValue.timestamp)}
+//                 </Text>
+//                 <View style={styles.tooltipArrow} />
+//               </View>
+//             )}
+
+//             {/* Zoom indicator */}
+//             {zoomLevel > 1 && (
+//               <View style={styles.zoomIndicator}>
+//                 <Text style={styles.zoomIndicatorText}>
+//                   Zoom: {zoomLevel.toFixed(1)}x
+//                 </Text>
+//               </View>
+//             )}
+//           </View>
+//         </View>
+
+//         <View style={{ marginLeft: wp('10%'), marginTop: hp('1%'), flexDirection: 'row', justifyContent: 'space-between', paddingRight: 0 }}>
+//           {xAxisLabels.map((item, index) => {
+//             const labelText = formatXAxis(item.timestamp);
+//             const isMonthName = selectedTF === "1M" && (labelText.length <= 3);
             
-            return (
-              <Text
-                key={index}
-                style={[
-                  isMonthName ? styles.xAxisLabelMonth : styles.xAxisLabel,
-                  {
-                    fontSize: selectedTF === "1D" ? moderateScale(10) : moderateScale(11),
-                    fontWeight: isMonthName ? '600' : '400',
-                    textAlign: 'center',
-                    flex: 1,
-                  }
-                ]}
-                numberOfLines={1}
-              >
-                {labelText}
-              </Text>
-            );
-          })}
+//             return (
+//               <Text
+//                 key={index}
+//                 style={[
+//                   isMonthName ? styles.xAxisLabelMonth : styles.xAxisLabel,
+//                   {
+//                     fontSize: selectedTF === "1D" ? moderateScale(10) : moderateScale(11),
+//                     fontWeight: isMonthName ? '600' : '400',
+//                     textAlign: 'center',
+//                     flex: 1,
+//                   }
+//                 ]}
+//                 numberOfLines={1}
+//               >
+//                 {labelText}
+//               </Text>
+//             );
+//           })}
+//         </View>
+//       </View>
+//     );
+//   };
+
+//   const renderCandlestickChart = () => {
+//     if (!candleData.length) return null;
+
+//     const graphHeight = chartHeight - hp('2.5%');
+//     const graphWidth = chartWidth * zoomLevel;
+//     const visibleWidth = chartWidth;
+
+//     const allValues = candleData.flatMap(d => [d.high, d.low]);
+//     const minValue = Math.min(...allValues);
+//     const maxValue = Math.max(...allValues);
+//     const valueRange = maxValue - minValue;
+
+//     const getYCoordinate = (value) => {
+//       return graphHeight - ((value - minValue) / valueRange) * graphHeight;
+//     };
+
+//     const getXCoordinate = (index, totalWidth) => {
+//       const candleWidth = (totalWidth / candleData.length) * 0.7;
+//       const candleSpacing = (totalWidth / candleData.length) * 0.3;
+//       return (index * (candleWidth + candleSpacing)) + (candleSpacing / 2);
+//     };
+
+//     const step = (maxValue - minValue) / 4;
+//     const yAxisValues = [
+//       maxValue.toFixed(0),
+//       (maxValue - step).toFixed(0),
+//       (maxValue - step * 2).toFixed(0),
+//       (maxValue - step * 3).toFixed(0),
+//       minValue.toFixed(0),
+//     ];
+
+//     const xAxisLabels = getXAxisLabels();
+
+//     return (
+//       <View style={{ marginTop: hp('1.5%') }}>
+//         <View style={{ flexDirection: 'row' }}>
+//           <View style={{ justifyContent: 'space-between', height: chartHeight, marginRight: wp('2%'), width: wp('12%') }}>
+//             {yAxisValues.map((price, index) => (
+//               <Text key={index} style={{ color: "#6B7280", fontSize: moderateScale(10), textAlign: 'right' }}>
+//                 ${price}
+//               </Text>
+//             ))}
+//           </View>
+
+//           <View style={{ flex: 1, overflow: 'hidden' }}>
+//             <PinchGestureHandler
+//               onGestureEvent={onPinchEvent}
+//               onHandlerStateChange={onPinchStateChange}
+//             >
+//               <Animated.View
+//                 {...(zoomLevel > 1 ? panResponder.panHandlers : {})}
+//       style={{
+//   transform: [
+//     { scale: scale },
+//     { translateX: translateX },
+//     { translateY: translateY },
+//   ],
+// }}
+//               >
+//                 {/* <Svg
+//                   height={chartHeight}
+//                   width={graphWidth}
+//                   onTouchStart={(e) => {
+//                     if (zoomLevel === 1) {
+//                       const touchX = e.nativeEvent.locationX;
+//                       const candleIndex = Math.floor((touchX / visibleWidth) * candleData.length);
+//                       if (candleIndex >= 0 && candleIndex < candleData.length) {
+//                         handleChartTouch(e, candleIndex, candleData[candleIndex]);
+//                       }
+//                     }
+//                   }}
+//                 >
+//                   {yAxisValues.map((_, index) => {
+//                     const y = (index / 4) * graphHeight;
+//                     return (
+//                       <SvgLine
+//                         key={`grid-${index}`}
+//                         x1={0}
+//                         y1={y}
+//                         x2={graphWidth}
+//                         y2={y}
+//                         stroke="#1F2937"
+//                         strokeWidth={1}
+//                         strokeDasharray="5,5"
+//                       />
+//                     );
+//                   })}
+
+//                   {candleData?.map((candle, index) => {
+//                     const x = getXCoordinate(index, graphWidth);
+//                     const yHigh = getYCoordinate(candle.high);
+//                     const yLow = getYCoordinate(candle.low);
+//                     const yOpen = getYCoordinate(candle.open);
+//                     const yClose = getYCoordinate(candle.close);
+
+//                     const isPositive = candle.close >= candle.open;
+//                     const bodyTop = isPositive ? yClose : yOpen;
+//                     const bodyHeight = Math.abs(yClose - yOpen);
+//                     const color = isPositive ? "#00C853" : "#FF4D6D";
+
+//                     return (
+//                       <React.Fragment key={`candle-${index}`}>
+//                         <SvgLine
+//                           x1={x + (graphWidth / candleData.length) * 0.35}
+//                           y1={yHigh}
+//                           x2={x + (graphWidth / candleData.length) * 0.35}
+//                           y2={yLow}
+//                           stroke={color}
+//                           strokeWidth={1.5}
+//                         />
+//                         <SvgLine
+//                           x1={x}
+//                           y1={bodyTop}
+//                           x2={x + (graphWidth / candleData.length) * 0.7}
+//                           y2={bodyTop}
+//                           stroke={color}
+//                           strokeWidth={bodyHeight}
+//                         />
+//                       </React.Fragment>
+//                     );
+//                   })}
+//                 </Svg> */}
+
+//                 <Svg
+//   height={chartHeight}
+//   width={graphWidth}
+//   onTouchStart={(e) => {
+//     const touchX =
+//       (e.nativeEvent.locationX - lastTranslateX.current) /
+//       lastScale.current;
+
+//     const candleIndex = Math.floor(
+//       (touchX / graphWidth) * candleData.length
+//     );
+
+//     if (candleIndex >= 0 && candleIndex < candleData.length) {
+//       handleChartTouch(e, candleIndex, candleData[candleIndex]);
+//     }
+//   }}
+// ></Svg>
+//               </Animated.View>
+//             </PinchGestureHandler>
+
+//             {tooltipVisible && tooltipValue && zoomLevel === 1 && (
+//               <View
+//                 style={[
+//                   styles.tooltip,
+//                   {
+//                     position: 'absolute',
+//                     left: Math.max(10, Math.min(tooltipPosition.x - 60, visibleWidth - 130)),
+//                     top: tooltipPosition.y,
+//                   },
+//                 ]}
+//               >
+//                 <Text style={styles.tooltipText}>
+//                   Open: ${tooltipValue.open}
+//                 </Text>
+//                 <Text style={styles.tooltipSubtext}>
+//                   Close: ${tooltipValue.close}
+//                 </Text>
+//                 <Text style={styles.tooltipSubtext}>
+//                   {formatXAxis(tooltipValue.timestamp)}
+//                 </Text>
+//                 <View style={styles.tooltipArrow} />
+//               </View>
+//             )}
+
+//             {/* Zoom indicator */}
+//             {zoomLevel > 1 && (
+//               <View style={styles.zoomIndicator}>
+//                 <Text style={styles.zoomIndicatorText}>
+//                   Zoom: {zoomLevel.toFixed(1)}x
+//                 </Text>
+//               </View>
+//             )}
+//           </View>
+//         </View>
+
+//         <View style={{ marginLeft: wp('10%'), marginTop: hp('1%'), flexDirection: 'row', justifyContent: 'space-between', paddingRight: 0 }}>
+//           {xAxisLabels.map((item, index) => {
+//             const labelText = formatXAxis(item.timestamp);
+//             const isMonthName = selectedTF === "1M" && (labelText.length <= 3);
+            
+//             return (
+//               <Text
+//                 key={index}
+//                 style={[
+//                   isMonthName ? styles.xAxisLabelMonth : styles.xAxisLabel,
+//                   {
+//                     fontSize: selectedTF === "1D" ? moderateScale(10) : moderateScale(11),
+//                     fontWeight: isMonthName ? '600' : '400',
+//                     textAlign: 'center',
+//                     flex: 1,
+//                   }
+//                 ]}
+//                 numberOfLines={1}
+//               >
+//                 {labelText}
+//               </Text>
+//             );
+//           })}
+//         </View>
+//       </View>
+//     );
+//   };
+
+
+const renderSmoothLineChart = () => {
+  if (!chartData.length) return null;
+
+  const graphHeight = chartHeight - hp('2.5%');
+  const graphWidth = chartWidth * lastScale.current;
+  const visibleWidth = chartWidth;
+
+  const values = chartData.map(d => d.value);
+  const minValue = Math.min(...values);
+  const maxValue = Math.max(...values);
+  const isProfit = chartData[chartData.length - 1].value > chartData[0].value;
+  const lineColor = isProfit ? "#00C853" : "#FF4D6D";
+
+  const smoothPath = getCubicBezierPath(chartData, minValue, maxValue, graphHeight, graphWidth);
+  const firstX = 0;
+  const lastX = graphWidth;
+  const bottomY = graphHeight;
+  const fillPath = `${smoothPath} L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
+
+  const step = (maxValue - minValue) / 4;
+  const yAxisValues = [
+    maxValue.toFixed(0),
+    (maxValue - step).toFixed(0),
+    (maxValue - step * 2).toFixed(0),
+    (maxValue - step * 3).toFixed(0),
+    minValue.toFixed(0),
+  ];
+
+  const xAxisLabels = getXAxisLabels();
+
+  return (
+    <View style={{ marginTop: hp('1.5%') }}>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ justifyContent: 'space-between', height: chartHeight, marginRight: wp('2%'), width: wp('12%') }}>
+          {yAxisValues.map((price, index) => (
+            <Text key={index} style={{ color: "#6B7280", fontSize: moderateScale(10), textAlign: 'right' }}>
+              ${price}
+            </Text>
+          ))}
         </View>
-      </View>
-    );
-  };
 
-  const renderCandlestickChart = () => {
-    if (!candleData.length) return null;
-
-    const graphHeight = chartHeight - hp('2.5%');
-    const graphWidth = chartWidth * zoomLevel;
-    const visibleWidth = chartWidth;
-
-    const allValues = candleData.flatMap(d => [d.high, d.low]);
-    const minValue = Math.min(...allValues);
-    const maxValue = Math.max(...allValues);
-    const valueRange = maxValue - minValue;
-
-    const getYCoordinate = (value) => {
-      return graphHeight - ((value - minValue) / valueRange) * graphHeight;
-    };
-
-    const getXCoordinate = (index, totalWidth) => {
-      const candleWidth = (totalWidth / candleData.length) * 0.7;
-      const candleSpacing = (totalWidth / candleData.length) * 0.3;
-      return (index * (candleWidth + candleSpacing)) + (candleSpacing / 2);
-    };
-
-    const step = (maxValue - minValue) / 4;
-    const yAxisValues = [
-      maxValue.toFixed(0),
-      (maxValue - step).toFixed(0),
-      (maxValue - step * 2).toFixed(0),
-      (maxValue - step * 3).toFixed(0),
-      minValue.toFixed(0),
-    ];
-
-    const xAxisLabels = getXAxisLabels();
-
-    return (
-      <View style={{ marginTop: hp('1.5%') }}>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ justifyContent: 'space-between', height: chartHeight, marginRight: wp('2%'), width: wp('12%') }}>
-            {yAxisValues.map((price, index) => (
-              <Text key={index} style={{ color: "#6B7280", fontSize: moderateScale(10), textAlign: 'right' }}>
-                ${price}
-              </Text>
-            ))}
-          </View>
-
-          <View style={{ flex: 1, overflow: 'hidden' }}>
-            <PinchGestureHandler
-              onGestureEvent={onPinchEvent}
-              onHandlerStateChange={onPinchStateChange}
+        <View style={{ flex: 1, overflow: 'hidden' }}>
+          <PinchGestureHandler
+            onGestureEvent={onPinchEvent}
+            onHandlerStateChange={onPinchStateChange}
+          >
+            <Animated.View
+              {...(zoomLevel > 1 ? panResponder.panHandlers : {})}
+              style={{
+                transform: [
+                  { scale: scale },
+                  { translateX: translateX },
+                  { translateY: translateY },
+                ],
+              }}
             >
-              <Animated.View
-                {...(zoomLevel > 1 ? panResponder.panHandlers : {})}
-                style={{
-                  transform: [
-                    { scale: scale },
-                    { translateX: translateX },
-                  ],
+              <Svg
+                height={chartHeight}
+                width={graphWidth}
+                onTouchStart={(e) => {
+                  const touchX = (e.nativeEvent.locationX - lastTranslateX.current) / lastScale.current;
+                  const pointIndex = Math.floor((touchX / graphWidth) * chartData.length);
+
+                  if (pointIndex >= 0 && pointIndex < chartData.length) {
+                    handleChartTouch(e, pointIndex, chartData[pointIndex]);
+                  }
                 }}
               >
-                <Svg
-                  height={chartHeight}
-                  width={graphWidth}
-                  onTouchStart={(e) => {
-                    if (zoomLevel === 1) {
-                      const touchX = e.nativeEvent.locationX;
-                      const candleIndex = Math.floor((touchX / visibleWidth) * candleData.length);
-                      if (candleIndex >= 0 && candleIndex < candleData.length) {
-                        handleChartTouch(e, candleIndex, candleData[candleIndex]);
-                      }
-                    }
-                  }}
-                >
-                  {yAxisValues.map((_, index) => {
-                    const y = (index / 4) * graphHeight;
+                <Defs>
+                  <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                    <Stop offset="0%" stopColor={lineColor} stopOpacity="0.3" />
+                    <Stop offset="100%" stopColor={lineColor} stopOpacity="0.0" />
+                  </LinearGradient>
+                </Defs>
+
+                {/* Grid lines */}
+                {yAxisValues.map((_, index) => {
+                  const y = (index / 4) * graphHeight;
+                  return (
+                    <SvgLine
+                      key={`grid-${index}`}
+                      x1={0}
+                      y1={y}
+                      x2={graphWidth}
+                      y2={y}
+                      stroke="#1F2937"
+                      strokeWidth={1}
+                      strokeDasharray="5,5"
+                    />
+                  );
+                })}
+
+                {/* Fill area under graph */}
+                <Path d={fillPath} fill="url(#gradient)" />
+                
+                {/* Main line path */}
+                <Path
+                  d={smoothPath}
+                  stroke={lineColor}
+                  strokeWidth={moderateScale(3)}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+
+                {/* Selected point circle */}
+                {chartData.map((point, index) => {
+                  if (selectedPoint === index && tooltipVisible) {
+                    const valueRange = maxValue - minValue;
+                    const x = (index / (chartData.length - 1)) * graphWidth;
+                    const y = graphHeight - ((point.value - minValue) / valueRange) * graphHeight;
+                    
                     return (
-                      <SvgLine
-                        key={`grid-${index}`}
-                        x1={0}
-                        y1={y}
-                        x2={graphWidth}
-                        y2={y}
-                        stroke="#1F2937"
-                        strokeWidth={1}
-                        strokeDasharray="5,5"
+                      <Circle
+                        key={`point-${index}`}
+                        cx={x}
+                        cy={y}
+                        r={moderateScale(6)}
+                        fill="#FCD535"
+                        stroke={lineColor}
+                        strokeWidth="2"
                       />
                     );
-                  })}
-
-                  {candleData?.map((candle, index) => {
-                    const x = getXCoordinate(index, graphWidth);
-                    const yHigh = getYCoordinate(candle.high);
-                    const yLow = getYCoordinate(candle.low);
-                    const yOpen = getYCoordinate(candle.open);
-                    const yClose = getYCoordinate(candle.close);
-
-                    const isPositive = candle.close >= candle.open;
-                    const bodyTop = isPositive ? yClose : yOpen;
-                    const bodyHeight = Math.abs(yClose - yOpen);
-                    const color = isPositive ? "#00C853" : "#FF4D6D";
-
-                    return (
-                      <React.Fragment key={`candle-${index}`}>
-                        <SvgLine
-                          x1={x + (graphWidth / candleData.length) * 0.35}
-                          y1={yHigh}
-                          x2={x + (graphWidth / candleData.length) * 0.35}
-                          y2={yLow}
-                          stroke={color}
-                          strokeWidth={1.5}
-                        />
-                        <SvgLine
-                          x1={x}
-                          y1={bodyTop}
-                          x2={x + (graphWidth / candleData.length) * 0.7}
-                          y2={bodyTop}
-                          stroke={color}
-                          strokeWidth={bodyHeight}
-                        />
-                      </React.Fragment>
-                    );
-                  })}
-                </Svg>
-              </Animated.View>
-            </PinchGestureHandler>
-
-            {tooltipVisible && tooltipValue && zoomLevel === 1 && (
-              <View
-                style={[
-                  styles.tooltip,
-                  {
-                    position: 'absolute',
-                    left: Math.max(10, Math.min(tooltipPosition.x - 60, visibleWidth - 130)),
-                    top: tooltipPosition.y,
-                  },
-                ]}
-              >
-                <Text style={styles.tooltipText}>
-                  Open: ${tooltipValue.open}
-                </Text>
-                <Text style={styles.tooltipSubtext}>
-                  Close: ${tooltipValue.close}
-                </Text>
-                <Text style={styles.tooltipSubtext}>
-                  {formatXAxis(tooltipValue.timestamp)}
-                </Text>
-                <View style={styles.tooltipArrow} />
-              </View>
-            )}
-
-            {/* Zoom indicator */}
-            {zoomLevel > 1 && (
-              <View style={styles.zoomIndicator}>
-                <Text style={styles.zoomIndicatorText}>
-                  Zoom: {zoomLevel.toFixed(1)}x
-                </Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        <View style={{ marginLeft: wp('10%'), marginTop: hp('1%'), flexDirection: 'row', justifyContent: 'space-between', paddingRight: 0 }}>
-          {xAxisLabels.map((item, index) => {
-            const labelText = formatXAxis(item.timestamp);
-            const isMonthName = selectedTF === "1M" && (labelText.length <= 3);
-            
-            return (
-              <Text
-                key={index}
-                style={[
-                  isMonthName ? styles.xAxisLabelMonth : styles.xAxisLabel,
-                  {
-                    fontSize: selectedTF === "1D" ? moderateScale(10) : moderateScale(11),
-                    fontWeight: isMonthName ? '600' : '400',
-                    textAlign: 'center',
-                    flex: 1,
                   }
-                ]}
-                numberOfLines={1}
-              >
-                {labelText}
+                  return null;
+                })}
+              </Svg>
+            </Animated.View>
+          </PinchGestureHandler>
+
+          {/* Tooltip */}
+          {tooltipVisible && tooltipValue && (
+            <View
+              style={[
+                styles.tooltip,
+                {
+                  position: 'absolute',
+                  left: Math.max(10, Math.min(tooltipPosition.x - 50, visibleWidth - 110)),
+                  top: tooltipPosition.y,
+                },
+              ]}
+            >
+              <Text style={styles.tooltipText}>
+                ${tooltipValue?.value?.toLocaleString()}
               </Text>
-            );
-          })}
+              <Text style={styles.tooltipSubtext}>
+                {formatXAxis(tooltipValue.timestamp)}
+              </Text>
+              <View style={styles.tooltipArrow} />
+            </View>
+          )}
+
+          {/* Zoom indicator */}
+          {zoomLevel > 1 && (
+            <View style={styles.zoomIndicator}>
+              <Text style={styles.zoomIndicatorText}>
+                Zoom: {zoomLevel.toFixed(1)}x
+              </Text>
+            </View>
+          )}
         </View>
       </View>
-    );
+
+      {/* X-Axis Labels */}
+      <View style={{ marginLeft: wp('10%'), marginTop: hp('1%'), flexDirection: 'row', justifyContent: 'space-between', paddingRight: 0 }}>
+        {xAxisLabels.map((item, index) => {
+          const labelText = formatXAxis(item.timestamp);
+          const isMonthName = selectedTF === "1M" && (labelText.length <= 3);
+          
+          return (
+            <Text
+              key={index}
+              style={[
+                isMonthName ? styles.xAxisLabelMonth : styles.xAxisLabel,
+                {
+                  fontSize: selectedTF === "1D" ? moderateScale(10) : moderateScale(11),
+                  fontWeight: isMonthName ? '600' : '400',
+                  textAlign: 'center',
+                  flex: 1,
+                }
+              ]}
+              numberOfLines={1}
+            >
+              {labelText}
+            </Text>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
+
+const renderCandlestickChart = () => {
+  if (!candleData.length) return null;
+
+  const graphHeight = chartHeight - hp('2.5%');
+  const graphWidth = chartWidth * lastScale.current;
+  const visibleWidth = chartWidth;
+
+  const allValues = candleData.flatMap(d => [d.high, d.low]);
+  const minValue = Math.min(...allValues);
+  const maxValue = Math.max(...allValues);
+  const valueRange = maxValue - minValue;
+
+  const getYCoordinate = (value) => {
+    return graphHeight - ((value - minValue) / valueRange) * graphHeight;
   };
+
+  const getXCoordinate = (index, totalWidth) => {
+    const candleWidth = (totalWidth / candleData.length) * 0.7;
+    const candleSpacing = (totalWidth / candleData.length) * 0.3;
+    return (index * (candleWidth + candleSpacing)) + (candleSpacing / 2);
+  };
+
+  const step = (maxValue - minValue) / 4;
+  const yAxisValues = [
+    maxValue.toFixed(0),
+    (maxValue - step).toFixed(0),
+    (maxValue - step * 2).toFixed(0),
+    (maxValue - step * 3).toFixed(0),
+    minValue.toFixed(0),
+  ];
+
+  const xAxisLabels = getXAxisLabels();
+
+  return (
+    <View style={{ marginTop: hp('1.5%') }}>
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ justifyContent: 'space-between', height: chartHeight, marginRight: wp('2%'), width: wp('12%') }}>
+          {yAxisValues.map((price, index) => (
+            <Text key={index} style={{ color: "#6B7280", fontSize: moderateScale(10), textAlign: 'right' }}>
+              ${price}
+            </Text>
+          ))}
+        </View>
+
+        <View style={{ flex: 1, overflow: 'hidden' }}>
+          <PinchGestureHandler
+            onGestureEvent={onPinchEvent}
+            onHandlerStateChange={onPinchStateChange}
+          >
+            <Animated.View
+              {...(zoomLevel > 1 ? panResponder.panHandlers : {})}
+              style={{
+                transform: [
+                  { scale: scale },
+                  { translateX: translateX },
+                  { translateY: translateY },
+                ],
+              }}
+            >
+              <Svg
+                height={chartHeight}
+                width={graphWidth}
+                onTouchStart={(e) => {
+                  const touchX = (e.nativeEvent.locationX - lastTranslateX.current) / lastScale.current;
+                  const candleIndex = Math.floor((touchX / graphWidth) * candleData.length);
+
+                  if (candleIndex >= 0 && candleIndex < candleData.length) {
+                    handleChartTouch(e, candleIndex, candleData[candleIndex]);
+                  }
+                }}
+              >
+                {/* Grid lines */}
+                {yAxisValues.map((_, index) => {
+                  const y = (index / 4) * graphHeight;
+                  return (
+                    <SvgLine
+                      key={`grid-${index}`}
+                      x1={0}
+                      y1={y}
+                      x2={graphWidth}
+                      y2={y}
+                      stroke="#1F2937"
+                      strokeWidth={1}
+                      strokeDasharray="5,5"
+                    />
+                  );
+                })}
+
+                {/* Candles */}
+                {candleData.map((candle, index) => {
+                  const x = getXCoordinate(index, graphWidth);
+                  const candleWidth = (graphWidth / candleData.length) * 0.7;
+                  const yHigh = getYCoordinate(candle.high);
+                  const yLow = getYCoordinate(candle.low);
+                  const yOpen = getYCoordinate(candle.open);
+                  const yClose = getYCoordinate(candle.close);
+
+                  const isPositive = candle.close >= candle.open;
+                  const bodyTop = isPositive ? yClose : yOpen;
+                  const bodyHeight = Math.abs(yClose - yOpen);
+                  const color = isPositive ? "#00C853" : "#FF4D6D";
+
+                  return (
+                    <React.Fragment key={`candle-${index}`}>
+                      {/* Wick */}
+                      <SvgLine
+                        x1={x + candleWidth / 2}
+                        y1={yHigh}
+                        x2={x + candleWidth / 2}
+                        y2={yLow}
+                        stroke={color}
+                        strokeWidth={1.5}
+                      />
+                      {/* Body */}
+                      <SvgLine
+                        x1={x}
+                        y1={bodyTop}
+                        x2={x + candleWidth}
+                        y2={bodyTop}
+                        stroke={color}
+                        strokeWidth={Math.max(1, bodyHeight)}
+                      />
+                    </React.Fragment>
+                  );
+                })}
+              </Svg>
+            </Animated.View>
+          </PinchGestureHandler>
+
+          {/* Tooltip */}
+          {tooltipVisible && tooltipValue && (
+            <View
+              style={[
+                styles.tooltip,
+                {
+                  position: 'absolute',
+                  left: Math.max(10, Math.min(tooltipPosition.x - 60, visibleWidth - 130)),
+                  top: tooltipPosition.y,
+                },
+              ]}
+            >
+              <Text style={styles.tooltipText}>
+                Open: ${tooltipValue.open}
+              </Text>
+              <Text style={styles.tooltipSubtext}>
+                Close: ${tooltipValue.close}
+              </Text>
+              <Text style={styles.tooltipSubtext}>
+                {formatXAxis(tooltipValue.timestamp)}
+              </Text>
+              <View style={styles.tooltipArrow} />
+            </View>
+          )}
+
+          {/* Zoom indicator */}
+          {zoomLevel > 1 && (
+            <View style={styles.zoomIndicator}>
+              <Text style={styles.zoomIndicatorText}>
+                Zoom: {zoomLevel.toFixed(1)}x
+              </Text>
+            </View>
+          )}
+        </View>
+      </View>
+
+      {/* X-Axis Labels */}
+      <View style={{ marginLeft: wp('10%'), marginTop: hp('1%'), flexDirection: 'row', justifyContent: 'space-between', paddingRight: 0 }}>
+        {xAxisLabels.map((item, index) => {
+          const labelText = formatXAxis(item.timestamp);
+          const isMonthName = selectedTF === "1M" && (labelText.length <= 3);
+          
+          return (
+            <Text
+              key={index}
+              style={[
+                isMonthName ? styles.xAxisLabelMonth : styles.xAxisLabel,
+                {
+                  fontSize: selectedTF === "1D" ? moderateScale(10) : moderateScale(11),
+                  fontWeight: isMonthName ? '600' : '400',
+                  textAlign: 'center',
+                  flex: 1,
+                }
+              ]}
+              numberOfLines={1}
+            >
+              {labelText}
+            </Text>
+          );
+        })}
+      </View>
+    </View>
+  );
+};
 
   const getCurrentPrice = () => {
     if (!coinData) return 0;
