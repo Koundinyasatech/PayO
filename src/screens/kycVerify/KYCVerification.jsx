@@ -10,6 +10,7 @@ import {
   Alert,
   TextInput,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
@@ -23,7 +24,9 @@ import {
 
 import { pick } from '@react-native-documents/picker';
 import { Dropdown } from 'react-native-element-dropdown';
-import api from '../../api/axios';
+import api, { getToken } from '../../api/axios';
+import axios from 'axios';
+import RNFS from 'react-native-fs';
 
 // Import your API instance
 // Update with your actual API import path
@@ -185,180 +188,581 @@ export default function KYCVerification({
   //     throw new Error('Failed to upload Aadhar');
   //   }
   // };
-
-  const uploadAadhar = async () => {
+const testApi = async () => {
   try {
-    const formData = new FormData();
-    
-    // Log file details before upload
-    // console.log('Aadhar File:', {
-    //   uri: aadhaarFile.uri,
-    //   type: aadhaarFile.type,
-    //   name: aadhaarFile.name,
-    //   size: aadhaarFile.size,
-    // });
-    
-    // console.log('Selfie File:', {
-    //   uri: faceFile.uri,
-    //   type: faceFile.type,
-    //   name: faceFile.fileName || faceFile.name,
-    // });
-    
-    // // Append files (this will create the multipart format you showed)
-    // formData.append('aadharFront', {
-    //   uri: aadhaarFile.uri,
-    //   type: aadhaarFile.type || 'application/pdf',
-    //   name: aadhaarFile.name || 'document.pdf',
-    // });
-    
-    // formData.append('selfie', {
-    //   uri: faceFile.uri,
-    //   type: faceFile.type || 'image/jpeg',
-    //   name: faceFile.fileName || faceFile.name || 'selfie.jpg',
-    // });
-    
-    const payload={
-      aadharFront:aadhaarFile.uri,
-      selfie:faceFile.uri,
-    }
-
-    console.log(payload,"00")
-    
-    const response = await api.post('/api/kyc/upload-aadhar-documents', payload);
-    
-    console.log('Upload response:', response.data);
-    return response.data;
-    
-  } catch (error) {
-    console.error('Upload error details:', {
-      message: error.message,
-      response: error.response?.data,
-      status: error.response?.status,
-    });
-    throw error;
+    const response = await api.get('/');
+    console.log(response.data,'0000');
+  } catch (err) {
+    console.log('API TEST ERROR:', err.message);
   }
 };
 
-  const uploadPan = async () => {
-    try {
-      const formData = new FormData();
+// const uploadAadhar = async () => {
+//   try {
+// //     const formData = new FormData();
+
+// // formData.append('aadharFront', {
+// //   uri: aadhaarFile.uri,
+// //   name: aadhaarFile.name,
+// //   type: aadhaarFile.type,
+// // });
+
+// // formData.append('selfie', {
+// //   uri: faceFile.uri,
+// //   name: faceFile.fileName || 'selfie.jpg',
+// //   type: faceFile.type,
+// // });
+// // console.log(JSON.stringify(formData._parts, null, 2));
+// // const check8=JSON.stringify(formData._parts, null, 2)
+
+// // const token = await getToken();
+
+// // const response = await axios.post(
+// //   'https://hedge-cadet-cognition.ngrok-free.dev/api/kyc/upload-aadhar-documents',
+// //   check8,
+// //   {
+// //     headers: {
+// //       Authorization: `Bearer ${token}`,
+// //       'Content-Type': 'multipart/form-data',
+// //     },
+// //     timeout: 60000,
+// //   }
+// // );
+
+// const formData = new FormData();
+
+// formData.append('aadharFront', {
+//   uri: aadhaarFile.uri,
+//   type: 'image/jpeg',
+//   name: aadhaarFile.name || 'aadhar.jpg',
+// });
+
+// formData.append('selfie', {
+//   uri: faceFile.uri,
+//   type: 'image/jpeg',
+//   name: faceFile.fileName || 'selfie.jpg',
+// });
+
+// const token = await getToken();
+
+// const response = await axios({
+//   method: 'post',
+//   url: 'https://hedge-cadet-cognition.ngrok-free.dev/api/kyc/upload-aadhar-documents',
+//   data: formData,
+//   headers: {
+//     Authorization: `Bearer ${token}`,
+//     'Content-Type': 'multipart/form-data',
+//     Accept: 'application/json',
+//   },
+//   timeout: 60000,
+// });
+
+//     console.log('Response:', response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.log('Upload Error:', error.response?.data || error.message);
+//   }
+// };
+
+
+
+
+// const uploadAadharDocuments = async (aadharFront, selfie) => {
+//   try {
+//     const formData = new FormData();
+
+//     formData.append('aadharFront', {
+//       uri:
+//         Platform.OS === 'ios'
+//           ? aadharFront.uri.replace('file://', '')
+//           : aadharFront.uri,
+//       name: aadharFront.fileName || 'aadhar.jpg',
+//       type: aadharFront.type || 'image/jpeg',
+//     });
+
+//     formData.append('selfie', {
+//       uri:
+//         Platform.OS === 'ios'
+//           ? selfie.uri.replace('file://', '')
+//           : selfie.uri,
+//       name: selfie.fileName || 'selfie.jpg',
+//       type: selfie.type || 'image/jpeg',
+//     });
+
+//     console.log('AADHAR FILE:', aadharFront);
+//     console.log('SELFIE FILE:', selfie);
+
+//     const response = await api.post(
+//       'api/kyc/upload-aadhar-documents',
+//       formData,
+//       {
+//         timeout: 60000,
+//       },
+//     );
+
+//     return response.data;
+//   } catch (error) {
+//     console.log('Upload Error:', error?.response?.data || error.message);
+//     throw error;
+//   }
+// };
+
+
+// const uploadPan = async () => {
+//   try {
+//     if (!panFile) {
+//       throw new Error('PAN file not selected');
+//     }
+
+//     console.log('PAN FILE:', panFile);
+
+//     const formData = new FormData();
+
+//     formData.append('panCard', {
+//       uri: panFile.uri,
+//       type: panFile.type || 'image/jpeg',
+//       name: panFile.name || panFile.fileName || 'pan.jpg',
+//     });
+
+//     // Debug FormData
+//     console.log('FormData Parts:', formData._parts);
+
+//     const response = await api.post(
+//       '/api/kyc/upload-pan-documents',
+//       formData._parts
+//     );
+
+//     console.log('PAN Upload Response:', response.data);
+
+//     return response.data;
+//   } catch (error) {
+//     console.log('PAN Upload Error:', {
+//       message: error.message,
+//       response: error.response?.data,
+//       status: error.response?.status,
+//     });
+
+//     throw error;
+//   }
+// };
+
+//   const uploadPassport = async () => {
+//     try {
+//       const formData = new FormData();
       
-      // // Add pan card file
-      // formData.append('panCard', {
-      //   uri: panFile.uri,
-      //   type: panFile.type,
-      //   name: panFile.name,
-      // });
+//       // Add passport file (or other ID)
+//       // const fileKey = otherIdType === 'Passport' ? 'passport' : 'otherId';
+//       // formData.append(fileKey, {
+//       //   uri: otherIdFile.uri,
+//       //   type: otherIdFile.type,
+//       //   name: otherIdFile.name,
+//       // });
       
-      // // Add selfie file
-      // formData.append('selfie', {
-      //   uri: faceFile.uri,
-      //   type: faceFile.type,
-      //   name: faceFile.fileName || 'selfie.jpg',
-      // });
+//       // // Add selfie file
+//       // formData.append('selfie', {
+//       //   uri: faceFile.uri,
+//       //   type: faceFile.type,
+//       //   name: faceFile.fileName || 'selfie.jpg',
+//       // });
 
-        const payload={
-      panCard:panFile.uri,
-      selfie:faceFile.uri,
-    }
-
-
-      const response = await api.post('/api/kyc/upload-pan-documents', payload);
-
-      console.log('PAN Upload Response:', response.data);
-      return response.data.success;
-    } catch (error) {
-      console.error('PAN Upload Error:', error);
-      throw new Error('Failed to upload PAN');
-    }
-  };
-
-  const uploadPassport = async () => {
-    try {
-      const formData = new FormData();
-      
-      // Add passport file (or other ID)
-      // const fileKey = otherIdType === 'Passport' ? 'passport' : 'otherId';
-      // formData.append(fileKey, {
-      //   uri: otherIdFile.uri,
-      //   type: otherIdFile.type,
-      //   name: otherIdFile.name,
-      // });
-      
-      // // Add selfie file
-      // formData.append('selfie', {
-      //   uri: faceFile.uri,
-      //   type: faceFile.type,
-      //   name: faceFile.fileName || 'selfie.jpg',
-      // });
-
-          const payload={
-      passport:otherIdFile.uri,
-      selfie:faceFile.uri,
-    }
+//           const payload={
+//       passport:otherIdFile.uri,
+//       selfie:faceFile.uri,
+//     }
 
     
 
-      const response = await api.post('/api/kyc/upload-passport-documents', formData,);
+//       const response = await api.post('/api/kyc/upload-passport-documents', formData,);
 
-      console.log('Other ID Upload Response:', response.data);
-      return response.data.success;
+//       console.log('Other ID Upload Response:', response.data);
+//       return response.data.success;
+//     } catch (error) {
+//       console.error('Other ID Upload Error:', error);
+//       throw new Error(`Failed to upload ${otherIdType}`);
+//     }
+//   };
+
+
+//   const handleSubmit = async () => {
+//     console.log("sowmya790")
+//     testApi();
+//     // Validation checks
+//     // if (!otherIdType) {
+//     //   Alert.alert('Select ID Type', 'Please select an ID type');
+//     //   return;
+//     // }
+
+//     // if (!otherIdFile) {
+//     //   Alert.alert(`Upload ${otherIdType}`, `Please upload your ${otherIdType}`);
+//     //   return;
+//     // }
+
+//     // if (!faceFile) {
+//     //   Alert.alert('Selfie Required', 'Please capture your selfie');
+//     //   return;
+//     // }
+
+//     // if (!aadhaarFile) {
+//     //   Alert.alert('Aadhaar Required', 'Please upload your Aadhaar card');
+//     //   return;
+//     // }
+
+//     // if (!panFile) {
+//     //   Alert.alert('PAN Card Required', 'Please upload your PAN card');
+//     //   return;
+//     // }
+
+//     // setIsLoading(true);
+
+//     try {
+//       // Upload all documents sequentially
+//       console.log('Starting Aadhar upload...');
+//       await uploadAadharDocuments(aadhaarFile,faceFile);
+      
+//       console.log('Starting PAN upload...');
+//       await uploadPan();
+      
+//       console.log('Starting Other ID upload...');
+//       await uploadPassport();
+
+//       // All uploads successful
+//       Alert.alert('Success', 'All documents uploaded successfully', [
+//         { text: 'OK', onPress: () => navigation.navigate('KycUnderReview') }
+//       ]);
+      
+//     } catch (error) {
+//       console.error('Upload Error:', error);
+//       Alert.alert('Upload Failed', error.message || 'Failed to upload documents. Please try again.');
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+
+
+//   const uploadAadharDocuments = async () => {
+//     try {
+//       if (!aadhaarFile || !faceFile) {
+//         Alert.alert('Error', 'Please upload Aadhar front and selfie');
+//         return false;
+//       }
+
+//       // const formData = new FormData();
+      
+//       // formData.append('aadharFront', {
+//       //   uri: Platform.OS === 'ios' ? aadhaarFile.uri.replace('file://', '') : aadhaarFile.uri,
+//       //   name: aadhaarFile.name,
+//       //   type: aadhaarFile.type,
+//       // });
+      
+//       // formData.append('selfie', {
+//       //   uri: Platform.OS === 'ios' ? faceFile.uri.replace('file://', '') : faceFile.uri,
+//       //   name: faceFile.name,
+//       //   type: faceFile.type,
+//       // });
+
+//       // console.log('Uploading Aadhar documents...',formData);
+//       // const response = await api.post('/api/kyc/upload-aadhar-documents', formData, {
+//       //   headers: { 'Content-Type': 'multipart/form-data' }
+//       // });
+
+//       // if (response.data.success) {
+//       //   Alert.alert('Success', 'Aadhar documents uploaded successfully');
+//       //   return true;
+//       // }
+//       // return false;
+
+//       const formData = new FormData();
+
+// formData?.append('aadharFront', {
+//   uri: aadhaarFile?.uri,
+//   type: aadhaarFile.type || 'image/jpeg',
+//   name: aadhaarFile.name || 'aadhar.jpg',
+// });
+
+// formData?.append('selfie', {
+//   uri: faceFile?.uri,
+//   type: faceFile?.type || 'image/jpeg',
+//   name: faceFile?.name || 'selfie.jpg',
+// });
+
+// console.log(formData,"formData")
+
+// const response = await api.post(
+//   '/api/kyc/upload-aadhar-documents',
+//   formData,
+//   {
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'multipart/form-data',
+//     },
+//   },
+// );
+
+// if (response.data.success) {
+//         Alert.alert('Success', 'Aadhar documents uploaded successfully');
+//         return true;
+//       }
+//       return false;
+
+//     } catch (error) {
+//       console.error('Aadhar upload error:', error.response?.data || error.message);
+//       Alert.alert('Error', error.response?.data?.message || 'Failed to upload Aadhar');
+//       return false;
+//     }
+//   };
+
+
+
+const uploadAadharDocuments = async () => {
+  try {
+    if (!aadhaarFile || !faceFile) {
+      Alert.alert('Error', 'Please upload Aadhar front and selfie');
+      return false;
+    }
+
+    console.log('========== FILE DETAILS ==========');
+    console.log('AADHAR FILE =>', aadhaarFile);
+    console.log('SELFIE FILE =>', faceFile);
+
+    // Verify files exist
+    const aadharExists = await RNFS.exists(
+      aadhaarFile.uri.replace('file://', ''),
+    );
+
+    const selfieExists = await RNFS.exists(
+      faceFile.uri.replace('file://', ''),
+    );
+
+    console.log('AADHAR EXISTS =>', aadharExists);
+    console.log('SELFIE EXISTS =>', selfieExists);
+
+    if (!aadharExists || !selfieExists) {
+      Alert.alert('Error', 'Selected file not found on device');
+      return false;
+    }
+
+    // Verify API reachable
+    try {
+      const token = await getToken();
+
+      const testResponse = await fetch(
+        'https://hedge-cadet-cognition.ngrok-free.dev/api/kyc/verification-status',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+          },
+        },
+      );
+
+      console.log(
+        'CONNECTIVITY TEST STATUS =>',
+        testResponse.status,
+      );
+    } catch (err) {
+      console.log('CONNECTIVITY TEST FAILED =>', err);
+      Alert.alert('Error', 'API server not reachable');
+      return false;
+    }
+
+    const formData = new FormData();
+
+    formData.append('aadharFront', {
+      uri:
+        Platform.OS === 'android'
+          ? aadhaarFile.uri
+          : aadhaarFile.uri.replace('file://', ''),
+      type: aadhaarFile.type || 'image/jpeg',
+      name: aadhaarFile.name || 'aadhar.jpg',
+    });
+
+    formData.append('selfie', {
+      uri:
+        Platform.OS === 'android'
+          ? faceFile.uri
+          : faceFile.uri.replace('file://', ''),
+      type: faceFile.type || 'image/jpeg',
+      name:
+        faceFile.fileName ||
+        faceFile.name ||
+        'selfie.jpg',
+    });
+
+    console.log('========== FORMDATA ==========');
+    console.log(formData._parts);
+
+    const token = await getToken();
+
+    console.log('========== STARTING UPLOAD ==========');
+
+    const response = await fetch(
+      'https://hedge-cadet-cognition.ngrok-free.dev/api/kyc/upload-aadhar-documents',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          // DO NOT SET CONTENT-TYPE MANUALLY
+        },
+        body: formData,
+      },
+    );
+
+    console.log('UPLOAD STATUS =>', response.status);
+    console.log('UPLOAD OK =>', response.ok);
+
+    const responseText = await response.text();
+
+    console.log('UPLOAD RESPONSE =>', responseText);
+
+    let responseData = {};
+
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (e) {
+      console.log('Response is not JSON');
+    }
+
+    if (response.ok) {
+      Alert.alert(
+        'Success',
+        responseData.message ||
+          'Aadhar documents uploaded successfully',
+      );
+      return true;
+    }
+
+    Alert.alert(
+      'Upload Failed',
+      responseData.message || 'Server rejected request',
+    );
+
+    return false;
+  } catch (error) {
+    console.log('========== UPLOAD ERROR ==========');
+    console.log('MESSAGE =>', error?.message);
+    console.log('STACK =>', error?.stack);
+    console.log('ERROR =>', error);
+    console.log('=================================');
+
+    Alert.alert(
+      'Upload Failed',
+      error?.message || 'Unknown error',
+    );
+
+    return false;
+  }
+};
+
+  // Upload PAN Documents
+  const uploadPanDocuments = async () => {
+    try {
+      if (!panCard) {
+        Alert.alert('Error', 'Please upload PAN card');
+        return false;
+      }
+
+      const formData = new FormData();
+      
+      formData.append('panCard', {
+        uri: Platform.OS === 'ios' ? panCard.uri.replace('file://', '') : panCard.uri,
+        name: panCard.name,
+        type: panCard.type,
+      });
+
+      console.log('Uploading PAN documents...');
+      const response = await api.post('/api/kyc/upload-pan-documents', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      if (response.data.success) {
+        Alert.alert('Success', 'PAN card uploaded successfully');
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.error('Other ID Upload Error:', error);
-      throw new Error(`Failed to upload ${otherIdType}`);
+      console.error('PAN upload error:', error.response?.data || error.message);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to upload PAN card');
+      return false;
     }
   };
 
-
-  const handleSubmit = async () => {
-    console.log("sowmya790")
-    // Validation checks
-    if (!otherIdType) {
-      Alert.alert('Select ID Type', 'Please select an ID type');
-      return;
-    }
-
-    if (!otherIdFile) {
-      Alert.alert(`Upload ${otherIdType}`, `Please upload your ${otherIdType}`);
-      return;
-    }
-
-    if (!faceFile) {
-      Alert.alert('Selfie Required', 'Please capture your selfie');
-      return;
-    }
-
-    if (!aadhaarFile) {
-      Alert.alert('Aadhaar Required', 'Please upload your Aadhaar card');
-      return;
-    }
-
-    if (!panFile) {
-      Alert.alert('PAN Card Required', 'Please upload your PAN card');
-      return;
-    }
-
-    setIsLoading(true);
-
+  // Upload Passport Documents
+  const uploadPassportDocuments = async () => {
     try {
-      // Upload all documents sequentially
-      console.log('Starting Aadhar upload...');
-      await uploadAadhar();
-      
-      console.log('Starting PAN upload...');
-      await uploadPan();
-      
-      console.log('Starting Other ID upload...');
-      await uploadPassport();
+      if (!passport) {
+        Alert.alert('Error', 'Please upload passport');
+        return false;
+      }
 
-      // All uploads successful
-      Alert.alert('Success', 'All documents uploaded successfully', [
-        { text: 'OK', onPress: () => navigation.navigate('KycUnderReview') }
-      ]);
+      const formData = new FormData();
+      
+      formData.append('passport', {
+        uri: Platform.OS === 'ios' ? passport.uri.replace('file://', '') : passport.uri,
+        name: passport.name,
+        type: passport.type,
+      });
+
+      console.log('Uploading Passport documents...');
+      const response = await api.post('/api/kyc/upload-passport-documents', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      if (response.data.success) {
+        Alert.alert('Success', 'Passport uploaded successfully');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Passport upload error:', error.response?.data || error.message);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to upload passport');
+      return false;
+    }
+  };
+
+  // Submit all documents for review
+  const submitForReview = async () => {
+    try {
+      const response = await api.post('/api/kyc/submit-for-review');
+      if (response.data.success) {
+        Alert.alert('Success', 'KYC submitted for review', [
+          { text: 'OK', onPress: () => navigation.replace('KycUnderReview') }
+        ]);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Submit error:', error.response?.data || error.message);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to submit for review');
+      return false;
+    }
+  };
+
+  // Handle complete submission
+  const handleSubmitAll = async () => {
+    setIsLoading(true);
+    
+    try {
+      // Upload Aadhar
+      const aadharSuccess = await uploadAadharDocuments();
+      if (!aadharSuccess) return;
+
+      // Upload PAN or Passport based on active step
+      if (activeStep === 'pan') {
+        const panSuccess = await uploadPanDocuments();
+        if (!panSuccess) return;
+      } else if (activeStep === 'passport') {
+        const passportSuccess = await uploadPassportDocuments();
+        if (!passportSuccess) return;
+      }
+
+      // Submit for review
+      await submitForReview();
       
     } catch (error) {
-      console.error('Upload Error:', error);
-      Alert.alert('Upload Failed', error.message || 'Failed to upload documents. Please try again.');
+      console.error('Submission error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -539,7 +943,7 @@ export default function KYCVerification({
           {activeTab === 'other' && (
             <TouchableOpacity
               style={[styles.submitBtn, isLoading && { opacity: 0.7 }]}
-              onPress={handleSubmit}
+              onPress={handleSubmitAll}
               disabled={isLoading}>
               {isLoading ? (
                 <ActivityIndicator color="#fff" />

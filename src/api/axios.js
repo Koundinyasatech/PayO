@@ -2,12 +2,31 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 const api = axios.create({
-  baseURL: 'http://payo-new.duckdns.org:3001',
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: 'https://hedge-cadet-cognition.ngrok-free.dev',
+  timeout: 60000,
+   headers: {
+    'Accept': 'application/json',
+  }
 });
+
+api.interceptors.request.use(
+  async config => {
+    const credentials = await Keychain.getGenericPassword();
+
+    if (credentials) {
+      config.headers.Authorization = `Bearer ${credentials.password}`;
+    }
+
+    console.log('REQUEST URL =>', `${config.baseURL}${config.url}`);
+    console.log('METHOD =>', config.method);
+    console.log('HEADERS =>', config.headers);
+
+    return config;
+  },
+  error => Promise.reject(error),
+);
+
+export default api;
 
 // ✅ FIXED (async + no error)
 export const getToken = async () => {
@@ -25,23 +44,23 @@ export const getToken = async () => {
 };
 
 // ✅ REQUEST INTERCEPTOR (no change needed, just safe)
-api.interceptors.request.use(
-  async (config) => {
-    try {
-      const credentials = await Keychain.getGenericPassword();
+// api.interceptors.request.use(
+//   async (config) => {
+//     try {
+//       const credentials = await Keychain.getGenericPassword();
 
-      if (credentials) {
-        const token = credentials.password;
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+//       if (credentials) {
+//         const token = credentials.password;
+//         config.headers.Authorization = `Bearer ${token}`;
+//       }
 
-      return config;
-    } catch (error) {
-      console.log('Interceptor error:', error);
-      return config;
-    }
-  },
-  (error) => Promise.reject(error)
-);
+//       return config;
+//     } catch (error) {
+//       console.log('Interceptor error:', error);
+//       return config;
+//     }
+//   },
+//   (error) => Promise.reject(error)
+// );
 
-export default api;
+// export default api;
