@@ -65,6 +65,7 @@ import KYCVerification from '../screens/kycVerify/KYCVerification';
 import KycUnderReview from '../screens/kycVerify/KycUnderReview';
 import KycComplete from '../screens/kycVerify/KycComplete';
 import KycFail from '../screens/kycVerify/KycFail';
+import HelpCenterScreen from '../screens/helpCenter/HelpCenterScreen.jsx';
 
 
 
@@ -120,6 +121,7 @@ export default function AppNavigator() {
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
         <Stack.Screen name="recents" component={Recents} />
+        <Stack.Screen name="HelpCenter"component={HelpCenterScreen}/>
 
 
         <Stack.Screen name="loading" component={PaymentLoading} />
