@@ -349,6 +349,20 @@ export default function UserProfile({ navigation }) {
 
           </View>
 
+                     <Text style={styles.sectionTitle}>Security</Text>
+
+           <View style={styles.card}>
+             <View style={styles.row}>
+                 <Text style={styles.item}>KYC Verification</Text>
+         <Text style={styles.green}>Approved ›</Text>
+       </View>
+
+           <View style={styles.row}>
+           <Text style={styles.item}>Linked Mobile</Text>
+              <Text style={styles.value}>+91 {profiledata?.mobile}</Text>
+           </View>
+         </View> 
+
           {/* LOGOUT */}
 
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>

@@ -470,6 +470,8 @@ export default function LoginScreen({ navigation }) {
     return () => unsubscribe();
   }, []);
 
+  
+
   const validate = () => {
     let valid = true;
 
@@ -492,42 +494,115 @@ export default function LoginScreen({ navigation }) {
 
     return valid;
   };
+console.log(isConnected,"99")
+  // const handleSubmit = async () => {
+  //   if (!isConnected) {
+  //     setMessage('No internet connection');
+  //     return;
+  //   }
 
-  const handleSubmit = async () => {
-    if (!isConnected) {
-      setMessage('No internet connection');
-      return;
-    }
+  //   if (!validate()) return;
 
-    if (!validate()) return;
+  //   try {
+  //     const response = await api.post('/api/auth/login', {
+  //       email,
+  //       password,
+  //     });
 
-    try {
-      const response = await api.post('/api/auth/login', {
-        email,
-        password,
-      });
+  //     if (response?.data?.message === 'Login success') {
+  //       const token = response?.data?.token;
 
-      if (response?.data?.message === 'Login success') {
-        const token = response?.data?.token;
+  //       await Keychain.setGenericPassword('userToken', token);
 
-        await Keychain.setGenericPassword('userToken', token);
+  //       setMessage('');
 
-        setMessage('');
+        
 
-        if (isConnected) {
+  //       if (isConnected) {
+  //         // navigation.navigate('Main');
+  //       }
+  //     } else {
+  //       setMessage(response?.data?.message || 'Login failed');
+  //     }
+  //   } catch (error) {
+  //     setMessage(
+  //       error?.response?.data?.message ||
+  //         error?.message ||
+  //         'Something went wrong',
+  //     );
+  //   }
+  // };
+
+const handleSubmit = async () => {
+  if (!isConnected) {
+    setMessage('No internet connection');
+    return;
+  }
+
+  if (!validate()) return;
+
+  try {
+    const response = await api.post('/api/auth/login', {
+      email,
+      password,
+    });
+
+    if (response?.data?.message === 'Login success') {
+      const token = response?.data?.token;
+
+      // Save token
+      await Keychain.setGenericPassword(
+        'userToken',
+        token,
+      );
+
+      setMessage('');
+
+      try {
+        // Interceptor automatically sends Bearer token
+        const kycResponse = await api.get(
+          '/api/kyc/review-pipeline-status',
+        );
+
+        console.log(
+          'KYC STATUS =>',
+          kycResponse.data,
+        );
+
+        // Example navigation
+        // navigation.navigate('Main');
+
+        // OR based on API response:
+        if (kycResponse.data.status === 'approved') {
           navigation.navigate('Main');
+        } else {
+          navigation.navigate('KycUnderReview');
         }
-      } else {
-        setMessage(response?.data?.message || 'Login failed');
+
+      } catch (kycError) {
+        console.log(
+          'KYC Status Error =>',
+          kycError?.response?.data || kycError,
+        );
+
+        setMessage(
+          'Unable to fetch KYC status',
+        );
       }
-    } catch (error) {
+    } else {
       setMessage(
-        error?.response?.data?.message ||
-          error?.message ||
-          'Something went wrong',
+        response?.data?.message ||
+          'Login failed',
       );
     }
-  };
+  } catch (error) {
+    setMessage(
+      error?.response?.data?.message ||
+        error?.message ||
+        'Something went wrong',
+    );
+  }
+};
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
