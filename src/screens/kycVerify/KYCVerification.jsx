@@ -962,7 +962,7 @@
 
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   View,
@@ -987,11 +987,9 @@ import {
 
 import { pick } from '@react-native-documents/picker';
 import { Dropdown } from 'react-native-element-dropdown';
-import api from '../../api/axios';
+import api, { getToken } from '../../api/axios';
 import RNFS from 'react-native-fs';
 
-// Import your API instance
-// Update with your actual API import path
 
 export default function KYCVerification({
   navigation,
@@ -1004,6 +1002,7 @@ export default function KYCVerification({
   const [panFile, setPanFile] = useState(null);
   const [otherIdFile, setOtherIdFile] = useState(null);
   const [faceFile, setFaceFile] = useState(null);
+  const [token,setToken]=useState("")
 
   const otherIdOptions = [
     { label: 'Driving License', value: 'Driving License' },
@@ -1011,9 +1010,7 @@ export default function KYCVerification({
     { label: 'Passport', value: 'Passport' },
   ];
 
-  // =========================
-  // Upload Alert
-  // =========================
+
 
   const handleDocumentUpload = () => {
     Alert.alert('Upload Document', 'Choose file type', [
@@ -1023,9 +1020,17 @@ export default function KYCVerification({
     ]);
   };
 
-  // =========================
-  // Save File
-  // =========================
+     useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await getToken();
+      setToken(storedToken);
+    };
+
+    fetchToken();
+  }, []);
+
+
+
 
   const saveSelectedFile = file => {
     if (activeTab === 'aadhaar') {
@@ -1046,9 +1051,7 @@ export default function KYCVerification({
     }
   };
 
-  // =========================
-  // Image Picker
-  // =========================
+ 
 
   const openImagePicker = async () => {
     const response = await launchImageLibrary({
@@ -1070,9 +1073,6 @@ export default function KYCVerification({
     }
   };
 
-  // =========================
-  // PDF Picker
-  // =========================
 
   const openPdfPicker = async () => {
     try {
@@ -1096,9 +1096,6 @@ export default function KYCVerification({
     }
   };
 
-  // =========================
-  // Selfie Camera
-  // =========================
 
   const handleFaceUpload = () => {
     launchCamera(
@@ -1115,94 +1112,6 @@ export default function KYCVerification({
     );
   };
 
-  // =========================
-  // API Integration Functions
-  // =========================
-
-  // const uploadAadhar = async () => {
-  //   try {
-  //     const formData = new FormData();
-      
-  //     // Add aadhar front file
-  //     formData.append('aadharFront', {
-  //       uri: aadhaarFile.uri,
-  //       type: aadhaarFile.type,
-  //       name: aadhaarFile.name,
-  //     });
-      
-  //     // Add selfie file
-  //     formData.append('selfie', {
-  //       uri: faceFile.uri,
-  //       type: faceFile.type,
-  //       name: faceFile.fileName || 'selfie.jpg',
-  //     });
-
-  //     const response = await api.post('/api/kyc/upload-aadhar-documents', formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //       },
-  //     });
-
-  //     console.log('Aadhar Upload Response:', response.data);
-  //     return response.data.success;
-  //   } catch (error) {
-  //     console.error('Aadhar Upload Error:', error);
-  //     throw new Error('Failed to upload Aadhar');
-  //   }
-  // };
-
-//   const uploadAadhar = async () => {
-//   try {
-//     const formData = new FormData();
-    
-//     // Log file details before upload
-//     // console.log('Aadhar File:', {
-//     //   uri: aadhaarFile.uri,
-//     //   type: aadhaarFile.type,
-//     //   name: aadhaarFile.name,
-//     //   size: aadhaarFile.size,
-//     // });
-    
-//     // console.log('Selfie File:', {
-//     //   uri: faceFile.uri,
-//     //   type: faceFile.type,
-//     //   name: faceFile.fileName || faceFile.name,
-//     // });
-    
-//     // // Append files (this will create the multipart format you showed)
-//     // formData.append('aadharFront', {
-//     //   uri: aadhaarFile.uri,
-//     //   type: aadhaarFile.type || 'application/pdf',
-//     //   name: aadhaarFile.name || 'document.pdf',
-//     // });
-    
-//     // formData.append('selfie', {
-//     //   uri: faceFile.uri,
-//     //   type: faceFile.type || 'image/jpeg',
-//     //   name: faceFile.fileName || faceFile.name || 'selfie.jpg',
-//     // });
-    
-//     const payload={
-//       aadharFront:aadhaarFile.uri,
-//       selfie:faceFile.uri,
-//     }
-
-//     console.log(payload,"00")
-    
-//     const response = await api.post('/api/kyc/upload-aadhar-documents', payload);
-    
-//     console.log('Upload response:', response.data);
-//     return response.data;
-    
-//   } catch (error) {
-//     console.error('Upload error details:', {
-//       message: error.message,
-//       response: error.response?.data,
-//       status: error.response?.status,
-//     });
-//     throw error;
-//   }
-// };
 
 const uploadAadhar = async () => {
   try {
@@ -1212,11 +1121,10 @@ const uploadAadhar = async () => {
       'base64'
     );
 
-    // Read Selfie as Base64
-    // const selfieBase64 = await RNFS.readFile(
-    //   faceFile?.uri,
-    //   'base64'
-    // );
+    const selfieBase64 = await RNFS.readFile(
+      faceFile?.uri,
+      'base64'
+    );
 console.log(aadhaarFile?.uri,"5656");
 
     const payload = {
@@ -1242,77 +1150,6 @@ console.log(aadhaarFile?.uri,"5656");
   }
 };
 
-
-  // const uploadPan = async () => {
-  //   try {
-  //     const formData = new FormData();
-      
-  //     // // Add pan card file
-  //     // formData.append('panCard', {
-  //     //   uri: panFile.uri,
-  //     //   type: panFile.type,
-  //     //   name: panFile.name,
-  //     // });
-      
-  //     // // Add selfie file
-  //     // formData.append('selfie', {
-  //     //   uri: faceFile.uri,
-  //     //   type: faceFile.type,
-  //     //   name: faceFile.fileName || 'selfie.jpg',
-  //     // });
-
-  //       const payload={
-  //     panCard:panFile.uri,
-  //     selfie:faceFile.uri,
-  //   }
-
-
-  //     const response = await api.post('/api/kyc/upload-pan-documents', payload);
-
-  //     console.log('PAN Upload Response:', response.data);
-  //     return response.data.success;
-  //   } catch (error) {
-  //     console.error('PAN Upload Error:', error);
-  //     throw new Error('Failed to upload PAN');
-  //   }
-  // };
-
-  // const uploadPassport = async () => {
-  //   try {
-  //     const formData = new FormData();
-      
-  //     // Add passport file (or other ID)
-  //     // const fileKey = otherIdType === 'Passport' ? 'passport' : 'otherId';
-  //     // formData.append(fileKey, {
-  //     //   uri: otherIdFile.uri,
-  //     //   type: otherIdFile.type,
-  //     //   name: otherIdFile.name,
-  //     // });
-      
-  //     // // Add selfie file
-  //     // formData.append('selfie', {
-  //     //   uri: faceFile.uri,
-  //     //   type: faceFile.type,
-  //     //   name: faceFile.fileName || 'selfie.jpg',
-  //     // });
-
-  //         const payload={
-  //     passport:otherIdFile.uri,
-  //     selfie:faceFile.uri,
-  //   }
-
-    
-
-  //     const response = await api.post('/api/kyc/upload-passport-documents', formData,);
-
-  //     console.log('Other ID Upload Response:', response.data);
-  //     return response.data.success;
-  //   } catch (error) {
-  //     console.error('Other ID Upload Error:', error);
-  //     throw new Error(`Failed to upload ${otherIdType}`);
-  //   }
-  // };
-
   const uploadPan = async () => {
   try {
     const panBase64 = await RNFS.readFile(
@@ -1320,10 +1157,6 @@ console.log(aadhaarFile?.uri,"5656");
       'base64'
     );
 
-    // const selfieBase64 = await RNFS.readFile(
-    //   faceFile?.uri,
-    //   'base64'
-    // );
 
     console.log(panFile?.uri, 'PAN URI');
 
@@ -1354,10 +1187,6 @@ const uploadPassport = async () => {
       'base64'
     );
 
-    // const selfieBase64 = await RNFS.readFile(
-    //   faceFile?.uri,
-    //   'base64'
-    // );
 
     console.log(otherIdFile?.uri, 'PASSPORT URI');
 
@@ -1380,6 +1209,17 @@ const uploadPassport = async () => {
     throw error;
   }
 };
+
+const submitForReview= async()=>{
+
+  const payload={
+    token:token
+  }
+     const response = await api.post(
+      '/api/kyc/submit-for-review',
+      payload
+    );
+}
 
   const handleSubmit = async () => {
     console.log("sowmya790")
@@ -1421,6 +1261,7 @@ const uploadPassport = async () => {
       
       console.log('Starting Other ID upload...');
       await uploadPassport();
+      await submitForReview();
 
       // All uploads successful
       Alert.alert('Success', 'All documents uploaded successfully', [
