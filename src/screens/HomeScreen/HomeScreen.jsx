@@ -17,6 +17,8 @@ import Header from '../components/header';
 import Icon from 'react-native-vector-icons/Feather';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
+import MarketCardComponent from '../Market/marketCard';
+import AdvancedMarketCard from '../Market/marketCard';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -30,6 +32,7 @@ export default function HomeScreen({ navigation }) {
   const [avaliable, setAvaliable] = useState('');
   const [totalBalance, setTotalBalance] = useState('');
   const [expertCoins, setExpertCoins] = useState([]);
+  const [marketCharts, setMarketCharts] = useState({});
 
   const itemsPerPage = 5;
 
@@ -111,25 +114,36 @@ export default function HomeScreen({ navigation }) {
 
   const fetchExpertCoins = async () => {
     try {
-      const res = await fetch(
-        'http://payo-new.duckdns.org:3001/api/market/overview',
-      );
+      // const res = await fetch(
+      //   'http://payo-app.duckdns.org:3001/api/market/overview',
+      // );
+        const res = await api.get('/api/market/overview');
 
-      const result = await res.json();
-      setExpertCoins(result?.data?.slice(0, 50) || []);
+    console.log(res.data, 'data');
+
+    setExpertCoins(res?.data?.data?.slice(0, 50));
+
+      // const result = await res.json();
+      // setExpertCoins(result?.data?.slice(0, 50) || []);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchBalance();
-      fetchTransactions();
-      fetchTotalBalance();
+useFocusEffect(
+  useCallback(() => {
+    fetchBalance();
+    fetchTotalBalance();
+    fetchExpertCoins();
+
+    // auto refresh every 1 second
+    const interval = setInterval(() => {
       fetchExpertCoins();
-    }, []),
-  );
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []),
+);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -408,12 +422,12 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
         </View>
 
-        <View
+        {/* <View
           style={[
             styles.marketCardsContainer,
             { marginBottom: 30 },
           ]}>
-          {expertCoins.slice(0, 1).map(
+          {expertCoins?.slice(0, 1).map(
             (coin, index) => {
               const isNegative =
                 coin?.priceChangePercentage24h < 0;
@@ -551,7 +565,16 @@ export default function HomeScreen({ navigation }) {
               );
             },
           )}
-        </View>
+        </View> */}
+<View style={[styles.marketCardsContainer, { marginBottom: 30 }]}>
+  {expertCoins?.slice(0, 1).map((coin, index) => (
+    <AdvancedMarketCard
+      key={index}
+      coin={coin}
+      onPress={() => navigation.navigate('CoinDetailsScreen', { coin })}
+    />
+  ))}
+</View>
       </ScrollView>
     </SafeAreaView>
   );

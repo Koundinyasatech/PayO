@@ -1,4 +1,8 @@
 import { StyleSheet } from 'react-native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -12,7 +16,12 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-    padding: 22,
+    paddingHorizontal:
+            wp('5%'),
+          paddingTop:
+            hp('10%'),
+          paddingBottom:
+            hp('4%'),
   },
 
   header: {
@@ -126,10 +135,11 @@ const styles = StyleSheet.create({
 
   faceBox: {
     borderWidth: 3,
-    borderColor: '#11CFFF',
+    borderColor: '#4D9365',
+    borderStyle: 'dashed',
     borderRadius: 24,
     padding: 24,
-    backgroundColor: '#5B1DD6',
+    backgroundColor: '#601AC8',
   },
 
   faceIcon: {
@@ -213,6 +223,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
+
+
+  dropdown: {
+  backgroundColor: '#1D0A32',
+  borderRadius: 14,
+  paddingHorizontal: 15,
+  height: 55,
+  marginBottom: 20,
+  borderWidth: 1,
+  borderColor: '#4A2B6A',
+},
+
+dropdownPlaceholder: {
+  color: '#B9A8D4',
+  fontSize: 15,
+},
+
+dropdownSelectedText: {
+  color: '#fff',
+  fontSize: 15,
+},
 });
 
 export default styles;
