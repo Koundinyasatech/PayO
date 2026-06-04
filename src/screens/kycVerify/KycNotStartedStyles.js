@@ -1,34 +1,40 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-const styles = StyleSheet.create({
+const { width } = Dimensions.get('window');
+
+export default StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#120022',
   },
 
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 30,
+  },
+
   container: {
     flex: 1,
     paddingHorizontal: 24,
-    paddingTop: 20,
     backgroundColor: '#120022',
   },
 
   header: {
-    marginBottom: 40,
+    marginTop: 10,
+    marginBottom: 30,
   },
 
   loaderWrapper: {
     alignItems: 'center',
-    marginTop: 10,
   },
 
   loaderOuter: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    borderWidth: 12,
+    borderWidth: 8,
     borderColor: 'rgba(255,255,255,0.2)',
-    borderTopColor: '#fff',
+    borderTopColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -45,55 +51,59 @@ const styles = StyleSheet.create({
   kycText: {
     color: '#FFB84D',
     fontSize: 14,
-    marginTop: 18,
+    marginTop: 16,
     fontWeight: '500',
   },
 
   title: {
     color: '#fff',
-    fontSize: 34,
+    fontSize: width * 0.085,
     textAlign: 'center',
     fontWeight: '600',
-    marginTop: 35,
+    marginTop: 32,
   },
 
   subTitle: {
     color: '#fff',
     textAlign: 'center',
-    fontSize: 18,
-    lineHeight: 28,
-    marginTop: 18,
+    fontSize: 16,
+    lineHeight: 26,
+    marginTop: 16,
     opacity: 0.9,
+    paddingHorizontal: 10,
   },
 
   card: {
     backgroundColor: '#7B2CFF',
     borderRadius: 28,
-    padding: 26,
-    marginTop: 50,
+    padding: 24,
+    marginTop: 40,
   },
 
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 22,
   },
 
   leftText: {
     color: '#fff',
-    fontSize: 17,
+    fontSize: 16,
+    flex: 1,
   },
 
   completedText: {
     color: '#00FFD1',
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '600',
+    marginLeft: 10,
   },
 
   pendingText: {
     color: '#E5D8FF',
-    fontSize: 17,
+    fontSize: 16,
+    marginLeft: 10,
   },
 
   button: {
@@ -101,7 +111,8 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 28,
+    marginBottom: 20,
   },
 
   buttonText: {
@@ -110,5 +121,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-export default styles;
