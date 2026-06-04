@@ -558,37 +558,46 @@ const handleSubmit = async () => {
 
       setMessage('');
 
-      try {
-        // Interceptor automatically sends Bearer token
-        const kycResponse = await api.get(
-          '/api/kyc/review-pipeline-status',
-        );
+      // try {
+      //   // Interceptor automatically sends Bearer token
+      //   const kycResponse = await api.get(
+      //     '/api/kyc/review-pipeline-status',
+      //   );
 
-        console.log(
-          'KYC STATUS =>',
-          kycResponse.data,
-        );
+      //   console.log(
+      //     'KYC STATUS =>',
+      //     kycResponse.data,
+      //   );
 
-        // Example navigation
-        // navigation.navigate('Main');
+      //   // Example navigation
+      //   // navigation.navigate('Main');
 
-        // OR based on API response:
-        if (kycResponse.data.status === 'approved') {
+      //   // OR based on API response:
+        if (response.data.kycStatus === 'approved') {
           navigation.navigate('Main');
-        } else {
+        } 
+        else if  (response.data.kycStatus === 'not_started') {
+          navigation.navigate('KycNotStarted');
+        }else if (response.data.kycStatus === "under_review"){ 
           navigation.navigate('KycUnderReview');
         }
+        else{
+          setMessage(
+        response?.data?.message ||
+          'Login failed',
+      ); 
+        }
 
-      } catch (kycError) {
-        console.log(
-          'KYC Status Error =>',
-          kycError?.response?.data || kycError,
-        );
+      // } catch (kycError) {
+      //   console.log(
+      //     'KYC Status Error =>',
+      //     kycError?.response?.data || kycError,
+      //   );
 
-        setMessage(
-          'Unable to fetch KYC status',
-        );
-      }
+      //   setMessage(
+      //     'Unable to fetch KYC status',
+      //   );
+      // }
     } else {
       setMessage(
         response?.data?.message ||
@@ -596,11 +605,18 @@ const handleSubmit = async () => {
       );
     }
   } catch (error) {
-    setMessage(
+
+     if(error?.response?.data?.kycStatus =="rejected"){
+        navigation.navigate('KycFail');
+      }else{
+  setMessage(
       error?.response?.data?.message ||
         error?.message ||
         'Something went wrong',
     );
+      }
+      
+  
   }
 };
 
@@ -668,6 +684,7 @@ const handleSubmit = async () => {
               keyboardType="email-address"
               onChangeText={(text) => {
                 setEmail(text);
+                setMessage("")
 
                 setErrors(prev => ({
                   ...prev,
@@ -696,6 +713,7 @@ const handleSubmit = async () => {
                 value={password}
                 onChangeText={(text) => {
                   setPassword(text);
+                   setMessage("")
 
                   setErrors(prev => ({
                     ...prev,

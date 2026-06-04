@@ -43,7 +43,7 @@ export default function KYCVerification({
   const [panFile, setPanFile] = useState(null);
   const [otherIdFile, setOtherIdFile] = useState(null);
   const [faceFile, setFaceFile] = useState(null);
-  const [token,setToken]=useState("")
+  const [token, setToken] = useState("")
 
   const otherIdOptions = [
     { label: 'Driving License', value: 'Driving License' },
@@ -61,7 +61,7 @@ export default function KYCVerification({
     ]);
   };
 
-     useEffect(() => {
+  useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await getToken();
       setToken(storedToken);
@@ -92,7 +92,7 @@ export default function KYCVerification({
     }
   };
 
- 
+
 
   const openImagePicker = async () => {
     const response = await launchImageLibrary({
@@ -154,116 +154,116 @@ export default function KYCVerification({
   };
 
 
-const uploadAadhar = async () => {
-  try {
-    // Read Aadhaar file as Base64
-    const aadharBase64 = await RNFS.readFile(
-      aadhaarFile?.uri,
-      'base64'
-    );
+  const uploadAadhar = async () => {
+    try {
+      // Read Aadhaar file as Base64
+      const aadharBase64 = await RNFS.readFile(
+        aadhaarFile?.uri,
+        'base64'
+      );
 
-    const selfieBase64 = await RNFS.readFile(
-      faceFile?.uri,
-      'base64'
-    );
-console.log(aadhaarFile?.uri,"5656");
+      const selfieBase64 = await RNFS.readFile(
+        faceFile?.uri,
+        'base64'
+      );
+      console.log(aadhaarFile?.uri, "5656");
 
-    const payload = {
-      aadharFront: `data:${aadhaarFile?.type};base64,${aadharBase64}`,
-       selfie: `data:${faceFile.type};base64,${selfieBase64}`,
-            //selfie: `data:${aadhaarFile.type};base64,${aadharBase64}`,
+      const payload = {
+        aadharFront: `data:${aadhaarFile?.type};base64,${aadharBase64}`,
+        selfie: `data:${faceFile.type};base64,${selfieBase64}`,
+        //selfie: `data:${aadhaarFile.type};base64,${aadharBase64}`,
 
-    };
+      };
 
-    console.log('Payload:', payload);
+      console.log('Payload:', payload);
 
-    const response = await api.post(
-      '/api/kyc/upload-aadhar-documents',
-      payload
-    );
+      const response = await api?.post(
+        '/api/kyc/upload-aadhar-documents',
+        payload
+      );
 
-    console.log('Upload Response:', response.data);
+      console.log('Upload Response:', response.data);
 
-    return response.data;
-  } catch (error) {
-    console.error('Upload Error:', error);
-    throw error;
-  }
-};
+      return response?.data;
+    } catch (error) {
+      console.log('Upload Error:', error);
+      throw error;
+    }
+  };
 
   const uploadPan = async () => {
-  try {
-    const panBase64 = await RNFS.readFile(
-      panFile?.uri,
-      'base64'
-    );
+    try {
+      const panBase64 = await RNFS.readFile(
+        panFile?.uri,
+        'base64'
+      );
 
 
-    console.log(panFile?.uri, 'PAN URI');
+      console.log(panFile?.uri, 'PAN URI');
+
+      const payload = {
+        panCard: `data:${panFile?.type};base64,${panBase64}`,
+      };
+
+      console.log('PAN Payload:', payload);
+
+      const response = await api.post(
+        '/api/kyc/upload-pan-documents',
+        payload
+      );
+
+      console.log('PAN Upload Response:', response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error('PAN Upload Error:', error);
+      throw error;
+    }
+  };
+
+  const uploadPassport = async () => {
+    try {
+      const passportBase64 = await RNFS.readFile(
+        otherIdFile?.uri,
+        'base64'
+      );
+
+
+      console.log(otherIdFile?.uri, 'PASSPORT URI');
+
+      const payload = {
+        passport: `data:${otherIdFile?.type};base64,${passportBase64}`,
+      };
+
+      console.log('Passport Payload:', payload);
+
+      const response = await api.post(
+        '/api/kyc/upload-passport-documents',
+        payload
+      );
+
+      console.log('Passport Upload Response:', response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error('Passport Upload Error:', error);
+      throw error;
+    }
+  };
+
+  const submitForReview = async () => {
 
     const payload = {
-      panCard: `data:${panFile?.type};base64,${panBase64}`,
-    };
-
-    console.log('PAN Payload:', payload);
-
+      token: token
+    }
     const response = await api.post(
-      '/api/kyc/upload-pan-documents',
-      payload
-    );
-
-    console.log('PAN Upload Response:', response.data);
-
-    return response.data;
-  } catch (error) {
-    console.error('PAN Upload Error:', error);
-    throw error;
-  }
-};
-
-const uploadPassport = async () => {
-  try {
-    const passportBase64 = await RNFS.readFile(
-      otherIdFile?.uri,
-      'base64'
-    );
-
-
-    console.log(otherIdFile?.uri, 'PASSPORT URI');
-
-    const payload = {
-      passport: `data:${otherIdFile?.type};base64,${passportBase64}`,
-    };
-
-    console.log('Passport Payload:', payload);
-
-    const response = await api.post(
-      '/api/kyc/upload-passport-documents',
-      payload
-    );
-
-    console.log('Passport Upload Response:', response.data);
-
-    return response.data;
-  } catch (error) {
-    console.error('Passport Upload Error:', error);
-    throw error;
-  }
-};
-
-const submitForReview= async()=>{
-
-  const payload={
-    token:token
-  }
-     const response = await api.post(
       '/api/kyc/submit-for-review',
       payload
     );
-}
+  }
 
   const handleSubmit = async () => {
-   
+
     // Validation checks
     if (!otherIdType) {
       Alert.alert('Select ID Type', 'Please select an ID type');
@@ -296,10 +296,10 @@ const submitForReview= async()=>{
       // Upload all documents sequentially
       console.log('Starting Aadhar upload...');
       await uploadAadhar();
-      
+
       console.log('Starting PAN upload...');
       await uploadPan();
-      
+
       console.log('Starting Other ID upload...');
       await uploadPassport();
       await submitForReview();
@@ -308,9 +308,9 @@ const submitForReview= async()=>{
       Alert.alert('Success', 'All documents uploaded successfully', [
         { text: 'OK', onPress: () => navigation.navigate('KycUnderReview') }
       ]);
-      
+
     } catch (error) {
-      console.error('Upload Error:', error);
+      console.log('Upload Error:', error);
       Alert.alert('Upload Failed', error.message || 'Failed to upload documents. Please try again.');
     } finally {
       setIsLoading(false);
@@ -423,8 +423,8 @@ const submitForReview= async()=>{
               {activeTab === 'aadhaar'
                 ? 'Upload Aadhaar Card'
                 : activeTab === 'pan'
-                ? 'Upload PAN Card'
-                : `Upload ${otherIdType || 'Other ID'}`}
+                  ? 'Upload PAN Card'
+                  : `Upload ${otherIdType || 'Other ID'}`}
             </Text>
 
             <Text style={styles.uploadInfo}>JPG, PNG or PDF • Max 5MB</Text>

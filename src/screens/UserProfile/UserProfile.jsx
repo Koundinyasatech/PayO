@@ -203,8 +203,8 @@ export default function UserProfile({ navigation }) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: hp('20%') }}
-        >ak 
+          contentContainerStyle={{ paddingBottom: hp('0%') }}
+        >
 
           {/* BALANCE CARD */}
           <View style={styles.balanceCard}>
