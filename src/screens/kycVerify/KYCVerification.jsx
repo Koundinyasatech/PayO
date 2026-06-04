@@ -1121,31 +1121,31 @@ const uploadAadhar = async () => {
       'base64'
     );
 
-    const selfieBase64 = await RNFS.readFile(
-      faceFile?.uri,
-      'base64'
-    );
+    // const selfieBase64 = await RNFS.readFile(
+    //   faceFile?.uri,
+    //   'base64'
+    // );
 console.log(aadhaarFile?.uri,"5656");
 
     const payload = {
       aadharFront: `data:${aadhaarFile?.type};base64,${aadharBase64}`,
       // selfie: `data:${faceFile.type};base64,${selfieBase64}`,
-            selfie: `data:${aadhaarFile.type};base64,${aadharBase64}`,
+      selfie: `data:${aadhaarFile.type};base64,${aadharBase64}`,
 
     };
 
     console.log('Payload:', payload);
 
-    const response = await api.post(
+    const response = await api?.post(
       '/api/kyc/upload-aadhar-documents',
       payload
     );
 
     console.log('Upload Response:', response.data);
 
-    return response.data;
+    return response?.data;
   } catch (error) {
-    console.error('Upload Error:', error);
+    console.log('Upload Error:', error);
     throw error;
   }
 };
@@ -1269,7 +1269,7 @@ const submitForReview= async()=>{
       ]);
       
     } catch (error) {
-      console.error('Upload Error:', error);
+      console.log('Upload Error:', error);
       Alert.alert('Upload Failed', error.message || 'Failed to upload documents. Please try again.');
     } finally {
       setIsLoading(false);

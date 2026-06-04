@@ -65,6 +65,7 @@ import KYCVerification from '../screens/kycVerify/KYCVerification';
 import KycUnderReview from '../screens/kycVerify/KycUnderReview';
 import KycComplete from '../screens/kycVerify/KycComplete';
 import KycFail from '../screens/kycVerify/KycFail';
+import KycNotStarted from '../screens/kycVerify/KycnotStartedYet';
 
 
 
@@ -101,7 +102,7 @@ export default function AppNavigator() {
         <Stack.Screen name="KycUnderReview" component={KycUnderReview} />
         <Stack.Screen name="KycComplete" component={KycComplete} />
         <Stack.Screen name="KycFail" component={KycFail} />
- 
+   <Stack.Screen name="KycNotStarted" component={KycNotStarted} />
 
         {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />
