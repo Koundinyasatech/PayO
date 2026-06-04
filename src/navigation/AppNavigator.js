@@ -66,6 +66,7 @@ import KycUnderReview from '../screens/kycVerify/KycUnderReview';
 import KycComplete from '../screens/kycVerify/KycComplete';
 import KycFail from '../screens/kycVerify/KycFail';
 import KycNotStarted from '../screens/kycVerify/KycnotStartedYet';
+import HelpCenterScreen from '../screens/helpCenter/HelpCenterScreen.jsx';
 
 
 
@@ -102,7 +103,7 @@ export default function AppNavigator() {
         <Stack.Screen name="KycUnderReview" component={KycUnderReview} />
         <Stack.Screen name="KycComplete" component={KycComplete} />
         <Stack.Screen name="KycFail" component={KycFail} />
-   <Stack.Screen name="KycNotStarted" component={KycNotStarted} />
+        <Stack.Screen name="KycNotStarted" component={KycNotStarted} />
 
         {/* ✅ MAIN APP WITH BOTTOM TABS */}
         <Stack.Screen name="Main" component={BottomTabs} />
@@ -121,6 +122,7 @@ export default function AppNavigator() {
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
         <Stack.Screen name="recents" component={Recents} />
+        <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
 
 
         <Stack.Screen name="loading" component={PaymentLoading} />
