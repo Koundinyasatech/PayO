@@ -17,11 +17,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal:
-            wp('5%'),
-          paddingTop:
-            hp('10%'),
-          paddingBottom:
-            hp('4%'),
+      wp('5%'),
+    paddingTop:
+      hp('10%'),
+    paddingBottom:
+      hp('4%'),
   },
 
   header: {
@@ -226,24 +226,24 @@ const styles = StyleSheet.create({
 
 
   dropdown: {
-  backgroundColor: '#1D0A32',
-  borderRadius: 14,
-  paddingHorizontal: 15,
-  height: 55,
-  marginBottom: 20,
-  borderWidth: 1,
-  borderColor: '#4A2B6A',
-},
+    backgroundColor: '#1D0A32',
+    borderRadius: 14,
+    paddingHorizontal: 15,
+    height: 55,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4A2B6A',
+  },
 
-dropdownPlaceholder: {
-  color: '#B9A8D4',
-  fontSize: 15,
-},
+  dropdownPlaceholder: {
+    color: '#B9A8D4',
+    fontSize: 15,
+  },
 
-dropdownSelectedText: {
-  color: '#fff',
-  fontSize: 15,
-},
+  dropdownSelectedText: {
+    color: '#fff',
+    fontSize: 15,
+  },
 });
 
 export default styles;
