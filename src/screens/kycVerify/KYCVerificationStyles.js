@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     paddingHorizontal:
       wp('5%'),
     paddingTop:
-      hp('10%'),
+      hp('7%'),
     paddingBottom:
       hp('4%'),
   },
@@ -57,14 +57,13 @@ const styles = StyleSheet.create({
   },
 
   tabButton: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#fff',
-    borderRadius: 10,
-    paddingVertical: 12,
-    marginRight: 8,
-    alignItems: 'center',
-  },
+  borderWidth: 1,
+  borderColor: '#fff',
+  borderRadius: 10,
+  paddingVertical: 12,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 
   activeTab: {
     backgroundColor: '#fff',
@@ -101,6 +100,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#7B2CFF',
     marginBottom: 28,
+    marginTop: 28,
   },
 
   uploadIcon: {
@@ -179,14 +179,29 @@ const styles = StyleSheet.create({
   },
 
   instructions: {
-    marginTop: 20,
-  },
+  marginTop: 20,
+},
 
-  instructionText: {
-    color: '#fff',
-    marginBottom: 8,
-    fontSize: 13,
-  },
+pointRow: {
+  flexDirection: 'row',
+  alignItems: 'flex-start',
+  marginBottom: 10,
+},
+
+bullet: {
+  color: '#fff',
+  fontSize: 14,
+  fontWeight: 'bold',
+  marginRight: 8,
+  width: 18,
+},
+
+instructionText: {
+  flex: 1,
+  color: '#fff',
+  fontSize: 13,
+  lineHeight: 20,
+},
 
   checkboxRow: {
     flexDirection: 'row',

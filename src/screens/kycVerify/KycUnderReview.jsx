@@ -1,448 +1,208 @@
-// import React, { useEffect } from 'react';
-
-// import {
-//   View,
-//   Text,
-//   SafeAreaView,
-//   StatusBar,
-//   TouchableOpacity,
-// } from 'react-native';
-
-// import Icon from 'react-native-vector-icons/Feather';
-
-// import styles from '../kycVerify/KycUnderReviewStyles';
-
-// export default function KycUnderReview({
-//   navigation,
-// }) {
-
-//   // Auto Navigate After 5 Seconds
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       navigation.replace(
-//         'KycFail',
-//       );
-//     }, 5000);
-
-//     return () =>
-//       clearTimeout(timer);
-//   }, []);
-
-//   return (
-//     <SafeAreaView
-//       style={styles.safeArea}>
-//       <StatusBar
-//         backgroundColor="#120022"
-//         barStyle="light-content"
-//       />
-
-//       <View style={styles.container}>
-//         {/* Header */}
-//         <View style={styles.header}>
-//           <TouchableOpacity
-//             onPress={() =>
-//               navigation.goBack()
-//             }>
-//             <Icon
-//               name="chevron-left"
-//               size={28}
-//               color="#fff"
-//             />
-//           </TouchableOpacity>
-//         </View>
-
-//         {/* Circle Loader */}
-//         <View style={styles.loaderWrapper}>
-//           <View style={styles.loaderOuter}>
-//             <View style={styles.loaderInner} />
-//           </View>
-
-//           <Text style={styles.kycText}>
-//             • KYC Submitted
-//           </Text>
-//         </View>
-
-//         {/* Title */}
-//         <Text style={styles.title}>
-//           Under Review
-//         </Text>
-
-//         {/* Subtitle */}
-//         <Text style={styles.subTitle}>
-//           Documents submitted.
-//           Our team is verifying
-//           documents.
-//         </Text>
-
-//         {/* Status Card */}
-//         <View style={styles.card}>
-
-//           {/* Row 1 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • Account Created
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.completedText
-//               }>
-//               Completed
-//             </Text>
-//           </View>
-
-//           {/* Row 2 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • Documents Uploaded
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.completedText
-//               }>
-//               Completed
-//             </Text>
-//           </View>
-
-//           {/* Row 3 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • KYC Verification
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.pendingText
-//               }>
-//               Pending
-//             </Text>
-//           </View>
-
-//           {/* Row 4 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • Wallet Activated
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.pendingText
-//               }>
-//               Pending
-//             </Text>
-//           </View>
-
-//         </View>
-//       </View>
-//     </SafeAreaView>
-//   );
-// }
-
-
-
-// import React, { useEffect } from 'react';
-
-// import {
-//   View,
-//   Text,
-//   SafeAreaView,
-//   StatusBar,
-//   TouchableOpacity,
-// } from 'react-native';
-
-// import Icon from 'react-native-vector-icons/Feather';
-
-// import styles from '../kycVerify/KycUnderReviewStyles';
-
-// export default function KycUnderReview({
-//   navigation,
-// }) {
-
-//   // Change this value
-//   // true = success
-//   // false = fail
-//   const isKycApproved = true;
-
-//   // Auto Navigate After 5 Seconds
-//   // useEffect(() => {
-//   //   const timer = setTimeout(() => {
-
-//   //     // Success Screen
-//   //     if (isKycApproved) {
-//   //       navigation.replace(
-//   //         'KycComplete',
-//   //       );
-//   //     }
-
-//   //     // Fail Screen
-//   //     else {
-//   //       navigation.replace(
-//   //         'KycFail',
-//   //       );
-//   //     }
-
-//   //   }, 5000);
-
-//   //   return () =>
-//   //     clearTimeout(timer);
-//   // }, []);
-
-//   return (
-//     <SafeAreaView
-//       style={styles.safeArea}>
-//       <StatusBar
-//         backgroundColor="#120022"
-//         barStyle="light-content"
-//       />
-
-//       <View style={styles.container}>
-
-//         {/* Header */}
-//         <View style={styles.header}>
-//           <TouchableOpacity
-//             onPress={() =>
-//               navigation.goBack()
-//             }>
-//             <Icon
-//               name="chevron-left"
-//               size={28}
-//               color="#fff"
-//             />
-//           </TouchableOpacity>
-//         </View>
-
-//         {/* Circle Loader */}
-//         <View style={styles.loaderWrapper}>
-//           <View style={styles.loaderOuter}>
-//             <View style={styles.loaderInner} />
-//           </View>
-
-//           <Text style={styles.kycText}>
-//             • KYC Submitted
-//           </Text>
-//         </View>
-
-//         {/* Title */}
-//         <Text style={styles.title}>
-//           Under Review
-//         </Text>
-
-//         {/* Subtitle */}
-//         <Text style={styles.subTitle}>
-//           Documents submitted.
-//           Our team is verifying
-//           documents.
-//         </Text>
-
-//         {/* Status Card */}
-//         <View style={styles.card}>
-
-//           {/* Row 1 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • Account Created
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.completedText
-//               }>
-//               Completed
-//             </Text>
-//           </View>
-
-//           {/* Row 2 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • Documents Uploaded
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.completedText
-//               }>
-//               Completed
-//             </Text>
-//           </View>
-
-//           {/* Row 3 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • KYC Verification
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.pendingText
-//               }>
-//               Pending
-//             </Text>
-//           </View>
-
-//           {/* Row 4 */}
-//           <View style={styles.row}>
-//             <Text style={styles.leftText}>
-//               • Wallet Activated
-//             </Text>
-
-//             <Text
-//               style={
-//                 styles.pendingText
-//               }>
-//               Pending
-//             </Text>
-//           </View>
-
-//         </View>
-//       </View>
-//     </SafeAreaView>
-//   );
-// }
-
-
 import React, { useEffect } from 'react';
 
 import {
+
   View,
+
   Text,
-  SafeAreaView,
+
   StatusBar,
+
   TouchableOpacity,
+
   BackHandler,
+
+  ScrollView,
+
 } from 'react-native';
+ 
+import {
 
+  SafeAreaView,
+
+  useSafeAreaInsets,
+
+} from 'react-native-safe-area-context';
+ 
 import Icon from 'react-native-vector-icons/Feather';
-
+ 
 import styles from '../kycVerify/KycUnderReviewStyles';
-
+ 
 export default function KycUnderReview({ navigation }) {
-  // Change this value
-  // true = success
-  // false = fail
-  const isKycApproved = true;
 
-  // Handle Android Hardware Back Button
+  const insets = useSafeAreaInsets();
+ 
   useEffect(() => {
+
     const backAction = () => {
+
       navigation.replace('Onboarding3');
+
       return true;
+
     };
-
+ 
     const backHandler = BackHandler.addEventListener(
+
       'hardwareBackPress',
+
       backAction,
+
     );
-
+ 
     return () => backHandler.remove();
+
   }, [navigation]);
-
-  // Auto Navigate After 5 Seconds
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (isKycApproved) {
-  //       navigation.replace('KycComplete');
-  //     } else {
-  //       navigation.replace('KycFail');
-  //     }
-  //   }, 5000);
-
-  //   return () => clearTimeout(timer);
-  // }, [navigation]);
-
+ 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar
+<SafeAreaView
+
+      style={[
+
+        styles.safeArea,
+
+        {
+
+          paddingTop: insets.top,
+
+          paddingBottom: insets.bottom,
+
+        },
+
+      ]}
+
+      edges={['top', 'bottom']}
+>
+<StatusBar
+
         backgroundColor="#120022"
+
         barStyle="light-content"
+
       />
+ 
+      <ScrollView
 
-      <View style={styles.container}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.replace('Onboarding3')}
-          >
-            <Icon
-              name="chevron-left"
-              size={28}
-              color="#fff"
-            />
-          </TouchableOpacity>
-        </View>
+        showsVerticalScrollIndicator={false}
 
-        {/* Circle Loader */}
-        <View style={styles.loaderWrapper}>
-          <View style={styles.loaderOuter}>
-            <View style={styles.loaderInner} />
-          </View>
+        contentContainerStyle={styles.scrollContent}
+>
+<View style={styles.container}>
 
-          <Text style={styles.kycText}>
-            • KYC Submitted
-          </Text>
-        </View>
+          {/* Header */}
+<View style={styles.header}>
+<TouchableOpacity
 
-        {/* Title */}
-        <Text style={styles.title}>
-          Under Review
-        </Text>
+              onPress={() => navigation.replace('Onboarding3')}
+>
+<Icon
 
-        {/* Subtitle */}
-        <Text style={styles.subTitle}>
-          Documents submitted.
-          {'\n'}
-          Our team is verifying
-          {'\n'}
-          documents.
-        </Text>
+                name="chevron-left"
 
-        {/* Status Card */}
-        <View style={styles.card}>
-          {/* Row 1 */}
-          <View style={styles.row}>
-            <Text style={styles.leftText}>
-              • Account Created
-            </Text>
+                size={28}
 
-            <Text style={styles.completedText}>
-              Completed
-            </Text>
-          </View>
+                color="#fff"
 
-          {/* Row 2 */}
-          <View style={styles.row}>
-            <Text style={styles.leftText}>
-              • Documents Uploaded
-            </Text>
+              />
+</TouchableOpacity>
+</View>
+ 
+          {/* Loader */}
+<View style={styles.loaderWrapper}>
+<View style={styles.loaderOuter}>
+<View style={styles.loaderInner} />
+</View>
+ 
+            <Text style={styles.kycText}>
 
-            <Text style={styles.completedText}>
-              Completed
-            </Text>
-          </View>
+              • KYC Submitted
+</Text>
+</View>
+ 
+          {/* Title */}
+<Text style={styles.title}>
 
-          {/* Row 3 */}
-          <View style={styles.row}>
-            <Text style={styles.leftText}>
-              • KYC Verification
-            </Text>
+            Under Review
+</Text>
+ 
+          {/* Subtitle */}
+<Text style={styles.subTitle}>
 
-            <Text style={styles.pendingText}>
-              Pending
-            </Text>
-          </View>
+            Documents submitted.
 
-          {/* Row 4 */}
-          <View style={styles.row}>
-            <Text style={styles.leftText}>
-              • Wallet Activated
-            </Text>
+            {'\n'}
 
-            <Text style={styles.pendingText}>
-              Pending
-            </Text>
-          </View>
-        </View>
-      </View>
-    </SafeAreaView>
+            Our team is verifying
+
+            {'\n'}
+
+            your documents.
+</Text>
+ 
+          {/* Status Card */}
+<View style={styles.card}>
+<View style={styles.row}>
+<Text style={styles.leftText}>
+
+                • Account Created
+</Text>
+ 
+              <Text style={styles.completedText}>
+
+                Completed
+</Text>
+</View>
+ 
+            <View style={styles.row}>
+<Text style={styles.leftText}>
+
+                • Documents Uploaded
+</Text>
+ 
+              <Text style={styles.completedText}>
+
+                Completed
+</Text>
+</View>
+ 
+            <View style={styles.row}>
+<Text style={styles.leftText}>
+
+                • KYC Verification
+</Text>
+ 
+              <Text style={styles.pendingText}>
+
+                Pending
+</Text>
+</View>
+ 
+            <View
+
+              style={[
+
+                styles.row,
+
+                { marginBottom: 0 },
+
+              ]}
+>
+<Text style={styles.leftText}>
+
+                • Wallet Activated
+</Text>
+ 
+              <Text style={styles.pendingText}>
+
+                Pending
+</Text>
+</View>
+</View>
+</View>
+</ScrollView>
+</SafeAreaView>
+
   );
+
 }
+ 
