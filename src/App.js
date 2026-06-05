@@ -1,31 +1,32 @@
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import './App.css';
 import { useState, useEffect, createContext, useContext } from 'react';
-import Sidebar       from './components/Sidebar';
+import Sidebar from './components/Sidebar';
 import ConfirmDialog from './components/ConfirmDialog';
-import AdminProfile  from './components/AdminProfile';
-import Login         from './pages/Login';
-import Dashboard     from './pages/Dashboard';
-import KYCReview     from './pages/KYCReview';
-import Users         from './pages/Users';
-import Wallets       from './pages/Wallets';
-import Analytics     from './pages/Analytics';
-import AuditLog      from './pages/AuditLog';
+import AdminProfile from './components/AdminProfile';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import KYCReview from './pages/KYCReview';
+import Users from './pages/Users';
+import Wallets from './pages/Wallets';
+import Analytics from './pages/Analytics';
+import AuditLog from './pages/AuditLog';
 import Notifications from './pages/Notifications';
 
 export const AppCtx = createContext({});
 
-const TITLES = {
+const titles = {
   '/':'Dashboard', '/kyc':'KYC Review', '/users':'Users',
   '/wallets':'Wallets', '/analytics':'Analytics',
   '/audit':'Audit Log', '/notifications':'Notifications',
 };
 
 function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
-  const loc  = useLocation();
+  const loc = useLocation();
   const nav  = useNavigate();
-  const { confirm } = useContext(AppCtx);
   const [search, setSearch] = useState('');
+  const { confirm } = useContext(AppCtx);
+  const title = titles[loc.pathname] || 'Dashboard';
 
   const handleLogout = () => {
     confirm({
@@ -39,7 +40,7 @@ function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
 
   return (
     <header className="topbar">
-      <div className="topbar-title">{TITLES[loc.pathname] || 'Dashboard'}</div>
+      <div className="topbar-title">{title}</div>
 
       <div className="topbar-search">
         <svg width="14" height="14" fill="none" stroke="var(--gray-400)" strokeWidth="2" viewBox="0 0 24 24">
@@ -49,17 +50,23 @@ function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
       </div>
 
       <div className="topbar-right">
-        <button className="dark-toggle" onClick={toggleDark} title={dark?'Light mode':'Dark mode'}>
+        <button className="dark-toggle" onClick={toggleDark} title={dark ? 'Light mode' : 'Dark mode'}>
           {dark ? '☀️' : '🌙'}
         </button>
+
         <button className="notif-btn" onClick={()=>nav('/notifications')}>
           <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 01-3.46 0"/>
           </svg>
-          <span className="notif-dot">5</span>
         </button>
-        <AdminProfile admin={admin} onUpdate={onAdminUpdate} onLogout={handleLogout} dark={dark}/>
+
+        <AdminProfile
+          admin={admin}
+          onUpdate={onAdminUpdate}
+          onLogout={handleLogout}
+          dark={dark}
+        />
       </div>
     </header>
   );
@@ -67,27 +74,36 @@ function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
 
 function Portal({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
   const { confirm } = useContext(AppCtx);
+
   const handleLogout = () => {
     confirm({
       title: 'Sign Out',
-      message: 'Are you sure you want to sign out?',
-      confirmLabel: 'Yes, Sign Out', cancelLabel: 'Stay', type: 'danger',
+      message: 'Are you sure you want to sign out of the PayO Admin Portal?',
+      confirmLabel: 'Yes, Sign Out',
+      cancelLabel: 'Stay',
+      type: 'danger',
     }, onLogout);
   };
 
   return (
     <div className="layout">
-      <Sidebar onLogout={handleLogout}/>
+      <Sidebar onLogout={handleLogout} />
       <div className="main">
-        <Topbar admin={admin} onAdminUpdate={onAdminUpdate} onLogout={onLogout} dark={dark} toggleDark={toggleDark}/>
+        <Topbar
+          admin={admin}
+          onAdminUpdate={onAdminUpdate}
+          onLogout={onLogout}
+          dark={dark}
+          toggleDark={toggleDark}
+        />
         <Routes>
-          <Route path="/"              element={<Dashboard/>}/>
-          <Route path="/kyc"           element={<KYCReview/>}/>
-          <Route path="/users"         element={<Users/>}/>
-          <Route path="/wallets"       element={<Wallets/>}/>
-          <Route path="/analytics"     element={<Analytics/>}/>
-          <Route path="/audit"         element={<AuditLog/>}/>
-          <Route path="/notifications" element={<Notifications/>}/>
+          <Route path="/"              element={<Dashboard />} />
+          <Route path="/kyc"           element={<KYCReview />} />
+          <Route path="/users"         element={<Users />} />
+          <Route path="/wallets"       element={<Wallets />} />
+          <Route path="/analytics"     element={<Analytics />} />
+          <Route path="/audit"         element={<AuditLog />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </div>
     </div>
@@ -95,48 +111,70 @@ function Portal({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
 }
 
 function AppInner() {
-  const [admin, setAdmin] = useState(() => {
-    try {
-      const token = localStorage.getItem('payo_admin_token');
-      const user  = localStorage.getItem('payo_admin_user');
-      return token ? (user ? JSON.parse(user) : { name:'Admin User', role:'admin' }) : null;
-    } catch { return null; }
-  });
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [dark, setDark] = useState(() => {
     try { return localStorage.getItem('payo-dark') === 'true'; } catch { return false; }
   });
   const [dlg, setDlg] = useState(null);
+
+  // Restore session on page refresh
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('payo_token');
+      const saved = localStorage.getItem('payo_admin');
+      if (token && saved) {
+        setAdmin(JSON.parse(saved));
+      }
+    } catch {
+      localStorage.removeItem('payo_token');
+      localStorage.removeItem('payo_admin');
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     document.body.classList.toggle('dark', dark);
     try { localStorage.setItem('payo-dark', dark); } catch {}
   }, [dark]);
 
-  const confirm     = (config, cb) => setDlg({ config, cb });
-  const closeDialog = () => setDlg(null);
-
-  const handleLogin = (adminData) => {
+  const handleLogin = (adminData, token) => {
+    localStorage.setItem('payo_token', token);
+    localStorage.setItem('payo_admin', JSON.stringify(adminData));
     setAdmin(adminData);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('payo_admin_token');
-    localStorage.removeItem('payo_admin_user');
+    localStorage.removeItem('payo_token');
+    localStorage.removeItem('payo_admin');
     setAdmin(null);
   };
 
-  const handleAdminUpdate = (updated) => {
-    setAdmin(updated);
-    localStorage.setItem('payo_admin_user', JSON.stringify(updated));
-  };
+  const confirm     = (config, onConfirm) => setDlg({ config, onConfirm });
+  const closeDialog = () => setDlg(null);
+
+  if (loading) {
+    return (
+      <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0A0A0A' }}>
+        <div style={{ textAlign:'center' }}>
+          <img src={process.env.PUBLIC_URL + "/images/payo-icon-logo-removebg-preview.png"} alt="PayO" style={{ width:72, height:72, objectFit:'contain', marginBottom:20, opacity:0.8 }}/>
+          <div style={{ width:32, height:32, border:'3px solid rgba(255,255,255,0.15)', borderTopColor:'#3B82F6', borderRadius:'50%', animation:'spin 0.8s linear infinite', margin:'0 auto' }}/>
+          <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AppCtx.Provider value={{ confirm, dark }}>
       {!admin
-        ? <Login onLogin={handleLogin}/>
+        ? <Login onLogin={handleLogin} />
         : <Portal
             admin={admin}
-            onAdminUpdate={handleAdminUpdate}
+            onAdminUpdate={(updated) => {
+              setAdmin(updated);
+              localStorage.setItem('payo_admin', JSON.stringify(updated));
+            }}
             onLogout={handleLogout}
             dark={dark}
             toggleDark={() => setDark(d => !d)}
@@ -144,7 +182,7 @@ function AppInner() {
       }
       <ConfirmDialog
         config={dlg?.config}
-        onConfirm={() => { dlg?.cb?.(); closeDialog(); }}
+        onConfirm={() => { dlg?.onConfirm?.(); closeDialog(); }}
         onCancel={closeDialog}
       />
     </AppCtx.Provider>
@@ -154,7 +192,7 @@ function AppInner() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppInner/>
+      <AppInner />
     </BrowserRouter>
   );
 }

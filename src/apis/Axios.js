@@ -1,29 +1,37 @@
 import axios from "axios";
 
+const API_BASE = "https://anemia-stove-chief.ngrok-free.dev";
+
+// Axios Instance
 const api = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: API_BASE,
   timeout: 15000,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true",
+  },
 });
 
-// Attach admin JWT to every request automatically
+// Request Interceptor — attach token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("payo_admin_token");
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    const token = localStorage.getItem("payo_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Handle 401 globally — clear token and return to login
+// Response Interceptor — handle 401
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("payo_admin_token");
-      localStorage.removeItem("payo_admin_user");
-      window.location.href = "/";
+      localStorage.removeItem("payo_token");
+      localStorage.removeItem("payo_admin");
+      window.location.reload();
     }
     return Promise.reject(error);
   }

@@ -1,222 +1,176 @@
 import { useState, useEffect } from 'react';
-import { SkeletonCards } from '../components/Skeleton';
+import { getDashboardStats, getAllSubmissions } from '../apis/adminApi';
 
-const allData = {
-  '7days':  { approved:210, rejected:18, pending:55,  monthly:[
-    {month:'Mon',approved:28,rejected:3,pending:8},{month:'Tue',approved:35,rejected:2,pending:10},
-    {month:'Wed',approved:42,rejected:4,pending:9},{month:'Thu',approved:30,rejected:2,pending:7},
-    {month:'Fri',approved:38,rejected:3,pending:11},{month:'Sat',approved:22,rejected:2,pending:6},{month:'Sun',approved:15,rejected:2,pending:4},
-  ], avgTime:'2.8 mins', successRate:'92.1%', rejRate:'3.1%', daily:'~49' },
-  '30days': { approved:820, rejected:62, pending:180, monthly:[
-    {month:'W1',approved:180,rejected:14,pending:42},{month:'W2',approved:210,rejected:16,pending:50},
-    {month:'W3',approved:195,rejected:15,pending:44},{month:'W4',approved:235,rejected:17,pending:44},
-  ], avgTime:'3.0 mins', successRate:'92.3%', rejRate:'3.3%', daily:'~47' },
-  '3months':{ approved:2800, rejected:195, pending:520, monthly:[
-    {month:'Mar',approved:810,rejected:55,pending:110},{month:'Apr',approved:950,rejected:70,pending:130},{month:'May',approved:1020,rejected:80,pending:245},
-  ], avgTime:'3.1 mins', successRate:'92.2%', rejRate:'3.2%', daily:'~48' },
-  'custom': { approved:1020, rejected:80, pending:245, monthly:[
-    {month:'Jan',approved:620,rejected:45,pending:80},{month:'Feb',approved:740,rejected:60,pending:95},
-    {month:'Mar',approved:810,rejected:55,pending:110},{month:'Apr',approved:950,rejected:70,pending:130},{month:'May',approved:1020,rejected:80,pending:245},
-  ], avgTime:'3.2 mins', successRate:'92.4%', rejRate:'3.4%', daily:'~49' },
-};
+function Skeleton({ w='100%', h=16, radius=6, style={} }) {
+  return <div style={{ width:w, height:h, borderRadius:radius, background:'linear-gradient(90deg,var(--skeleton-a,#E2E8F0) 25%,var(--skeleton-b,#F1F5F9) 50%,var(--skeleton-a,#E2E8F0) 75%)', backgroundSize:'200% 100%', animation:'shimmer 1.4s infinite', ...style }}/>;
+}
 
-const H = 160;
+/* Normalize backend KYC status → display status
+   Backend enum: not_started | documents_uploaded | under_review | approved | rejected */
+function normalizeStatus(s) {
+  if (!s) return 'Pending';
+  const m = {
+    not_started:        'Pending',
+    documents_uploaded: 'In Review',
+    under_review:       'In Review',
+    approved:           'Approved',
+    rejected:           'Failed',
+  };
+  return m[s] || s;
+}
 
 export default function Analytics() {
-  const [range, setRange]     = useState('30days');
-  const [loading, setLoading] = useState(true);
-  const [custom, setCustom]   = useState({ from:'2026-05-01', to:'2026-05-27' });
-  const [showCustom, setShowCustom] = useState(false);
-
-  const data = allData[range] || allData['30days'];
-  const MAX  = Math.max(...data.monthly.map(d => d.approved + d.pending + d.rejected));
+  const [stats, setStats]       = useState(null);
+  const [allKyc, setAllKyc]     = useState([]);
+  const [loading, setLoading]   = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    const t = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(t);
-  }, [range]);
+    Promise.all([
+      getDashboardStats(),
+      getAllSubmissions(),
+    ]).then(([sRes, kRes]) => {
+      // Backend stats response: { success, stats: {...} }
+      const s = sRes.data?.stats || {};
+      setStats(s);
+      // Backend submissions response: { success, total, page, totalPages, kycs: [...] }
+      const arr = kRes.data?.kycs || [];
+      setAllKyc(Array.isArray(arr) ? arr : []);
+    }).catch(()=>{}).finally(()=>setLoading(false));
+  }, []);
 
-  const docs = [
-    {type:'Aadhaar',  count:5800, pct:53, c:'#2563EB'},
-    {type:'PAN Card', count:3200, pct:29, c:'#8B5CF6'},
-    {type:'Passport', count:2050, pct:18, c:'#06B6D4'},
-  ];
+  // Backend stats field names: totalSubmissions, notStarted, docsUploaded, underReview, approved, rejected
+  const approved  = stats?.approved  || 0;
+  const pending   = (stats?.underReview || 0) + (stats?.docsUploaded || 0) + (stats?.notStarted || 0);
+  const rejected  = stats?.rejected  || 0;
+  const total     = stats?.totalSubmissions || (approved + pending + rejected) || 1;
+  const successRate = ((approved / total) * 100).toFixed(1);
+  const rejRate     = ((rejected / total) * 100).toFixed(1);
 
-  const reasons = [
-    {r:'Documents unclear / blurry',   n:42, p:53},
-    {r:'Aadhaar & PAN mismatch',       n:28, p:35},
-    {r:'Selfie does not match ID',     n:15, p:19},
-    {r:'Expired document',             n:8,  p:10},
-    {r:'Cropped / partial document',   n:7,  p:9},
-  ];
+  // Build monthly data from all submissions (backend field: createdAt)
+  const monthlyMap = {};
+  allKyc.forEach(r => {
+    const date = new Date(r.createdAt || Date.now());
+    const key  = date.toLocaleString('en-IN', { month:'short' });
+    if (!monthlyMap[key]) monthlyMap[key] = { approved:0, pending:0, rejected:0 };
+    const st = normalizeStatus(r.status);
+    if (st==='Approved') monthlyMap[key].approved++;
+    else if (st==='Pending'||st==='In Review') monthlyMap[key].pending++;
+    else monthlyMap[key].rejected++;
+  });
+  const monthOrder = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthlyData = monthOrder.filter(m=>monthlyMap[m]).map(m=>({ month:m, ...monthlyMap[m] }));
+  const MAX = Math.max(...(monthlyData.length ? monthlyData.map(d=>d.approved+d.pending+d.rejected) : [1]));
+  const H = 160;
 
   const kpis = [
-    {label:'Avg Processing Time', value:data.avgTime,    change:'↓ 0.8 min vs prev',  up:true,  e:'⏱️', bg:'#EFF6FF'},
-    {label:'Success Rate',        value:data.successRate,change:'↑ 1.2% vs prev',      up:true,  e:'✅', bg:'#F0FDF4'},
-    {label:'Rejection Rate',      value:data.rejRate,    change:'↓ 0.5% vs prev',      up:true,  e:'❌', bg:'#FEF2F2'},
-    {label:'Daily Submissions',   value:data.daily,      change:'↑ 8.3% this week',    up:true,  e:'📋', bg:'#FFF7ED'},
+    { label:'Success Rate',        value: loading ? '—' : `${successRate}%`,   change:`vs all time`, up:true,  e:'✅', bg:'#F0FDF4' },
+    { label:'Rejection Rate',      value: loading ? '—' : `${rejRate}%`,       change:`vs all time`, up:false, e:'❌', bg:'#FEF2F2' },
+    { label:'Pending Review',      value: loading ? '—' : pending.toLocaleString(), change:'awaiting action', up:true, e:'⏱️', bg:'#EFF6FF' },
+    { label:'Total Submissions',   value: loading ? '—' : total.toLocaleString(),   change:'all time',        up:true, e:'📋', bg:'#FFF7ED' },
   ];
 
   const dist = [
-    {label:'Approved',  value:data.approved, total:data.approved+data.rejected+data.pending, c:'#10B981', bg:'#F0FDF4'},
-    {label:'Pending',   value:data.pending,  total:data.approved+data.rejected+data.pending, c:'#F59E0B', bg:'#FFFBEB'},
-    {label:'Failed',    value:data.rejected, total:data.approved+data.rejected+data.pending, c:'#EF4444', bg:'#FEF2F2'},
-  ];
-
-  const ranges = [
-    {v:'7days',   l:'Last 7 Days'},
-    {v:'30days',  l:'Last 30 Days'},
-    {v:'3months', l:'Last 3 Months'},
-    {v:'custom',  l:'Custom Range'},
+    { label:'Approved',  value:approved, total, c:'#10B981', bg:'#F0FDF4' },
+    { label:'Pending',   value:pending,  total, c:'#F59E0B', bg:'#FFFBEB' },
+    { label:'Failed',    value:rejected, total, c:'#EF4444', bg:'#FEF2F2' },
   ];
 
   return (
     <div className="page">
-      <div className="page-header">
-        <div className="page-header-left"><h2>Analytics</h2><p>KYC performance metrics and trends.</p></div>
+      <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
+      <div className="page-header"><div className="page-header-left"><h2>Analytics</h2><p>KYC performance metrics and trends.</p></div></div>
 
-        {/* Date Range Picker */}
-        <div style={{ display:'flex', flexDirection:'column', alignItems:'flex-end', gap:8 }}>
-          <div className="date-range-bar">
-            {ranges.map(r => (
-              <button key={r.v}
-                className={`date-range-btn${range===r.v?' active':''}`}
-                onClick={() => { setRange(r.v); if(r.v==='custom') setShowCustom(true); else setShowCustom(false); }}>
-                {r.l}
-              </button>
-            ))}
-          </div>
-
-          {/* Custom date inputs */}
-          {range === 'custom' && (
-            <div style={{ display:'flex', alignItems:'center', gap:8, background:'var(--stat-card-bg,#fff)', border:'1.5px solid var(--gray-200)', borderRadius:10, padding:'7px 12px', animation:'pageIn 0.2s ease' }}>
-              <svg width="14" height="14" fill="none" stroke="var(--gray-400)" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <input type="date" value={custom.from} onChange={e=>setCustom(p=>({...p,from:e.target.value}))}
-                style={{ border:'none', background:'none', fontSize:13, color:'var(--gray-800)', outline:'none', fontFamily:"'Inter',sans-serif" }}/>
-              <span style={{ color:'var(--gray-400)', fontSize:12 }}>→</span>
-              <input type="date" value={custom.to} onChange={e=>setCustom(p=>({...p,to:e.target.value}))}
-                style={{ border:'none', background:'none', fontSize:13, color:'var(--gray-800)', outline:'none', fontFamily:"'Inter',sans-serif" }}/>
-              <button onClick={()=>setLoading(true)||setTimeout(()=>setLoading(false),500)}
-                style={{ background:'var(--blue)', color:'#fff', border:'none', borderRadius:7, padding:'5px 12px', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif" }}>
-                Apply
-              </button>
+      <div className="stats-row" style={{ marginBottom:22 }}>
+        {kpis.map(k=>(
+          <div className="stat-card" key={k.label}>
+            <div className="stat-top">
+              <div>
+                <div className="stat-label">{k.label}</div>
+                {loading ? <Skeleton w={80} h={24} radius={6} style={{ marginTop:6, marginBottom:4 }}/> : <div className="stat-value" style={{ fontSize:20 }}>{k.value}</div>}
+                <div className={`stat-change ${k.up?'up':'down'}`} style={{ fontSize:11 }}>{k.change}</div>
+              </div>
+              <div className="stat-icon" style={{ background:k.bg, fontSize:21 }}>{k.e}</div>
             </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="analytics-grid">
+        {/* Bar chart */}
+        <div className="chart-card">
+          <h3>Monthly KYC Submissions</h3>
+          {loading ? (
+            <div style={{ display:'flex', alignItems:'flex-end', gap:10, height:H, padding:'0 10px', marginTop:16 }}>
+              {Array(6).fill(0).map((_,i)=><Skeleton key={i} w={40} h={Math.random()*H*0.8+H*0.2} radius={6} style={{ flexShrink:0 }}/>)}
+            </div>
+          ) : monthlyData.length === 0 ? (
+            <div className="empty" style={{ marginTop:16 }}>No monthly data available yet.</div>
+          ) : (
+            <>
+              <div className="bar-wrap">
+                {monthlyData.map(d=>{
+                  const ah=Math.round((d.approved/MAX)*H);
+                  const ph=Math.round((d.pending/MAX)*H);
+                  const rh=Math.round((d.rejected/MAX)*H);
+                  return (
+                    <div className="bar-group" key={d.month}>
+                      <div className="bar-stack">
+                        <div className="bar-seg" style={{ height:ah, background:'#10B981' }} title={`Approved: ${d.approved}`}/>
+                        <div className="bar-seg" style={{ height:ph, background:'#F59E0B' }} title={`Pending: ${d.pending}`}/>
+                        <div className="bar-seg" style={{ height:rh, background:'#EF4444' }} title={`Rejected: ${d.rejected}`}/>
+                      </div>
+                      <div className="bar-label">{d.month}</div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display:'flex', gap:14, marginTop:12, justifyContent:'center' }}>
+                {[['#10B981','Approved'],['#F59E0B','Pending'],['#EF4444','Rejected']].map(([c,l])=>(
+                  <div key={l} style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'var(--gray-600)' }}>
+                    <div style={{ width:10, height:10, borderRadius:3, background:c }}/>{l}
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
-      </div>
 
-      {/* Range indicator */}
-      <div style={{ marginBottom:18, display:'flex', alignItems:'center', gap:8 }}>
-        <div style={{ width:8, height:8, borderRadius:'50%', background:'var(--blue)' }}/>
-        <span style={{ fontSize:12.5, color:'var(--gray-400)', fontWeight:500 }}>
-          Showing data for: <strong style={{ color:'var(--navy)' }}>
-            {range==='custom' ? `${custom.from} → ${custom.to}` : ranges.find(r=>r.v===range)?.l}
-          </strong>
-        </span>
-      </div>
-
-      {/* KPI Cards */}
-      {loading ? <SkeletonCards count={4}/> : (
-        <div className="stats-row" style={{ marginBottom:22 }}>
-          {kpis.map(k => (
-            <div className="stat-card" key={k.label} style={{ transition:'all 0.3s' }}>
-              <div className="stat-top">
-                <div>
-                  <div className="stat-label">{k.label}</div>
-                  <div className="stat-value" style={{ fontSize:20 }}>{k.value}</div>
-                  <div className="stat-change up" style={{ fontSize:11 }}>{k.change}</div>
-                </div>
-                <div className="stat-icon" style={{ background:k.bg, fontSize:21 }}>{k.e}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {loading ? (
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:18 }}>
-          {[1,2,3,4].map(i=><div key={i} className="skeleton sk-card" style={{height:260}}/>)}
-        </div>
-      ) : (
-        <div className="analytics-grid">
-          {/* Bar chart */}
-          <div className="chart-card">
-            <h3>KYC Submissions — {ranges.find(r=>r.v===range)?.l}</h3>
-            <div className="bar-wrap">
-              {data.monthly.map(d => {
-                const tot = d.approved + d.pending + d.rejected;
-                const ah  = Math.round((d.approved / MAX) * H);
-                const ph  = Math.round((d.pending  / MAX) * H);
-                const rh  = Math.round((d.rejected / MAX) * H);
-                return (
-                  <div className="bar-group" key={d.month}>
-                    <div className="bar-stack">
-                      <div className="bar-seg" style={{ height:ah, background:'#10B981' }} title={`Approved: ${d.approved}`}/>
-                      <div className="bar-seg" style={{ height:ph, background:'#F59E0B' }} title={`Pending: ${d.pending}`}/>
-                      <div className="bar-seg" style={{ height:rh, background:'#EF4444' }} title={`Rejected: ${d.rejected}`}/>
-                    </div>
-                    <div className="bar-label">{d.month}</div>
+        {/* Status distribution */}
+        <div className="chart-card">
+          <h3>Status Distribution</h3>
+          <div style={{ display:'flex', flexDirection:'column', gap:14, marginTop:16 }}>
+            {dist.map(d=>{
+              const pct = d.total > 0 ? ((d.value/d.total)*100).toFixed(1) : '0.0';
+              return (
+                <div key={d.label}>
+                  <div style={{ display:'flex', justifyContent:'space-between', fontSize:13, fontWeight:600, color:'var(--navy)', marginBottom:6 }}>
+                    <span>{d.label}</span>
+                    <span>{loading ? '—' : `${d.value.toLocaleString()} (${pct}%)`}</span>
                   </div>
-                );
-              })}
-            </div>
-            <div style={{ display:'flex', gap:14, marginTop:12, justifyContent:'center' }}>
-              {[['#10B981','Approved'],['#F59E0B','Pending'],['#EF4444','Rejected']].map(([c,l])=>(
-                <div key={l} style={{ display:'flex', alignItems:'center', gap:5, fontSize:12, color:'var(--gray-600)' }}>
-                  <div style={{ width:10, height:10, borderRadius:3, background:c }}></div>{l}
+                  <div style={{ height:8, background:'var(--gray-100)', borderRadius:20, overflow:'hidden' }}>
+                    {!loading && <div style={{ height:'100%', width:`${pct}%`, background:d.c, borderRadius:20, transition:'width 0.6s ease' }}/>}
+                  </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
 
-          {/* Document breakdown */}
-          <div className="chart-card">
-            <h3>Document Type Breakdown</h3>
-            {docs.map(d => (
-              <div className="prog-row" key={d.type}>
-                <div className="prog-top">
-                  <span className="prog-name">{d.type}</span>
-                  <span className="prog-val" style={{ color:d.c }}>{d.pct}% ({d.count.toLocaleString()})</span>
-                </div>
-                <div className="prog-bar"><div className="prog-fill" style={{ width:`${d.pct}%`, background:d.c }}/></div>
-              </div>
-            ))}
-            <div style={{ background:'var(--gray-100)', borderRadius:10, padding:'12px 14px', marginTop:16 }}>
-              <div style={{ fontSize:11, fontWeight:700, color:'var(--gray-400)', marginBottom:5 }}>INSIGHT</div>
-              <div style={{ fontSize:13, color:'var(--gray-600)', lineHeight:1.5 }}>Aadhaar leads at 53%. Streamlining Aadhaar flow can reduce avg processing time.</div>
-            </div>
-          </div>
-
-          {/* Status distribution */}
-          <div className="chart-card">
-            <h3>Status Distribution</h3>
-            <div className="mini-grid">
-              {dist.map(s => (
-                <div key={s.label} className="mini-stat" style={{ background:s.bg }}>
-                  <div className="mini-val" style={{ color:s.c }}>{s.value.toLocaleString()}</div>
-                  <div className="mini-lab">{s.label}</div>
-                  <div className="mini-pct">{Math.round((s.value/(s.total||1))*100)}% of total</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Rejection reasons */}
-          <div className="chart-card">
-            <h3>Top Rejection Reasons</h3>
-            {reasons.map(r => (
-              <div className="prog-row" key={r.r}>
-                <div className="prog-top">
-                  <span className="prog-name" style={{ fontSize:12 }}>{r.r}</span>
-                  <span className="prog-val" style={{ color:'var(--red)', fontSize:13 }}>{r.n}</span>
-                </div>
-                <div className="prog-bar"><div className="prog-fill" style={{ width:`${r.p}%`, background:'#EF4444' }}/></div>
+          <div style={{ marginTop:28, padding:'16px', background:'var(--gray-50,#F8FAFC)', borderRadius:12, border:'1px solid var(--gray-200)' }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--gray-400)', textTransform:'uppercase', letterSpacing:'0.7px', marginBottom:12 }}>Summary</div>
+            {[
+              ['Total Users Submitted', total.toLocaleString()],
+              ['KYC Approved', `${approved.toLocaleString()} (${successRate}%)`],
+              ['KYC Rejected', `${rejected.toLocaleString()} (${rejRate}%)`],
+              ['Currently Pending', pending.toLocaleString()],
+            ].map(([l,v])=>(
+              <div key={l} style={{ display:'flex', justifyContent:'space-between', fontSize:13, padding:'6px 0', borderBottom:'1px solid var(--gray-100)' }}>
+                <span style={{ color:'var(--gray-600)' }}>{l}</span>
+                <span style={{ fontWeight:700, color:'var(--navy)' }}>{loading?'—':v}</span>
               </div>
             ))}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

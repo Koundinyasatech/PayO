@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { changeAdminPassword } from '../apis/adminApi';
+import { changePassword } from '../apis/adminApi';
 
 function Toast({ msg, type, onClose }) {
   useEffect(() => { const t = setTimeout(onClose, 3000); return () => clearTimeout(t); }, [onClose]);
@@ -102,19 +102,17 @@ export default function AdminProfile({ admin, onUpdate, onLogout, dark }) {
     showToast('Profile updated successfully!');
   };
 
-  const savePassword = () => {
+  const savePassword = async () => {
     if (!curPw) { showToast('Enter your current password.', 'err'); return; }
     if (newPw.length < 8) { showToast('New password must be at least 8 characters.', 'err'); return; }
     if (newPw !== confPw) { showToast('New passwords do not match.', 'err'); return; }
-    changeAdminPassword(curPw, newPw)
-      .then(() => {
-        setCurPw(''); setNewPw(''); setConfPw('');
-        showToast('Password changed successfully!', 'ok');
-      })
-      .catch(err => {
-        const msg = err.response?.data?.message || 'Password change failed';
-        showToast(msg, 'err');
-      });
+    try {
+      await changePassword(curPw, newPw);
+      setCurPw(''); setNewPw(''); setConfPw('');
+      showToast('Password changed successfully!');
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Password change failed', 'err');
+    }
   };
 
   const savePreferences = () => { showToast('Preferences saved!'); };
