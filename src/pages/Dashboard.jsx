@@ -220,6 +220,15 @@ export default function Dashboard() {
       .finally(() => setLoadingKyc(false));
   }, []);
 
+  // Safety check
+if (!Array.isArray(kycs)) {
+  return (
+    <div style={{ padding: 20 }}>
+      Loading Dashboard...
+    </div>
+  );
+}
+
   // Backend stats field names: totalSubmissions, notStarted, docsUploaded, underReview, approved, rejected
   const totalSubmissions = stats?.totalSubmissions || 0;
   const pendingKYC       = (stats?.underReview || 0) + (stats?.docsUploaded || 0);
@@ -234,7 +243,7 @@ export default function Dashboard() {
   ];
 
   // Filter KYC list by date (backend uses createdAt)
-  const filteredKyc = kycs.filter(r => {
+  const filteredKyc = (kycs || []).filter(r => {
     if (dateFilter === 'all') return true;
     const d = new Date(r.createdAt);
     const now = new Date();
@@ -265,7 +274,13 @@ export default function Dashboard() {
 
       {/* Stat Cards */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:18, marginBottom:24 }}>
-        {statCards.map(s => <StatCard key={s.label} {...s} loading={loadingStats}/>)}
+        {statCards.map((s) => (
+  <StatCard
+    key={s.label}
+    {...s}
+    loading={loadingStats}
+  />
+))}
       </div>
 
       {/* Main Grid */}

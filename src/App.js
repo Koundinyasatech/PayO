@@ -97,20 +97,22 @@ function Portal({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
           toggleDark={toggleDark}
         />
         <Routes>
-          <Route path="/"              element={<Dashboard />} />
-          <Route path="/kyc"           element={<KYCReview />} />
-          <Route path="/users"         element={<Users />} />
-          <Route path="/wallets"       element={<Wallets />} />
-          <Route path="/analytics"     element={<Analytics />} />
-          <Route path="/audit"         element={<AuditLog />} />
-          <Route path="/notifications" element={<Notifications />} />
-        </Routes>
+  <Route index element={<Dashboard />} />
+  <Route path="/" element={<Dashboard />} />
+  <Route path="/kyc" element={<KYCReview />} />
+  <Route path="/users" element={<Users />} />
+  <Route path="/wallets" element={<Wallets />} />
+  <Route path="/analytics" element={<Analytics />} />
+  <Route path="/audit" element={<AuditLog />} />
+  <Route path="/notifications" element={<Notifications />} />
+</Routes>
       </div>
     </div>
   );
 }
 
 function AppInner() {
+  const navigate = useNavigate();
   const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dark, setDark] = useState(() => {
@@ -139,10 +141,15 @@ function AppInner() {
   }, [dark]);
 
   const handleLogin = (adminData, token) => {
-    localStorage.setItem('payo_token', token);
-    localStorage.setItem('payo_admin', JSON.stringify(adminData));
-    setAdmin(adminData);
-  };
+  localStorage.setItem('payo_token', token);
+  localStorage.setItem('payo_admin', JSON.stringify(adminData));
+
+  setAdmin(adminData);
+
+  setTimeout(() => {
+    navigate('/');
+  }, 100);
+};
 
   const handleLogout = () => {
     localStorage.removeItem('payo_token');
