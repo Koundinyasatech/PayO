@@ -31,24 +31,24 @@ const MarketScreen = ({ navigation }) => {
   useCallback(() => {
     fetchExpertCoins();
 
-    const interval = setInterval(() => {
-      fetchExpertCoins();
-    }, 1000);
+    // const interval = setInterval(() => {
+    //   fetchExpertCoins();
+    // }, 1000);
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []),
 );
 
   const fetchExpertCoins = async () => {
   try {
-    // setLoading(true);
+    setLoading(true);
 
     const res = await api.get('/api/market/overview');
 
     console.log(res.data, 'data');
 
     setCoins(res?.data?.data?.slice(0, 50));
-    // setLoading(false);
+    setLoading(false);
   } catch (error) {
     console.log('Expert picks error:', error);
     setLoading(false);
