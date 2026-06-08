@@ -232,47 +232,57 @@ export default StyleSheet.create({
     fontSize: moderateScale(16),
   },
 
-// logoutText: {
-//   color: '#ff4d4d',
-//   fontWeight: '700',
-//   fontSize: 16,
-// },
+  // logoutText: {
+  //   color: '#ff4d4d',
+  //   fontWeight: '700',
+  //   fontSize: 16,
+  // },
 
 
-bankCard: {
-  backgroundColor: "#6a1bb9",
-  borderRadius: 14,
-  padding: 15,
-  flexDirection: "row",
-  alignItems: "center",
-  justifyContent: "space-between",
-  marginBottom: 10
-},
+  bankCard: {
+    backgroundColor: "#6a1bb9",
+    borderRadius: 14,
+    padding: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10
+  },
 
-bankLeft: {
-  flexDirection: "row",
-  alignItems: "center"
-},
+  bankLeft: {
+    flexDirection: "row",
+    alignItems: "center"
+  },
 
-bankIcon: {
-  width: 36,
-  height: 36,
-  borderRadius: 8,
-  backgroundColor: "#5e2bb8",
-  justifyContent: "center",
-  alignItems: "center",
-  marginRight: 12
-},
+  bankIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: "#5e2bb8",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12
+  },
+  helpButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-bankName: {
-  color: "#fff",
-  fontSize: 15,
-  fontWeight: "600"
-},
+  helpImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+  },
 
-bankSub: {
-  color: "#ccc",
-  fontSize: 12
-},
+  bankName: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "600"
+  },
+
+  bankSub: {
+    color: "#ccc",
+    fontSize: 12
+  },
 });
- 
+
