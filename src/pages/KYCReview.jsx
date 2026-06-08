@@ -265,12 +265,15 @@ function Modal({ user, onClose, onApprove, onReject }) {
   const reviewedBy      = src.reviewedBy?.name || src.reviewedBy?.email;
 
   // Document URLs (full URLs from backend, including protocol+host)
-  const aadhar   = src.aadharFrontUrl;
-  const pan      = src.panCardUrl;
-  const passport = src.passportUrl;
-  const selfie   = src.selfieUrl;
+  const aadhar        = src.aadharFrontUrl;
+  const pan           = src.panCardUrl;
+  const passport      = src.passportUrl;
+  const selfie        = src.selfieUrl;
+  const cancelCheque  = src.cancelChequeUrl;
+  const bankStatement = src.bankStatementUrl;
+  const passbook      = src.passbookUrl;
 
-  const hasAnyDoc = !!(aadhar || pan || passport || selfie);
+  const hasAnyDoc = !!(aadhar || pan || passport || selfie || cancelCheque || bankStatement || passbook);
 
   return (
     <div className="overlay" onClick={e=>e.target===e.currentTarget&&onClose()}>
@@ -411,6 +414,38 @@ function Modal({ user, onClose, onApprove, onReject }) {
                       />
                     </div>
                   </div>
+
+                  {(cancelCheque || bankStatement || passbook) && (
+                    <div style={{ marginBottom:20 }}>
+                      <SectionDivider icon="🏦" label="Bank Documents" bg="#FFFBEB"/>
+                      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:14 }}>
+                        <DocumentCard
+                          title="Cancel Cheque"
+                          emoji="🏦"
+                          url={cancelCheque}
+                          accentColor="#3B82F6"
+                          accentBg="linear-gradient(135deg,#EFF6FF,#DBEAFE)"
+                          flagged={isFailed}
+                        />
+                        <DocumentCard
+                          title="Bank Statement"
+                          emoji="📄"
+                          url={bankStatement}
+                          accentColor="#8B5CF6"
+                          accentBg="linear-gradient(135deg,#F5F3FF,#EDE9FE)"
+                          flagged={isFailed}
+                        />
+                        <DocumentCard
+                          title="Passbook"
+                          emoji="📒"
+                          url={passbook}
+                          accentColor="#F59E0B"
+                          accentBg="linear-gradient(135deg,#FFFBEB,#FEF3C7)"
+                          flagged={isFailed}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </>
               ) : (
                 <div style={{ textAlign:'center', padding:'40px 20px', color:'var(--gray-400)' }}>
@@ -619,10 +654,13 @@ export default function KYCReview() {
                     const formatted = dateStr ? new Date(dateStr).toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '—';
                     // Build document badges based on what's actually uploaded
                     const docs = [];
-                    if (r.aadharFrontUrl) docs.push('🪪 Aadhaar');
-                    if (r.panCardUrl)     docs.push('💳 PAN');
-                    if (r.passportUrl)    docs.push('📔 Passport');
-                    if (r.selfieUrl)      docs.push('🤳 Selfie');
+                    if (r.aadharFrontUrl)    docs.push('🪪 Aadhaar');
+                    if (r.panCardUrl)        docs.push('💳 PAN');
+                    if (r.passportUrl)       docs.push('📔 Passport');
+                    if (r.selfieUrl)         docs.push('🤳 Selfie');
+                    if (r.cancelChequeUrl)   docs.push('🏦 Cheque');
+                    if (r.bankStatementUrl)  docs.push('📄 Statement');
+                    if (r.passbookUrl)       docs.push('📒 Passbook');
                     return (
                       <tr key={r._id}>
                         <td>
