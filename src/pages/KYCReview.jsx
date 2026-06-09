@@ -42,6 +42,7 @@ function DocumentCard({ title, emoji, url, accentColor, accentBg, flagged }) {
   const [blobUrl,  setBlobUrl]  = useState(null);
   const [loading,  setLoading]  = useState(false);
   const [imgError, setImgError] = useState(false);
+  const [isPdf,    setIsPdf]    = useState(false);
   const present = !!url;
 
   useEffect(() => {
@@ -61,6 +62,8 @@ function DocumentCard({ title, emoji, url, accentColor, accentBg, flagged }) {
     })
       .then(res => {
         if (!res.ok) throw new Error('fetch failed');
+        const ct = res.headers.get('content-type') || '';
+        if (!revoked) setIsPdf(ct.includes('pdf') || normalized.toLowerCase().endsWith('.pdf'));
         return res.blob();
       })
       .then(blob => {
@@ -114,12 +117,19 @@ function DocumentCard({ title, emoji, url, accentColor, accentBg, flagged }) {
         )}
 
         {/* Image loaded successfully via blob URL */}
-        {present && !loading && blobUrl && (
+        {present && !loading && blobUrl && !isPdf && (
           <img
             src={blobUrl}
             alt={title}
             style={{ maxWidth:'100%', maxHeight:'100%', objectFit:'contain', display:'block' }}
           />
+        )}
+        {/* PDF loaded — show icon with open prompt */}
+        {present && !loading && blobUrl && isPdf && (
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
+            <div style={{ fontSize:42 }}>📄</div>
+            <div style={{ fontSize:11, fontWeight:700, color:accentColor, textTransform:'uppercase', letterSpacing:'0.6px' }}>PDF — Click Open</div>
+          </div>
         )}
 
         {/* Failed to load or not uploaded */}
@@ -130,13 +140,13 @@ function DocumentCard({ title, emoji, url, accentColor, accentBg, flagged }) {
               background:'rgba(255,255,255,0.6)',
               display:'flex', alignItems:'center', justifyContent:'center',
               fontSize:28, boxShadow:'0 2px 8px rgba(0,0,0,0.1)',
-            }}>{emoji}</div>
+            }}>{present ? '⚠️' : emoji}</div>
             <div style={{
               fontSize:11, fontWeight:700,
-              color: present ? 'rgba(0,0,0,0.55)' : 'rgba(0,0,0,0.35)',
+              color: present ? '#DC2626' : 'rgba(0,0,0,0.35)',
               textTransform:'uppercase', letterSpacing:'0.6px',
             }}>
-              {present ? 'Failed to load' : 'Not uploaded'}
+              {present ? 'Preview unavailable — click Open' : 'Not uploaded'}
             </div>
           </>
         )}
@@ -163,7 +173,9 @@ function DocumentCard({ title, emoji, url, accentColor, accentBg, flagged }) {
         {present
           ? flagged
             ? <span style={{ background: '#FEE2E2', color: '#DC2626', fontSize: 10, fontWeight: 700, padding: '3px 8px', borderRadius: 20 }}>⚠️ Flagged</span>
-            : <span style={{ background: '#F0FDF4', color: '#059669', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20 }}>Submitted ✓</span>
+            : blobUrl
+              ? <span style={{ background: '#F0FDF4', color: '#059669', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20 }}>Submitted ✓</span>
+              : <span style={{ background: '#FFF7ED', color: '#D97706', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20 }}>Submitted ✓</span>
           : <span style={{ background: 'var(--gray-100)', color: 'var(--gray-400)', fontSize: 10, fontWeight: 600, padding: '3px 8px', borderRadius: 20 }}>Not uploaded</span>}
       </div>
     </div>
@@ -269,8 +281,8 @@ function Modal({ user, onClose, onApprove, onReject }) {
   const pan           = src.panCardUrl;
   const passport      = src.passportUrl;
   const selfie        = src.selfieUrl;
-  const cancelCheque  = src.cancelChequeUrl;
-  const bankStatement = src.bankStatementUrl;
+  const cancelCheque  = src.cancelChequeUrl || src.cancelledChequeUrl;
+  const bankStatement = src.bankStatementUrl || src.statementUrl;
   const passbook      = src.passbookUrl;
 
   const hasAnyDoc = !!(aadhar || pan || passport || selfie || cancelCheque || bankStatement || passbook);
@@ -658,8 +670,8 @@ export default function KYCReview() {
                     if (r.panCardUrl)        docs.push('💳 PAN');
                     if (r.passportUrl)       docs.push('📔 Passport');
                     if (r.selfieUrl)         docs.push('🤳 Selfie');
-                    if (r.cancelChequeUrl)   docs.push('🏦 Cheque');
-                    if (r.bankStatementUrl)  docs.push('📄 Statement');
+                    if (r.cancelChequeUrl || r.cancelledChequeUrl)  docs.push('🏦 Cheque');
+                    if (r.bankStatementUrl || r.statementUrl)         docs.push('📄 Statement');
                     if (r.passbookUrl)       docs.push('📒 Passbook');
                     return (
                       <tr key={r._id}>
