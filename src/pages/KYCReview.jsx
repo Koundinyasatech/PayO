@@ -234,7 +234,7 @@ function StatusFilterDropdown({ value, onChange, counts }) {
 }
 
 /* ── Review Modal — shows detail/docs/action for a KYC record ── */
-function Modal({ user, onClose, onApprove, onReject }) {
+function Modal({ user, onClose, onApprove, onReject, canApproveReject }) {
   const [tab, setTab] = useState('details');
   const [reason, setReason] = useState('');
   const [detailLoading, setDetailLoading] = useState(false);
@@ -307,7 +307,7 @@ function Modal({ user, onClose, onApprove, onReject }) {
         </div>
 
         <div className="modal-tabs">
-          {[['details','Details'],['documents','Documents'],['action','Take Action']].map(([key,label]) => (
+          {[['details','Details'],['documents','Documents'],canApproveReject && ['action','Take Action']].filter(Boolean).map(([key,label]) => (
             <button key={key} className={`mtab${tab===key?' act':''}`} onClick={()=>setTab(key)}>{label}</button>
           ))}
         </div>
@@ -514,7 +514,9 @@ function Modal({ user, onClose, onApprove, onReject }) {
 
 /* ─── Main KYCReview Page ─── */
 export default function KYCReview() {
-  const { confirm } = useContext(AppCtx);
+  const { confirm, adminRole } = useContext(AppCtx);
+  // Only super_admin and kyc_admin can approve/reject KYC submissions
+  const canApproveReject = ['super_admin', 'kyc_admin'].includes(adminRole);
   const [data, setData]         = useState([]);
   const [loading, setLoading]   = useState(true);
   const [sel, setSel]           = useState(null);
@@ -696,7 +698,7 @@ export default function KYCReview() {
                         <td>
                           <div className="act-group">
                             <button className="btn btn-outline" style={{ fontSize:12, padding:'5px 11px' }} onClick={()=>setSel(r)}>👁 Review</button>
-                            {status==='In Review' && <>
+                            {canApproveReject && status==='In Review' && <>
                               <button className="btn btn-ghost icon-btn" title="Approve" onClick={()=>quickApprove(r._id)} style={{ color:'var(--green)' }}>
                                 <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                               </button>
@@ -727,7 +729,7 @@ export default function KYCReview() {
         )}
       </div>
 
-      {sel && <Modal user={sel} onClose={()=>setSel(null)} onApprove={approve} onReject={reject}/>}
+      {sel && <Modal user={sel} onClose={()=>setSel(null)} onApprove={approve} onReject={reject} canApproveReject={canApproveReject}/>}
 
       {rejectTarget && (
         <div className="overlay" onClick={e=>e.target===e.currentTarget&&setRejectTarget(null)}>

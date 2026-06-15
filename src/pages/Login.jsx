@@ -9,6 +9,16 @@ export default function Login({ onLogin }) {
   const [loading, setLoading]   = useState(false);
   const [shake, setShake]       = useState(false);
 
+  // Decode JWT payload without a library — used to extract adminRole as fallback
+  const decodeJwt = (token) => {
+    try {
+      const payload = token.split('.')[1];
+      return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+    } catch {
+      return {};
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -25,12 +35,21 @@ export default function Login({ onLogin }) {
         throw new Error('No token received from server');
       }
 
+      // Decode JWT to get adminRole — guaranteed to be in the token payload
+      // even if the response body shape varies
+      const tokenPayload = decodeJwt(token);
+
+      const adminRole = adminRaw.adminRole || tokenPayload.adminRole || null;
+
+      console.log('[Login] adminRole resolved:', adminRole, '| from body:', adminRaw.adminRole, '| from token:', tokenPayload.adminRole);
+
       const adminData = {
-        name:  adminRaw.name  || adminRaw.email?.split('@')[0] || 'Admin',
-        email: adminRaw.email || email,
-        role:  adminRaw.role  || adminRaw.userType || 'Admin',
-        id:    adminRaw._id   || adminRaw.id || '',
-        mobile: adminRaw.mobile || '',
+        name:      adminRaw.name      || tokenPayload.name  || 'Admin',
+        email:     adminRaw.email     || tokenPayload.email || email,
+        role:      adminRaw.role      || tokenPayload.role  || 'Admin',
+        id:        adminRaw._id       || adminRaw.id        || tokenPayload.id || '',
+        mobile:    adminRaw.mobile    || '',
+        adminRole,
       };
 
       onLogin(adminData, token);

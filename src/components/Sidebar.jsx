@@ -1,96 +1,8 @@
-// import { NavLink } from 'react-router-dom';
-
-// const navMain = [
-//   { to:'/', label:'Dashboard', exact:true,
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-//   },
-//   { to:'/kyc', label:'KYC Review', badge:24,
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
-//   },
-//   { to:'/users', label:'Users',
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-//   },
-//   { to:'/wallets', label:'Wallets',
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3H8L4 7h16l-4-4z"/><circle cx="17" cy="13" r="1"/></svg>
-//   },
-// ];
-
-// const navReports = [
-//   { to:'/analytics', label:'Analytics',
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-//   },
-//   { to:'/audit', label:'Audit Log',
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-//   },
-//   { to:'/notifications', label:'Notifications', badge:5,
-//     icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-//   },
-// ];
-
-// const NavGroup = ({ items }) =>
-//   items.map(item => (
-//     <NavLink key={item.to} to={item.to} end={!!item.exact} style={{ textDecoration:'none' }}>
-//       {({ isActive }) => (
-//         <div className={`nav-item${isActive ? ' active' : ''}`}>
-//           {item.icon}
-//           <span style={{ flex:1 }}>{item.label}</span>
-//           {item.badge && <span className="nav-badge">{item.badge}</span>}
-//         </div>
-//       )}
-//     </NavLink>
-//   ));
-
-// export default function Sidebar({ onLogout }) {
-//   return (
-//     <aside className="sidebar">
-
-//       {/* ── Logo: uses your real PNG image ── */}
-//       <div style={{
-//         padding: '16px 16px 14px',
-//         borderBottom: '1px solid rgba(255,255,255,0.07)',
-//         display: 'flex',
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//       }}>
-//         <img
-//           src={process.env.PUBLIC_URL + "/images/payo-wide-logo-removebg-preview.png"}
-//           alt="PayO Admin Portal"
-//           style={{
-//             width: '100%',
-//             maxWidth: 200,
-//             height: 'auto',
-//             objectFit: 'contain',
-//             display: 'block',
-//           }}
-//         />
-//       </div>
-
-//       <nav className="sidebar-nav">
-//         <div className="nav-section-label">Main</div>
-//         <NavGroup items={navMain} />
-//         <div className="nav-section-label">Reports</div>
-//         <NavGroup items={navReports} />
-//       </nav>
-
-//       <div className="sidebar-footer">
-//         <div className="logout-btn" onClick={onLogout}>
-//           <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-//             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
-//           </svg>
-//           Logout
-//         </div>
-//       </div>
-//     </aside>
-//   );
-// }
-
-
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { getAllSubmissions } from '../apis/adminApi'; 
+import { AppCtx, ROLE_ACCESS, ROLE_LABELS } from '../App';
+import { getAllSubmissions } from '../apis/adminApi';
 
-/* Helper function from your Notifications component to check status */
 function normalizeStatus(s) {
   if (!s) return 'Pending';
   const m = {
@@ -103,13 +15,21 @@ function normalizeStatus(s) {
   return m[s] || s;
 }
 
+// Role badge dot colours
+const ROLE_BADGE_STYLE = {
+  super_admin:      { dot: '#F59E0B' },
+  kyc_admin:        { dot: '#3B82F6' },
+  operations_admin: { dot: '#22C55E' },
+  support_admin:    { dot: '#8B5CF6' },
+};
+
 const NavGroup = ({ items }) =>
   items.map(item => (
-    <NavLink key={item.to} to={item.to} end={!!item.exact} style={{ textDecoration:'none' }}>
+    <NavLink key={item.to} to={item.to} end={!!item.exact} style={{ textDecoration: 'none' }}>
       {({ isActive }) => (
         <div className={`nav-item ${isActive ? 'active' : ''}`}>
           {item.icon}
-          <span style={{ flex:1 }}>{item.label}</span>
+          <span style={{ flex: 1 }}>{item.label}</span>
           {item.badge > 0 && <span className="nav-badge">{item.badge}</span>}
         </div>
       )}
@@ -117,83 +37,91 @@ const NavGroup = ({ items }) =>
   ));
 
 export default function Sidebar({ onLogout }) {
-  const [pendingKycCount, setPendingKycCount] = useState(0);
+  const { adminRole } = useContext(AppCtx);
+  const [pendingKycCount,  setPendingKycCount]  = useState(0);
   const [unreadNotifCount, setUnreadNotifCount] = useState(0);
 
   useEffect(() => {
-    // Fetch submissions on load to get both badge counts
+    const canSeeKyc   = ROLE_ACCESS['/kyc']?.includes(adminRole);
+    const canSeeNotif = ROLE_ACCESS['/notifications']?.includes(adminRole);
+    if (!canSeeKyc && !canSeeNotif) return;
+
     getAllSubmissions()
       .then(res => {
         const arr = res.data?.kycs || [];
-        
-        // 1. Calculate KYC 'In Review' badge
-        const needsReview = arr.filter(
-          r => r.status === 'under_review' || r.status === 'documents_uploaded'
-        ).length;
-        setPendingKycCount(needsReview);
-
-        // 2. Calculate Unread Notifications badge
-        // Based on your Notifications.js logic, unread = status is 'Pending'
-        const unreadCount = arr.filter(
-          r => normalizeStatus(r.status) === 'Pending'
-        ).length;
-        setUnreadNotifCount(unreadCount);
+        if (canSeeKyc) {
+          setPendingKycCount(
+            arr.filter(r => r.status === 'under_review' || r.status === 'documents_uploaded').length
+          );
+        }
+        if (canSeeNotif) {
+          setUnreadNotifCount(
+            arr.filter(r => normalizeStatus(r.status) === 'Pending').length
+          );
+        }
       })
-      .catch(err => console.error("Failed to load badge counts", err));
-  }, []);
+      .catch(err => console.error('Failed to load badge counts', err));
+  }, [adminRole]);
 
-  const navMain = [
-    { to:'/', label:'Dashboard', exact:true,
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+  // All possible nav items
+  const allNavMain = [
+    {
+      to: '/', label: 'Dashboard', exact: true,
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>,
     },
-    { to:'/kyc', label:'KYC Review', 
-      badge: pendingKycCount, 
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+    {
+      to: '/kyc', label: 'KYC Review', badge: pendingKycCount,
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>,
     },
-    { to:'/users', label:'Users',
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    {
+      to: '/users', label: 'Users',
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>,
     },
-    { to:'/wallets', label:'Wallets',
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3H8L4 7h16l-4-4z"/><circle cx="17" cy="13" r="1"/></svg>
+    {
+      to: '/wallets', label: 'Wallets',
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3H8L4 7h16l-4-4z"/><circle cx="17" cy="13" r="1"/></svg>,
     },
   ];
 
-  // Moved navReports INSIDE the component so it has access to unreadNotifCount state
-  const navReports = [
-    { to:'/analytics', label:'Analytics',
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+  const allNavReports = [
+    {
+      to: '/analytics', label: 'Analytics',
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
     },
-    { to:'/audit', label:'Audit Log',
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    {
+      to: '/audit', label: 'Audit Log',
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     },
-    { to:'/notifications', label:'Notifications', 
-      badge: unreadNotifCount, // Dynamic badge attached here
-      icon:<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    {
+      to: '/notifications', label: 'Notifications', badge: unreadNotifCount,
+      icon: <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>,
     },
   ];
+
+  // Only show items this role is allowed to access
+  const navMain    = allNavMain.filter(item    => ROLE_ACCESS[item.to]?.includes(adminRole));
+  const navReports = allNavReports.filter(item => ROLE_ACCESS[item.to]?.includes(adminRole));
+
+  const roleDot   = ROLE_BADGE_STYLE[adminRole]?.dot || '#94A3B8';
+  const roleLabel = ROLE_LABELS[adminRole] || 'Admin';
 
   return (
     <aside className="sidebar">
+
+      {/* Logo */}
       <div style={{
         padding: '16px 16px 14px',
         borderBottom: '1px solid rgba(255,255,255,0.07)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <img
           src={process.env.PUBLIC_URL + "/images/payo-wide-logo-removebg-preview.png"}
           alt="PayO Admin Portal"
-          style={{
-            width: '100%',
-            maxWidth: 200,
-            height: 'auto',
-            objectFit: 'contain',
-            display: 'block',
-          }}
+          style={{ width: '100%', maxWidth: 200, height: 'auto', objectFit: 'contain', display: 'block' }}
         />
       </div>
 
+      {/* Nav */}
       <nav className="sidebar-nav">
         <div className="nav-section-label">Main</div>
         <NavGroup items={navMain} />
@@ -201,7 +129,34 @@ export default function Sidebar({ onLogout }) {
         <NavGroup items={navReports} />
       </nav>
 
+      {/* Footer */}
       <div className="sidebar-footer">
+
+        {/* Role badge */}
+        <div style={{
+          margin: '0 10px 10px',
+          padding: '8px 12px',
+          borderRadius: 10,
+          background: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <div style={{
+            width: 8, height: 8, borderRadius: '50%',
+            background: roleDot, flexShrink: 0,
+            boxShadow: `0 0 6px ${roleDot}`,
+          }}/>
+          <div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.6px' }}>
+              Logged in as
+            </div>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: 700, marginTop: 1 }}>
+              {roleLabel}
+            </div>
+          </div>
+        </div>
+
+        {/* Logout */}
         <div className="logout-btn" onClick={onLogout}>
           <svg width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
