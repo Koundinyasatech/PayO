@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import './App.css';
 import { useState, useEffect, createContext, useContext } from 'react';
 import Sidebar from './components/Sidebar';
@@ -15,15 +15,46 @@ import Notifications from './pages/Notifications';
 
 export const AppCtx = createContext({});
 
+// ── Role-based page access map ────────────────────────────────────────────────
+// Defines which adminRoles are allowed to visit each route.
+// Dashboard, Audit Log, Notifications are open to all admin roles.
+export const ROLE_ACCESS = {
+  '/':              ['super_admin', 'kyc_admin', 'operations_admin', 'support_admin'],
+  '/kyc':           ['super_admin', 'kyc_admin'],
+  '/users':         ['super_admin', 'operations_admin', 'support_admin'],
+  '/wallets':       ['super_admin', 'operations_admin'],
+  '/analytics':     ['super_admin', 'kyc_admin', 'operations_admin'],
+  '/audit':         ['super_admin', 'kyc_admin', 'operations_admin', 'support_admin'],
+  '/notifications': ['super_admin', 'kyc_admin', 'operations_admin', 'support_admin'],
+};
+
+// ── Human-readable role labels ────────────────────────────────────────────────
+export const ROLE_LABELS = {
+  super_admin:       'Super Admin',
+  kyc_admin:         'KYC Admin',
+  operations_admin:  'Operations Admin',
+  support_admin:     'Support Admin',
+};
+
+// ── ProtectedRoute — redirects to / if role not allowed ──────────────────────
+function ProtectedRoute({ path, children }) {
+  const { adminRole } = useContext(AppCtx);
+  const allowed = ROLE_ACCESS[path] || [];
+  if (!adminRole || !allowed.includes(adminRole)) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+}
+
 const titles = {
-  '/':'Dashboard', '/kyc':'KYC Review', '/users':'Users',
-  '/wallets':'Wallets', '/analytics':'Analytics',
-  '/audit':'Audit Log', '/notifications':'Notifications',
+  '/': 'Dashboard', '/kyc': 'KYC Review', '/users': 'Users',
+  '/wallets': 'Wallets', '/analytics': 'Analytics',
+  '/audit': 'Audit Log', '/notifications': 'Notifications',
 };
 
 function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
-  const loc = useLocation();
-  const nav  = useNavigate();
+  const loc   = useLocation();
+  const nav   = useNavigate();
   const [search, setSearch] = useState('');
   const { confirm } = useContext(AppCtx);
   const title = titles[loc.pathname] || 'Dashboard';
@@ -46,7 +77,7 @@ function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
         <svg width="14" height="14" fill="none" stroke="var(--gray-400)" strokeWidth="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input placeholder="Search user, document, status..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <input placeholder="Search user, document, status..." value={search} onChange={e => setSearch(e.target.value)}/>
       </div>
 
       <div className="topbar-right">
@@ -54,7 +85,7 @@ function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
           {dark ? '☀️' : '🌙'}
         </button>
 
-        <button className="notif-btn" onClick={()=>nav('/notifications')}>
+        <button className="notif-btn" onClick={() => nav('/notifications')}>
           <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 01-3.46 0"/>
@@ -97,15 +128,28 @@ function Portal({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
           toggleDark={toggleDark}
         />
         <Routes>
-  <Route index element={<Dashboard />} />
-  <Route path="/" element={<Dashboard />} />
-  <Route path="/kyc" element={<KYCReview />} />
-  <Route path="/users" element={<Users />} />
-  <Route path="/wallets" element={<Wallets />} />
-  <Route path="/analytics" element={<Analytics />} />
-  <Route path="/audit" element={<AuditLog />} />
-  <Route path="/notifications" element={<Notifications />} />
-</Routes>
+          <Route index element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
+
+          <Route path="/kyc" element={
+            <ProtectedRoute path="/kyc"><KYCReview /></ProtectedRoute>
+          } />
+          <Route path="/users" element={
+            <ProtectedRoute path="/users"><Users /></ProtectedRoute>
+          } />
+          <Route path="/wallets" element={
+            <ProtectedRoute path="/wallets"><Wallets /></ProtectedRoute>
+          } />
+          <Route path="/analytics" element={
+            <ProtectedRoute path="/analytics"><Analytics /></ProtectedRoute>
+          } />
+          <Route path="/audit" element={
+            <ProtectedRoute path="/audit"><AuditLog /></ProtectedRoute>
+          } />
+          <Route path="/notifications" element={
+            <ProtectedRoute path="/notifications"><Notifications /></ProtectedRoute>
+          } />
+        </Routes>
       </div>
     </div>
   );
@@ -113,7 +157,7 @@ function Portal({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
 
 function AppInner() {
   const navigate = useNavigate();
-  const [admin, setAdmin] = useState(null);
+  const [admin, setAdmin]   = useState(null);
   const [loading, setLoading] = useState(true);
   const [dark, setDark] = useState(() => {
     try { return localStorage.getItem('payo-dark') === 'true'; } catch { return false; }
@@ -141,15 +185,11 @@ function AppInner() {
   }, [dark]);
 
   const handleLogin = (adminData, token) => {
-  localStorage.setItem('payo_token', token);
-  localStorage.setItem('payo_admin', JSON.stringify(adminData));
-
-  setAdmin(adminData);
-
-  setTimeout(() => {
-    navigate('/');
-  }, 100);
-};
+    localStorage.setItem('payo_token', token);
+    localStorage.setItem('payo_admin', JSON.stringify(adminData));
+    setAdmin(adminData);
+    setTimeout(() => { navigate('/'); }, 100);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('payo_token');
@@ -162,18 +202,21 @@ function AppInner() {
 
   if (loading) {
     return (
-      <div style={{ minHeight:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'#0A0A0A' }}>
-        <div style={{ textAlign:'center' }}>
-          <img src={process.env.PUBLIC_URL + "/images/payo-icon-logo-removebg-preview.png"} alt="PayO" style={{ width:72, height:72, objectFit:'contain', marginBottom:20, opacity:0.8 }}/>
-          <div style={{ width:32, height:32, border:'3px solid rgba(255,255,255,0.15)', borderTopColor:'#3B82F6', borderRadius:'50%', animation:'spin 0.8s linear infinite', margin:'0 auto' }}/>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0A0A0A' }}>
+        <div style={{ textAlign: 'center' }}>
+          <img src={process.env.PUBLIC_URL + "/images/payo-icon-logo-removebg-preview.png"} alt="PayO" style={{ width: 72, height: 72, objectFit: 'contain', marginBottom: 20, opacity: 0.8 }}/>
+          <div style={{ width: 32, height: 32, border: '3px solid rgba(255,255,255,0.15)', borderTopColor: '#3B82F6', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto' }}/>
           <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
       </div>
     );
   }
 
+  // adminRole is stored inside the admin object in localStorage
+  const adminRole = admin?.adminRole || null;
+
   return (
-    <AppCtx.Provider value={{ confirm, dark }}>
+    <AppCtx.Provider value={{ confirm, dark, adminRole }}>
       {!admin
         ? <Login onLogin={handleLogin} />
         : <Portal

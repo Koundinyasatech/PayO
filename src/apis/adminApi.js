@@ -16,6 +16,9 @@ export const createSubAdmin = (data) =>
 export const revokeAdminAccess = (adminId) =>
   api.patch(`/api/admin/auth/revoke-admin/${adminId}`);
 
+export const updateAdminRole = (adminId, adminRole) =>
+  api.patch(`/api/admin/auth/update-admin-role/${adminId}`, { adminRole });
+
 // ─── Users ───────────────────────────────────────────────────────────────────
 // GET /api/admin/auth/users
 // Response: { success, total, verified, pending,
