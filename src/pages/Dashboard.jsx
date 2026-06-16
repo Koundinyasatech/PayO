@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
-import { getDashboardStats, getAllSubmissions } from '../apis/adminApi';
+import { getDashboardStats, getAllSubmissions, getAllUsers, getDashboardWidgetStats } from '../apis/adminApi';
 
 /* ── Skeleton loader ── */
 function Skeleton({ w = '100%', h = 16, radius = 6, style = {} }) {
@@ -194,52 +194,159 @@ const COLORS = ['#6C63FF','#FF6584','#43E97B','#FA8231','#E74C3C','#3498DB','#9B
 export default function Dashboard() {
   const navigate = useNavigate();
   const [dateFilter, setDateFilter] = useState('all');
-  const [stats, setStats]     = useState(null);
-  const [kycs, setKycs]       = useState([]);
+  const [stats, setStats]           = useState(null);
+  const [kycs, setKycs]             = useState([]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingKyc, setLoadingKyc]     = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError]           = useState('');
+
+  // New widget stats
+  const [totalUsers,       setTotalUsers]       = useState(0);
+  const [activeWallets,    setActiveWallets]    = useState(0);
+  const [totalTxns,        setTotalTxns]        = useState(0);
+  const [payoCirculation,  setPayoCirculation]  = useState(0);
+  const [referralRewards,  setReferralRewards]  = useState(0);
+  const [loadingWidgets,   setLoadingWidgets]   = useState(true);
 
   useEffect(() => {
-    // Backend response: { success, stats: { totalSubmissions, notStarted, docsUploaded, underReview, approved, rejected } }
-    getDashboardStats()
-      .then(res => {
-        const d = res.data?.stats || {};
-        setStats(d);
-      })
-      .catch(() => setError('Failed to load dashboard stats'))
-      .finally(() => setLoadingStats(false));
-
-    // Backend response: { success, total, page, totalPages, kycs: [...] }
+    // ── KYC submissions (table only) ────────────────────────────────────────
     getAllSubmissions()
       .then(res => {
         const arr = res.data?.kycs || [];
-        setKycs(Array.isArray(arr) ? arr : []);
+        const safe = Array.isArray(arr) ? arr : [];
+        setKycs(safe);
+        // NOTE: Active Wallets count is now taken from getDashboardStats (approved field)
+        // because getAllSubmissions may return a limited/paginated subset — not all records.
       })
       .catch(() => {})
       .finally(() => setLoadingKyc(false));
+
+    // ── Users total ─────────────────────────────────────────────────────────
+    // GET /api/admin/auth/users → { success, total, verified, pending, users: [] }
+    getAllUsers()
+      .then(res => {
+        setTotalUsers(res.data?.total ?? (res.data?.users?.length ?? 0));
+      })
+      .catch(() => {});
+
+    // ── Extended widget stats (transactions, PAYO, referrals) ───────────────
+    // getDashboardWidgetStats() → GET /api/admin/stats/widgets
+    // Expected response: { totalTransactions, payoInCirculation, referralRewardsDistributed }
+    getDashboardWidgetStats()
+      .then(res => {
+        const d = res.data || {};
+        setTotalTxns(d.totalTransactions       ?? 0);
+        setPayoCirculation(d.payoInCirculation  ?? 0);
+        setReferralRewards(d.referralRewardsDistributed ?? 0);
+      })
+      .catch(() => {})
+      .finally(() => setLoadingWidgets(false));
+
+    // ── Dashboard KYC stats (donut + active wallets) ────────────────────────
+    // getDashboardStats does a full countDocuments on the DB — always accurate.
+    // Use stats.approved here for Active Wallets instead of counting the submissions array.
+    getDashboardStats()
+      .then(res => {
+        const s = res.data?.stats || {};
+        setStats(s);
+        // Fix: set Active Wallets from the full approved count, not the submissions slice
+        setActiveWallets(s.approved || 0);
+      })
+      .catch(() => setError('Failed to load dashboard stats'))
+      .finally(() => setLoadingStats(false));
   }, []);
 
   // Safety check
-if (!Array.isArray(kycs)) {
-  return (
-    <div style={{ padding: 20 }}>
-      Loading Dashboard...
-    </div>
-  );
-}
+  if (!Array.isArray(kycs)) {
+    return <div style={{ padding: 20 }}>Loading Dashboard...</div>;
+  }
 
-  // Backend stats field names: totalSubmissions, notStarted, docsUploaded, underReview, approved, rejected
+  // KYC overview data (still used by Donut + Quick Stats below)
   const totalSubmissions = stats?.totalSubmissions || 0;
   const pendingKYC       = (stats?.underReview || 0) + (stats?.docsUploaded || 0);
   const approvedKYC      = stats?.approved || 0;
   const rejectedKYC      = stats?.rejected || 0;
 
+  // ── 5 new widget stat cards ───────────────────────────────────────────────
+  const widgetLoading = loadingWidgets || loadingStats;
   const statCards = [
-    { label:'Total Submissions', value: totalSubmissions.toLocaleString(),  change:'+12.2% this month', up:true,  color:'#3B82F6', iconBg:'rgba(59,130,246,0.15)',  icon:<svg width="20" height="20" fill="none" stroke="#3B82F6" strokeWidth="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>, sparkData:[30,42,38,55,48,62,58,72,68,80,76,90] },
-    { label:'Pending KYC',       value: pendingKYC.toLocaleString(),        change:`${pendingKYC} awaiting`, up:true,  color:'#F59E0B', iconBg:'rgba(245,158,11,0.15)',  icon:<svg width="20" height="20" fill="none" stroke="#F59E0B" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, sparkData:[60,55,70,65,80,72,85,78,90,84,95,88] },
-    { label:'Approved KYC',      value: approvedKYC.toLocaleString(),       change:'+14.8% this month', up:true,  color:'#10B981', iconBg:'rgba(16,185,129,0.15)',  icon:<svg width="20" height="20" fill="none" stroke="#10B981" strokeWidth="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>, sparkData:[20,35,30,48,42,58,55,70,65,80,78,92] },
-    { label:'Rejected KYC',      value: rejectedKYC.toLocaleString(),       change:'-2.2% this month',  up:false, color:'#EF4444', iconBg:'rgba(239,68,68,0.15)',   icon:<svg width="20" height="20" fill="none" stroke="#EF4444" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>, sparkData:[80,72,78,65,70,60,65,52,58,48,50,42] },
+    {
+      label: 'Total Users',
+      value: totalUsers.toLocaleString(),
+      change: '+8.4% this month', up: true,
+      color: '#3B82F6', iconBg: 'rgba(59,130,246,0.15)',
+      icon: (
+        <svg width="20" height="20" fill="none" stroke="#3B82F6" strokeWidth="2" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+      ),
+      sparkData: [30,42,38,55,48,62,58,72,68,80,76,90],
+      loading: widgetLoading,
+    },
+    {
+      label: 'Total Active Wallets',
+      value: activeWallets.toLocaleString(),
+      change: '+12.1% this month', up: true,
+      color: '#10B981', iconBg: 'rgba(16,185,129,0.15)',
+      icon: (
+        <svg width="20" height="20" fill="none" stroke="#10B981" strokeWidth="2" viewBox="0 0 24 24">
+          <path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/>
+          <path d="M16 3H8L4 7h16l-4-4z"/>
+          <circle cx="17" cy="13" r="1" fill="#10B981"/>
+        </svg>
+      ),
+      sparkData: [20,35,30,48,42,58,55,70,65,80,78,92],
+      loading: widgetLoading,
+    },
+    {
+      label: 'Total Transactions',
+      value: totalTxns.toLocaleString(),
+      change: '+5.3% this month', up: true,
+      color: '#8B5CF6', iconBg: 'rgba(139,92,246,0.15)',
+      icon: (
+        <svg width="20" height="20" fill="none" stroke="#8B5CF6" strokeWidth="2" viewBox="0 0 24 24">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 014-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 01-4 4H3"/>
+        </svg>
+      ),
+      sparkData: [45,52,48,60,55,68,62,75,70,82,78,88],
+      loading: widgetLoading,
+    },
+    {
+      label: 'PAYO in Circulation',
+      value: payoCirculation.toLocaleString(),
+      change: '+3.7% this month', up: true,
+      color: '#F59E0B', iconBg: 'rgba(245,158,11,0.15)',
+      icon: (
+        <svg width="20" height="20" fill="none" stroke="#F59E0B" strokeWidth="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 6v2m0 8v2M9.5 9.5A2.5 2.5 0 0112 8h.5a2.5 2.5 0 010 5H12a2.5 2.5 0 000 5h.5a2.5 2.5 0 002.5-2.5"/>
+        </svg>
+      ),
+      sparkData: [60,55,70,65,80,72,85,78,90,84,95,88],
+      loading: widgetLoading,
+    },
+    {
+      label: 'Referral Rewards',
+      value: referralRewards.toLocaleString(),
+      change: '+18.6% this month', up: true,
+      color: '#EC4899', iconBg: 'rgba(236,72,153,0.15)',
+      icon: (
+        <svg width="20" height="20" fill="none" stroke="#EC4899" strokeWidth="2" viewBox="0 0 24 24">
+          <polyline points="20 12 20 22 4 22 4 12"/>
+          <rect x="2" y="7" width="20" height="5"/>
+          <line x1="12" y1="22" x2="12" y2="7"/>
+          <path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/>
+          <path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/>
+        </svg>
+      ),
+      sparkData: [10,18,14,25,20,32,28,40,36,50,46,60],
+      loading: widgetLoading,
+    },
   ];
 
   // Filter KYC list by date (backend uses createdAt)
@@ -273,14 +380,10 @@ if (!Array.isArray(kycs)) {
       {error && <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:10, padding:'12px 16px', marginBottom:18, color:'#DC2626', fontSize:13 }}>⚠️ {error}</div>}
 
       {/* Stat Cards */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:18, marginBottom:24 }}>
+      <div className="stats-widget-row" style={{ display:'grid', gridTemplateColumns:'repeat(5, 1fr)', gap:16, marginBottom:24 }}>
         {statCards.map((s) => (
-  <StatCard
-    key={s.label}
-    {...s}
-    loading={loadingStats}
-  />
-))}
+          <StatCard key={s.label} {...s} />
+        ))}
       </div>
 
       {/* Main Grid */}
