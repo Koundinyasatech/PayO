@@ -469,35 +469,75 @@ function maskAccount(num) {
 function kycLabel(v)  { return v ? 'Verified' : 'Pending'; }
 function kycClass(v)  { return v ? 'b-approved' : 'b-pending'; }
 
-// ── User Detail Modal ──────────────────────────────────────────────────────
-// Confirmed response shape from GET /api/admin/auth/users:
-// {
-//   success, total, verified, pending,
-//   users: [{
-//     _id, name, email, mobile,
-//     kycVerified (Boolean),
-//     walletBalance (Number),
-//     createdAt, role,
-//     bankDetails: {                       ← null if user hasn't added bank
-//       _id, userId,
-//       accountHolderName,
-//       mobileNumber,
-//       bankName,
-//       accountNumber,
-//       ifscCode,
-//       accountType ("Savings"|"Current"),
-//       tpin (null — never shown),
-//       isTpinCreated (Boolean),
-//       createdAt, updatedAt
-//     }
-//   }]
-// }
+// Helper to extract the creation date from MongoDB ObjectId if createdAt is missing
+function getCreationDate(u) {
+  if (u.createdAt) return new Date(u.createdAt);
+  if (u._id) return new Date(parseInt(String(u._id).substring(0, 8), 16) * 1000);
+  return null;
+}
+
 function UserModal({ u, onClose }) {
   const [tab, setTab] = useState('details');
+  const [fetchedWallet, setFetchedWallet] = useState(u?.walletAddress || null);
+  const [fetchedBalance, setFetchedBalance] = useState(u?.walletBalance ?? null); 
+  const [walletLoading, setWalletLoading] = useState(false);
+
+  // Fetch the wallet address & balance from the profile endpoint
+  useEffect(() => {
+    if (u && tab === 'details' && !fetchedWallet) {
+      setWalletLoading(true);
+      
+      const token = localStorage.getItem('payo_token'); 
+      
+      fetch(`https://shadily-hazard-widget.ngrok-free.dev/api/wallet/profile?userId=${u._id}`, {
+        method: 'GET', 
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+          'Authorization': `Bearer ${token}` 
+        }
+      })
+      .then(async (res) => {
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`${res.status} ${res.statusText}: ${errText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        // 1. Set Wallet Address
+        const address = data?.data?.walletAddress 
+                     || data?.walletAddress 
+                     || data?.profile?.walletAddress 
+                     || data?.address 
+                     || '—';
+        setFetchedWallet(address);
+
+        // 2. Set Wallet Balance dynamically from API
+        const bal = data?.data?.balance ?? data?.balance ?? null;
+        if (bal !== null && bal !== undefined) {
+          setFetchedBalance(bal);
+        }
+      })
+      .catch(err => {
+        console.error('🔥 Fetch Error:', err);
+        if (err.message === 'Failed to fetch') {
+           setFetchedWallet('CORS Error / Network Failure');
+        } else {
+           setFetchedWallet(`Error: ${err.message}`);
+        }
+      })
+      .finally(() => {
+        setWalletLoading(false);
+      });
+    }
+  }, [u, tab, fetchedWallet]); // ✅ Warning Fixed: Included all used variables in the dependency array
+
   if (!u) return null;
 
   const isVerified = u.kycVerified === true;
-  const bank       = u.bankDetails || null;   // null = user hasn't added bank yet
+  const bank       = u.bankDetails || null; 
+  const creationDt = getCreationDate(u); 
 
   return (
     <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
@@ -537,12 +577,23 @@ function UserModal({ u, onClose }) {
               <div className="section-title" style={{ marginBottom: 12 }}>Personal Information</div>
               <div className="detail-grid">
                 {[
-                  ['Full Name',  u.name    || '—'],
-                  ['Email',      u.email   || '—'],
-                  ['Mobile',     u.mobile  || '—'],
-                  ['Role',       u.role    || 'user'],
+                  ['Full Name', u.name || '—'],
+                  ['Email', u.email || '—'],
+                  ['Mobile', u.mobile || '—'],
+                  ['Role', u.role || 'user'],
                   ['KYC Status', kycLabel(isVerified)],
-                  ['Joined',     u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—'],
+                  
+                  // Dynamically Loaded Wallet Address
+                  ['Wallet Address', walletLoading ? 'Loading...' : (fetchedWallet || '—')],
+
+                  ['Created Date', creationDt 
+                    ? creationDt.toLocaleDateString('en-IN', { 
+                        day: '2-digit', 
+                        month: 'short', 
+                        year: 'numeric' 
+                      }) 
+                    : '—'
+                  ],
                 ].map(([l,v]) => (
                   <div className="detail-item" key={l}><label>{l}</label><span>{v}</span></div>
                 ))}
@@ -555,40 +606,33 @@ function UserModal({ u, onClose }) {
             <div>
               {bank ? (
                 <>
-                  {/* Bank card visual */}
                   <div style={{ background: 'linear-gradient(135deg,#1E3A6E,#0D1B3E)', borderRadius: 14, padding: '20px 22px', marginBottom: 20, color: '#fff', position: 'relative', overflow: 'hidden' }}>
                     <div style={{ position: 'absolute', top: -25, right: -25, width: 110, height: 110, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }}/>
                     <div style={{ position: 'absolute', bottom: -20, left: -10, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }}/>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
                       <div>
                         <div style={{ fontSize: 10, fontWeight: 600, opacity: 0.6, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Bank Name</div>
-                        {/* bankDetails.bankName */}
                         <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 17, fontWeight: 700 }}>{bank.bankName}</div>
                       </div>
                       <div style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 8, padding: '4px 10px', fontSize: 12, fontWeight: 600 }}>
-                        {/* bankDetails.accountType: "Savings" | "Current" */}
                         {bank.accountType}
                       </div>
                     </div>
                     <div style={{ marginBottom: 14 }}>
                       <div style={{ fontSize: 10, fontWeight: 600, opacity: 0.6, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 4 }}>Account Number</div>
-                      {/* bankDetails.accountNumber — masked for security */}
                       <div style={{ fontFamily: 'monospace', fontSize: 16, fontWeight: 600, letterSpacing: '2px' }}>{maskAccount(bank.accountNumber)}</div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                       <div>
                         <div style={{ fontSize: 10, fontWeight: 600, opacity: 0.6, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 3 }}>Account Holder</div>
-                        {/* bankDetails.accountHolderName */}
                         <div style={{ fontSize: 14, fontWeight: 600 }}>{bank.accountHolderName}</div>
                       </div>
                       <div style={{ background: bank.isTpinCreated ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.2)', borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, color: bank.isTpinCreated ? '#6EE7B7' : '#FCA5A5' }}>
-                        {/* bankDetails.isTpinCreated: Boolean */}
                         {bank.isTpinCreated ? '🔐 TPIN Set' : '⚠️ No TPIN'}
                       </div>
                     </div>
                   </div>
 
-                  {/* All confirmed bank fields */}
                   <div className="section-title" style={{ marginBottom: 12 }}>Bank Details</div>
                   <div className="detail-grid">
                     {[
@@ -606,7 +650,6 @@ function UserModal({ u, onClose }) {
                   </div>
                 </>
               ) : (
-                // User hasn't added bank details yet
                 <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                   <div style={{ fontSize: 36, marginBottom: 12 }}>🏦</div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--navy)', marginBottom: 6 }}>No Bank Account Added</div>
@@ -624,11 +667,12 @@ function UserModal({ u, onClose }) {
               <div style={{ background: isVerified ? 'linear-gradient(135deg,#0D1B3E,#1E3A6E)' : 'linear-gradient(135deg,#374151,#4B5563)', borderRadius: 14, padding: '22px 24px', marginBottom: 20, color: '#fff', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }}/>
                 <div style={{ fontSize: 11, fontWeight: 600, opacity: 0.6, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: 6 }}>PYO Token Balance</div>
-                {/* walletBalance — confirmed real field from backend */}
+                
                 <div style={{ fontFamily: "'Space Grotesk',sans-serif", fontSize: 32, fontWeight: 700, letterSpacing: '-1px' }}>
-                  {(u.walletBalance ?? 0).toLocaleString()}
+                  {walletLoading ? '...' : (fetchedBalance ?? u.walletBalance ?? 0).toLocaleString()}
                   <span style={{ fontSize: 18, opacity: 0.65, marginLeft: 8 }}>PYO</span>
                 </div>
+
                 <div style={{ marginTop: 14, display: 'flex', justifyContent: 'space-between', fontSize: 12, opacity: 0.65 }}>
                   <span>KYC: {kycLabel(isVerified)}</span>
                   <span style={{ background: isVerified ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)', padding: '2px 10px', borderRadius: 20, color: isVerified ? '#6EE7B7' : '#FCA5A5', fontWeight: 600 }}>
@@ -639,7 +683,7 @@ function UserModal({ u, onClose }) {
               <div className="detail-grid">
                 {[
                   ['Wallet Status',  isVerified ? 'Active' : 'Inactive'],
-                  ['Balance',        `${(u.walletBalance ?? 0).toLocaleString()} PYO`],
+                  ['Balance',        walletLoading ? 'Loading...' : `${(fetchedBalance ?? u.walletBalance ?? 0).toLocaleString()} PYO`],
                   ['KYC Verified',   isVerified ? 'Yes ✓' : 'No'],
                 ].map(([l,v]) => (
                   <div className="detail-item" key={l}><label>{l}</label><span>{v}</span></div>
@@ -827,7 +871,6 @@ export default function Users() {
                         <td style={{ fontSize:13, color:'var(--gray-600)' }}>{u.email || '—'}</td>
                         <td style={{ fontSize:13, color:'var(--gray-600)' }}>{u.mobile || '—'}</td>
 
-                        {/* bankDetails.bankName — shows bank name or "Not added" */}
                         <td>
                           {bank ? (
                             <div>
@@ -839,7 +882,6 @@ export default function Users() {
                           )}
                         </td>
 
-                        {/* walletBalance — confirmed real field */}
                         <td>
                           <div style={{ display:'flex', alignItems:'center', gap:4 }}>
                             <span style={{ fontWeight:700, fontSize:14, color:(u.walletBalance ?? 0) > 0 ? 'var(--navy)' : 'var(--gray-400)' }}>
@@ -849,7 +891,6 @@ export default function Users() {
                           </div>
                         </td>
 
-                        {/* kycVerified Boolean from backend */}
                         <td><span className={`badge ${kycClass(u.kycVerified)}`}>{kycLabel(u.kycVerified)}</span></td>
 
                         <td>
