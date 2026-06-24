@@ -185,7 +185,7 @@ const TpinScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text>ACCOUNT: {account}</Text> */}
+      {/* <Text style={{paddingLeft: "30"}}>ACCOUNT: {account}</Text> */}
 
       <Text style={styles.title}>Create TPIN</Text>
       <Text style={styles.subtitle}>Enter 4-digit secure PIN</Text>
