@@ -68,7 +68,7 @@ const AddBankDetails = ({ navigation }) => {
     async () => {
       try {
         const res = await api.get(
-          '/api/wallet/all-banks',
+          '/api/bank/all-banks',
         );
 
         setBanksList(
