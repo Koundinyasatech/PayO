@@ -18,7 +18,7 @@ function getCreationDate(u) {
   return null;
 }
 
-// ── KYC Quick Modal — shows only doc submitted / verified status ───────────
+// ── KYC Quick Modal ────────────────────────────────────────────────────────
 function KycQuickModal({ u, onClose }) {
   const [kycDocs,  setKycDocs]  = useState(null);
   const [bankLive, setBankLive] = useState(null);
@@ -33,7 +33,6 @@ function KycQuickModal({ u, onClose }) {
     const headers = { 'Authorization': `Bearer ${token}`, 'ngrok-skip-browser-warning': 'true' };
     const BASE = 'https://shadily-hazard-widget.ngrok-free.dev';
 
-    // Fetch KYC and bank details in parallel
     Promise.allSettled([
       fetch(`${BASE}/api/admin/user-details/${u._id}/kyc`, { headers })
         .then(r => r.ok ? r.json() : null)
@@ -56,7 +55,6 @@ function KycQuickModal({ u, onClose }) {
   const bank           = bankLive || null;
   const hasBankDetails = !!(bank && (bank.bankName || bank.accountNumber));
 
-  // KYC status config
   let kycStatusLabel, kycStatusColor, kycStatusBg, kycStatusBorder, kycIconBg, kycIcon, kycSubtext;
   if (isSubmitted && isVerified) {
     kycStatusLabel = '✓ Verified'; kycStatusColor = '#15803D'; kycStatusBg = '#DCFCE7';
@@ -76,7 +74,6 @@ function KycQuickModal({ u, onClose }) {
     kycSubtext = 'User has not uploaded KYC documents yet';
   }
 
-  // Bank status config
   const bankStatusLabel  = hasBankDetails ? '✓ Added'  : '✗ Not Added';
   const bankStatusColor  = hasBankDetails ? '#15803D'  : '#94A3B8';
   const bankStatusBg     = hasBankDetails ? '#DCFCE7'  : '#F1F5F9';
@@ -89,7 +86,6 @@ function KycQuickModal({ u, onClose }) {
   return (
     <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal" style={{ maxWidth: 440 }}>
-
         <div className="modal-head">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 42, height: 42, borderRadius: 11, background: u.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff', flexShrink: 0 }}>
@@ -117,10 +113,8 @@ function KycQuickModal({ u, onClose }) {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-
               <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 2 }}>KYC Documents</div>
 
-              {/* Card 1: Documents Submitted */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 14, border: `1.5px solid ${isSubmitted ? '#86EFAC' : '#E2E8F0'}`, background: isSubmitted ? '#F0FDF4' : 'var(--gray-50,#F8FAFC)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, fontSize: 18, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: isSubmitted ? '#DCFCE7' : '#F1F5F9' }}>📄</div>
@@ -138,7 +132,6 @@ function KycQuickModal({ u, onClose }) {
                 </div>
               </div>
 
-              {/* Card 2: KYC Verification */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 14, border: `1.5px solid ${kycStatusBorder}`, background: isVerified ? '#F0FDF4' : isSubmitted ? '#FFFBEB' : 'var(--gray-50,#F8FAFC)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, fontSize: 18, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: kycIconBg }}>{kycIcon}</div>
@@ -154,7 +147,6 @@ function KycQuickModal({ u, onClose }) {
 
               <div style={{ fontSize: 10.5, fontWeight: 700, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: 6, marginBottom: 2 }}>Bank Details</div>
 
-              {/* Card 3: Bank Details */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderRadius: 14, border: `1.5px solid ${bankStatusBorder}`, background: hasBankDetails ? '#F0FDF4' : 'var(--gray-50,#F8FAFC)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 40, height: 40, borderRadius: 10, fontSize: 18, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: bankIconBg }}>🏦</div>
@@ -167,7 +159,6 @@ function KycQuickModal({ u, onClose }) {
                   {bankStatusLabel}
                 </div>
               </div>
-
             </div>
           )}
         </div>
@@ -183,12 +174,12 @@ function KycQuickModal({ u, onClose }) {
 // ── Full User Detail Modal ─────────────────────────────────────────────────
 function UserModal({ u, onClose }) {
   const [tab, setTab] = useState('details');
-  const [txns, setTxns]                     = useState([]);
-  const [txnLoading, setTxnLoading]         = useState(false);
-  const [referralData, setReferralData]     = useState(null);
+  const [txns, setTxns]                       = useState([]);
+  const [txnLoading, setTxnLoading]           = useState(false);
+  const [referralData, setReferralData]       = useState(null);
   const [referralLoading, setReferralLoading] = useState(false);
-  const [bankData, setBankData]             = useState(null);
-  const [bankLoading, setBankLoading]       = useState(false);
+  const [bankData, setBankData]               = useState(null);
+  const [bankLoading, setBankLoading]         = useState(false);
 
   useEffect(() => {
     if (!u || tab !== 'transactions') return;
@@ -211,27 +202,20 @@ function UserModal({ u, onClose }) {
     if (!u || tab !== 'referral') return;
     setReferralLoading(true);
     const token = localStorage.getItem('payo_token');
-    // Correct endpoint from backend: /api/admin/user-details/:userId/referral
     fetch(`https://shadily-hazard-widget.ngrok-free.dev/api/admin/user-details/${u._id}/referral`, {
       headers: { 'Authorization': `Bearer ${token}`, 'ngrok-skip-browser-warning': 'true' }
     })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(data => {
-        // Backend returns: { success, referral: { myReferralCode, referredByCode, referredByUser, totalReferrals, referralEarnings, referredUsers } }
-        setReferralData(data?.referral || null);
-      })
+      .then(data => { setReferralData(data?.referral || null); })
       .catch(err => { console.error('Referrals fetch failed:', err); setReferralData(null); })
       .finally(() => setReferralLoading(false));
   }, [tab, u]);
 
-  // Fetch bank details when bank tab is opened
   useEffect(() => {
     if (!u || tab !== 'bank') return;
     setBankData(null);
     setBankLoading(true);
     const token = localStorage.getItem('payo_token');
-    // Backend: GET /api/admin/auth/user-bank-details/:userId
-    // Returns: { success, bankDetails: { accountHolderName, bankName, accountNumber, ifscCode, accountType, isTpinCreated } }
     fetch(`https://shadily-hazard-widget.ngrok-free.dev/api/admin/auth/user-bank-details/${u._id}`, {
       headers: { 'Authorization': `Bearer ${token}`, 'ngrok-skip-browser-warning': 'true' }
     })
@@ -259,7 +243,6 @@ function UserModal({ u, onClose }) {
     <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal" style={{ maxWidth: 580 }}>
 
-        {/* Header */}
         <div className="modal-head">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ width: 44, height: 44, borderRadius: 12, background: u.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, fontWeight: 700, color: '#fff' }}>
@@ -280,7 +263,6 @@ function UserModal({ u, onClose }) {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="modal-tabs" style={{ overflowX: 'auto', display: 'flex', whiteSpace: 'nowrap' }}>
           {TABS.map(([k, l]) => (
             <button key={k} className={`mtab${tab === k ? ' act' : ''}`} onClick={() => setTab(k)}>{l}</button>
@@ -289,7 +271,7 @@ function UserModal({ u, onClose }) {
 
         <div className="modal-body">
 
-          {/* ── DETAILS TAB ── */}
+          {/* DETAILS TAB */}
           {tab === 'details' && (
             <div>
               <div className="section-title" style={{ marginBottom: 12 }}>Personal Information</div>
@@ -313,12 +295,12 @@ function UserModal({ u, onClose }) {
             </div>
           )}
 
-          {/* ── BANK DETAILS TAB ── */}
+          {/* BANK DETAILS TAB */}
           {tab === 'bank' && (
             <div>
               {bankLoading ? (
                 <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray-400)', fontSize: 13 }}>
-                  Loading bank details…
+                  Loading bank details...
                 </div>
               ) : bank ? (
                 <>
@@ -372,7 +354,7 @@ function UserModal({ u, onClose }) {
             </div>
           )}
 
-          {/* ── WALLET TAB ── */}
+          {/* WALLET TAB */}
           {tab === 'wallet' && (
             <div>
               <div style={{ background: isVerified ? 'linear-gradient(135deg,#0D1B3E,#1E3A6E)' : 'linear-gradient(135deg,#374151,#4B5563)', borderRadius: 14, padding: '22px 24px', marginBottom: 20, color: '#fff', position: 'relative', overflow: 'hidden' }}>
@@ -406,11 +388,11 @@ function UserModal({ u, onClose }) {
             </div>
           )}
 
-          {/* ── REFERRAL TAB ── */}
+          {/* REFERRAL TAB */}
           {tab === 'referral' && (
             <div>
               {referralLoading ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray-400)' }}>Loading referral data…</div>
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray-400)' }}>Loading referral data...</div>
               ) : (
                 <>
                   <div style={{ background: 'linear-gradient(135deg,#0D1B3E,#152347,#1E3A6E)', borderRadius: 14, padding: '20px 22px', marginBottom: 20, color: '#fff', position: 'relative', overflow: 'hidden' }}>
@@ -480,25 +462,25 @@ function UserModal({ u, onClose }) {
             </div>
           )}
 
-          {/* ── TRANSACTIONS TAB ── */}
+          {/* TRANSACTIONS TAB */}
           {tab === 'transactions' && (
             <div>
               {txnLoading ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray-400)' }}>Loading transactions…</div>
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray-400)' }}>Loading transactions...</div>
               ) : txns.length > 0 ? (
                 <>
                   <div className="section-title" style={{ marginBottom: 12 }}>Transaction History</div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {txns.map((t, i) => {
-                      // Backend filters transactions by userId — so every transaction belongs to this user.
-                      // senderWallet === 'REFERRAL_BONUS' means this user RECEIVED a referral bonus (credit).
-                      // All other transactions: this user is the SENDER (debit).
-                      // receiverName = who this user sent to (resolved by backend).
-                      // If receiverName is null, fall back to shortened wallet address.
-                      const isCredit = t.senderWallet === 'REFERRAL_BONUS';
-                      const counterparty = isCredit
+                      const isReferralBonus = t.senderWallet === 'REFERRAL_BONUS';
+                      const isReceived      = isReferralBonus || t.direction === 'received';
+                      const isCredit        = isReceived;
+                      const counterparty    = isReferralBonus
                         ? 'Referral Bonus'
-                        : (t.receiverName || (t.receiverWallet ? t.receiverWallet.slice(0,8)+'…' : 'Unknown'));
+                        : isReceived
+                          ? (t.senderName   || (t.senderWallet   ? t.senderWallet.slice(0, 8) + '...'   : 'Unknown'))
+                          : (t.receiverName || (t.receiverWallet ? t.receiverWallet.slice(0, 8) + '...' : 'Unknown'));
+
                       return (
                         <div key={t.transactionId || t._id || i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '11px 14px', borderRadius: 10, border: '1.5px solid var(--gray-200)', background: 'var(--gray-50,#F8FAFC)' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -507,7 +489,7 @@ function UserModal({ u, onClose }) {
                             </div>
                             <div>
                               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--navy)' }}>
-                                {isCredit ? 'Received from' : 'Sent to'} {counterparty || '—'}
+                                {isCredit ? 'Received from' : 'Sent to'} {counterparty}
                               </div>
                               <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
                                 {t.createdAt ? new Date(t.createdAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : '—'}
@@ -555,8 +537,8 @@ export default function Users() {
   const [error, setError]     = useState('');
   const [search, setSearch]   = useState('');
   const [fKYC, setFKYC]       = useState('All');
-  const [sel, setSel]         = useState(null);       // for full View modal
-  const [kycSel, setKycSel]   = useState(null);       // for quick KYC modal
+  const [sel, setSel]         = useState(null);
+  const [kycSel, setKycSel]   = useState(null);
   const [page, setPage]       = useState(1);
   const per = 8;
 
@@ -647,7 +629,9 @@ export default function Users() {
       </div>
 
       {error && (
-        <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:10, padding:'12px 16px', marginBottom:18, color:'#DC2626', fontSize:13 }}>⚠️ {error}</div>
+        <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:10, padding:'12px 16px', marginBottom:18, color:'#DC2626', fontSize:13 }}>
+          Error: {error}
+        </div>
       )}
 
       <div className="card">
@@ -679,7 +663,6 @@ export default function Users() {
             <tbody>
               {paged.map(u => (
                 <tr key={u._id}>
-                  {/* User */}
                   <td>
                     <div className="user-cell">
                       <div className="avatar" style={{ background: u.color }}>{u.initials}</div>
@@ -689,15 +672,11 @@ export default function Users() {
                       </div>
                     </div>
                   </td>
-                  {/* Email */}
                   <td style={{ fontSize:13, color:'var(--gray-600)' }}>{u.email || '—'}</td>
-                  {/* Mobile */}
                   <td style={{ fontSize:13, color:'var(--gray-600)' }}>{u.mobile || '—'}</td>
-                  {/* Wallet Address */}
                   <td style={{ fontSize:12, fontFamily:'monospace', maxWidth:160, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
                     {u.walletAddress || '—'}
                   </td>
-                  {/* Balance */}
                   <td>
                     <div style={{ display:'flex', alignItems:'center', gap:4 }}>
                       <span style={{ fontWeight:700, fontSize:13, color:(u.walletBalance??0)>0?'var(--navy)':'var(--gray-400)' }}>
@@ -706,56 +685,21 @@ export default function Users() {
                       <span style={{ fontSize:10, fontWeight:600, color:'var(--gray-400)', background:'var(--gray-100)', padding:'1px 5px', borderRadius:5 }}>PYO</span>
                     </div>
                   </td>
-                  {/* Actions — View + KYC */}
                   <td>
                     <div className="act-group">
-                      {/* View — soft blue pill with border */}
                       <button
                         onClick={() => setSel(u)}
-                        style={{
-                          fontSize: 12, fontWeight: 600, padding: '5px 14px',
-                          borderRadius: 20, cursor: 'pointer',
-                          background: '#EFF6FF',
-                          border: '1.5px solid #93C5FD',
-                          color: '#2563EB',
-                          transition: 'all 0.18s',
-                          fontFamily: "'Inter',sans-serif",
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.background = '#2563EB';
-                          e.currentTarget.style.color = '#fff';
-                          e.currentTarget.style.borderColor = '#2563EB';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.background = '#EFF6FF';
-                          e.currentTarget.style.color = '#2563EB';
-                          e.currentTarget.style.borderColor = '#93C5FD';
-                        }}
+                        style={{ fontSize:12, fontWeight:600, padding:'5px 14px', borderRadius:20, cursor:'pointer', background:'#EFF6FF', border:'1.5px solid #93C5FD', color:'#2563EB', transition:'all 0.18s', fontFamily:"'Inter',sans-serif" }}
+                        onMouseEnter={e => { e.currentTarget.style.background='#2563EB'; e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='#2563EB'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background='#EFF6FF'; e.currentTarget.style.color='#2563EB'; e.currentTarget.style.borderColor='#93C5FD'; }}
                       >
                         View
                       </button>
-                      {/* KYC — soft purple pill with border */}
                       <button
                         onClick={() => setKycSel(u)}
-                        style={{
-                          fontSize: 12, fontWeight: 600, padding: '5px 14px',
-                          borderRadius: 20, cursor: 'pointer',
-                          background: '#F5F3FF',
-                          border: '1.5px solid #C4B5FD',
-                          color: '#7C3AED',
-                          transition: 'all 0.18s',
-                          fontFamily: "'Inter',sans-serif",
-                        }}
-                        onMouseEnter={e => {
-                          e.currentTarget.style.background = '#7C3AED';
-                          e.currentTarget.style.color = '#fff';
-                          e.currentTarget.style.borderColor = '#7C3AED';
-                        }}
-                        onMouseLeave={e => {
-                          e.currentTarget.style.background = '#F5F3FF';
-                          e.currentTarget.style.color = '#7C3AED';
-                          e.currentTarget.style.borderColor = '#C4B5FD';
-                        }}
+                        style={{ fontSize:12, fontWeight:600, padding:'5px 14px', borderRadius:20, cursor:'pointer', background:'#F5F3FF', border:'1.5px solid #C4B5FD', color:'#7C3AED', transition:'all 0.18s', fontFamily:"'Inter',sans-serif" }}
+                        onMouseEnter={e => { e.currentTarget.style.background='#7C3AED'; e.currentTarget.style.color='#fff'; e.currentTarget.style.borderColor='#7C3AED'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background='#F5F3FF'; e.currentTarget.style.color='#7C3AED'; e.currentTarget.style.borderColor='#C4B5FD'; }}
                       >
                         KYC
                       </button>
@@ -770,21 +714,19 @@ export default function Users() {
 
         {!loading && filtered.length > 0 && (
           <div className="pagination">
-            <div className="pag-info">Showing {Math.min((page-1)*per+1, filtered.length)}–{Math.min(page*per, filtered.length)} of {filtered.length}</div>
+            <div className="pag-info">Showing {Math.min((page-1)*per+1, filtered.length)}-{Math.min(page*per, filtered.length)} of {filtered.length}</div>
             <div className="pag-btns">
-              <button className="pag-btn" disabled={page===1} onClick={() => setPage(p=>p-1)}>‹</button>
+              <button className="pag-btn" disabled={page===1} onClick={() => setPage(p=>p-1)}>&#8249;</button>
               {Array.from({ length:tp }, (_,i) => (
                 <button key={i+1} className={`pag-btn${page===i+1?' act':''}`} onClick={() => setPage(i+1)}>{i+1}</button>
               ))}
-              <button className="pag-btn" disabled={page===tp} onClick={() => setPage(p=>p+1)}>›</button>
+              <button className="pag-btn" disabled={page===tp} onClick={() => setPage(p=>p+1)}>&#8250;</button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Full detail modal */}
       {sel    && <UserModal     u={sel}    onClose={() => setSel(null)}    />}
-      {/* Quick KYC status modal */}
       {kycSel && <KycQuickModal u={kycSel} onClose={() => setKycSel(null)} />}
     </div>
   );

@@ -22,7 +22,8 @@ export const updateAdminRole = (adminId, adminRole) =>
 // ─── Users ───────────────────────────────────────────────────────────────────
 // GET /api/admin/auth/users
 // Response: { success, total, verified, pending,
-//             users: [{ _id, name, email, mobile, kycVerified, createdAt, role }] }
+//             users: [{ _id, name, email, mobile, kycVerified, walletBalance,
+//                       walletAddress, createdAt, role, bankDetails }] }
 export const getAllUsers = () =>
   api.get("/api/admin/auth/users");
 
@@ -62,20 +63,58 @@ export const getAuditLog = () =>
 
 // ─── Dashboard Widget Stats ───────────────────────────────────────────────────
 // GET /api/admin/stats/widgets
-// Expected response:
-//   { success, totalTransactions, payoInCirculation, referralRewardsDistributed }
-//
-// TODO (backend team): Create this endpoint with adminAuth middleware.
-//   It should aggregate:
-//     - totalTransactions:           Transaction.countDocuments({})
-//     - payoInCirculation:           Wallet.aggregate sum of all walletBalance fields
-//     - referralRewardsDistributed:  Referral.aggregate sum of all reward amounts
+// Response: { success, totalTransactions, payoInCirculation, referralRewardsDistributed }
 export const getDashboardWidgetStats = () =>
   api.get("/api/admin/stats/widgets");
 
-// ─── Bank (user-scoped — admin bank endpoint not yet available) ───────────────
-// /api/bank/all-banks uses user-level auth and returns only the calling user's
-// banks — it cannot return all users' banks from the admin portal.
-// TODO (backend team): Add GET /api/admin/bank/all-banks with adminAuth middleware
-//   that does: Bank.find({}).populate("userId","name mobile email")
-//   This will unlock the bank details section in the Users page modal.
+// ─── Transactions ─────────────────────────────────────────────────────────────
+// GET /api/admin/stats/transactions
+// Query params: page, limit, status (success|pending|failed), search, dateFilter (today|week|month)
+// Response: {
+//   success, summary: { totalTransactions, successCount, pendingCount, failedCount, totalVolume, successRate },
+//   total, page, totalPages,
+//   transactions: [{ transactionId, senderWallet, receiverWallet, senderName, receiverName,
+//                    amount, status, failureReason, createdAt }]
+// }
+export const getTransactions = (params = {}) =>
+  api.get("/api/admin/stats/transactions", { params });
+
+// GET /api/admin/stats/transactions/:transactionId
+// Response: {
+//   success,
+//   transaction: { transactionId, blockchainHash, amount, status, failureReason,
+//                  createdAt, senderWallet, receiverWallet,
+//                  sender: { name, email, mobile }, receiver: { name, email, mobile } }
+// }
+export const getTransactionDetails = (transactionId) =>
+  api.get(`/api/admin/stats/transactions/${transactionId}`);
+
+// ─── Referrals ────────────────────────────────────────────────────────────────
+// GET /api/admin/stats/referrals
+// Query params: page, limit, search
+// Response: {
+//   success,
+//   summary: { totalReferrals, totalRewardsDistributed, topReferrers: [{ name, email, referralCode, totalReferrals, totalEarnings }] },
+//   total, page, totalPages,
+//   referrals: [{
+//     referrer: { name, email, mobile, referralCode },
+//     referredUser: { name, email, mobile, joinedAt },
+//     rewardAmount,
+//     rewardStatus  // "paid" | "pending"
+//   }]
+// }
+export const getReferrals = (params = {}) =>
+  api.get("/api/admin/stats/referrals", { params });
+
+// ─── User Detail Tabs (used inside Users page modal) ─────────────────────────
+// GET /api/admin/user-details/:userId/kyc
+export const getUserKycDocs = (userId) =>
+  api.get(`/api/admin/user-details/${userId}/kyc`);
+
+// GET /api/admin/user-details/:userId/transactions?page=1&limit=20&status=
+export const getUserTransactions = (userId, params = {}) =>
+  api.get(`/api/admin/user-details/${userId}/transactions`, { params });
+
+// GET /api/admin/user-details/:userId/referral
+export const getUserReferralDetails = (userId) =>
+  api.get(`/api/admin/user-details/${userId}/referral`);

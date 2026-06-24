@@ -13,6 +13,7 @@ import Analytics from './pages/Analytics';
 import AuditLog from './pages/AuditLog';
 import Notifications from './pages/Notifications';
 import Transactions from './pages/Transactions';
+import Referrals from './pages/Referrals';
 
 export const AppCtx = createContext({});
 
@@ -28,7 +29,7 @@ export const ROLE_ACCESS = {
   '/audit':         ['super_admin', 'kyc_admin', 'operations_admin', 'support_admin'],
   '/notifications': ['super_admin', 'kyc_admin', 'operations_admin', 'support_admin'],
   '/transactions':  ['super_admin', 'operations_admin'],
-  '/transactions':  ['super_admin', 'operations_admin'],
+  '/referrals':     ['super_admin', 'operations_admin'],
 };
 
 // ── Human-readable role labels ────────────────────────────────────────────────
@@ -52,7 +53,7 @@ function ProtectedRoute({ path, children }) {
 const titles = {
   '/': 'Dashboard', '/kyc': 'KYC Review', '/users': 'Users',
   '/wallets': 'Wallets', '/analytics': 'Analytics',
-  '/audit': 'Audit Log', '/notifications': 'Notifications', '/transactions': 'Transactions',
+  '/audit': 'Audit Log', '/notifications': 'Notifications', '/transactions': 'Transactions', '/referrals': 'Referrals',
 };
 
 function Topbar({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
@@ -154,6 +155,9 @@ function Portal({ admin, onAdminUpdate, onLogout, dark, toggleDark }) {
           } />
           <Route path="/transactions" element={
             <ProtectedRoute path="/transactions"><Transactions /></ProtectedRoute>
+          } />
+          <Route path="/referrals" element={
+            <ProtectedRoute path="/referrals"><Referrals /></ProtectedRoute>
           } />
         </Routes>
       </div>
