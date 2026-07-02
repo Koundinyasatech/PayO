@@ -157,85 +157,283 @@ export default StyleSheet.create({
   },
 
   /* ACTIONS */
-  actionsContainer: {
-    marginTop: hp('1.8%'),
-    paddingHorizontal: wp('5%'),
-  },
+  // actionsContainer: {
+  //   marginTop: hp('1.8%'),
+  //   paddingHorizontal: wp('5%'),
+  // },
 
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  //  actionHeader: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   marginBottom: hp('2%'),
+  // },
 
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FDE68A',
-    paddingHorizontal: wp('4%'),
-    paddingVertical: hp('1.2%'),
-    borderRadius: moderateScale(30),
-    zIndex: 2,
-  },
+  // actionTitle: {
+  //   color: '#fff',
+  //   fontSize: moderateScale(18),
+  //   fontWeight: '700',
+  // },
 
-  iconCircle: {
-    width: wp('7%'),
-    height: wp('7%'),
-    borderRadius: wp('3.5%'),
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  // actions: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
 
-  label: {
-    marginLeft: wp('2%'),
-    fontWeight: '600',
-    fontSize: moderateScale(12),
-    color: '#000',
-  },
+  // button: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: '#FDE68A',
+  //   paddingHorizontal: wp('4%'),
+  //   paddingVertical: hp('1.2%'),
+  //   borderRadius: moderateScale(30),
+  //   zIndex: 2,
+  // },
 
-  connector: {
-    height: hp('1.4%'),
-    width: wp('5%'),
-    backgroundColor: '#FDE68A',
-    marginHorizontal: wp('-0.5%'),
-    zIndex: 1,
-  },
+  // iconCircle: {
+  //   width: wp('7%'),
+  //   height: wp('7%'),
+  //   borderRadius: wp('3.5%'),
+  //   backgroundColor: '#000',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+
+  // label: {
+  //   marginLeft: wp('2%'),
+  //   fontWeight: '600',
+  //   fontSize: moderateScale(12),
+  //   color: '#000',
+  // },
+
+  // connector: {
+  //   height: hp('1.4%'),
+  //   width: wp('5%'),
+  //   backgroundColor: '#FDE68A',
+  //   marginHorizontal: wp('-0.5%'),
+  //   zIndex: 1,
+  // },
  
 
-  statsContainer: {
-    marginTop: hp('2.5%'),
-    paddingHorizontal: wp('5%'),
-  },
+  // statsContainer: {
+  //   marginTop: hp('2.5%'),
+  //   paddingHorizontal: wp('5%'),
+  // },
 
-  statsCard: {
-    backgroundColor: '#1C1C1E',
-    borderRadius: moderateScale(16),
-    paddingVertical: hp('2%'),
-    paddingHorizontal: wp('5%'),
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  // statsCard: {
+  //   backgroundColor: '#1C1C1E',
+  //   borderRadius: moderateScale(16),
+  //   paddingVertical: hp('2%'),
+  //   paddingHorizontal: wp('5%'),
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  // },
 
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  // statItem: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
 
-  textBlock: {
-    marginLeft: wp('2.5%'),
-  },
+  // textBlock: {
+  //   marginLeft: wp('2.5%'),
+  // },
 
-  statLabel: {
-    color: '#aaa',
-    fontSize: moderateScale(11),
-  },
+  // statLabel: {
+  //   color: '#aaa',
+  //   fontSize: moderateScale(11),
+  // },
 
-  amountRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
+  // amountRow: {
+  //   flexDirection: 'row',
+  //   alignItems: 'flex-end',
+  // },
+
+
+  quickSummaryCard: {
+  marginHorizontal: 16,
+  marginTop: 18,
+  backgroundColor: '#251a46',
+  borderRadius: 26,
+  paddingVertical: 22,
+  paddingHorizontal: 18,
+
+  borderWidth: 1,
+  borderColor: 'rgba(255,255,255,0.06)',
+
+  shadowColor: '#000',
+  shadowOpacity: 0.35,
+  shadowRadius: 12,
+  elevation: 10,
+},
+
+actionHeader: {
+  marginBottom: 18,
+},
+
+actionTitle: {
+  fontSize: 22,
+  fontWeight: '700',
+  color: '#fff',
+},
+
+// actions: {
+//   flexDirection: 'row',
+//   alignItems: 'center',
+//   justifyContent: 'space-between',
+// },
+
+// button: {
+//   flex: 1,
+//   height: 58,
+//   backgroundColor: '#FFE88A',
+//   borderRadius: 30,
+
+//   flexDirection: 'row',
+//   justifyContent: 'center',
+//   alignItems: 'center',
+// },
+
+// iconCircle: {
+//   width: 32,
+//   height: 32,
+//   borderRadius: 16,
+//   backgroundColor: '#111',
+
+//   justifyContent: 'center',
+//   alignItems: 'center',
+
+//   marginRight: 8,
+// },
+
+// label: {
+//   fontWeight: '700',
+//   color: '#111',
+//   fontSize: 15,
+// },
+
+// connector: {
+//   width: 22,
+//   height: 6,
+//   backgroundColor: '#FFE88A',
+// },
+
+actions: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginBottom: 18,
+},
+
+actionButton: {
+  width: 100,
+  height: 46,
+  backgroundColor: '#FFE88A',
+
+  borderRadius: 15,
+
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+
+  elevation: 3,
+},
+
+actionIcon: {
+  width: 25,
+  height: 25,
+  borderRadius: 12,
+  backgroundColor: '#181818',
+
+  justifyContent: 'center',
+  alignItems: 'center',
+
+  marginRight: 8,
+},
+
+actionText: {
+  color: '#111',
+  fontSize: 16,
+  fontWeight: '700',
+},
+
+actionConnector: {
+    height: hp('1%'),
+    width: wp('5%'),
+  backgroundColor: '#FFE88A',
+},
+summaryDivider: {
+  height: 1,
+  backgroundColor: 'rgba(255,255,255,0.08)',
+  marginVertical: 22,
+},
+
+summaryRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+},
+
+summaryItem: {
+  flex: 1,
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+verticalDivider: {
+  width: 1,
+  height: 65,
+  backgroundColor: 'rgba(255,255,255,0.15)',
+},
+
+summaryIconGreen: {
+  width: 52,
+  height: 52,
+  borderRadius: 26,
+  backgroundColor: 'rgba(83,210,88,0.15)',
+
+  justifyContent: 'center',
+  alignItems: 'center',
+
+  marginRight: 12,
+},
+
+summaryIconRed: {
+  width: 52,
+  height: 52,
+  borderRadius: 26,
+  backgroundColor: 'rgba(255,107,107,0.15)',
+
+  justifyContent: 'center',
+  alignItems: 'center',
+
+  marginRight: 12,
+},
+
+summaryLabel: {
+  color: '#A7A7B5',
+  fontSize: 14,
+},
+
+summaryValue: {
+  color: '#fff',
+  fontSize: 26,
+  fontWeight: '700',
+},
+
+summaryUnit: {
+  marginLeft: 5,
+  color: '#53D258',
+  fontWeight: '700',
+  alignSelf: 'flex-end',
+  marginBottom: 4,
+},
+
+amountRow: {
+  flexDirection: 'row',
+  alignItems: 'flex-end',
+},
 
   statValue: {
     color: '#fff',
@@ -269,7 +467,7 @@ export default StyleSheet.create({
 
   expertTitle: {
     color: '#fff',
-    fontSize: moderateScale(17),
+    fontSize: moderateScale(18),
     fontWeight: '700',
   },
 
@@ -557,5 +755,64 @@ centerContent: {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
+},
+
+newsContainer: {
+ marginTop: hp('4%'),
+  // marginBottom: hp('2%'),
+  paddingHorizontal: 18,
+},
+
+newsHeader: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 18,
+},
+
+newsTitle: {
+  color: '#fff',
+  fontSize: 18,
+  fontWeight: '700',
+},
+
+newsCard: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#1C1C1E',
+  borderRadius: 16,
+  padding: 14,
+  marginBottom: 14,
+},
+
+newsLeft: {
+  flex: 1,
+  paddingRight: 12,
+},
+
+newsSource: {
+  color: '#8B8B8B',
+  fontSize: 13,
+  marginBottom: 5,
+},
+
+newsHeadline: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: '600',
+  lineHeight: 22,
+},
+
+newsDate: {
+  marginTop: 8,
+  color: '#999',
+  fontSize: 12,
+},
+
+newsImage: {
+  width: 80,
+  height: 80,
+  borderRadius: 12,
+  backgroundColor: '#2A2A2A',
 },
 });

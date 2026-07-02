@@ -19,6 +19,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 import MarketCardComponent from '../Market/marketCard';
 import AdvancedMarketCard from '../Market/marketCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Linking } from 'react-native';
+
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -32,16 +35,18 @@ export default function HomeScreen({ navigation }) {
   const [avaliable, setAvaliable] = useState('');
   const [totalBalance, setTotalBalance] = useState('');
   const [expertCoins, setExpertCoins] = useState([]);
+  const [marketNews, setMarketNews] = useState([]);
   const [marketCharts, setMarketCharts] = useState({});
 
   const itemsPerPage = 5;
 
+
   const displayedTransactions = showAll
     ? transactionsList.slice(0, visibleCount)
     : transactionsList.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage,
-      );
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage,
+    );
 
   const totalPages = Math.ceil(
     transactionsList.length / itemsPerPage,
@@ -117,11 +122,11 @@ export default function HomeScreen({ navigation }) {
       // const res = await fetch(
       //   'http://payo-app.duckdns.org:3001/api/market/overview',
       // );
-        const res = await api.get('/api/market/overview');
+      const res = await api.get('/api/market/overview');
 
-    console.log(res.data, 'data');
 
-    setExpertCoins(res?.data?.data?.slice(0, 50));
+
+      setExpertCoins(res?.data?.data?.slice(0, 50));
 
       // const result = await res.json();
       // setExpertCoins(result?.data?.slice(0, 50) || []);
@@ -130,20 +135,60 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-useFocusEffect(
-  useCallback(() => {
-    fetchBalance();
-    fetchTotalBalance();
-    fetchExpertCoins();
+  const fetchMarketNews = async () => {
+    try {
+      // const res = await fetch(
+      //   'http://localhost:3001/api/news/crypto-news',
+      // );
+      const res = await api.get('/api/news/crypto-news');
 
-    // auto refresh every 1 second
-    const interval = setInterval(() => {
+      console.log(res.data, 'data');
+
+      setMarketNews(res?.data?.data?.slice(0, 10));
+
+      // const result = await res.json();
+      // setMarketNews(result?.data?.slice(0, 50) || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+ const formatDate = date => {
+  const d = new Date(date);
+
+  const formattedDate = d.toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'Asia/Kolkata',
+  });
+
+  const formattedTime = d.toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata',
+  });
+
+  return `${formattedDate} • ${formattedTime}`;
+};
+  useFocusEffect(
+    useCallback(() => {
+      fetchBalance();
+      fetchTotalBalance();
       fetchExpertCoins();
-    }, 1000);
+      fetchMarketNews();
 
-    return () => clearInterval(interval);
-  }, []),
-);
+      // // auto refresh every 1 second
+      // const interval = setInterval(() => {
+      //   fetchExpertCoins();
+      // }, 1000);
+
+      // return () => clearInterval(interval);
+
+    }, []),
+  );
+  console.log(marketNews, "0909")
 
   return (
     <SafeAreaView style={styles.container}>
@@ -158,7 +203,9 @@ useFocusEffect(
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
         <View style={styles.cardContainer}>
+          
           <View style={styles.card}>
+         
             <View style={styles.topRightCurve} />
             <View style={styles.bottomLeftCurve} />
 
@@ -230,7 +277,15 @@ useFocusEffect(
           </View>
         </View>
 
-        <View style={styles.actionsContainer}>
+       {/* <View>
+         <View style={styles.actionsContainer}>
+
+                    <View style={styles.actionHeader}>
+           <Text style={styles.actionTitle}>
+ ⚡ Quick Actions
+</Text>
+
+          </View>
           <View style={styles.actions}>
             <TouchableOpacity
               style={styles.button}
@@ -332,12 +387,138 @@ useFocusEffect(
             </View>
           </View>
         </View>
+       </View> */}
+
+
+       <View style={styles.quickSummaryCard}>
+
+  {/* Header */}
+  <View style={styles.actionHeader}>
+    <Text style={styles.actionTitle}>⚡ Quick Actions</Text>
+  </View>
+
+  {/* Quick Actions */}
+ <View style={styles.actions}>
+
+  <TouchableOpacity
+    style={styles.actionButton}
+    onPress={() =>
+      navigation.navigate('SendScreen', { tab: 'scan' })
+    }>
+    <View style={styles.actionIcon}>
+      <Icon
+        name="arrow-up-right"
+        size={18}
+        color="#fff"
+      />
+    </View>
+
+    <Text style={styles.actionText}>Send</Text>
+  </TouchableOpacity>
+
+  <View style={styles.actionConnector} />
+
+  <TouchableOpacity
+    style={styles.actionButton}
+    onPress={() => navigation.navigate('Receive')}>
+    <View style={styles.actionIcon}>
+      <Icon
+        name="arrow-down-left"
+        size={18}
+        color="#fff"
+      />
+    </View>
+
+    <Text style={styles.actionText}>Receive</Text>
+  </TouchableOpacity>
+
+  <View style={styles.actionConnector} />
+
+  <TouchableOpacity
+    style={styles.actionButton}
+    onPress={() => navigation.navigate('ReferEarn')}>
+    <View style={styles.actionIcon}>
+      <Icon
+        name="arrow-up-right"
+        size={18}
+        color="#fff"
+      />
+    </View>
+
+    <Text style={styles.actionText}>Refer</Text>
+  </TouchableOpacity>
+
+</View>
+
+  {/* Divider */}
+  <View style={styles.summaryDivider} />
+
+  {/* Income / Outcome */}
+  <View style={styles.summaryRow}>
+
+    <View style={styles.summaryItem}>
+      <View style={styles.summaryIconGreen}>
+        <Icon
+          name="arrow-down"
+          size={22}
+          color="#53D258"
+        />
+      </View>
+
+      <View>
+        <Text style={styles.summaryLabel}>
+          Income
+        </Text>
+
+        <View style={styles.amountRow}>
+          <Text style={styles.summaryValue}>
+            {totalBalance?.income || 0}
+          </Text>
+
+          <Text style={styles.summaryUnit}>
+            PAYO
+          </Text>
+        </View>
+      </View>
+    </View>
+
+    <View style={styles.verticalDivider} />
+
+    <View style={styles.summaryItem}>
+      <View style={styles.summaryIconRed}>
+        <Icon
+          name="arrow-up"
+          size={22}
+          color="#FF6B6B"
+        />
+      </View>
+
+      <View>
+        <Text style={styles.summaryLabel}>
+          Outcome
+        </Text>
+
+        <View style={styles.amountRow}>
+          <Text style={styles.summaryValue}>
+            {totalBalance?.outcome || 0}
+          </Text>
+
+          <Text style={styles.summaryUnit}>
+            PAYO
+          </Text>
+        </View>
+      </View>
+    </View>
+
+  </View>
+
+</View>
 
         <View style={styles.expertContainer}>
           <View style={styles.expertHeader}>
-            <Text style={styles.expertTitle}>
-              Expert Picks
-            </Text>
+           <Text style={styles.expertTitle}>
+  📈   Expert Picks
+</Text>
 
             <TouchableOpacity
               onPress={() =>
@@ -411,8 +592,8 @@ useFocusEffect(
                   <View style={styles.profitBox}>
                     <Text style={styles.profitText}>
                       {(
-  coin.priceChangePercentage24h || 0
-).toFixed(2)}
+                        coin.priceChangePercentage24h || 0
+                      ).toFixed(2)}
                       % Expected profit
                     </Text>
                   </View>
@@ -566,6 +747,9 @@ useFocusEffect(
             },
           )}
         </View> */}
+
+        {/* ////////////////////////////////////////////////////////////////////
+
 <View style={[styles.marketCardsContainer, { marginBottom: 30 }]}>
   {expertCoins?.slice(0, 1).map((coin, index) => (
     <AdvancedMarketCard
@@ -575,6 +759,60 @@ useFocusEffect(
     />
   ))}
 </View>
+
+///////////////////////////////////////////////////////////////////////////////// */}
+
+        <View style={styles.newsContainer}>
+          <View style={styles.newsHeader}>
+            <Text style={styles.newsTitle}>📰   Crypto News</Text>
+
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('NewsScreen', {
+                  news: marketNews,
+                })
+              }>
+              <Text style={styles.viewAllText}>View All</Text>
+            </TouchableOpacity>
+          </View>
+
+          {marketNews.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.newsCard}
+              activeOpacity={0.8}
+              onPress={() =>
+                Linking.openURL(item.url)
+              }>
+              <View style={styles.newsLeft}>
+                <Text style={styles.newsSource}>
+                  {item.source}
+                </Text>
+
+                <Text
+                  style={styles.newsHeadline}
+                  numberOfLines={2}>
+                  {item.title}
+                </Text>
+
+                <Text style={styles.newsDate}>
+                  {formatDate(item.publishedAt)}
+                </Text>
+              </View>
+
+              <Image
+                source={{
+                  uri:
+                    item.image || "",
+                    // 'https://cdn-icons-png.flaticon.com/512/833/833472.png',
+                }}
+                style={styles.newsImage}
+              />
+            </TouchableOpacity>
+          ))}
+        </View>
+
+
       </ScrollView>
     </SafeAreaView>
   );

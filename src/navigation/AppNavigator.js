@@ -90,10 +90,7 @@ export default function AppNavigator() {
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
-        <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
-        <Stack.Screen name="SendPin" component={SendPinScreen} />
-        <Stack.Screen name="review" component={ReviewTransferScreen} />
-        <Stack.Screen name="ReferEarn" component={ReferEarn} />
+
         <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
 
 
@@ -113,6 +110,7 @@ export default function AppNavigator() {
         <Stack.Screen name="WalletScreen" component={WalletScreen} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
         <Stack.Screen name="CoinDetailsScreen" component={CoinDetailsScreen} />
+        <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
 
 
 
@@ -122,11 +120,15 @@ export default function AppNavigator() {
         <Stack.Screen name="ScanQR" component={ScanQRScreen} />
         <Stack.Screen name="enterAddress" component={EnterAddressScreen} />
         <Stack.Screen name="recents" component={Recents} />
-        <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
 
+        <Stack.Screen name="EnterAmount" component={EnterAmountScreen} />
+        <Stack.Screen name="review" component={ReviewTransferScreen} />
+        <Stack.Screen name="ReferEarn" component={ReferEarn} />
 
+        <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
+
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
@@ -152,6 +154,7 @@ export default function AppNavigator() {
         <Stack.Screen name="TpinScreen" component={TpinScreen} />
         <Stack.Screen name="Notifications" component={NotificationScreen} />
         <Stack.Screen name="BankAddedScreen" component={BankAddedScreen} />
+
 
 
 

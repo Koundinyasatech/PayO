@@ -16,6 +16,8 @@ import {
 } from 'react-native-responsive-screen';
 
 import { moderateScale } from 'react-native-size-matters';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const SplashScreen = ({ navigation }) => {
   const [screenStep, setScreenStep] = useState(1);
@@ -33,88 +35,253 @@ const SplashScreen = ({ navigation }) => {
 
   const finalFadeOut = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    const timers = [];
+    const showWelcomeAnimation = () => {
+  Animated.timing(blackOverlayScale, {
+    toValue: 1,
+    duration: 900,
+    easing: Easing.out(Easing.exp),
+    useNativeDriver: true,
+  }).start(() => {
+    setScreenStep(4);
 
+    Animated.timing(finalLogoOpacity, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start(() => {
+      setTimeout(() => {
+        Animated.timing(taglineOpacity, {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: true,
+        }).start(() => {
+          setTimeout(() => {
+            Animated.timing(welcomeOpacity, {
+              toValue: 1,
+              duration: 700,
+              useNativeDriver: true,
+            }).start(() => {
+              setTimeout(() => {
+                Animated.timing(loadingOpacity, {
+                  toValue: 1,
+                  duration: 500,
+                  useNativeDriver: true,
+                }).start();
+
+                // setTimeout(() => {
+                //   Animated.timing(finalFadeOut, {
+                //     toValue: 0,
+                //     duration: 900,
+                //     useNativeDriver: true,
+                //   }).start(() => {
+                //     navigation.reset({
+                //       index: 0,
+                //       routes: [{ name: 'Onboarding1' }],
+                //     });
+                //   });
+                // }, 1400);
+                setTimeout(() => {
+  Animated.timing(finalFadeOut, {
+    toValue: 0,
+    duration: 900,
+    easing: Easing.linear,
+    useNativeDriver: true,
+  }).start(async () => {
+    await checkUserFlow();
+  });
+}, 1400);
+              }, 500);
+            });
+          }, 500);
+        });
+      }, 500);
+    });
+  });
+};
+  
+
+//   const checkUserFlow = async () => {
+//   try {
+//     const hasCompletedOnboarding = await AsyncStorage.getItem(
+//       'hasCompletedOnboarding',
+//     );
+
+//     if (hasCompletedOnboarding === 'true') {
+//       navigation.reset({
+//         index: 0,
+//         routes: [{ name: 'Login' }],
+//       });
+//     } else {
+//       navigation.reset({
+//         index: 0,
+//         routes: [{ name: 'Onboarding1' }],
+//       });
+//     }
+//   } catch (error) {
+//     navigation.reset({
+//       index: 0,
+//       routes: [{ name: 'Onboarding1' }],
+//     });
+//   }
+// };
+
+
+const checkUserFlow = async () => {
+  const hasCompletedOnboarding = await AsyncStorage.getItem(
+    'hasCompletedOnboarding',
+  );
+
+  const value = await AsyncStorage.getItem('hasCompletedOnboarding');
+console.log('Saved Value =', value);
+
+  if (hasCompletedOnboarding === 'true') {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  } else {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Onboarding1' }],
+    });
+  }
+};
+
+//   useEffect(() => {
+//     const timers = [];
+
+//     Animated.timing(dotFade, {
+//       toValue: 1,
+//       duration: 1000,
+//       useNativeDriver: true,
+//     }).start();
+
+//     timers.push(
+//       setTimeout(() => {
+//         setScreenStep(2);
+
+//         Animated.timing(expandAnim, {
+//           toValue: 80,
+//           duration: 1600,
+//           easing: Easing.out(Easing.exp),
+//           useNativeDriver: true,
+//         }).start();
+//       }, 1200),
+//     );
+
+//     timers.push(
+//       setTimeout(() => {
+//         Animated.timing(blackOverlayScale, {
+//           toValue: 1,
+//           duration: 900,
+//           easing: Easing.out(Easing.exp),
+//           useNativeDriver: true,
+//         }).start(() => {
+//           setScreenStep(4);
+
+//           Animated.timing(finalLogoOpacity, {
+//             toValue: 1,
+//             duration: 800,
+//             easing: Easing.linear,
+//             useNativeDriver: true,
+//           }).start(() => {
+//             setTimeout(() => {
+//               Animated.timing(taglineOpacity, {
+//                 toValue: 1,
+//                 duration: 700,
+//                 easing: Easing.linear,
+//                 useNativeDriver: true,
+//               }).start(() => {
+//                 setTimeout(() => {
+//                   Animated.timing(welcomeOpacity, {
+//                     toValue: 1,
+//                     duration: 700,
+//                     easing: Easing.linear,
+//                     useNativeDriver: true,
+//                   }).start(() => {
+//                     setTimeout(() => {
+//                       Animated.timing(loadingOpacity, {
+//                         toValue: 1,
+//                         duration: 500,
+//                         easing: Easing.linear,
+//                         useNativeDriver: true,
+//                       }).start();
+
+//                       // setTimeout(() => {
+//                       //   Animated.timing(finalFadeOut, {
+//                       //     toValue: 0,
+//                       //     duration: 900,
+//                       //     easing: Easing.linear,
+//                       //     useNativeDriver: true,
+//                       //   }).start(() => {
+//                       //     navigation.replace('Onboarding1');
+//                       //   });
+//                       // }, 1400);
+
+//                       setTimeout(() => {
+//   Animated.timing(finalFadeOut, {
+//     toValue: 0,
+//     duration: 900,
+//     easing: Easing.linear,
+//     useNativeDriver: true,
+//   }).start(async () => {
+//     await checkUserFlow();
+//   });
+// }, 1400);
+//                     }, 500);
+//                   });
+//                 }, 500);
+//               });
+//             }, 500);
+//           });
+//         });
+//       }, 5000),
+//     );
+
+//     return () => timers.forEach(clearTimeout);
+//   }, [navigation]);
+
+
+useEffect(() => {
+  const startSplash = async () => {
+    const completed =
+      (await AsyncStorage.getItem('hasCompletedOnboarding')) === 'true';
+
+    // Step 1 - Dot Animation
     Animated.timing(dotFade, {
       toValue: 1,
       duration: 1000,
       useNativeDriver: true,
     }).start();
 
-    timers.push(
-      setTimeout(() => {
-        setScreenStep(2);
+    setTimeout(() => {
+      setScreenStep(2);
 
-        Animated.timing(expandAnim, {
-          toValue: 80,
-          duration: 1600,
-          easing: Easing.out(Easing.exp),
-          useNativeDriver: true,
-        }).start();
-      }, 1200),
-    );
-
-    timers.push(
-      setTimeout(() => {
-        Animated.timing(blackOverlayScale, {
-          toValue: 1,
-          duration: 900,
-          easing: Easing.out(Easing.exp),
-          useNativeDriver: true,
-        }).start(() => {
-          setScreenStep(4);
-
-          Animated.timing(finalLogoOpacity, {
-            toValue: 1,
-            duration: 800,
-            easing: Easing.linear,
-            useNativeDriver: true,
-          }).start(() => {
-            setTimeout(() => {
-              Animated.timing(taglineOpacity, {
-                toValue: 1,
-                duration: 700,
-                easing: Easing.linear,
-                useNativeDriver: true,
-              }).start(() => {
-                setTimeout(() => {
-                  Animated.timing(welcomeOpacity, {
-                    toValue: 1,
-                    duration: 700,
-                    easing: Easing.linear,
-                    useNativeDriver: true,
-                  }).start(() => {
-                    setTimeout(() => {
-                      Animated.timing(loadingOpacity, {
-                        toValue: 1,
-                        duration: 500,
-                        easing: Easing.linear,
-                        useNativeDriver: true,
-                      }).start();
-
-                      setTimeout(() => {
-                        Animated.timing(finalFadeOut, {
-                          toValue: 0,
-                          duration: 900,
-                          easing: Easing.linear,
-                          useNativeDriver: true,
-                        }).start(() => {
-                          navigation.replace('Onboarding1');
-                        });
-                      }, 1400);
-                    }, 500);
-                  });
-                }, 500);
-              });
-            }, 500);
+      // Step 2 - Expand Circle
+      Animated.timing(expandAnim, {
+        toValue: 80,
+        duration: 1600,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }).start(() => {
+        // Returning user
+        if (completed) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
           });
-        });
-      }, 5000),
-    );
 
-    return () => timers.forEach(clearTimeout);
-  }, [navigation]);
+          return;
+        }
+
+        // First time user
+        showWelcomeAnimation();
+      });
+    }, 1200);
+  };
+
+  startSplash();
+}, []);
 
   if (screenStep === 1) {
     return (
@@ -155,6 +322,7 @@ const SplashScreen = ({ navigation }) => {
       </SafeAreaView>
     );
   }
+
 
 
   return (

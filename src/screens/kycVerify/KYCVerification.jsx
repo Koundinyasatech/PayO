@@ -536,6 +536,7 @@ import { pick } from '@react-native-documents/picker';
 import { Dropdown } from 'react-native-element-dropdown';
 import api, { getToken } from '../../api/axios';
 import RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function KYCVerification({
   navigation,
@@ -594,10 +595,10 @@ export default function KYCVerification({
       }, 700);
     } else if (activeTab === 'passbook') {
       setPassbookFile(file);
-      Alert.alert('Passbook Uploaded');
-      setTimeout(() => {
-        setActiveTab('cheque');
-      }, 700);
+      Alert.alert('Document Uploaded');
+      // setTimeout(() => {
+      //   setActiveTab('cheque');
+      // }, 700);
     } else if (activeTab === 'cheque') {
       setChequeFile(file);
       Alert.alert('Cancelled Cheque Uploaded');
@@ -980,18 +981,39 @@ export default function KYCVerification({
       console.log('Starting Bank Statement upload...');
       // await uploadStatement();
 
+      // await submitForReview();
+
+      // Alert.alert(
+      //   'Success',
+      //   'All documents uploaded successfully',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       onPress: () => navigation.navigate('KycUnderReview'),
+      //     },
+      //   ],
+      // );
       await submitForReview();
 
-      Alert.alert(
-        'Success',
-        'All documents uploaded successfully',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('KycUnderReview'),
-          },
-        ],
-      );
+// Save that onboarding/KYC registration flow is completed
+// await AsyncStorage.setItem(
+//   'hasCompletedOnboarding',
+//   'true',
+// );
+
+Alert.alert(
+  'Success',
+  'All documents uploaded successfully',
+  [
+    {
+      text: 'OK',
+      onPress: () => navigation.reset({
+        index: 0,
+        routes: [{ name: 'KycUnderReview' }],
+      }),
+    },
+  ],
+);
     } catch (error) {
       console.error('Upload Error:', error);
       Alert.alert(
