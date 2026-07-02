@@ -3,11 +3,16 @@ import * as Keychain from 'react-native-keychain';
 
 const api = axios.create({
   baseURL: 'https://skyline-plated-casualty.ngrok-free.dev',
+  //  baseURL: 'http://localhost:3001', //////local 
+  // baseURL :"http://10.0.2.2:3001", /////laptop 
+  // baseURL :"http://192.168.29.219:3001", ////// my mobile
   timeout: 60000,
    headers: {
     'Accept': 'application/json',
   }
 });
+
+
 
 api.interceptors.request.use(
   async config => {

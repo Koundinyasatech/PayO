@@ -106,7 +106,7 @@ export default function ProfileScreen({ navigation }) {
         referralCode: referral,
       });
 
-      navigation.navigate('TransactionPin');
+      navigation.navigate('KYCVerification');
     } catch (error) {
       const msg =
         error?.response?.data?.message ||
