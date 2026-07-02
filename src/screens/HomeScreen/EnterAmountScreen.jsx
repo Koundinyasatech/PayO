@@ -46,6 +46,22 @@ export default function EnterAmountScreen({
   const TransShow =
     route?.params?.show;
 
+      const fetchTransactions =
+    async () => {
+      setLoading(true);
+
+      try {
+        const res = await api.get(
+          '/api/wallet/transaction-list',
+        );
+
+          // res?.data?.transactions || [],
+        
+      } catch (err) {
+        console.log(err.message);
+      } 
+    };
+
   useEffect(() => {
     const fetchBalance =
       async () => {

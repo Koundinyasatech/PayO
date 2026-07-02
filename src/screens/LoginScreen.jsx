@@ -447,6 +447,8 @@ import {
 } from 'react-native-responsive-screen';
 
 import { moderateScale } from 'react-native-size-matters';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function LoginScreen({ navigation }) {
   const insets = useSafeAreaInsets();
@@ -575,6 +577,10 @@ const handleSubmit = async () => {
       //   // OR based on API response:
         if (response.data.kycStatus === 'approved') {
           navigation.navigate('Main');
+          await AsyncStorage.setItem(
+            'hasCompletedOnboarding',
+            'true',
+          );
         } 
         else if  (response.data.kycStatus === 'not_started') {
           navigation.navigate('KycNotStarted');

@@ -866,6 +866,7 @@ import { pick } from '@react-native-documents/picker';
 import { Dropdown } from 'react-native-element-dropdown';
 import api, { getToken } from '../../api/axios';
 import RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function KYCVerification({
   navigation,
@@ -919,10 +920,10 @@ export default function KYCVerification({
       }, 700);
     } else if (activeTab === 'passbook') {
       setPassbookFile(file);
-      Alert.alert('Passbook Uploaded');
-      setTimeout(() => {
-        setActiveTab('cheque');
-      }, 700);
+      Alert.alert('Document Uploaded');
+      // setTimeout(() => {
+      //   setActiveTab('cheque');
+      // }, 700);
     } else if (activeTab === 'cheque') {
       setChequeFile(file);
       Alert.alert('Cancelled Cheque Uploaded');
@@ -1144,6 +1145,29 @@ export default function KYCVerification({
     }
   };
 
+
+//   const uploadPassbook = async () => {
+//   try {
+//     const fileBase64 = await RNFS.readFile(
+//       passbookFile?.uri,
+//       'base64',
+//     );
+
+//     const payload = {
+//       passbook: `data:${passbookFile?.type};base64,${fileBase64}`,
+//     };
+
+//     const response = await api.post(
+//       '/api/kyc/upload-passbook',
+//       payload,
+//     );
+
+//     return response.data;
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
   const uploadCheque = async () => {
     try {
       const chequeBase64 = await RNFS.readFile(
@@ -1225,15 +1249,15 @@ export default function KYCVerification({
       return;
     }
 
-    if (!chequeFile) {
-      Alert.alert('Cheque Required', 'Please upload your Cancelled Cheque');
-      return;
-    }
+    // if (!chequeFile) {
+    //   Alert.alert('Cheque Required', 'Please upload your Cancelled Cheque');
+    //   return;
+    // }
 
-    if (!statementFile) {
-      Alert.alert('Statement Required', 'Please upload your Bank Statement');
-      return;
-    }
+    // if (!statementFile) {
+    //   Alert.alert('Statement Required', 'Please upload your Bank Statement');
+    //   return;
+    // }
 
     if (!faceFile) {
       Alert.alert('Selfie Required', 'Please capture your selfie');
@@ -1253,23 +1277,44 @@ export default function KYCVerification({
       await uploadPassbook();
 
       console.log('Starting Cancelled Cheque upload...');
-      await uploadCheque();
+      // await uploadCheque();
 
       console.log('Starting Bank Statement upload...');
-      await uploadStatement();
+      // await uploadStatement();
 
+      // await submitForReview();
+
+      // Alert.alert(
+      //   'Success',
+      //   'All documents uploaded successfully',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       onPress: () => navigation.navigate('KycUnderReview'),
+      //     },
+      //   ],
+      // );
       await submitForReview();
 
-      Alert.alert(
-        'Success',
-        'All documents uploaded successfully',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('KycUnderReview'),
-          },
-        ],
-      );
+// Save that onboarding/KYC registration flow is completed
+// await AsyncStorage.setItem(
+//   'hasCompletedOnboarding',
+//   'true',
+// );
+
+Alert.alert(
+  'Success',
+  'All documents uploaded successfully',
+  [
+    {
+      text: 'OK',
+      onPress: () => navigation.reset({
+        index: 0,
+        routes: [{ name: 'KycUnderReview' }],
+      }),
+    },
+  ],
+);
     } catch (error) {
       console.error('Upload Error:', error);
       Alert.alert(
@@ -1281,14 +1326,24 @@ export default function KYCVerification({
     }
   };
 
+  // Helper function to render correct upload box title
+  // const getUploadTitle = () => {
+  //   if (activeTab === 'aadhaar') return 'Upload Aadhaar Card';
+  //   if (activeTab === 'pan') return 'Upload PAN Card';
+  //   if (activeTab === 'passbook') return 'Upload Bank Passbook';
+  //   if (activeTab === 'cheque') return 'Upload Cancelled Cheque';
+  //   if (activeTab === 'statement') return 'Upload Bank Statement';
+  //   return 'Upload Document';
+  // };
+
   const getUploadTitle = () => {
-    if (activeTab === 'aadhaar') return 'Upload Aadhaar Card';
-    if (activeTab === 'pan') return 'Upload PAN Card';
-    if (activeTab === 'passbook') return 'Upload Bank Passbook';
-    if (activeTab === 'cheque') return 'Upload Cancelled Cheque';
-    if (activeTab === 'statement') return 'Upload Bank Statement';
-    return 'Upload Document';
-  };
+  if (activeTab === 'aadhaar') return 'Upload Aadhaar Card';
+  if (activeTab === 'pan') return 'Upload PAN Card';
+  if (activeTab === 'passbook')
+    return 'Upload Passbook / Cancel Cheque';
+
+  return 'Upload Document';
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -1350,7 +1405,7 @@ export default function KYCVerification({
         </View>
 
         {/* Second Row */}
-        <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+        {/* <View style={{ flexDirection: 'row', marginBottom: 20 }}>
           <TouchableOpacity
             style={[
               styles.tabButton,
@@ -1398,7 +1453,25 @@ export default function KYCVerification({
               Statement
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
+
+        <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+  <TouchableOpacity
+    style={[
+      styles.tabButton,
+      activeTab === 'passbook' && styles.activeTab,
+      { flex: 1 },
+    ]}
+    onPress={() => setActiveTab('passbook')}>
+    <Text
+      style={[
+        styles.tabText,
+        activeTab === 'passbook' && styles.activeTabText,
+      ]}>
+      Passbook / Cancel Cheque
+    </Text>
+  </TouchableOpacity>
+</View>
 
         {/* Upload Box */}
         <ScrollView
@@ -1431,7 +1504,7 @@ export default function KYCVerification({
               <Text style={styles.fileName}>✓ {panFile.name}</Text>
             )}
 
-            {activeTab === 'passbook' && passbookFile && (
+            {/* {activeTab === 'passbook' && passbookFile && (
               <Text style={styles.fileName}>✓ {passbookFile.name}</Text>
             )}
 
@@ -1441,7 +1514,11 @@ export default function KYCVerification({
 
             {activeTab === 'statement' && statementFile && (
               <Text style={styles.fileName}>✓ {statementFile.name}</Text>
-            )}
+            )} */}
+
+            {activeTab === 'passbook' && passbookFile && (
+  <Text style={styles.fileName}>✓ {passbookFile.name}</Text>
+)}
           </TouchableOpacity>
 
           {/* Selfie Section */}
@@ -1496,7 +1573,7 @@ export default function KYCVerification({
         </ScrollView>
 
         {/* Submit Button - Shown on the last tab */}
-        {activeTab === 'statement' && (
+        {activeTab === 'passbook' && (
           <TouchableOpacity
             style={[styles.submitBtn, isLoading && { opacity: 0.7 }]}
             onPress={handleSubmit}
