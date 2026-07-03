@@ -105,13 +105,16 @@ export default StyleSheet.create({
 
   payoLabel: {
     color: '#22c55e',
-    fontSize: moderateScale(11),
-    marginLeft: wp('1.5%'),
+    fontSize: moderateScale(10),
+    marginLeft: wp('3%'),
+    marginBottom:hp('10%')
   },
+  
 
   cardRight: {
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    
   },
 
   walletRow: {
