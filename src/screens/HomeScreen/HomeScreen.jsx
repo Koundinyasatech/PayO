@@ -619,9 +619,12 @@ export default function HomeScreen({ navigation }) {
   const [totalBalance, setTotalBalance] = useState('');
   const [expertCoins, setExpertCoins] = useState([]);
   const [marketNews, setMarketNews] = useState([]);
+  const [newsCount, setNewsCount] = useState(10);
   const [marketCharts, setMarketCharts] = useState({});
 
   const itemsPerPage = 5;
+  const scrollRef = useRef(null);
+  
 
 
   const displayedTransactions = showAll
@@ -654,7 +657,7 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveBanner((prev) => {
-        const nextIndex = (prev + 1) % bannerData.length;
+        const nextIndex = (prev + 1) % bannerData?.length;
         flatListRef.current?.scrollToIndex({
           index: nextIndex,
           animated: true,
@@ -769,7 +772,7 @@ export default function HomeScreen({ navigation }) {
 
       console.log(res.data, 'data');
 
-      setMarketNews(res?.data?.data?.slice(0, 10));
+   setMarketNews(res?.data?.data || []);
 
       // const result = await res.json();
       // setMarketNews(result?.data?.slice(0, 50) || []);
@@ -825,11 +828,12 @@ export default function HomeScreen({ navigation }) {
       <Header type="default" />
 
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+  ref={scrollRef}
+  showsVerticalScrollIndicator={false}
+  contentContainerStyle={styles.scrollContent}>
         
         {/* --- BANNER CAROUSEL UI START (Moved to Top) --- */}
-        <View style={{ marginTop: 15, marginBottom: 0 }}>
+        <View style={{ marginTop: 10, marginBottom: 0 }}>
           <FlatList
             ref={flatListRef}
             data={bannerData}
@@ -850,7 +854,7 @@ export default function HomeScreen({ navigation }) {
                   source={item.image}
                   style={{
                     width: '100%',
-                    height: 130,
+                    height: 140,
                     borderRadius: 16,
                     resizeMode: 'stretch',
                   }}
@@ -864,8 +868,8 @@ export default function HomeScreen({ navigation }) {
               <View
                 key={index}
                 style={{
-                  width: activeBanner === index ? 24 : 8,
-                  height: 8,
+                  width: activeBanner === index ? 10 : 4,
+                  height: 5,
                   borderRadius: 4,
                   backgroundColor: activeBanner === index ? '#1356db' : '#D3D3D3',
                   marginHorizontal: 4,
@@ -895,9 +899,13 @@ export default function HomeScreen({ navigation }) {
                     : '* * * *'}
                 </Text>
 
-                <Text style={styles.payoLabel}>
-                  PAYO
-                </Text>
+                <Text
+  style={styles.payoLabel}
+>
+{balanceVisible
+                    ? "PAYO"
+                    : ""}
+</Text>
               </View>
             </View>
 
@@ -905,11 +913,13 @@ export default function HomeScreen({ navigation }) {
               <TouchableOpacity
                 onPress={() =>
                   setBalanceVisible(!balanceVisible)
-                }>
+                }
+                  hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
                 <Icon
                   name={balanceVisible ? 'eye' : 'eye-off'}
                   size={20}
                   color="#fff"
+                  width
                 />
               </TouchableOpacity>
 
@@ -1439,17 +1449,44 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.newsHeader}>
             <Text style={styles.newsTitle}>📰   Crypto News</Text>
 
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('NewsScreen', {
-                  news: marketNews,
-                })
-              }>
-              <Text style={styles.viewAllText}>View All</Text>
-            </TouchableOpacity>
+         {newsCount < marketNews?.length && (
+  <TouchableOpacity
+//   onPress={() => {
+//     // setNewsCount(prev => prev + 15);
+
+//     // setTimeout(() => {
+//     //   scrollRef.current?.scrollToEnd({ animated: true });
+//     // }, 200);
+//     setNewsCount(prev => prev + 15);
+
+// requestAnimationFrame(() => {
+//   setTimeout(() => {
+//     scrollRef.current?.scrollToEnd({
+//       animated: true,
+//     });
+//   }, 300);
+// });
+//   }}
+
+onPress={() => {
+  setNewsCount(prev => prev + 15);
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      scrollRef.current?.scrollTo({
+        y: 2200, // change this value
+        animated: true,
+      });
+    }, 300);
+  });
+}}
+  >
+    <Text style={styles.viewAllText}>View More</Text>
+  </TouchableOpacity>
+)}
           </View>
 
-          {marketNews.map((item, index) => (
+     {marketNews?.slice(0, newsCount)?.map((item, index) => (
             <TouchableOpacity
               key={index}
               style={styles.newsCard}
