@@ -65,40 +65,63 @@ export default function ReviewTransferScreen({
     fetchQr();
   }, []);
 
-  const handleConfirm =
-    async () => {
-      try {
-        if (save) {
-          await api.post(
-            '/api/wallet/recent-toggle-add',
-            {
-              receiverName:
-                receiver?.name,
-              walletAddress:
-                address,
-            },
-          );
-        }
+ const handleConfirm = async () => {
+  try {
+    // Save recent receiver if enabled
+    if (save) {
+      await api.post(
+        '/api/wallet/recent-toggle-add',
+        {
+          receiverName: receiver?.name,
+          walletAddress: address,
+        },
+      );
+    }
 
-        navigation.navigate(
-          'SendPin',
-          {
-            amount,
-            name:
-              receiver?.name,
-            address,
-            sender,
-          },
-        );
-      } catch (error) {
-        console.log(
-          'Save recent error:',
-          error.response
-            ?.data ||
-            error.message,
-        );
-      }
-    };
+    // Fetch transaction history
+    const transactionRes = await api.get(
+      '/api/wallet/transaction-list',
+    );
+
+    const transactions =
+      transactionRes?.data?.transactions || [];
+
+    // Filter only sent transactions
+    const sentTransactions = transactions.filter(
+      txn => txn.type === 'sent',
+    );
+
+    // If no sent transactions, navigate to TransactionPin
+    if (sentTransactions.length < 1) {
+      navigation.navigate(
+        'TransactionPin',
+        {
+          amount,
+          name: receiver?.name,
+          address,
+          sender,
+        },
+      );
+      return;
+    }
+
+    // Otherwise navigate to SendPin
+    navigation.navigate(
+      'SendPin',
+      {
+        amount,
+        name: receiver?.name,
+        address,
+        sender,
+      },
+    );
+  } catch (error) {
+    console.log(
+      'Handle confirm error:',
+      error?.response?.data || error?.message,
+    );
+  }
+};
 
   return (
     <LinearGradient
