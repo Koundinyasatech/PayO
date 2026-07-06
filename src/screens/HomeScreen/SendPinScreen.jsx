@@ -29,6 +29,11 @@ export default function SendPinScreen({
   } = route.params;
 
   const [pin, setPin] = useState('');
+  console.log( amount,
+    name,
+    address,
+    sender,
+    senderData,"89898")
 
   const handlePress = (val) => {
     if (pin.length < 4) {

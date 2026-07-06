@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Switch,
   ScrollView,
+    Alert,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,6 +33,11 @@ export default function ReviewTransferScreen({
     show,
     isRecent,
   } = route.params;
+  console.log(amount,"amount")
+
+  console.log(
+          receiver,
+          address,sender,"7676")
 
   const [save, setSave] =
     useState(false);
@@ -65,40 +71,161 @@ export default function ReviewTransferScreen({
     fetchQr();
   }, []);
 
-  const handleConfirm =
-    async () => {
-      try {
-        if (save) {
-          await api.post(
-            '/api/wallet/recent-toggle-add',
-            {
-              receiverName:
-                receiver?.name,
-              walletAddress:
-                address,
-            },
-          );
-        }
+//  const handleConfirm = async () => {
+//   try {
+//     // Save recent receiver if enabled
+//     if (save) {
+//       await api.post(
+//         '/api/wallet/recent-toggle-add',
+//         {
+//           receiverName: receiver?.name,
+//           walletAddress: address,
+//         },
+//       );
+//     }
 
-        navigation.navigate(
-          'SendPin',
-          {
-            amount,
-            name:
-              receiver?.name,
-            address,
-            sender,
-          },
+//     // Fetch transaction history
+//     const transactionRes = await api.get(
+//       '/api/wallet/transaction-list',
+//     );
+
+//     const transactions =
+//       transactionRes?.data?.transactions || [];
+
+//     // Filter only sent transactions
+//     const sentTransactions = transactions.filter(
+//       txn => txn?.type === 'sent' &&
+//       txn?.status === 'success',
+//     );
+
+//     // If no sent transactions, navigate to TransactionPin
+//     if (sentTransactions?.length < 1) {
+//       navigation.navigate(
+//         'TransactionPin',
+//         {
+//           amount,
+//           name: receiver?.name,
+//           address,
+//           sender,
+//         },
+//       );
+//       return;
+//     }
+
+//     // Otherwise navigate to SendPin
+//     navigation.navigate(
+//       'SendPin',
+//       {
+//         amount,
+//         name: receiver?.name,
+//         address,
+//         sender,
+//       },
+//     );
+//   } catch (error) {
+//     console.log(
+//       'Handle confirm error:',
+//       error?.response?.data || error?.message,
+//     );
+//   }
+// };
+
+const handleConfirm = async () => {
+  try {
+    // Save recent receiver if enabled
+    if (save) {
+      await api.post(
+        '/api/wallet/recent-toggle-add',
+        {
+          receiverName: receiver?.name,
+          walletAddress: address,
+        },
+      );
+    }
+
+    // Fetch transaction history
+    const transactionRes = await api.get(
+      '/api/wallet/transaction-list',
+    );
+
+    const transactions =
+      transactionRes?.data?.transactions || [];
+
+    // Check if user has at least one successful sent transaction
+    const hasSuccessfulSentTransaction =
+      transactions.some(
+        txn =>
+          txn?.type === 'sent' &&
+          txn?.status === 'success',
+      );
+
+    // If no successful sent transaction
+    if (!hasSuccessfulSentTransaction) {
+      // Check if Transaction PIN is already created
+      if (!sender?.transactionPinSet) {
+        Alert.alert(
+          'Transaction PIN Not Created',
+
+          'Please set your Transaction PIN to continue.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Set PIN',
+              onPress: () =>
+                navigation.navigate(
+                  'TransactionPin', 
+                   {
+          amount,
+          name: receiver?.name,
+          address,
+          sender,
+        },// Replace with your screen name
+                ),
+            },
+          ],
         );
-      } catch (error) {
-        console.log(
-          'Save recent error:',
-          error.response
-            ?.data ||
-            error.message,
-        );
+        return;
       }
-    };
+
+      // Transaction PIN exists
+      navigation.navigate(
+        'TransactionPin',
+        {
+          amount,
+          name: receiver?.name,
+          address,
+          sender,
+        },
+      );
+      return;
+    }
+
+    // User has already made a successful sent transaction
+    navigation.navigate(
+      'SendPin',
+      {
+        amount,
+        name: receiver?.name,
+        address,
+        sender,
+      },
+    );
+  } catch (error) {
+    console.log(
+      'Handle confirm error:',
+      error?.response?.data || error?.message,
+    );
+
+    Alert.alert(
+      'Error',
+      'Something went wrong. Please try again.',
+    );
+  }
+};
+
 
   return (
     <LinearGradient
