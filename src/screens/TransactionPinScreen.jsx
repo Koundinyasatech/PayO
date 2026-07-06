@@ -19,10 +19,28 @@ import {
 } from 'react-native-responsive-screen';
 
 import { moderateScale } from 'react-native-size-matters';
+import { useRoute } from "@react-navigation/native";
 
 export default function TransactionPinScreen({
   navigation,
 }) {
+
+  const route = useRoute();
+
+const {
+  amount,
+  name,
+  address,
+  sender,
+  senderData,
+} = route.params || {};
+  
+ console.log( amount,
+    name,
+    address,
+    sender,
+    senderData,"89898")
+    
   const [pin, setPin] = useState('');
   const [error, setError] =
     useState('');
@@ -44,51 +62,149 @@ export default function TransactionPinScreen({
     );
   };
 
-  const handleContinue =
-    async () => {
-      if (pin.length !== 4) {
-        setError(
-          'Enter 4 digit PIN',
-        );
-        return;
-      }
+  // const handleContinue =
+  //   async () => {
+  //     if (pin.length !== 4) {
+  //       setError(
+  //         'Enter 4 digit PIN',
+  //       );
+  //       return;
+  //     }
 
-      try {
-        const response =
-          await api.post(
-            '/api/auth/set-pin',
-            {
-              pin,
-            },
-          );
+  //     try {
+  //       const response =
+  //         await api.post(
+  //           '/api/auth/set-pin',
+  //           {
+  //             pin,
+  //           },
+  //         );
 
-        if (
-          response.data.message
-        ) {
+  //       if (
+  //         response.data.message
+  //       ) {
           
-          Alert.alert(
-            'Success',
-            response.data.message,
-            [
-              {
-                text: 'OK',
-                onPress: () =>
-                  navigation.replace(
-                    'KYCVerification',
-                  ),
-              },
-            ],
-          );
-        }
-      } catch (error) {
-        Alert.alert(
-          'Error',
-          error.response?.data
-            ?.message ||
-            'Something went wrong',
-        );
-      }
-    };
+  //         Alert.alert(
+  //           'Success',
+  //           response.data.message,
+  //           [
+  //             {
+  //               text: 'OK',
+  //               onPress: () =>
+  //                 navigation.replace(
+  //                   'SendPin',
+  //                 ),
+  //             },
+  //           ],
+  //         );
+  //       }
+  //     } catch (error) {
+  //       Alert.alert(
+  //         'Error',
+  //         error.response?.data
+  //           ?.message ||
+  //           'Something went wrong',
+  //       );
+  //     }
+  //   };
+
+//  const handleContinue = async () => {
+//   if (pin.length !== 4) {
+//     setError('Enter 4 digit PIN');
+//     return;
+//   }
+
+//   try {
+//     const response = await api.post(
+//       '/api/auth/set-pin',
+//       {
+//         pin,
+//       },
+//     );
+
+//     if (response?.data?.message) {
+//       // Flow 1
+//       if (sender) {
+//         navigation.replace('SendPin', {
+//           amount,
+//           name,
+//           address,
+//           sender,
+//         });
+//       }
+//       // Flow 2
+//       else {
+//         navigation.replace('SendPin', {
+//           amount,
+//           name,
+//           address,
+//           senderData,
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     Alert.alert(
+//       'Error',
+//       error?.response?.data?.message ||
+//         'Something went wrong',
+//     );
+//   }
+// };
+
+const handleContinue = async () => {
+  if (pin.length !== 4) {
+    setError('Enter 4 digit PIN');
+    return;
+  }
+
+  try {
+    const response = await api.post(
+      '/api/auth/set-pin',
+      {
+        pin,
+      },
+    );
+
+    if (response?.data?.message) {
+      Alert.alert(
+        'Success',
+        'Your Transaction PIN has been created successfully.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Flow 1
+              if (sender) {
+                navigation.navigate('SendPin', {
+                  amount,
+                  name,
+                  address,
+                  sender,
+                });
+              }
+              // Flow 2
+              else {
+                navigation.navigate('SendPin', {
+                  amount,
+                  name,
+                  address,
+                  senderData,
+                });
+              }
+            },
+          },
+        ],
+        { cancelable: false },
+      );
+    }
+  } catch (error) {
+    Alert.alert(
+      'Error',
+      error?.response?.data?.message ||
+        'Something went wrong',
+    );
+  }
+};
 
   const Key = ({
     num,
