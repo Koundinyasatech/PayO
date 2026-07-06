@@ -147,7 +147,86 @@ export default function EnterAmountScreen({
   //     }
   //   };
 
-  const handleContinue = async () => {
+//   const handleContinue = async () => {
+//   const data = address || Transaddress;
+
+//   if (!data) {
+//     Alert.alert(
+//       'Error',
+//       'Enter valid wallet address',
+//     );
+//     return;
+//   }
+
+//   try {
+//     // Preview API
+//     await api.post(
+//       '/api/wallet/transfer/preview',
+//       {
+//         toAddress: data,
+//         amount,
+//       },
+//     );
+
+//     // Fetch transaction history
+//     const transactionRes = await api.get(
+//       '/api/wallet/transaction-list',
+//     );
+
+//     const transactions =
+//       transactionRes?.data?.transactions || [];
+
+//     // Check if user has any sent transactions
+//     const hasSentTransaction =
+//       transactions.some(
+//         txn => txn.type === 'sent' &&  txn?.status === 'success',
+//       );
+
+//     // If no sent transactions, go to TransactionPin
+//     if (!hasSentTransaction) {
+//       navigation.navigate(
+//         'TransactionPin',
+//         {
+//           amount: TransShow
+//             ? TransrouteAmount
+//             : amount,
+//           name: TransShow
+//             ? Transname
+//             : name,
+//           address: TransShow
+//             ? Transaddress
+//             : address,
+//           senderData,
+//         },
+//       );
+//       return;
+//     }
+
+//     // Otherwise go to SendPin
+//     navigation.navigate(
+//       'SendPin',
+//       {
+//         amount: TransShow
+//           ? TransrouteAmount
+//           : amount,
+//         name: TransShow
+//           ? Transname
+//             : name,
+//         address: TransShow
+//           ? Transaddress
+//           : address,
+//         senderData,
+//       },
+//     );
+//   } catch (err) {
+//     setMessage(
+//       err?.response?.data?.message ||
+//         'Something went wrong',
+//     );
+//   }
+// };
+
+const handleContinue = async () => {
   const data = address || Transaddress;
 
   if (!data) {
@@ -176,14 +255,52 @@ export default function EnterAmountScreen({
     const transactions =
       transactionRes?.data?.transactions || [];
 
-    // Check if user has any sent transactions
+    // Check if user has any successful sent transactions
     const hasSentTransaction =
       transactions.some(
-        txn => txn.type === 'sent',
+        txn =>
+          txn?.type === 'sent' &&
+          txn?.status === 'success',
       );
 
-    // If no sent transactions, go to TransactionPin
+    // First-time sender
     if (!hasSentTransaction) {
+      // Check if Transaction PIN is created
+      if (!senderData?.transactionPinSet) {
+        Alert.alert(
+          'Transaction PIN Not Created',
+          'Please set your Transaction PIN to continue.',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Set PIN',
+              onPress: () =>
+                navigation.navigate(
+                  'TransactionPin',
+                  {
+                    amount: TransShow
+                      ? TransrouteAmount
+                      : amount,
+                    name: TransShow
+                      ? Transname
+                      : name,
+                    address: TransShow
+                      ? Transaddress
+                      : address,
+                    senderData,
+                  },
+                ),
+            },
+          ],
+          { cancelable: false },
+        );
+        return;
+      }
+
+      // PIN already exists
       navigation.navigate(
         'TransactionPin',
         {
@@ -202,7 +319,7 @@ export default function EnterAmountScreen({
       return;
     }
 
-    // Otherwise go to SendPin
+    // User already has a successful sent transaction
     navigation.navigate(
       'SendPin',
       {
@@ -211,7 +328,7 @@ export default function EnterAmountScreen({
           : amount,
         name: TransShow
           ? Transname
-            : name,
+          : name,
         address: TransShow
           ? Transaddress
           : address,
@@ -225,7 +342,6 @@ export default function EnterAmountScreen({
     );
   }
 };
-
   return (
     <LinearGradient
       colors={

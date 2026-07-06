@@ -19,6 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 
 import { moderateScale } from 'react-native-size-matters';
+import { useRoute } from "@react-navigation/native";
 
 export default function TransactionPinScreen({
   navigation,
@@ -34,6 +35,12 @@ const {
   senderData,
 } = route.params || {};
   
+ console.log( amount,
+    name,
+    address,
+    sender,
+    senderData,"89898")
+    
   const [pin, setPin] = useState('');
   const [error, setError] =
     useState('');
@@ -101,7 +108,50 @@ const {
   //     }
   //   };
 
- const handleContinue = async () => {
+//  const handleContinue = async () => {
+//   if (pin.length !== 4) {
+//     setError('Enter 4 digit PIN');
+//     return;
+//   }
+
+//   try {
+//     const response = await api.post(
+//       '/api/auth/set-pin',
+//       {
+//         pin,
+//       },
+//     );
+
+//     if (response?.data?.message) {
+//       // Flow 1
+//       if (sender) {
+//         navigation.replace('SendPin', {
+//           amount,
+//           name,
+//           address,
+//           sender,
+//         });
+//       }
+//       // Flow 2
+//       else {
+//         navigation.replace('SendPin', {
+//           amount,
+//           name,
+//           address,
+//           senderData,
+//         });
+//       }
+//     }
+//   } catch (error) {
+//     Alert.alert(
+//       'Error',
+//       error?.response?.data?.message ||
+//         'Something went wrong',
+//     );
+//   }
+// };
+
+const handleContinue = async () => {
   if (pin.length !== 4) {
     setError('Enter 4 digit PIN');
     return;
@@ -116,24 +166,36 @@ const {
     );
 
     if (response?.data?.message) {
-      // Flow 1
-      if (sender) {
-        navigation.replace('SendPin', {
-          amount,
-          name,
-          address,
-          sender,
-        });
-      }
-      // Flow 2
-      else {
-        navigation.replace('SendPin', {
-          amount,
-          name,
-          address,
-          senderData,
-        });
-      }
+      Alert.alert(
+        'Success',
+        'Your Transaction PIN has been created successfully.',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Flow 1
+              if (sender) {
+                navigation.navigate('SendPin', {
+                  amount,
+                  name,
+                  address,
+                  sender,
+                });
+              }
+              // Flow 2
+              else {
+                navigation.navigate('SendPin', {
+                  amount,
+                  name,
+                  address,
+                  senderData,
+                });
+              }
+            },
+          },
+        ],
+        { cancelable: false },
+      );
     }
   } catch (error) {
     Alert.alert(
