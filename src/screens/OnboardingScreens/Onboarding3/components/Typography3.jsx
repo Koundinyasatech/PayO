@@ -57,14 +57,39 @@
 
 
 
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+
+
+
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { moderateScale, verticalScale } from '../../../../utils/responsive';
 
 // 🚨 Added props here
 export default function Typography3({ title, subtitlePurple, subtitleBlue, description }) {
+  // 🚨 1. Setup Animation Values
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(30)).current;
+
+  // 🚨 2. Trigger the bounce animation on mount
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.spring(translateY, {
+        toValue: 0,
+        friction: 7,
+        tension: 90,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [opacity, translateY]);
+
   return (
-    <View style={styles.container}>
+    // 🚨 3. Changed View to Animated.View and applied animated styles
+    <Animated.View style={[styles.container, { opacity, transform: [{ translateY }] }]}>
       <Text style={styles.titleBlack}>{title}</Text>
       
       <Text style={styles.titleRow}>
@@ -75,7 +100,7 @@ export default function Typography3({ title, subtitlePurple, subtitleBlue, descr
       <Text style={styles.description}>
         {description}
       </Text>
-    </View>
+    </Animated.View>
   );
 }
 

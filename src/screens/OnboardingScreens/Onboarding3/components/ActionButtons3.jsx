@@ -1,43 +1,77 @@
-// import React from 'react';
-// import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+
+
+
+
+// import React, { useEffect, useRef } from 'react';
+// import { View, TouchableOpacity, Text, StyleSheet, Image, Animated } from 'react-native';
 // import { moderateScale, verticalScale } from '../../../../utils/responsive';
 // import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// export default function ActionButtons3({ onCreateAccount, onLogin }) {
+// export default function ActionButtons3({ onCreateAccount, onLogin, activeIndex }) {
 //   const insets = useSafeAreaInsets();
+  
+//   // 🚨 1. Setup Animation Values
+//   const opacity = useRef(new Animated.Value(0)).current;
+//   const translateY = useRef(new Animated.Value(50)).current;
+
+//   // 🚨 2. Trigger the bounce animation on mount with a slight delay
+//   useEffect(() => {
+//     Animated.parallel([
+//       Animated.timing(opacity, {
+//         toValue: 1,
+//         duration: 500,
+//         delay: 200, // Waits for typography to start animating
+//         useNativeDriver: true,
+//       }),
+//       Animated.spring(translateY, {
+//         toValue: 0,
+//         friction: 7,
+//         tension: 90,
+//         delay: 200,
+//         useNativeDriver: true,
+//       }),
+//     ]).start();
+//   }, [opacity, translateY]);
 
 //   return (
-//     <View style={[styles.container, { paddingBottom: insets.bottom + verticalScale(20) }]}>
+//     // 🚨 3. Changed View to Animated.View and appended the opacity and transform properties
+//     <Animated.View style={[
+//       styles.container, 
+//       { paddingBottom: insets.bottom + verticalScale(20) },
+//       { opacity, transform: [{ translateY }] }
+//     ]}>
       
-//       {/* Progress Dots */}
-//       <View style={styles.progressContainer}>
-//         <View style={[styles.dot, styles.activeDot]} />
-//         <View style={styles.dot} />
-//       </View>
+//       <View style={styles.topSection}>
+//         {/* Progress Dots - Dynamically switch based on activeIndex */}
+//         <View style={styles.progressContainer}>
+//           <View style={[styles.dot, activeIndex === 0 && styles.activeDot]} />
+//           <View style={[styles.dot, activeIndex === 1 && styles.activeDot]} />
+//         </View>
 
-//       {/* Create Account Button */}
-//       <TouchableOpacity onPress={onCreateAccount} style={styles.primaryBtn} activeOpacity={0.8}>
-//         <View style={styles.btnContent}>
-//           <Text style={styles.primaryBtnText}>Create Account</Text>
-//           <View style={styles.iconCircle}>
-//              <Image 
-//                source={require('../../../../../assets/images/register.png')} 
-//                style={styles.arrowIcon} 
-//              />
+//         {/* Create Account Button */}
+//         <TouchableOpacity onPress={onCreateAccount} style={styles.primaryBtn} activeOpacity={0.8}>
+//           <View style={styles.btnContent}>
+//             <Text style={styles.primaryBtnText}>Create Account</Text>
+//             <View style={styles.iconCircle}>
+//                <Image 
+//                  source={require('../../../../../assets/images/register.png')} 
+//                  style={styles.arrowIcon} 
+//                />
+//             </View>
 //           </View>
-//         </View>
-//       </TouchableOpacity>
+//         </TouchableOpacity>
 
-//       {/* Login Button */}
-//       <TouchableOpacity onPress={onLogin} style={styles.secondaryBtn} activeOpacity={0.8}>
-//         <View style={styles.btnContent}>
-//           <Text style={styles.secondaryBtnText}>Login</Text>
-//           <Image 
-//             source={require('../../../../../assets/images/register.png')} 
-//             style={styles.arrowIconSecondary} 
-//           />
-//         </View>
-//       </TouchableOpacity>
+//         {/* Login Button */}
+//         <TouchableOpacity onPress={onLogin} style={styles.secondaryBtn} activeOpacity={0.8}>
+//           <View style={styles.btnContent}>
+//             <Text style={styles.secondaryBtnText}>Login</Text>
+//             <Image 
+//               source={require('../../../../../assets/images/register.png')} 
+//               style={styles.arrowIconSecondary} 
+//             />
+//           </View>
+//         </TouchableOpacity>
+//       </View>
 
 //       {/* Security Badge */}
 //       <View style={styles.securityBadge}>
@@ -53,7 +87,7 @@
 //         </View>
 //       </View>
 
-//     </View>
+//     </Animated.View>
 //   );
 // }
 
@@ -84,6 +118,7 @@
 //   },
 //   activeDot: {
 //     backgroundColor: '#2962FF',
+//     width: moderateScale(20), 
 //   },
 //   primaryBtn: {
 //     width: '100%',
@@ -109,7 +144,7 @@
 //     marginBottom: verticalScale(30),
 //   },
 //   btnContent: {
-//     width: '100%', // 🚨 FIX: Forces the container to span the whole button to center text perfectly
+//     width: '100%', 
 //     flexDirection: 'row',
 //     justifyContent: 'center',
 //     alignItems: 'center',
@@ -126,7 +161,7 @@
 //   },
 //   iconCircle: {
 //     position: 'absolute',
-//     right: 0, // 🚨 FIX: Pins to the exact right edge of the button
+//     right: 0, 
 //     width: moderateScale(32),
 //     height: moderateScale(32),
 //     borderRadius: moderateScale(16),
@@ -138,15 +173,13 @@
 //     width: moderateScale(16),
 //     height: moderateScale(16),
 //     resizeMode: 'contain',
-//     // 🚨 FIX: Removed tintColor so your PNG renders correctly
 //   },
 //   arrowIconSecondary: {
 //     position: 'absolute',
-//     right: moderateScale(5), // 🚨 FIX: Pushed to the right edge with a slight padding
+//     right: moderateScale(5), 
 //     width: moderateScale(20),
 //     height: moderateScale(20),
 //     resizeMode: 'contain',
-//     // 🚨 FIX: Removed tintColor
 //   },
 //   securityBadge: {
 //     flexDirection: 'row',
@@ -192,21 +225,44 @@
 
 
 
-
-import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Image, Animated } from 'react-native';
 import { moderateScale, verticalScale } from '../../../../utils/responsive';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-// 🚨 Added activeIndex prop
 export default function ActionButtons3({ onCreateAccount, onLogin, activeIndex }) {
   const insets = useSafeAreaInsets();
+  
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(50)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 500,
+        delay: 200, 
+        useNativeDriver: true,
+      }),
+      Animated.spring(translateY, {
+        toValue: 0,
+        friction: 7,
+        tension: 90,
+        delay: 200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [opacity, translateY]);
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom + verticalScale(20) }]}>
+    <Animated.View style={[
+      styles.container, 
+      { paddingBottom: insets.bottom + verticalScale(20) },
+      { opacity, transform: [{ translateY }] }
+    ]}>
       
       <View style={styles.topSection}>
-        {/* Progress Dots - 🚨 Dynamically switch based on activeIndex */}
+        {/* Progress Dots */}
         <View style={styles.progressContainer}>
           <View style={[styles.dot, activeIndex === 0 && styles.activeDot]} />
           <View style={[styles.dot, activeIndex === 1 && styles.activeDot]} />
@@ -251,7 +307,7 @@ export default function ActionButtons3({ onCreateAccount, onLogin, activeIndex }
         </View>
       </View>
 
-    </View>
+    </Animated.View>
   );
 }
 
@@ -262,7 +318,7 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(30),
     alignItems: 'center',
     flex: 1,
-    justifyContent: 'space-between', 
+    justifyContent: 'flex-start', // 🚨 FIX: Changed from 'space-between' to pull the badge UP
   },
   topSection: {
     width: '100%',
@@ -282,7 +338,7 @@ const styles = StyleSheet.create({
   },
   activeDot: {
     backgroundColor: '#2962FF',
-    width: moderateScale(20), // 🚨 Added to make active dot wider per your design image
+    width: moderateScale(20), 
   },
   primaryBtn: {
     width: '100%',
@@ -305,7 +361,7 @@ const styles = StyleSheet.create({
     borderColor: '#A8A7FF', 
     paddingVertical: moderateScale(16),
     paddingHorizontal: moderateScale(20),
-    marginBottom: verticalScale(30),
+    marginBottom: verticalScale(30), // 🚨 FIX: Reduced from 30 to 20 for a tighter gap above the badge
   },
   btnContent: {
     width: '100%', 
@@ -353,7 +409,7 @@ const styles = StyleSheet.create({
     paddingVertical: moderateScale(10),
     paddingHorizontal: moderateScale(20),
     borderRadius: moderateScale(12),
-    width: '75%',
+    width: '70%',
     justifyContent: 'center',
     elevation: 1, 
     shadowColor: '#000',
