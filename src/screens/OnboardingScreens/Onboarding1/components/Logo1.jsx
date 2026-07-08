@@ -16,7 +16,7 @@ export default function Logo1({ animatedStyle }) {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: verticalScale(15),
+    marginTop: verticalScale(-10),
   },
   logo: {
     width: moderateScale(120),

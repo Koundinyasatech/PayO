@@ -20,7 +20,7 @@ import { moderateScale } from 'react-native-size-matters';
 export default function DashboardScreen({ navigation }) {
   const [showBalance, setShowBalance] = useState(true);
 
-  // // Quick Action Grid Items
+  // Quick Action Grid Items
   // const quickActions = [
   //   { id: 'send', title: 'Send', icon: require('../../../assets/images/Send Icon.png'), bg: '#EEF2FF' },
   //   { id: 'scan', title: 'Scan QR', icon: require('../../../assets/images/Scan Icon.png'), bg: '#FFF1F2' },
@@ -129,10 +129,9 @@ export default function DashboardScreen({ navigation }) {
     //     </TouchableOpacity>
     //   </View>
     // </SafeAreaView>
-
-    <>
-    
-    </>
+<>
+</>
+   
   );
 }
 

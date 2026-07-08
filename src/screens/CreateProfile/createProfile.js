@@ -514,6 +514,12 @@
 //   },
 // });
 
+
+
+
+
+
+
 import React, { useState } from 'react';
 import {
   View,
@@ -591,7 +597,7 @@ export default function ProfileScreen({ navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />
 
-      {/* Top Navigation Bar: Positioned outside ScrollView to keep it completely static */}
+      {/* Top Navigation Bar: Updated to match RegisterMobileScreen alignments */}
       <View style={styles.header}>
         <TouchableOpacity 
           style={styles.backButtonCircle} 
@@ -600,14 +606,11 @@ export default function ProfileScreen({ navigation }) {
           <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
         </TouchableOpacity>
 
-        <View style={styles.logoContainer}>
-          <Image 
-            source={require('../../../assets/images/LogoContainer.png')} 
-            style={styles.logoImage}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={{ width: moderateScale(36) }} />
+        <Image 
+          source={require('../../../assets/images/LogoContainer.png')} 
+          style={styles.logoImage}
+          resizeMode="contain"
+        />
       </View>
 
       <KeyboardAvoidingView
@@ -661,7 +664,7 @@ export default function ProfileScreen({ navigation }) {
                 style={styles.inputField}
                 value={name}
                 onChangeText={(text) => handleChange('name', text)}
-                placeholder="Username"
+                placeholder="Enter your Full name"
                 placeholderTextColor="#9CA3AF"
               />
               {name.trim().length >= 3 ? (
@@ -684,7 +687,7 @@ export default function ProfileScreen({ navigation }) {
                 style={styles.inputField}
                 value={email}
                 onChangeText={(text) => handleChange('email', text)}
-                placeholder="Username@gmail.com"
+                placeholder="Enter your Email address"
                 placeholderTextColor="#9CA3AF"
                 autoCapitalize="none"
                 keyboardType="email-address"
@@ -709,7 +712,7 @@ export default function ProfileScreen({ navigation }) {
                 style={styles.inputField}
                 value={referral}
                 onChangeText={(text) => handleChange('referral', text)}
-                placeholder="Enter referral code (if you have one)"
+                placeholder="Enter referral code"
                 placeholderTextColor="#9CA3AF"
               />
               {referral.trim().length > 0 ? (
@@ -740,7 +743,7 @@ export default function ProfileScreen({ navigation }) {
               <View style={styles.trustItem}>
                 <View style={styles.trustIconContainer}>
                   <Image 
-                    source={require('../../../assets/images/flash.png')} 
+                    source={require('../../../assets/images/vector1.png')} 
                     style={styles.trustIconImage} 
                     resizeMode="contain"
                   />
@@ -793,37 +796,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('5%'),
     paddingBottom: hp('3%'),
   },
+  // --- Updated Header Styles ---
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: hp('2%'),
-    marginBottom: hp('1.5%'),
-    paddingHorizontal: wp('5%'), // Aligns beautifully with the inner scrolling layouts
+    justifyContent: 'center',
+    height: verticalScale(100),
+    width: '100%',
+    position: 'relative',
   },
   backButtonCircle: {
-    width: moderateScale(36),
-    height: moderateScale(36),
-    borderRadius: moderateScale(18),
+    position: 'absolute',
+    left: moderateScale(25),
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: '#FFF',
-    alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
+    alignItems: 'center',
+    elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   logoImage: {
-    width: wp('28%'),
-    height: hp('5%'),
+    width: moderateScale(120),
+    height: moderateScale(40),
   },
+  // -----------------------------
   illustrationContainer: {
     width: wp('90%'),
     height: hp('24%'),
@@ -1001,3 +1002,6 @@ const styles = StyleSheet.create({
     right: wp('5%'),
   },
 });
+
+
+
