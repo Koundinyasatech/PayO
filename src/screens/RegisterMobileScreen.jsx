@@ -337,7 +337,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
 
   const isValidMobile = mobile?.length === 10;
 
-  // Exact API implementation untouched
+   // Exact API implementation untouched
   const handleSendOTP = async () => {
     if (!mobile || mobile.length !== 10) {
       setError('Enter valid mobile number');

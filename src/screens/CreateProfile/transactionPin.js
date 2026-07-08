@@ -1127,8 +1127,53 @@ export default function TransactionPinScreen({ navigation }) {
   const isNotEasyToGuess = pin.length > 0 && !/^(1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
 
   const handleContinue = async () => {
-    navigation.navigate('Main');
+    navigation.navigate('WelcomeProfile');
     // ... API Logic (Restored later) ...
+
+    //////////////////////////////////////////////////////
+    //  navigation.navigate('WelcomeProfile')
+    // setError('');
+    
+    // if (pin.length !== 4 || confirmPin.length !== 4) {
+    //   setError('Both PIN fields must be 4 digits');
+    //   return;
+    // }
+    // if (pin !== confirmPin) {
+    //   setError('PINs do not match');
+    //   return;
+    // }
+    // if (!isNotSequential || !isNotRepeated || !isNotEasyToGuess) {
+    //   setError('PIN does not follow security rules');
+    //   return;
+    // }
+
+    // try {
+    //   const response = await api.post('/api/auth/set-pin', { pin });
+
+    //   if (response?.data?.message) {
+    //     Alert.alert(
+    //       'Success',
+    //       'Your Transaction PIN has been created successfully.',
+    //       [
+    //         {
+    //           text: 'OK',
+    //           onPress: () => {
+    //             if (sender) {
+    //               navigation.navigate('SendPin', { amount, name, address, sender });
+    //             } else {
+    //               navigation.navigate('SendPin', { amount, name, address, senderData });
+    //             }
+    //           },
+    //         },
+    //       ],
+    //       { cancelable: false }
+    //     );
+    //   }
+    // } catch (err) {
+    //   Alert.alert(
+    //     'Error',
+    //     err?.response?.data?.message || 'Something went wrong'
+    //   );
   };
 
   const renderPinBoxes = (value, isMasked) => {
