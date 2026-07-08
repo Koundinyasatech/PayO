@@ -678,8 +678,8 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(20),
   },
   termsShieldIcon: {
-    width: moderateScale(16),
-    height: moderateScale(16),
+    width: moderateScale(20),
+    height: moderateScale(20),
     resizeMode: 'contain',
     marginRight: moderateScale(10),
   },
