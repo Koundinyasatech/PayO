@@ -414,7 +414,6 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -428,6 +427,7 @@ import {
   Keyboard,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 
 import {
@@ -436,7 +436,6 @@ import {
 } from 'react-native-safe-area-context';
 
 import NetInfo from '@react-native-community/netinfo';
-
 import api from '../api/axios';
 import * as Keychain from 'react-native-keychain';
 import Icon from 'react-native-vector-icons/Feather';
@@ -446,13 +445,18 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-import { moderateScale } from 'react-native-size-matters';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Using your custom responsive utility
+import { scale, verticalScale, moderateScale, windowWidth } from '../utils/responsive';
 
 export default function LoginScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
+  // --- NEW UI STATE ---
+  const [mobile, setMobile] = useState('');
+
+  // --- EXISTING STATE (Untouched to preserve logic) ---
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -468,173 +472,81 @@ export default function LoginScreen({ navigation }) {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
     });
-
     return () => unsubscribe();
   }, []);
 
-  
-
+  // --- EXISTING VALIDATE FUNCTION (Untouched) ---
   const validate = () => {
     let valid = true;
-
     let newErrors = {
       email: '',
       password: '',
     };
-
     if (!email.trim()) {
       newErrors.email = 'Email is required';
       valid = false;
     }
-
     if (!password.trim()) {
       newErrors.password = 'Password is required';
       valid = false;
     }
-
     setErrors(newErrors);
-
     return valid;
   };
-console.log(isConnected,"99")
-  // const handleSubmit = async () => {
-  //   if (!isConnected) {
-  //     setMessage('No internet connection');
-  //     return;
-  //   }
 
-  //   if (!validate()) return;
+  // --- EXISTING SUBMIT FUNCTION (Untouched) ---
+  const handleSubmit = async () => {
+    if (!isConnected) {
+      setMessage('No internet connection');
+      return;
+    }
+    if (!validate()) return;
+    try {
+      const response = await api.post('/api/auth/login', {
+        email,
+        password,
+      });
 
-  //   try {
-  //     const response = await api.post('/api/auth/login', {
-  //       email,
-  //       password,
-  //     });
+      if (response?.data?.message === 'Login success') {
+        const token = response?.data?.token;
 
-  //     if (response?.data?.message === 'Login success') {
-  //       const token = response?.data?.token;
+        // Save token
+        await Keychain.setGenericPassword('userToken', token);
+        setMessage('');
 
-  //       await Keychain.setGenericPassword('userToken', token);
-
-  //       setMessage('');
-
-        
-
-  //       if (isConnected) {
-  //         // navigation.navigate('Main');
-  //       }
-  //     } else {
-  //       setMessage(response?.data?.message || 'Login failed');
-  //     }
-  //   } catch (error) {
-  //     setMessage(
-  //       error?.response?.data?.message ||
-  //         error?.message ||
-  //         'Something went wrong',
-  //     );
-  //   }
-  // };
-
-const handleSubmit = async () => {
-  if (!isConnected) {
-    setMessage('No internet connection');
-    return;
-  }
-
-  if (!validate()) return;
-
-  try {
-    const response = await api.post('/api/auth/login', {
-      email,
-      password,
-    });
-
-    if (response?.data?.message === 'Login success') {
-      const token = response?.data?.token;
-
-      // Save token
-      await Keychain.setGenericPassword(
-        'userToken',
-        token,
-      );
-
-      setMessage('');
-
-      // try {
-      //   // Interceptor automatically sends Bearer token
-      //   const kycResponse = await api.get(
-      //     '/api/kyc/review-pipeline-status',
-      //   );
-
-      //   console.log(
-      //     'KYC STATUS =>',
-      //     kycResponse.data,
-      //   );
-
-      //   // Example navigation
-      //   // navigation.navigate('Main');
-
-      //   // OR based on API response:
         if (response.data.kycStatus === 'approved') {
           navigation.navigate('Main');
-          await AsyncStorage.setItem(
-            'hasCompletedOnboarding',
-            'true',
-          );
-        } 
-        else if  (response.data.kycStatus === 'not_started') {
+          await AsyncStorage.setItem('hasCompletedOnboarding', 'true');
+        } else if (response.data.kycStatus === 'not_started') {
           navigation.navigate('KycNotStarted');
-        }else if (response.data.kycStatus === "under_review"){ 
+        } else if (response.data.kycStatus === "under_review") {
           navigation.navigate('KycUnderReview');
+        } else {
+          setMessage(response?.data?.message || 'Login failed');
         }
-        else{
-          setMessage(
-        response?.data?.message ||
-          'Login failed',
-      ); 
-        }
-
-      // } catch (kycError) {
-      //   console.log(
-      //     'KYC Status Error =>',
-      //     kycError?.response?.data || kycError,
-      //   );
-
-      //   setMessage(
-      //     'Unable to fetch KYC status',
-      //   );
-      // }
-    } else {
-      setMessage(
-        response?.data?.message ||
-          'Login failed',
-      );
-    }
-  } catch (error) {
-
-     if(error?.response?.data?.kycStatus =="rejected"){
-        navigation.navigate('KycFail');
-      }else{
-  setMessage(
-      error?.response?.data?.message ||
-        error?.message ||
-        'Something went wrong',
-    );
+      } else {
+        setMessage(response?.data?.message || 'Login failed');
       }
-      
-  
-  }
-};
+    } catch (error) {
+      if (error?.response?.data?.kycStatus == "rejected") {
+        navigation.navigate('KycFail');
+      } else {
+        setMessage(
+          error?.response?.data?.message ||
+            error?.message ||
+            'Something went wrong',
+        );
+      }
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <StatusBar backgroundColor="#EAEAEA" barStyle="dark-content" />
+      <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />
 
       {!isConnected && (
         <View style={styles.internetBar}>
-          <Text style={styles.internetText}>
-            No Internet Connection
-          </Text>
+          <Text style={styles.internetText}>No Internet Connection</Text>
         </View>
       )}
 
@@ -643,172 +555,130 @@ const handleSubmit = async () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView
-            contentContainerStyle={[
-              styles.scrollContent,
-              {
-                paddingBottom:
-                  insets.bottom > 0
-                    ? insets.bottom + moderateScale(20)
-                    : moderateScale(25),
-              },
-            ]}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.header}>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={styles.backButton}
-              >
-                <Icon
-                  name="chevron-left"
-                  size={moderateScale(28)}
-                  color="#000"
+          <View style={styles.flex}>
+            
+            <ScrollView
+              contentContainerStyle={[
+                styles.scrollContent,
+                {
+                  paddingBottom: insets.bottom > 0 ? insets.bottom + moderateScale(20) : moderateScale(25),
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              
+              {/* Top Logo Container */}
+              <View style={styles.logoWrapper}>
+                <Image 
+                  source={require('../../assets/images/LogoContainer.png')} 
+                  style={styles.logoImage} 
+                  resizeMode="contain" 
                 />
-              </TouchableOpacity>
+              </View>
 
-              <Text style={styles.titleCentered}>Login to Payo</Text>
-            </View>
+              {/* Welcome Section */}
+              <View style={styles.welcomeContainer}>
+                <View style={styles.welcomeRow}>
+                  <Text style={styles.welcomeTitle}>Welcome Back!</Text>
+                  <Image 
+                    source={require('../../assets/images/HandIcon.png')} 
+                    style={styles.handIcon} 
+                    resizeMode="contain" 
+                  />
+                </View>
+                <Text style={styles.welcomeSub}>Login to access your PAYO wallet</Text>
+              </View>
 
-            <Text style={styles.sub}>
-              Welcome back! Please enter your details.
-            </Text>
+              {/* Input Section */}
+              <View style={styles.inputSection}>
+                <Text style={styles.inputLabel}>Mobile Number</Text>
+                <View style={styles.inputContainer}>
+                  {/* Country Code */}
+                  <View style={styles.countryCodeBox}>
+                    <Text style={styles.flagEmoji}>🇮🇳</Text>
+                    <Text style={styles.countryCodeText}>+91</Text>
+                    <Icon name="chevron-down" size={moderateScale(16)} color="#111827" />
+                  </View>
+                  
+                  {/* Divider */}
+                  <View style={styles.verticalDivider} />
+                  
+                  {/* Text Input */}
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Enter mobile number"
+                    placeholderTextColor="#9CA3AF"
+                    keyboardType="phone-pad"
+                    value={mobile}
+                    onChangeText={(text) => {
+                      const numeric = text.replace(/[^0-9]/g, '');
+                      setMobile(numeric);
+                    }}
+                    maxLength={10}
+                  />
+                </View>
+              </View>
 
-            {message ? (
-              <Text style={styles.messageText}>{message}</Text>
-            ) : null}
-
-            <Text style={styles.label}>Email ID</Text>
-
-            <TextInput
-              style={[styles.input, errors.email && styles.errorInput]}
-              placeholder="your@email.com"
-              placeholderTextColor="#999"
-              value={email}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChangeText={(text) => {
-                setEmail(text);
-                setMessage("")
-
-                setErrors(prev => ({
-                  ...prev,
-                  email: '',
-                }));
-              }}
-            />
-
-            {errors.email ? (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            ) : null}
-
-            <Text style={styles.label}>Password</Text>
-
-            <View
-              style={[
-                styles.passwordContainer,
-                errors.password && styles.errorInput,
-              ]}
-            >
-              <TextInput
-                style={styles.passwordInput}
-                placeholder="Your password"
-                placeholderTextColor="#999"
-                secureTextEntry={!showPassword}
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                   setMessage("")
-
-                  setErrors(prev => ({
-                    ...prev,
-                    password: '',
-                  }));
-                }}
-              />
-
+              {/* Primary Action Button -> Mapped to old OTP routing */}
               <TouchableOpacity
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <Icon
-                  name={showPassword ? 'eye' : 'eye-off'}
-                  size={moderateScale(18)}
-                  color="#555"
-                />
-              </TouchableOpacity>
-            </View>
-
-            {errors.password ? (
-              <Text style={styles.errorText}>
-                {errors.password}
-              </Text>
-            ) : null}
-
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('ForgotPasswordScreen')
-              }
-            >
-              <Text style={styles.forgot}>
-                Forgot Password?
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.button,
-                !isConnected && styles.disabledButton,
-              ]}
-              onPress={handleSubmit}
-              activeOpacity={0.8}
-              disabled={!isConnected}
-            >
-              <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
-
-            <View style={styles.orRow}>
-              <View style={styles.line} />
-
-              <Text style={styles.or}>OR</Text>
-
-              <View style={styles.line} />
-            </View>
-
-            <TouchableOpacity
-              style={[
-                styles.otpBtn,
-                !isConnected && styles.disabledOtpBtn,
-              ]}
-              onPress={() =>
-                isConnected &&
-                navigation.navigate('RegisterMobile', {
-                  mode: 'login',
-                })
-              }
-              activeOpacity={0.8}
-              disabled={!isConnected}
-            >
-              <Text style={styles.otpText}>
-                Login with OTP
-              </Text>
-            </TouchableOpacity>
-
-            <Text style={styles.registerText}>
-              Don’t have an account?{' '}
-              <Text
-                style={styles.link}
+                style={[styles.primaryButton, !isConnected && styles.disabledButton]}
                 onPress={() =>
                   isConnected &&
-                  navigation.navigate('RegisterMobile', {
-                    mode: 'register',
-                  })
+                  navigation.navigate('RegisterMobile', { mode: 'login' })
                 }
+                activeOpacity={0.8}
+                disabled={!isConnected}
               >
-                Register
+                <View style={styles.btnContentLeft}>
+                  <Image 
+                    source={require('../../assets/images/OTPIcon.png')} 
+                    style={styles.btnIconLeft} 
+                    resizeMode="contain" 
+                  />
+                  <Text style={styles.primaryButtonText}>Login with OTP</Text>
+                </View>
+                <Icon name="arrow-right" size={moderateScale(20)} color="#FFF" style={styles.btnIconRight} />
+              </TouchableOpacity>
+
+              {/* Security Trust Banner */}
+              <View style={styles.securityBanner}>
+                {/* Background Pattern */}
+                <Image 
+                  source={require('../../assets/images/locksecure.png')} 
+                  style={styles.bannerBgIcon} 
+                  resizeMode="cover" 
+                />
+                
+                <View style={styles.bannerContent}>
+                  <Image 
+                    source={require('../../assets/images/Security-Icon.png')} 
+                    style={styles.securityShield} 
+                    resizeMode="contain" 
+                  />
+                  <View style={styles.securityTextContainer}>
+                    <Text style={styles.securityTitle}>Secure & Trusted</Text>
+                    <Text style={styles.securitySub}>Your account is protected with bank -grade security.</Text>
+                  </View>
+                </View>
+              </View>
+
+            </ScrollView>
+
+            {/* Bottom Footer */}
+            <View style={[styles.footer, { paddingBottom: insets.bottom || moderateScale(20) }]}>
+              <Text style={styles.footerText}>
+                New to PAYO ?{' '}
+                <Text 
+                  style={styles.footerLink} 
+                  onPress={() => isConnected && navigation.navigate('RegisterMobile', { mode: 'register' })}
+                >
+                  Create an account
+                </Text>
               </Text>
-            </Text>
-          </ScrollView>
+            </View>
+
+          </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -819,186 +689,795 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-
   safeArea: {
     flex: 1,
-    backgroundColor: '#EAEAEA',
+    backgroundColor: '#ffffff', // Light off-white background matching design
   },
-
   internetBar: {
     width: '100%',
-    backgroundColor: '#ff0000',
+    backgroundColor: '#EF4444',
     paddingVertical: hp('1%'),
     alignItems: 'center',
     justifyContent: 'center',
   },
-
   internetText: {
     color: '#fff',
     fontSize: moderateScale(12),
     fontWeight: '700',
   },
-
   scrollContent: {
-    paddingHorizontal: wp('5%'),
-    paddingTop: hp('2%'),
+    paddingHorizontal: wp('6%'),
     flexGrow: 1,
   },
+  
+  // --- Logo Section ---
+  logoWrapper: {
+    alignItems: 'center',
+    marginTop: verticalScale(30),
+    marginBottom: verticalScale(30),
+  },
+  logoImage: {
+    width: moderateScale(160),
+    height: moderateScale(55),
+  },
 
-  header: {
+  // --- Welcome Section ---
+  welcomeContainer: {
+    marginBottom: verticalScale(30),
+  },
+  welcomeRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: hp('1%'),
-    marginBottom: hp('2%'),
+    marginBottom: verticalScale(6),
+  },
+  welcomeTitle: {
+    fontSize: moderateScale(26),
+    fontWeight: '800',
+    color: '#111827',
+  },
+  handIcon: {
+    width: moderateScale(24),
+    height: moderateScale(24),
+    marginLeft: moderateScale(10),
+  },
+  welcomeSub: {
+    fontSize: moderateScale(14),
+    color: '#4B5563',
+    fontWeight: '500',
   },
 
-  backButton: {
-    padding: moderateScale(4),
+  // --- Input Section ---
+  inputSection: {
+    marginBottom: verticalScale(25),
   },
-
-  titleCentered: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: moderateScale(20),
-    fontWeight: '700',
-    color: '#000',
-    marginRight: wp('7%'),
-  },
-
-  sub: {
-    textAlign: 'center',
-    marginTop: hp('1%'),
-    marginBottom: hp('4%'),
-    color: '#666',
+  inputLabel: {
     fontSize: moderateScale(13),
-    lineHeight: moderateScale(20),
-    paddingHorizontal: wp('3%'),
+    color: '#374151',
+    fontWeight: '600',
+    marginBottom: verticalScale(10),
   },
-
-  messageText: {
-    color: 'red',
-    marginBottom: hp('1.5%'),
-    textAlign: 'center',
-    fontSize: moderateScale(12),
-  },
-
-  label: {
-    fontSize: moderateScale(12),
-    color: '#333',
-    marginBottom: hp('0.7%'),
-    fontWeight: '700',
-    paddingLeft: wp('1%'),
-  },
-
-  input: {
-    backgroundColor: '#fff',
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#4F46E5', // Focused blue/purple border from design
     borderRadius: moderateScale(12),
-    paddingVertical: hp('1.8%'),
-    paddingHorizontal: wp('4%'),
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    fontSize: moderateScale(14),
-    color: '#000',
-    marginBottom: hp('1%'),
+    height: verticalScale(55),
+    paddingHorizontal: moderateScale(15),
   },
-
-  passwordContainer: {
-    backgroundColor: '#fff',
-    borderRadius: moderateScale(12),
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    paddingHorizontal: wp('4%'),
+  countryCodeBox: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
-  passwordInput: {
-    flex: 1,
-    paddingVertical: hp('1.8%'),
+  flagEmoji: {
+    fontSize: moderateScale(16),
+  },
+  countryCodeText: {
     fontSize: moderateScale(14),
-    color: '#000',
+    color: '#111827',
+    fontWeight: '500',
+    marginHorizontal: moderateScale(6),
+  },
+  verticalDivider: {
+    width: 1,
+    height: '50%',
+    backgroundColor: '#D1D5DB',
+    marginHorizontal: moderateScale(10),
+  },
+  textInput: {
+    flex: 1,
+    fontSize: moderateScale(14.5),
+    color: '#111827',
+    fontWeight: '500',
+    padding: 0, 
   },
 
-  errorInput: {
-    borderColor: 'red',
-  },
-
-  errorText: {
-    color: 'red',
-    marginBottom: hp('1%'),
-    fontSize: moderateScale(11),
-  },
-
-  forgot: {
-    textAlign: 'right',
-    marginTop: hp('1%'),
-    color: '#5A00D1',
-    fontSize: moderateScale(12),
-  },
-
-  button: {
-    backgroundColor: '#5A00D1',
-    paddingVertical: hp('2%'),
-    borderRadius: moderateScale(10),
+  // --- Button Section ---
+  primaryButton: {
+    backgroundColor: '#4F46E5', // Solid purple/blue gradient color
+    borderRadius: moderateScale(12),
+    height: verticalScale(55),
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: hp('3%'),
+    justifyContent: 'center',
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
   },
-
   disabledButton: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
-
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: moderateScale(15),
-  },
-
-  orRow: {
+  btnContentLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: hp('3%'),
+    position: 'absolute',
+    left: '30%', // Centers the text block generally
+  },
+  btnIconLeft: {
+    width: moderateScale(18),
+    height: moderateScale(18),
+    marginRight: moderateScale(10),
+    tintColor: '#FFFFFF', // Ensures icon stays white if it's black by default
+  },
+  primaryButtonText: {
+    color: '#FFFFFF',
+    fontSize: moderateScale(16),
+    fontWeight: '600',
+  },
+  btnIconRight: {
+    position: 'absolute',
+    right: moderateScale(20),
   },
 
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#ccc',
+  // --- Security Banner ---
+  securityBanner: {
+    backgroundColor: '#F4F3FF', // Light purple tint
+    borderRadius: moderateScale(14),
+    marginTop: verticalScale(40),
+    height: verticalScale(90),
+    overflow: 'hidden',
+    justifyContent: 'center',
   },
-
-  or: {
-    marginHorizontal: wp('3%'),
-    color: '#777',
-    fontSize: moderateScale(13),
-  },
-
-  otpBtn: {
-    borderWidth: 2,
-    borderColor: '#5A00D1',
-    paddingVertical: hp('2%'),
-    borderRadius: moderateScale(10),
+  bannerContent: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: moderateScale(16),
+    zIndex: 2,
   },
-
-  disabledOtpBtn: {
+  securityShield: {
+    width: moderateScale(34),
+    height: moderateScale(34),
+    marginRight: moderateScale(12),
+  },
+  securityTextContainer: {
+    flex: 1,
+    paddingRight: moderateScale(40), 
+  },
+  securityTitle: {
+    fontSize: moderateScale(12),
+    fontWeight: '700',
+    color: '#374151',
+    marginBottom: verticalScale(3),
+  },
+  securitySub: {
+    fontSize: moderateScale(10.5),
+    color: '#6B7280',
+    lineHeight: moderateScale(14),
+  },
+  bannerBgIcon: {
+    position: 'absolute',
+    right: moderateScale(-20),
+    top: moderateScale(-10),
+    width: moderateScale(160),
+    height: moderateScale(110),
     opacity: 0.5,
+    zIndex: 1,
   },
 
-  otpText: {
-    color: '#5A00D1',
-    fontWeight: '600',
-    fontSize: moderateScale(15),
+  // --- Footer ---
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: verticalScale(10),
   },
-
-  registerText: {
-    textAlign: 'center',
-    marginTop: hp('3%'),
-    color: '#555',
-    fontSize: moderateScale(13),
+  footerText: {
+    fontSize: moderateScale(14),
+    color: '#4B5563',
+    fontWeight: '500',
   },
-
-  link: {
-    color: '#5A00D1',
-    fontWeight: '600',
+  footerLink: {
+    color: '#2563EB',
+    fontWeight: '700',
   },
 });
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   StyleSheet,
+//   TouchableOpacity,
+//   StatusBar,
+//   KeyboardAvoidingView,
+//   TouchableWithoutFeedback,
+//   Keyboard,
+//   Platform,
+//   ScrollView,
+// } from 'react-native';
+
+// import {
+//   SafeAreaView,
+//   useSafeAreaInsets,
+// } from 'react-native-safe-area-context';
+
+// import NetInfo from '@react-native-community/netinfo';
+
+// import api from '../api/axios';
+// import * as Keychain from 'react-native-keychain';
+// import Icon from 'react-native-vector-icons/Feather';
+
+// import {
+//   widthPercentageToDP as wp,
+//   heightPercentageToDP as hp,
+// } from 'react-native-responsive-screen';
+
+// import { moderateScale } from 'react-native-size-matters';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+// export default function LoginScreen({ navigation }) {
+//   const insets = useSafeAreaInsets();
+
+//   const [email, setEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [showPassword, setShowPassword] = useState(false);
+//   const [message, setMessage] = useState('');
+//   const [isConnected, setIsConnected] = useState(true);
+
+//   const [errors, setErrors] = useState({
+//     email: '',
+//     password: '',
+//   });
+
+//   useEffect(() => {
+//     const unsubscribe = NetInfo.addEventListener(state => {
+//       setIsConnected(state.isConnected);
+//     });
+
+//     return () => unsubscribe();
+//   }, []);
+
+  
+
+//   const validate = () => {
+//     let valid = true;
+
+//     let newErrors = {
+//       email: '',
+//       password: '',
+//     };
+
+//     if (!email.trim()) {
+//       newErrors.email = 'Email is required';
+//       valid = false;
+//     }
+
+//     if (!password.trim()) {
+//       newErrors.password = 'Password is required';
+//       valid = false;
+//     }
+
+//     setErrors(newErrors);
+
+//     return valid;
+//   };
+
+//   // const handleSubmit = async () => {
+//   //   if (!isConnected) {
+//   //     setMessage('No internet connection');
+//   //     return;
+//   //   }
+
+//   //   if (!validate()) return;
+
+//   //   try {
+//   //     const response = await api.post('/api/auth/login', {
+//   //       email,
+//   //       password,
+//   //     });
+
+//   //     if (response?.data?.message === 'Login success') {
+//   //       const token = response?.data?.token;
+
+//   //       await Keychain.setGenericPassword('userToken', token);
+
+//   //       setMessage('');
+
+        
+
+//   //       if (isConnected) {
+//   //         // navigation.navigate('Main');
+//   //       }
+//   //     } else {
+//   //       setMessage(response?.data?.message || 'Login failed');
+//   //     }
+//   //   } catch (error) {
+//   //     setMessage(
+//   //       error?.response?.data?.message ||
+//   //         error?.message ||
+//   //         'Something went wrong',
+//   //     );
+//   //   }
+//   // };
+
+// const handleSubmit = async () => {
+//   if (!isConnected) {
+//     setMessage('No internet connection');
+//     return;
+//   }
+
+//   if (!validate()) return;
+
+//   try {
+//     const response = await api.post('/api/auth/login', {
+//       email,
+//       password,
+//     });
+
+//     if (response?.data?.message === 'Login success') {
+//       const token = response?.data?.token;
+
+//       // Save token
+//       await Keychain.setGenericPassword(
+//         'userToken',
+//         token,
+//       );
+
+//       setMessage('');
+
+//       // try {
+//       //   // Interceptor automatically sends Bearer token
+//       //   const kycResponse = await api.get(
+//       //     '/api/kyc/review-pipeline-status',
+//       //   );
+
+//       //   console.log(
+//       //     'KYC STATUS =>',
+//       //     kycResponse.data,
+//       //   );
+
+//       //   // Example navigation
+//       //   // navigation.navigate('Main');
+
+//       //   // OR based on API response:
+//         if (response.data.kycStatus === 'approved') {
+//           navigation.navigate('Main');
+//           await AsyncStorage.setItem(
+//             'hasCompletedOnboarding',
+//             'true',
+//           );
+//         } 
+//         else if  (response.data.kycStatus === 'not_started') {
+//           navigation.navigate('KycNotStarted');
+//         }else if (response.data.kycStatus === "under_review"){ 
+//           navigation.navigate('KycUnderReview');
+//         }
+//         else{
+//           setMessage(
+//         response?.data?.message ||
+//           'Login failed',
+//       ); 
+//         }
+
+//       // } catch (kycError) {
+//       //   console.log(
+//       //     'KYC Status Error =>',
+//       //     kycError?.response?.data || kycError,
+//       //   );
+
+//       //   setMessage(
+//       //     'Unable to fetch KYC status',
+//       //   );
+//       // }
+//     } else {
+//       setMessage(
+//         response?.data?.message ||
+//           'Login failed',
+//       );
+//     }
+//   } catch (error) {
+
+//      if(error?.response?.data?.kycStatus =="rejected"){
+//         navigation.navigate('KycFail');
+//       }else{
+//   setMessage(
+//       error?.response?.data?.message ||
+//         error?.message ||
+//         'Something went wrong',
+//     );
+//       }
+      
+  
+//   }
+// };
+
+//   return (
+//     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+//       <StatusBar backgroundColor="#EAEAEA" barStyle="dark-content" />
+
+//       {!isConnected && (
+//         <View style={styles.internetBar}>
+//           <Text style={styles.internetText}>
+//             No Internet Connection
+//           </Text>
+//         </View>
+//       )}
+
+//       <KeyboardAvoidingView
+//         style={styles.flex}
+//         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+//       >
+//         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+//           <ScrollView
+//             contentContainerStyle={[
+//               styles.scrollContent,
+//               {
+//                 paddingBottom:
+//                   insets.bottom > 0
+//                     ? insets.bottom + moderateScale(20)
+//                     : moderateScale(25),
+//               },
+//             ]}
+//             keyboardShouldPersistTaps="handled"
+//             showsVerticalScrollIndicator={false}
+//           >
+//             <View style={styles.header}>
+//               <TouchableOpacity
+//                 onPress={() => navigation.goBack()}
+//                 style={styles.backButton}
+//               >
+//                 <Icon
+//                   name="chevron-left"
+//                   size={moderateScale(28)}
+//                   color="#000"
+//                 />
+//               </TouchableOpacity>
+
+//               <Text style={styles.titleCentered}>Login to Payo</Text>
+//             </View>
+
+//             <Text style={styles.sub}>
+//               Welcome back! Please enter your details.
+//             </Text>
+
+//             {message ? (
+//               <Text style={styles.messageText}>{message}</Text>
+//             ) : null}
+
+//             <Text style={styles.label}>Email ID</Text>
+
+//             <TextInput
+//               style={[styles.input, errors.email && styles.errorInput]}
+//               placeholder="your@email.com"
+//               placeholderTextColor="#999"
+//               value={email}
+//               autoCapitalize="none"
+//               keyboardType="email-address"
+//               onChangeText={(text) => {
+//                 setEmail(text);
+//                 setMessage("")
+
+//                 setErrors(prev => ({
+//                   ...prev,
+//                   email: '',
+//                 }));
+//               }}
+//             />
+
+//             {errors.email ? (
+//               <Text style={styles.errorText}>{errors.email}</Text>
+//             ) : null}
+
+//             <Text style={styles.label}>Password</Text>
+
+//             <View
+//               style={[
+//                 styles.passwordContainer,
+//                 errors.password && styles.errorInput,
+//               ]}
+//             >
+//               <TextInput
+//                 style={styles.passwordInput}
+//                 placeholder="Your password"
+//                 placeholderTextColor="#999"
+//                 secureTextEntry={!showPassword}
+//                 value={password}
+//                 onChangeText={(text) => {
+//                   setPassword(text);
+//                    setMessage("")
+
+//                   setErrors(prev => ({
+//                     ...prev,
+//                     password: '',
+//                   }));
+//                 }}
+//               />
+
+//               <TouchableOpacity
+//                 onPress={() => setShowPassword(!showPassword)}
+//               >
+//                 <Icon
+//                   name={showPassword ? 'eye' : 'eye-off'}
+//                   size={moderateScale(18)}
+//                   color="#555"
+//                 />
+//               </TouchableOpacity>
+//             </View>
+
+//             {errors.password ? (
+//               <Text style={styles.errorText}>
+//                 {errors.password}
+//               </Text>
+//             ) : null}
+
+//             <TouchableOpacity
+//               onPress={() =>
+//                 navigation.navigate('ForgotPasswordScreen')
+//               }
+//             >
+//               <Text style={styles.forgot}>
+//                 Forgot Password?
+//               </Text>
+//             </TouchableOpacity>
+
+//             <TouchableOpacity
+//               style={[
+//                 styles.button,
+//                 !isConnected && styles.disabledButton,
+//               ]}
+//               onPress={handleSubmit}
+//               activeOpacity={0.8}
+//               disabled={!isConnected}
+//             >
+//               <Text style={styles.buttonText}>Submit</Text>
+//             </TouchableOpacity>
+
+//             <View style={styles.orRow}>
+//               <View style={styles.line} />
+
+//               <Text style={styles.or}>OR</Text>
+
+//               <View style={styles.line} />
+//             </View>
+
+//             <TouchableOpacity
+//               style={[
+//                 styles.otpBtn,
+//                 !isConnected && styles.disabledOtpBtn,
+//               ]}
+//               onPress={() =>
+//                 isConnected &&
+//                 navigation.navigate('RegisterMobile', {
+//                   mode: 'login',
+//                 })
+//               }
+//               activeOpacity={0.8}
+//               disabled={!isConnected}
+//             >
+//               <Text style={styles.otpText}>
+//                 Login with OTP
+//               </Text>
+//             </TouchableOpacity>
+
+//             <Text style={styles.registerText}>
+//               Don’t have an account?{' '}
+//               <Text
+//                 style={styles.link}
+//                 onPress={() =>
+//                   isConnected &&
+//                   navigation.navigate('RegisterMobile', {
+//                     mode: 'register',
+//                   })
+//                 }
+//               >
+//                 Register
+//               </Text>
+//             </Text>
+//           </ScrollView>
+//         </TouchableWithoutFeedback>
+//       </KeyboardAvoidingView>
+//     </SafeAreaView>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   flex: {
+//     flex: 1,
+//   },
+
+//   safeArea: {
+//     flex: 1,
+//     backgroundColor: '#EAEAEA',
+//   },
+
+//   internetBar: {
+//     width: '100%',
+//     backgroundColor: '#ff0000',
+//     paddingVertical: hp('1%'),
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+
+//   internetText: {
+//     color: '#fff',
+//     fontSize: moderateScale(12),
+//     fontWeight: '700',
+//   },
+
+//   scrollContent: {
+//     paddingHorizontal: wp('5%'),
+//     paddingTop: hp('2%'),
+//     flexGrow: 1,
+//   },
+
+//   header: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginTop: hp('1%'),
+//     marginBottom: hp('2%'),
+//   },
+
+//   backButton: {
+//     padding: moderateScale(4),
+//   },
+
+//   titleCentered: {
+//     flex: 1,
+//     textAlign: 'center',
+//     fontSize: moderateScale(20),
+//     fontWeight: '700',
+//     color: '#000',
+//     marginRight: wp('7%'),
+//   },
+
+//   sub: {
+//     textAlign: 'center',
+//     marginTop: hp('1%'),
+//     marginBottom: hp('4%'),
+//     color: '#666',
+//     fontSize: moderateScale(13),
+//     lineHeight: moderateScale(20),
+//     paddingHorizontal: wp('3%'),
+//   },
+
+//   messageText: {
+//     color: 'red',
+//     marginBottom: hp('1.5%'),
+//     textAlign: 'center',
+//     fontSize: moderateScale(12),
+//   },
+
+//   label: {
+//     fontSize: moderateScale(12),
+//     color: '#333',
+//     marginBottom: hp('0.7%'),
+//     fontWeight: '700',
+//     paddingLeft: wp('1%'),
+//   },
+
+//   input: {
+//     backgroundColor: '#fff',
+//     borderRadius: moderateScale(12),
+//     paddingVertical: hp('1.8%'),
+//     paddingHorizontal: wp('4%'),
+//     borderWidth: 1,
+//     borderColor: '#E0E0E0',
+//     fontSize: moderateScale(14),
+//     color: '#000',
+//     marginBottom: hp('1%'),
+//   },
+
+//   passwordContainer: {
+//     backgroundColor: '#fff',
+//     borderRadius: moderateScale(12),
+//     borderWidth: 1,
+//     borderColor: '#E0E0E0',
+//     paddingHorizontal: wp('4%'),
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+
+//   passwordInput: {
+//     flex: 1,
+//     paddingVertical: hp('1.8%'),
+//     fontSize: moderateScale(14),
+//     color: '#000',
+//   },
+
+//   errorInput: {
+//     borderColor: 'red',
+//   },
+
+//   errorText: {
+//     color: 'red',
+//     marginBottom: hp('1%'),
+//     fontSize: moderateScale(11),
+//   },
+
+//   forgot: {
+//     textAlign: 'right',
+//     marginTop: hp('1%'),
+//     color: '#5A00D1',
+//     fontSize: moderateScale(12),
+//   },
+
+//   button: {
+//     backgroundColor: '#5A00D1',
+//     paddingVertical: hp('2%'),
+//     borderRadius: moderateScale(10),
+//     alignItems: 'center',
+//     marginTop: hp('3%'),
+//   },
+
+//   disabledButton: {
+//     opacity: 0.5,
+//   },
+
+//   buttonText: {
+//     color: '#fff',
+//     fontWeight: '600',
+//     fontSize: moderateScale(15),
+//   },
+
+//   orRow: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginVertical: hp('3%'),
+//   },
+
+//   line: {
+//     flex: 1,
+//     height: 1,
+//     backgroundColor: '#ccc',
+//   },
+
+//   or: {
+//     marginHorizontal: wp('3%'),
+//     color: '#777',
+//     fontSize: moderateScale(13),
+//   },
+
+//   otpBtn: {
+//     borderWidth: 2,
+//     borderColor: '#5A00D1',
+//     paddingVertical: hp('2%'),
+//     borderRadius: moderateScale(10),
+//     alignItems: 'center',
+//   },
+
+//   disabledOtpBtn: {
+//     opacity: 0.5,
+//   },
+
+//   otpText: {
+//     color: '#5A00D1',
+//     fontWeight: '600',
+//     fontSize: moderateScale(15),
+//   },
+
+//   registerText: {
+//     textAlign: 'center',
+//     marginTop: hp('3%'),
+//     color: '#555',
+//     fontSize: moderateScale(13),
+//   },
+
+//   link: {
+//     color: '#5A00D1',
+//     fontWeight: '600',
+//   },
+// });

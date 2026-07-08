@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
   },
   backBtn: {
     position: 'absolute',
-    left: 0,
+    left: moderateScale(0),
     width: moderateScale(40),
     height: moderateScale(40),
     borderRadius: moderateScale(20),

@@ -337,40 +337,38 @@ export default function RegisterMobileScreen({ navigation, route }) {
 
   const isValidMobile = mobile?.length === 10;
 
-  // Exact API implementation untouched
+   // Exact API implementation untouched
   const handleSendOTP = async () => {
-     navigation.navigate('WelcomeProfile')
-     
-    // if (!mobile || mobile.length !== 10) {
-    //   setError('Enter valid mobile number');
-    //   return;
-    // }
+    if (!mobile || mobile.length !== 10) {
+      setError('Enter valid mobile number');
+      return;
+    }
 
-    // try {
-    //   setLoading(true);
-    //   setError('');
+    try {
+      setLoading(true);
+      setError('');
 
-    //   let response;
+      let response;
 
-    //   if (mode === 'login') {
-    //     response = await api.post('/api/auth/send-login-otp', { mobile });
-    //   } else {
-    //     response = await api.post('/api/auth/send-otp', { mobile });
-    //   }
+      if (mode === 'login') {
+        response = await api.post('/api/auth/send-login-otp', { mobile });
+      } else {
+        response = await api.post('/api/auth/send-otp', { mobile });
+      }
 
-    //   console.log('OTP RESPONSE:', response.data);
+      console.log('OTP RESPONSE:', response.data);
 
-    //   if (response.data?.message === 'OTP sent') {
-    //     navigation.navigate('OTP', { mobile, mode });
-    //   } else {
-    //     setError(response.data?.message || 'Something went wrong');
-    //   }
-    // } catch (error) {
-    //   console.log('ERROR:', error?.response?.data || error.message);
-    //   setError(error.response?.data?.message || 'Something went wrong');
-    // } finally {
-    //   setLoading(false);
-    // }
+      if (response.data?.message === 'OTP sent') {
+        navigation.navigate('OTP', { mobile, mode });
+      } else {
+        setError(response.data?.message || 'Something went wrong');
+      }
+    } catch (error) {
+      console.log('ERROR:', error?.response?.data || error.message);
+      setError(error.response?.data?.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -559,7 +557,7 @@ const styles = StyleSheet.create({
   },
   backBtn: {
     position: 'absolute',
-    left: moderateScale(20),
+    left: moderateScale(25),
     width: moderateScale(40),
     height: moderateScale(40),
     borderRadius: moderateScale(20),
