@@ -190,6 +190,7 @@ import Onboarding3 from '../screens/OnboardingScreens/Onboarding3/index3.js';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
+import OtpVerified from '../screens/OtpVerified';
 import ProfileScreen from '../screens/ProfileScreen';
 import TransactionPinScreen from '../screens/TransactionPinScreen';
 import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
@@ -256,9 +257,10 @@ export default function AppNavigator() {
         <Stack.Screen name="Onboarding2" component={Onboarding2} options={{ animation: 'fade' }} />
         <Stack.Screen name="Onboarding3" component={Onboarding3} options={{ animation: 'fade' }} />
         {/* <Stack.Screen name="Onboarding4" component={Onboarding4} /> */}
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} />
-        <Stack.Screen name="OTP" component={OtpVerificationScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ animation: 'fade' }} />
+        <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} options={{ animation: 'fade' }} />
+        <Stack.Screen name="OTP" component={OtpVerificationScreen} options={{ animation: 'fade' }} />
+        <Stack.Screen name="OtpVerified" component={OtpVerified} options={{ animation: 'fade' }} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
 
