@@ -182,7 +182,7 @@ import AnimationScreen from '../screens/AnimationScreen';
 //import WelcomeScreen from '../screens/WelcomeScreen';
 
 // ✅ UPDATED IMPORT PATH FOR NEW MODULAR ONBOARDING 1
-import Onboarding1 from '../screens/OnboardingScreens/Onboarding1/index1.js'; 
+import Onboarding1 from '../screens/OnboardingScreens/Onboarding1/index1.js';
 import Onboarding2 from '../screens/OnboardingScreens/Onboarding2/index2.js';
 import Onboarding3 from '../screens/OnboardingScreens/Onboarding3/index3.js';
 //import Onboarding4 from '../screens/Onboarding4';
@@ -190,8 +190,8 @@ import Onboarding3 from '../screens/OnboardingScreens/Onboarding3/index3.js';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterMobileScreen from '../screens/RegisterMobileScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import TransactionPinScreen from '../screens/TransactionPinScreen';
+// import ProfileScreen from '../screens/ProfileScreen';
+// import TransactionPinScreen from '../screens/TransactionPinScreen';
 import EnterAmountScreen from '../screens/HomeScreen/EnterAmountScreen';
 import SendPinScreen from '../screens/HomeScreen/SendPinScreen';
 import ReviewTransferScreen from '../screens/HomeScreen/ReviewTransferScreen';
@@ -240,6 +240,11 @@ import KycComplete from '../screens/kycVerify/KycComplete';
 import KycFail from '../screens/kycVerify/KycFail';
 import KycNotStarted from '../screens/kycVerify/KycnotStartedYet';
 import HelpCenterScreen from '../screens/helpCenter/HelpCenterScreen.jsx';
+import ProfileScreen from '../screens/CreateProfile/createProfile.js';
+import TransactionPinScreen from '../screens/CreateProfile/transactionPin.js';
+import DashboardScreen from '../screens/CreateProfile/welcomeProfile.js';
+import Biometric from '../screens/CreateProfile/BiometricScreen.js';
+import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -259,8 +264,17 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} />
+        {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
+
+
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
+          <Stack.Screen name="Biometric" component={Biometric} />
+           <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
+        <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
+
+
+        {/* <Stack.Screen name="TransactionPin" component={TransactionPinScreen} /> */}
 
         <Stack.Screen name="ForgotPasswordScreen" component={ForgotPassword} />
 
