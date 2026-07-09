@@ -413,7 +413,6 @@
 // });
 
 
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -447,16 +446,15 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Using your custom responsive utility
 import { scale, verticalScale, moderateScale, windowWidth } from '../utils/responsive';
 
 export default function LoginScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
-  // --- NEW UI STATE ---
+  // --- UI STATE ---
   const [mobile, setMobile] = useState('');
 
-  // --- EXISTING STATE (Untouched to preserve logic) ---
+  // --- EXISTING STATE ---
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -468,6 +466,9 @@ export default function LoginScreen({ navigation }) {
     password: '',
   });
 
+  // Validation Rule: Checks if the input contains exactly 10 characters
+  const isMobileValid = mobile?.length === 10;
+
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isConnected);
@@ -475,7 +476,18 @@ export default function LoginScreen({ navigation }) {
     return () => unsubscribe();
   }, []);
 
-  // --- EXISTING VALIDATE FUNCTION (Untouched) ---
+  // --- SUBMIT HANDLE ROUTINE ---
+  const handleLoginWithOTP = () => {
+    if (!isConnected || !isMobileValid) return;
+    
+    // Navigates directly to your generic OTP verification screen payload route
+    navigation.navigate('OTP', { 
+      mobile, 
+      type: 'login' 
+    });
+  };
+
+  // --- EXISTING VALIDATE FUNCTION (Preserved) ---
   const validate = () => {
     let valid = true;
     let newErrors = {
@@ -494,7 +506,7 @@ export default function LoginScreen({ navigation }) {
     return valid;
   };
 
-  // --- EXISTING SUBMIT FUNCTION (Untouched) ---
+  // --- EXISTING SUBMIT FUNCTION (Preserved) ---
   const handleSubmit = async () => {
     if (!isConnected) {
       setMessage('No internet connection');
@@ -593,7 +605,10 @@ export default function LoginScreen({ navigation }) {
               {/* Input Section */}
               <View style={styles.inputSection}>
                 <Text style={styles.inputLabel}>Mobile Number</Text>
-                <View style={styles.inputContainer}>
+                <View style={[
+                  styles.inputContainer,
+                  !isMobileValid && styles.inputContainerInvalid
+                ]}>
                   {/* Country Code */}
                   <View style={styles.countryCodeBox}>
                     <Text style={styles.flagEmoji}>🇮🇳</Text>
@@ -620,21 +635,22 @@ export default function LoginScreen({ navigation }) {
                 </View>
               </View>
 
-              {/* Primary Action Button -> Mapped to old OTP routing */}
+              {/* Primary Action Button -> Modified to route directly to OTP screen */}
               <TouchableOpacity
-                style={[styles.primaryButton, !isConnected && styles.disabledButton]}
-                onPress={() =>
-                  isConnected &&
-                  navigation.navigate('RegisterMobile', { mode: 'login' })
-                }
+                style={[
+                  styles.primaryButton, 
+                  (!isConnected || !isMobileValid) && styles.disabledButton
+                ]}
+                onPress={handleLoginWithOTP}
                 activeOpacity={0.8}
-                disabled={!isConnected}
+                disabled={!isConnected || !isMobileValid}
               >
                 <View style={styles.btnContentLeft}>
                   <Image 
                     source={require('../../assets/images/OTPIcon.png')} 
                     style={styles.btnIconLeft} 
                     resizeMode="contain" 
+                    tintColor="#FFFFFF"
                   />
                   <Text style={styles.primaryButtonText}>Login with OTP</Text>
                 </View>
@@ -643,7 +659,6 @@ export default function LoginScreen({ navigation }) {
 
               {/* Security Trust Banner */}
               <View style={styles.securityBanner}>
-                {/* Background Pattern */}
                 <Image 
                   source={require('../../assets/images/locksecure.png')} 
                   style={styles.bannerBgIcon} 
@@ -691,7 +706,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff', // Light off-white background matching design
+    backgroundColor: '#ffffff',
   },
   internetBar: {
     width: '100%',
@@ -709,8 +724,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('6%'),
     flexGrow: 1,
   },
-  
-  // --- Logo Section ---
   logoWrapper: {
     alignItems: 'center',
     marginTop: verticalScale(30),
@@ -720,8 +733,6 @@ const styles = StyleSheet.create({
     width: moderateScale(160),
     height: moderateScale(55),
   },
-
-  // --- Welcome Section ---
   welcomeContainer: {
     marginBottom: verticalScale(30),
   },
@@ -745,8 +756,6 @@ const styles = StyleSheet.create({
     color: '#4B5563',
     fontWeight: '500',
   },
-
-  // --- Input Section ---
   inputSection: {
     marginBottom: verticalScale(25),
   },
@@ -761,10 +770,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
-    borderColor: '#4F46E5', // Focused blue/purple border from design
+    borderColor: '#4F46E5', 
     borderRadius: moderateScale(12),
     height: verticalScale(55),
     paddingHorizontal: moderateScale(15),
+  },
+  inputContainerInvalid: {
+    borderColor: '#D1D5DB', // Muted container border color if number input criteria isn't met
   },
   countryCodeBox: {
     flexDirection: 'row',
@@ -792,10 +804,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     padding: 0, 
   },
-
-  // --- Button Section ---
   primaryButton: {
-    backgroundColor: '#4F46E5', // Solid purple/blue gradient color
+    backgroundColor: '#4F46E5',
     borderRadius: moderateScale(12),
     height: verticalScale(55),
     flexDirection: 'row',
@@ -808,19 +818,18 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   disabledButton: {
-    opacity: 0.6,
+    opacity: 0.5,
   },
   btnContentLeft: {
     flexDirection: 'row',
     alignItems: 'center',
     position: 'absolute',
-    left: '30%', // Centers the text block generally
+    left: '30%',
   },
   btnIconLeft: {
     width: moderateScale(18),
     height: moderateScale(18),
     marginRight: moderateScale(10),
-    tintColor: '#FFFFFF', // Ensures icon stays white if it's black by default
   },
   primaryButtonText: {
     color: '#FFFFFF',
@@ -831,10 +840,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: moderateScale(20),
   },
-
-  // --- Security Banner ---
   securityBanner: {
-    backgroundColor: '#F4F3FF', // Light purple tint
+    backgroundColor: '#F4F3FF',
     borderRadius: moderateScale(14),
     marginTop: verticalScale(40),
     height: verticalScale(90),
@@ -876,8 +883,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     zIndex: 1,
   },
-
-  // --- Footer ---
   footer: {
     alignItems: 'center',
     justifyContent: 'center',

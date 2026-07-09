@@ -338,38 +338,79 @@ export default function RegisterMobileScreen({ navigation, route }) {
   const isValidMobile = mobile?.length === 10;
 
    // Exact API implementation untouched
-  const handleSendOTP = async () => {
-    if (!mobile || mobile.length !== 10) {
-      setError('Enter valid mobile number');
-      return;
+//  const handleSendOTP = async () => {
+//   if (!mobile || mobile.length !== 10) {
+//     setError('Enter valid mobile number');
+//     return;
+//   }
+
+//   try {
+//     setLoading(true);
+//     setError('');
+
+//     const response = await api.post('/api/auth/send-otp', {
+//       mobile,
+//       countryCode: '+91',
+//     });
+
+//     console.log('OTP RESPONSE:', response.data);
+
+//     if (
+//       response.data?.status === '200' ||
+//       response.data?.message === 'OTP Sent Successfully'
+//     ) {
+//       navigation.navigate('OTP', {
+//         mobile,
+//         countryCode: '+91',
+//         userId: response.data?.userId,
+//         // otp: response.data?.otp, // Remove this in production if backend doesn't return OTP
+//       });
+//     } else {
+//       setError(response.data?.message || 'Something went wrong');
+//     }
+//   } catch (error) {
+//     console.log('ERROR:', error?.response?.data || error.message);
+//     setError(error.response?.data?.message || 'Something went wrong');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+
+const handleSendOTP = async () => {
+  if (!mobile || mobile.length !== 10) {
+    setError('Enter valid mobile number');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setError('');
+
+    const response = await api.post('/api/auth/send-otp', {
+      mobile,
+      countryCode: '+91',
+    });
+
+    if (
+      response.data?.status === '200' ||
+      response.data?.message === 'OTP Sent Successfully'
+    ) {
+      navigation.navigate('OTP', {
+        mobile,
+        countryCode: '+91',
+        userId: response.data?.userId,
+        type: 'register', // <-- identifies the flow
+      });
+    } else {
+      setError(response.data?.message || 'Something went wrong');
     }
+  } catch (error) {
+    setError(error.response?.data?.message || 'Something went wrong');
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      setLoading(true);
-      setError('');
-
-      let response;
-
-      if (mode === 'login') {
-        response = await api.post('/api/auth/send-login-otp', { mobile });
-      } else {
-        response = await api.post('/api/auth/send-otp', { mobile });
-      }
-
-      console.log('OTP RESPONSE:', response.data);
-
-      if (response.data?.message === 'OTP sent') {
-        navigation.navigate('OTP', { mobile, mode });
-      } else {
-        setError(response.data?.message || 'Something went wrong');
-      }
-    } catch (error) {
-      console.log('ERROR:', error?.response?.data || error.message);
-      setError(error.response?.data?.message || 'Something went wrong');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
