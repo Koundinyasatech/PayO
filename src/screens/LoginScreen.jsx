@@ -691,7 +691,7 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff', // Light off-white background matching design
+    backgroundColor: '#FAFAFA', // Light off-white background matching design
   },
   internetBar: {
     width: '100%',
