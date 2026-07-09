@@ -1123,7 +1123,8 @@ export default function TransactionPinScreen({ navigation }) {
   const isNotEasyToGuess = pin.length > 0 && !/^(1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
 
   const handleContinue = async () => {
-    navigation.navigate('WelcomeProfile')
+navigation.navigate('Biometric')
+    // navigation.navigate('WelcomeProfile')
     // setError('');
     
     // if (pin.length !== 4 || confirmPin.length !== 4) {
