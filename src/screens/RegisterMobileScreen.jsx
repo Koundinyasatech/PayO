@@ -343,32 +343,32 @@ export default function RegisterMobileScreen({ navigation, route }) {
       setError('Enter valid mobile number');
       return;
     }
+      navigation.navigate('Biometric')
+    // try {
+    //   setLoading(true);
+    //   setError('');
 
-    try {
-      setLoading(true);
-      setError('');
+    //   let response;
 
-      let response;
+    //   if (mode === 'login') {
+    //     response = await api.post('/api/auth/send-login-otp', { mobile });
+    //   } else {
+    //     response = await api.post('/api/auth/send-otp', { mobile });
+    //   }
 
-      if (mode === 'login') {
-        response = await api.post('/api/auth/send-login-otp', { mobile });
-      } else {
-        response = await api.post('/api/auth/send-otp', { mobile });
-      }
+    //   console.log('OTP RESPONSE:', response.data);
 
-      console.log('OTP RESPONSE:', response.data);
-
-      if (response.data?.message === 'OTP sent') {
-        navigation.navigate('OTP', { mobile, mode });
-      } else {
-        setError(response.data?.message || 'Something went wrong');
-      }
-    } catch (error) {
-      console.log('ERROR:', error?.response?.data || error.message);
-      setError(error.response?.data?.message || 'Something went wrong');
-    } finally {
-      setLoading(false);
-    }
+    //   if (response.data?.message === 'OTP sent') {
+    //     navigation.navigate('OTP', { mobile, mode });
+    //   } else {
+    //     setError(response.data?.message || 'Something went wrong');
+    //   }
+    // } catch (error) {
+    //   console.log('ERROR:', error?.response?.data || error.message);
+    //   setError(error.response?.data?.message || 'Something went wrong');
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
