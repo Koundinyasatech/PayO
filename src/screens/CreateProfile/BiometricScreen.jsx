@@ -76,7 +76,8 @@ const BiometricScreen = ({ navigation }) => {
       // 3. Save that biometrics are enabled
       await setBiometricsEnabled(true);
       // 4. Navigate to the next screen (FaceAuthentication or home)
-      navigation.navigate('FaceAuthentication');
+      // navigation.navigate('FaceAuthentication');
+       navigation.navigate('WelcomeProfile')
     } else {
       // Handle error or cancellation
       if (error) {

@@ -339,11 +339,13 @@ export default function RegisterMobileScreen({ navigation, route }) {
 
   // Exact API implementation untouched
   const handleSendOTP = async () => {
-    if (!mobile || mobile.length !== 10) {
-      setError('Enter valid mobile number');
-      return;
-    }
-      navigation.navigate('Biometric')
+     navigation.navigate('WelcomeProfile')
+     
+    // if (!mobile || mobile.length !== 10) {
+    //   setError('Enter valid mobile number');
+    //   return;
+    // }
+
     // try {
     //   setLoading(true);
     //   setError('');
