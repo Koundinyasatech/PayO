@@ -1018,6 +1018,7 @@ import {
   StatusBar,
   Platform,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -1031,13 +1032,278 @@ import {
 import { moderateScale } from 'react-native-size-matters';
 import api from '../../api/axios';
 import { verticalScale, windowWidth } from '../../utils/responsive';
+import { useAuth } from '../../context/AuthContext';
 
-export default function ProfileScreen({ navigation }) {
+
+// export default function ProfileScreen({ navigation }) {
+//   const [name, setName] = useState('');
+//   const [email, setEmail] = useState('');
+//   const [referral, setReferral] = useState('');
+//   const [message, setMessage] = useState('');
+//   const [errors, setErrors] = useState({});
+
+//   // Inline dynamic validations for button state
+//   const isNameValid = name.trim().length >= 3;
+//   const isEmailValid = !email.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+//   const isFormValid = isNameValid && isEmailValid;
+
+//   const validateOnBlur = (field) => {
+//     let err = { ...errors };
+
+//     if (field === 'name') {
+//       if (!name?.trim()) {
+//         err.name = 'Full name is required';
+//       } else if (name.trim().length < 3) {
+//         err.name = 'Minimum 3 characters required';
+//       } else {
+//         delete err.name;
+//       }
+//     }
+
+//     if (field === 'email') {
+//       if (email?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+//         err.email = 'Invalid email format';
+//       } else {
+//         delete err.email;
+//       }
+//     }
+
+//     setErrors(err);
+//   };
+
+//   const handleChange = (field, value) => {
+//     if (field === 'name') {
+//       const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
+//       setName(filteredValue);
+//       if (filteredValue.trim().length >= 3 && errors.name) {
+//         setErrors(prev => { const { name, ...rest } = prev; return rest; });
+//       }
+//     }
+    
+//     if (field === 'email') {
+//       setEmail(value);
+//       if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) && errors.email) {
+//         setErrors(prev => { const { email, ...rest } = prev; return rest; });
+//       }
+//     }
+    
+//     if (field === 'referral') setReferral(value);
+//   };
+
+//   const handleContinue = async () => {
+//     if (!isFormValid) return;
+//     setMessage('')
+//     ;
+//     navigation.navigate('TransactionPin');
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.safeArea}>
+//       <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />
+
+//       {/* Top Navigation Bar */}
+//       <View style={styles.header}>
+//         <TouchableOpacity 
+//           style={styles.backButtonCircle} 
+//           onPress={() => navigation.goBack()}
+//         >
+//           <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
+//         </TouchableOpacity>
+
+//         <Image 
+//           source={require('../../../assets/images/LogoContainer.png')} 
+//           style={styles.logoImage}
+//           resizeMode="contain"
+//         />
+//       </View>
+
+//       <KeyboardAvoidingView
+//         style={styles.flex}
+//         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+//       >
+//         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+//           <ScrollView
+//             contentContainerStyle={styles.scrollContent}
+//             showsVerticalScrollIndicator={false}
+//             keyboardShouldPersistTaps="handled"
+//           >
+//             {/* Top Hero Banner Illustration */}
+//             <View style={styles.illustrationContainer}>
+//               <Image 
+//                 source={require('../../../assets/images/Header Image.png')} 
+//                 style={styles.heroImage}
+//                 resizeMode="contain"
+//               />
+//             </View>
+
+//             {/* Step Status Chip */}
+//             <View style={styles.stepBadgeContainer}>
+//               <View style={styles.stepBadge}>
+//                 <Text style={styles.stepBadgeText}>Step 1 of 3</Text>
+//               </View>
+//             </View>
+
+//             {/* Heading Context */}
+//             <Text style={styles.mainTitle}>
+//               Complete Your <Text style={styles.titleAccent}>Profile!</Text>
+//             </Text>
+//             <Text style={styles.subTitle}>
+//               Just a few details to personalize your PAYO account
+//             </Text>
+
+//             {message ? <Text style={styles.errorCenter}>{message}</Text> : null}
+
+//             {/* Form Fields */}
+//             {/* Full Name Input */}
+//             <View style={styles.labelRow}>
+//               <Image 
+//                 source={require('../../../assets/images/person.png')}
+//                 style={styles.labelIconImage}
+//                 resizeMode="contain"
+//               />
+//               <Text style={styles.label}>Full Name <Text style={styles.requiredAsterisk}>*</Text></Text>
+//             </View>
+//             <View style={[styles.inputWrapper, errors.name && styles.errorInput]}>
+//               <TextInput
+//                 style={styles.inputField}
+//                 value={name}
+//                 onChangeText={(text) => handleChange('name', text)}
+//                 onBlur={() => validateOnBlur('name')}
+//                 placeholder="Enter your Full name"
+//                 placeholderTextColor="#9CA3AF"
+//               />
+//               {isNameValid ? (
+//                 <Icon name="check-circle" size={moderateScale(18)} color="#10B981" />
+//               ) : null}
+//             </View>
+//             {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
+
+//             {/* Email Address Input */}
+//             <View style={styles.labelRow}>
+//               <Image 
+//                 source={require('../../../assets/images/Mail Icon.png')}
+//                 style={styles.labelIconImage}
+//                 resizeMode="contain"
+//               />
+//               <Text style={styles.label}>Email Address <Text style={styles.optionalText}>(Optional)</Text></Text>
+//             </View>
+//             <View style={[styles.inputWrapper, errors.email && styles.errorInput]}>
+//               <TextInput
+//                 style={styles.inputField}
+//                 value={email}
+//                 onChangeText={(text) => handleChange('email', text)}
+//                 onBlur={() => validateOnBlur('email')}
+//                 placeholder="Enter your Email address"
+//                 placeholderTextColor="#9CA3AF"
+//                 autoCapitalize="none"
+//                 keyboardType="email-address"
+//               />
+//               {email.trim() && isEmailValid ? (
+//                 <Icon name="check-circle" size={moderateScale(18)} color="#10B981" />
+//               ) : null}
+//             </View>
+//             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+
+//             {/* Referral Code Input */}
+//             <View style={styles.labelRow}>
+//               <Image 
+//                 source={require('../../../assets/images/Gift Box Icon.png')}
+//                 style={styles.labelIconImage}
+//                 resizeMode="contain"
+//               />
+//               <Text style={styles.label}>Referral Code <Text style={styles.optionalText}>(Optional)</Text></Text>
+//             </View>
+//             <View style={styles.inputWrapper}>
+//               <TextInput
+//                 style={styles.inputField}
+//                 value={referral}
+//                 onChangeText={(text) => handleChange('referral', text)}
+//                 placeholder="Enter referral code"
+//                 placeholderTextColor="#9CA3AF"
+//               />
+//               {referral.trim().length > 0 ? (
+//                 <Icon name="check-circle" size={moderateScale(18)} color="#10B981" />
+//               ) : null}
+//             </View>
+
+//             {/* Trust Footer Banner Grid */}
+//             <View style={styles.trustBannerContainer}>
+//               <View style={styles.trustItem}>
+//                 <View style={styles.trustIconContainer}>
+//                   <Image 
+//                     source={require('../../../assets/images/vector.png')} 
+//                     style={styles.trustIconImage} 
+//                     resizeMode="contain"
+//                   />
+//                 </View>
+//                 <View style={styles.trustTextContainer}>
+//                   <Text style={styles.trustTitle}>100% Secure</Text>
+//                   <Text style={styles.trustSub}>Your data is safe with us</Text>
+//                 </View>
+//               </View>
+              
+//               <View style={styles.trustDivider} />
+              
+//               <View style={styles.trustItem}>
+//                 <View style={styles.trustIconContainer}>
+//                   <Image 
+//                     source={require('../../../assets/images/vector1.png')} 
+//                     style={styles.trustIconImage} 
+//                     resizeMode="contain"
+//                   />
+//                 </View>
+//                 <View style={styles.trustTextContainer}>
+//                   <Text style={styles.trustTitle}>Quick Setup</Text>
+//                   <Text style={styles.trustSub}>Take less than a minute</Text>
+//                 </View>
+//               </View>
+              
+//               <View style={styles.trustDivider} />
+              
+//               <View style={styles.trustItem}>
+//                 <View style={styles.trustIconContainer}>
+//                   <Image 
+//                     source={require('../../../assets/images/Rewards Icon.png')} 
+//                     style={styles.trustIconImage} 
+//                     resizeMode="contain"
+//                   />
+//                 </View>
+//                 <View style={styles.trustTextContainer}>
+//                   <Text style={styles.trustTitle}>Exciting Rewards</Text>
+//                   <Text style={styles.trustSub}>Earn rewards on every transaction</Text>
+//                 </View>
+//               </View>
+//             </View>
+
+//             {/* Dynamic Continue CTA Button */}
+//             <TouchableOpacity 
+//               disabled={!isFormValid}
+//               style={[styles.continueButton, !isFormValid && styles.continueButtonDisabled]} 
+//               onPress={handleContinue}
+//             >
+//               <Text style={styles.continueButtonText}>Continue</Text>
+//               <Icon name="arrow-right" size={moderateScale(16)} color="#FFF" style={styles.btnArrow} />
+//             </TouchableOpacity>
+//           </ScrollView>
+//         </TouchableWithoutFeedback>
+//       </KeyboardAvoidingView>
+//     </SafeAreaView>
+//   );
+// }
+
+export default function ProfileScreen({ route, navigation }) {
+  // Grabbing userId from route parameters forwarded during successful registration/OTP validation steps
+  // const { userId } = route.params || {};
+  const { userId } = useAuth();
+  console.log(userId,"userId")
+  
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [referral, setReferral] = useState('');
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // Inline dynamic validations for button state
   const isNameValid = name.trim().length >= 3;
@@ -1087,10 +1353,34 @@ export default function ProfileScreen({ navigation }) {
     if (field === 'referral') setReferral(value);
   };
 
+  // --- POST API INTEGRATION ROUTINE ---
   const handleContinue = async () => {
-    if (!isFormValid) return;
+    if (!isFormValid || loading) return;
     setMessage('');
-    navigation.navigate('TransactionPin');
+    
+    try {
+      setLoading(true);
+      
+      // Post requests matches payload layout structure seen in postman validation screenshot
+      const response = await api.post('/api/auth/register', {
+        userId: userId || "", 
+        name: name.trim(),
+        email: email.trim() || " ", // Defaults to blank string space if field stays empty
+        referralCode: referral.trim() || " " // Defaults to blank string space if field stays empty
+      });
+
+      // Validates conditional success state matching image signature response field -> status: "200"
+      if (response?.data?.status === "200" || response?.status === 200) {
+        navigation.navigate('TransactionPin');
+      } else {
+        setMessage(response?.data?.message || 'Failed to update registration profiles.');
+      }
+    } catch (error) {
+      console.log('PROFILE UPDATE API ERROR:', error?.response?.data || error.message);
+      setMessage(error?.response?.data?.message || 'Something went wrong while updates processing.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -1163,6 +1453,7 @@ export default function ProfileScreen({ navigation }) {
               <TextInput
                 style={styles.inputField}
                 value={name}
+                editable={!loading}
                 onChangeText={(text) => handleChange('name', text)}
                 onBlur={() => validateOnBlur('name')}
                 placeholder="Enter your Full name"
@@ -1187,6 +1478,7 @@ export default function ProfileScreen({ navigation }) {
               <TextInput
                 style={styles.inputField}
                 value={email}
+                editable={!loading}
                 onChangeText={(text) => handleChange('email', text)}
                 onBlur={() => validateOnBlur('email')}
                 placeholder="Enter your Email address"
@@ -1213,6 +1505,7 @@ export default function ProfileScreen({ navigation }) {
               <TextInput
                 style={styles.inputField}
                 value={referral}
+                editable={!loading}
                 onChangeText={(text) => handleChange('referral', text)}
                 placeholder="Enter referral code"
                 placeholderTextColor="#9CA3AF"
@@ -1273,12 +1566,19 @@ export default function ProfileScreen({ navigation }) {
 
             {/* Dynamic Continue CTA Button */}
             <TouchableOpacity 
-              disabled={!isFormValid}
-              style={[styles.continueButton, !isFormValid && styles.continueButtonDisabled]} 
+              disabled={!isFormValid || loading}
+              style={[styles.continueButton, (!isFormValid || loading) && styles.continueButtonDisabled]} 
               onPress={handleContinue}
+              activeOpacity={0.8}
             >
-              <Text style={styles.continueButtonText}>Continue</Text>
-              <Icon name="arrow-right" size={moderateScale(16)} color="#FFF" style={styles.btnArrow} />
+              {loading ? (
+                <ActivityIndicator color="#FFF" />
+              ) : (
+                <>
+                  <Text style={styles.continueButtonText}>Continue</Text>
+                  <Icon name="arrow-right" size={moderateScale(16)} color="#FFF" style={styles.btnArrow} />
+                </>
+              )}
             </TouchableOpacity>
           </ScrollView>
         </TouchableWithoutFeedback>
@@ -1286,6 +1586,8 @@ export default function ProfileScreen({ navigation }) {
     </SafeAreaView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   flex: {

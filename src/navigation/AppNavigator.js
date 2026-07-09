@@ -245,8 +245,8 @@ import HelpCenterScreen from '../screens/helpCenter/HelpCenterScreen.jsx';
 import ProfileScreen from '../screens/CreateProfile/createProfile.js';
 import TransactionPinScreen from '../screens/CreateProfile/transactionPin.js';
 import DashboardScreen from '../screens/CreateProfile/welcomeProfile.js';
-import Biometric from '../screens/CreateProfile/BiometricScreen.js';
-import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.js';
+import Biometric from '../screens/CreateProfile/BiometricScreen.jsx';
+import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.jsx';
 
 const Stack = createNativeStackNavigator();
 

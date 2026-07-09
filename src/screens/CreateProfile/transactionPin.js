@@ -604,9 +604,8 @@ export default function TransactionPinScreen({ navigation }) {
 
   // Checks if the active PIN inputs meet structural rules
   const isPinValidStructure = is4Digits && isNotSequential && isNotRepeated && isNotEasyToGuess;
-  
-  // Entire form matches and is ready for next step
-  const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === confirmPin;
+   // Entire form matches and is ready for next step
+const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === confirmPin;
 
   useEffect(() => {
     const interval = setInterval(() => {

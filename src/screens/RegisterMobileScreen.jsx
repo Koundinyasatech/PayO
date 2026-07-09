@@ -327,6 +327,8 @@ import Icon from 'react-native-vector-icons/Feather';
 
 // Using your custom responsive utility
 import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
+import { useAuth } from '../context/AuthContext';
+
 
 export default function RegisterMobileScreen({ navigation, route }) {
   const { mode = 'register' } = route.params || {};
@@ -334,6 +336,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { setUserId } = useAuth();
 
   const isValidMobile = mobile?.length === 10;
 
@@ -401,6 +404,8 @@ const handleSendOTP = async () => {
         userId: response.data?.userId,
         type: 'register', // <-- identifies the flow
       });
+
+      setUserId(response.data.userId);
     } else {
       setError(response.data?.message || 'Something went wrong');
     }

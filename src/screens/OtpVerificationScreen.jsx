@@ -689,7 +689,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
       styles.resendBtnText,
       timer > 0 && styles.resendBtnTextDisabled
     ]}>
-      Resend Code
+      Resend OTP
     </Text>
   </TouchableOpacity>
 </View>
