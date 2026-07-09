@@ -829,7 +829,7 @@ import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/re
 
 // Values extracted from main.css variables
 const colors = {
-  primaryBlue: '#3b82f6',
+  primaryBlue: '#226ade',
   primaryIndigo: '#4f46e5',
   primaryPurple: '#7c3aed',
   bgApp: '#f4f6f9',
@@ -1027,27 +1027,32 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: scale(20),
+    marginTop: verticalScale(10),
+    // gap: scale(22),
   },
   actionItem: {
     alignItems: 'center',
+    
   },
   actionIconBtn: {
-    width: scale(56),
-    height: scale(56),
+    width: scale(50),
+    height: scale(50),
     borderRadius: scale(16),
     backgroundColor: colors.primaryBlue,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: verticalScale(8),
+    marginHorizontal: scale(1),
     elevation: 3,
     shadowColor: colors.primaryBlue,
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    
   },
   actionImageFormat: {
-    width: scale(24),
-    height: scale(24),
+    width: scale(20),
+    height: scale(20),
   },
   actionLabel: {
     fontSize: moderateScale(13),

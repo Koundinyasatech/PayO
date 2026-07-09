@@ -970,7 +970,7 @@ import { windowWidth } from '../../utils/responsive';
 
 export default function HomeScreen({ navigation }) {
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const [available, setAvailable] = useState('12,450');
+  const [available, setAvailable] = useState('0.0');
   const [expertCoins, setExpertCoins] = useState([]);
   const [marketNews, setMarketNews] = useState([]);
   const [newsCount, setNewsCount] = useState(3);
@@ -985,12 +985,6 @@ export default function HomeScreen({ navigation }) {
     { id: '2', image: require('../../../assets/images/banner2.png') },
     { id: '3', image: require('../../../assets/images/banner3.png') },
     { id: '4', image: require('../../../assets/images/banner4.png') },
-    { id: '5', image: require('../../../assets/images/banner5.png') },
-    { id: '6', image: require('../../../assets/images/banner6.png') },
-    { id: '7', image: require('../../../assets/images/banner7.png') },
-    { id: '8', image: require('../../../assets/images/banner8.png') },
-    { id: '9', image: require('../../../assets/images/banner9.png') },
-    { id: '10', image: require('../../../assets/images/banner10.png') },
   ];
 
   useEffect(() => {
@@ -1020,7 +1014,7 @@ export default function HomeScreen({ navigation }) {
   const fetchBalance = async () => {
     try {
       const response = await api.get('/api/wallet/balance');
-      setAvailable(response?.data?.balance || '12,450'); 
+      setAvailable(response?.data?.balance || '0.0'); 
     } catch (error) {
       console.log(error);
     }
@@ -1143,7 +1137,7 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.balanceAmount}>{balanceVisible ? available : '****'}</Text>
             <Text style={styles.balanceCurrency}>PAYO</Text>
           </View>
-          <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹8,71,500' : '≈ ₹***'}</Text>
+          <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹0.0' : '≈ ₹***'}</Text>
 
           <TouchableOpacity style={styles.addMoneyBtn}>
             <Image 
