@@ -5,6 +5,7 @@ import {
 } from 'react-native-responsive-screen';
 import { moderateScale } from 'react-native-size-matters';
 
+
 export default StyleSheet.create({
   loader: {
     flex: 1,
