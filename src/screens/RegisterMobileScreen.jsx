@@ -339,7 +339,7 @@ export default function RegisterMobileScreen({ navigation, route }) {
 
   // Exact API implementation untouched
   const handleSendOTP = async () => {
-     navigation.navigate('WelcomeProfile')
+     navigation.navigate('ConfirmDeposite')
      
     // if (!mobile || mobile.length !== 10) {
     //   setError('Enter valid mobile number');
