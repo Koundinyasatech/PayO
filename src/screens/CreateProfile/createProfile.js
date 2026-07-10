@@ -1605,7 +1605,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: verticalScale(80),
+    height: verticalScale(100),
     width: '100%',
     position: 'relative',
   },

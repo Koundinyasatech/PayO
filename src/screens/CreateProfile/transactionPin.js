@@ -598,6 +598,8 @@ export default function TransactionPinScreen({ navigation }) {
 
   // Validation Rules
   const is4Digits = pin?.length === 4;
+  
+  // Success States
   const isNotSequential = pin.length > 0 && !/^(0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321|3210)$/.test(pin);
   const isNotRepeated = pin.length > 0 && !/^(.)\1{3}$/.test(pin) && !/(.)\1{1}(.)\2{1}/.test(pin); 
   const isNotEasyToGuess = pin.length > 0 && !/^(1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
@@ -806,6 +808,7 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
                 
                 <View style={styles.gridContainer}>
                   <View style={styles.leftColumn}>
+                    {/* Rule 1 */}
                     <View style={styles.gridItem}>
                       <Image 
                         source={require('../../../assets/images/Status Icon Container.png')} 
@@ -819,6 +822,7 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
                       ]}>4 digits</Text>
                     </View>
                     
+                    {/* Rule 2 */}
                     <View style={styles.gridItem}>
                       <Image 
                         source={require('../../../assets/images/Status Icon Container.png')} 
@@ -834,6 +838,7 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
                   </View>
                   
                   <View style={styles.rightColumn}>
+                    {/* Rule 3 */}
                     <View style={styles.gridItem}>
                       <Image 
                         source={require('../../../assets/images/Status Icon Container.png')} 
@@ -847,6 +852,7 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
                       ]}>Not sequential (e.g. 1234)</Text>
                     </View>
                     
+                    {/* Rule 4 */}
                     <View style={styles.gridItem}>
                       <Image 
                         source={require('../../../assets/images/Status Icon Container.png')} 
@@ -940,34 +946,17 @@ const styles = StyleSheet.create({
     marginVertical: hp('1%'),
     alignSelf: 'center',
   },
-  heroImage: {
-    width: '85%',
-    height: '100%',
-  },
-  stepBadgeContainer: {
-    alignItems: 'center',
-    marginBottom: hp('2%'),
-  },
+  heroImage: { width: '85%', height: '100%' },
+  stepBadgeContainer: { alignItems: 'center', marginBottom: hp('2%') },
   stepBadge: {
     backgroundColor: '#EEF2FF',
     paddingHorizontal: wp('4%'),
     paddingVertical: hp('0.5%'),
     borderRadius: moderateScale(16),
   },
-  stepBadgeText: {
-    color: '#3B82F6',
-    fontWeight: '700',
-    fontSize: moderateScale(11),
-  },
-  mainTitle: {
-    textAlign: 'center',
-    fontSize: moderateScale(20),
-    fontWeight: '500',
-    color: '#111827',
-  },
-  titleAccent: {
-    color: '#285CE0',
-  },
+  stepBadgeText: { color: '#3B82F6', fontWeight: '700', fontSize: moderateScale(11) },
+  mainTitle: { textAlign: 'center', fontSize: moderateScale(20), fontWeight: '500', color: '#111827' },
+  titleAccent: { color: '#285CE0' },
   subTitle: {
     textAlign: 'center',
     color: '#6B7280',
