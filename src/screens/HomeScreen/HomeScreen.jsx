@@ -1178,37 +1178,37 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         {/* Image Banner Section with Edge-Clipping & Custom Dots Overlay */}
-        <View style={styles.carouselContainer}>
-          <FlatList
-            ref={flatListRef}
-            data={bannerData}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={(windowWidth * 0.78) + 16} 
-            decelerationRate="fast"
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={viewabilityConfig}
-            renderItem={({ item }) => (
-              <View style={styles.bannerWrapper}>
-                <Image
-                  source={item.image}
-                  style={styles.bannerCard}
-                  resizeMode="stretch" 
-                />
-              </View>
-            )}
-          />
-          
-          <View style={styles.bannerPagination}>
-            {bannerData.map((_, i) => (
-              <View 
-                key={i} 
-                style={[styles.dot, activeBanner === i && styles.dotActive]} 
-              />
-            ))}
-          </View>
-        </View>
+<View style={styles.carouselContainer}>
+  <FlatList
+    ref={flatListRef}
+    data={bannerData}
+    keyExtractor={(item) => item.id}
+    horizontal
+    showsHorizontalScrollIndicator={false}
+    snapToInterval={(windowWidth * 0.78) + 16} 
+    decelerationRate="fast"
+    onViewableItemsChanged={onViewableItemsChanged}
+    viewabilityConfig={viewabilityConfig}
+    renderItem={({ item }) => (
+      <View style={styles.bannerWrapper}>
+        <Image
+          source={item.image}
+          style={styles.bannerCard}
+          resizeMode="cover" // <-- Change this from "stretch" to "cover"
+        />
+      </View>
+    )}
+  />
+  
+  <View style={styles.bannerPagination}>
+    {bannerData.map((_, i) => (
+      <View 
+        key={i} 
+        style={[styles.dot, activeBanner === i && styles.dotActive]} 
+      />
+    ))}
+  </View>
+</View>
 
         {/* Crypto Market Table */}
         <View style={styles.sectionContainer}>

@@ -859,7 +859,8 @@ export default StyleSheet.create({
     paddingBottom: verticalScale(15),
   },
   iconButton: {
-    padding: scale(5),
+    width: scale(35), // Added fixed width for a consistent white circle
+    height: scale(35), // Added fixed height for a consistent white circle
     backgroundColor: '#fff',
     borderRadius: scale(20),
     elevation: 1,
@@ -870,12 +871,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   headerNotificationIcon: {
-    width: scale(24),
-    height: scale(24),
+    width: scale(18), // Reduced size to make the bell smaller
+    height: scale(18), // Reduced size to make the bell smaller
   },
   logo: {
     width: scale(110),
     height: verticalScale(30),
+    marginLeft: scale(40), // Nudges the PAYO logo slightly to the right
   },
   headerRight: {
     flexDirection: 'row',
@@ -884,8 +886,8 @@ export default StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: -2, // Adjusted slightly to sit properly on the fixed-size circle
+    right: -2, // Adjusted slightly 
     backgroundColor: colors.danger,
     width: scale(16),
     height: scale(16),
@@ -902,17 +904,17 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   profileIconContainer: {
-    width: scale(36),
-    height: scale(36),
-    borderRadius: scale(18),
+    width: scale(32), // Reduced from 36
+    height: scale(32), // Reduced from 36
+    borderRadius: scale(16), // Half of width/height for a perfect circle
     backgroundColor: colors.primaryBlue,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
   headerProfileImg: {
-    width: scale(20),
-    height: scale(20),
+    width: scale(18), // Reduced from 20
+    height: scale(18), // Reduced from 20
   },
 
   /* WALLET CARD */
