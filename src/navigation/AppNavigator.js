@@ -245,8 +245,9 @@ import HelpCenterScreen from '../screens/helpCenter/HelpCenterScreen.jsx';
 import ProfileScreen from '../screens/CreateProfile/createProfile.js';
 import TransactionPinScreen from '../screens/CreateProfile/transactionPin.js';
 import DashboardScreen from '../screens/CreateProfile/welcomeProfile.js';
-import Biometric from '../screens/CreateProfile/BiometricScreen.js';
-import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.js';
+import Biometric from '../screens/CreateProfile/BiometricScreen.jsx';
+import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.jsx';
+import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -275,6 +276,8 @@ export default function AppNavigator() {
           <Stack.Screen name="Biometric" component={Biometric} />
            <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
         <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
+        <Stack.Screen name="ConfirmDeposite" component={ConfirmDepositeScreen} />
+
 
 
         {/* <Stack.Screen name="TransactionPin" component={TransactionPinScreen} /> */}

@@ -2,7 +2,8 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 
 const api = axios.create({
-  baseURL: 'https://skyline-plated-casualty.ngrok-free.dev',
+  // baseURL: 'https://skyline-plated-casualty.ngrok-free.dev',
+   baseURL: 'https://purr-expediter-doorway.ngrok-free.dev',
   //  baseURL: 'http://localhost:3001', //////local 
   // baseURL :"http://10.0.2.2:3001", /////laptop 
   // baseURL :"http://192.168.29.219:3001", ////// my mobile

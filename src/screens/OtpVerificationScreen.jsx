@@ -413,8 +413,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
 
 export default function OtpVerificationScreen({ route, navigation }) {
-  const { mobile, mode = 'register' } = route.params;
-
+  // Destructured userId from parameters to align with the upload image payload signature
+  const { mobile, type, userId,countryCode } = route.params || {};
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(45); 
   const [loading, setLoading] = useState(false);
@@ -425,6 +425,9 @@ export default function OtpVerificationScreen({ route, navigation }) {
   const intervalRef = useRef(null);
 
   const maskedMobile = mobile ? `${mobile.substring(0, 1)}*******${mobile.substring(8)}` : '';
+  
+  // Validation check: returns true only when all 4 slots contain a valid digit
+  const isOtpComplete = otp.join('').length === 4;
 
   useEffect(() => {
     startTimer();
@@ -464,12 +467,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
     }
   };
 
-  // const handleKeyPress = (e, index) => {
-  //   if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
-  //     inputs.current[index - 1]?.focus();
-  //   }
-  // };
-  // 🚨 FIX: Updated to clear the previous box when hitting backspace on an empty box
   const handleKeyPress = (e, index) => {
     if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
       const newOtp = [...otp];
@@ -494,34 +491,42 @@ export default function OtpVerificationScreen({ route, navigation }) {
       setError('Enter valid OTP');
       return;
     }
-
+    
     try {
       setLoading(true);
       setError('');
 
       let response;
 
-      if (mode === 'login') {
-        response = await api.post('/api/auth/verify-login-otp', {
-          mobile,
-          otp: finalOtp,
-        });
+      // Conditional payload execution matching the verified postman format
+      if (type === 'login') {
+        // response = await api.post('/api/auth/verify-login-otp', {
+        //   mobile,
+        //   otp: finalOtp,
+        // });
+        navigation.replace('Main');
       } else {
+        // Aligned with backend requirements from structural screenshot: uses userId and otp
         response = await api.post('/api/auth/verify-otp', {
-          mobile,
+          userId: userId,
           otp: finalOtp,
         });
       }
 
-      if (response.data.token) {
-        await saveToken(response.data.token);
-        if (mode === 'login') {
+      // Explicit status structural fallback matching image response status "200"
+      if (response.data?.token || response.data?.status === "200") {
+        if (response.data.token) {
+          await saveToken(response.data.token);
+        }
+        
+        // Navigation branches dynamically based on flow initiation
+        if (type === 'login') {
           navigation.replace('Main');
         } else {
           navigation.replace('OtpVerified');
         }
       } else {
-        setError('Invalid OTP');
+        setError(response.data?.message || 'Invalid OTP');
       }
     } catch (error) {
       console.log('VERIFY ERROR:', error?.response?.data || error.message);
@@ -531,7 +536,32 @@ export default function OtpVerificationScreen({ route, navigation }) {
     }
   };
 
+  // const handleResendOTP = async () => {
+  //   setError('');
+  //   setOtp(['', '', '', '']);
+
+  //   if (inputs.current[0]) {
+  //     inputs.current[0].focus();
+  //   }
+
+  //   try {
+  //     if (type === 'login') {
+  //       await api.post('/api/auth/login-otp', { mobile });
+  //     } else {
+  //       await api.post('/api/auth/send-otp', { mobile });
+  //     }
+  //     startTimer();
+  //   } catch (error) {
+  //     console.log('RESEND ERROR:', error);
+  //     setError('Resend failed');
+  //   }
+  // };
+
+
   const handleResendOTP = async () => {
+    // Extra safety guard: prevents execution if clicked prematurely 
+    if (timer > 0) return;
+
     setError('');
     setOtp(['', '', '', '']);
 
@@ -540,18 +570,19 @@ export default function OtpVerificationScreen({ route, navigation }) {
     }
 
     try {
-      if (mode === 'login') {
+      if (type === 'login') {
         await api.post('/api/auth/login-otp', { mobile });
       } else {
-        await api.post('/api/auth/send-otp', { mobile });
+        await api.post('/api/auth/resend-otp', { mobile , countryCode});
       }
+      // Restarts the 45 seconds countdown timer and sets link state back to inactive
       startTimer();
     } catch (error) {
       console.log('RESEND ERROR:', error);
       setError('Resend failed');
     }
   };
-
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#FAFAFA" barStyle="dark-content" />
@@ -632,7 +663,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
             </View>
 
             {/* Resend Link */}
-            <Text style={styles.resendText}>
+            {/* <Text style={styles.resendText}>
               Didn't receive code?{' '}
               <Text
                 style={[styles.link, { opacity: timer === 0 ? 1 : 0.5 }]}
@@ -640,7 +671,28 @@ export default function OtpVerificationScreen({ route, navigation }) {
               >
                 Resend Code
               </Text>
-            </Text>
+            </Text> */}
+
+        {/* Resend Link Box */}
+<View style={styles.resendContainer}>
+  <Text style={styles.resendText}>Didn't receive code? </Text>
+  <TouchableOpacity
+    onPress={handleResendOTP}
+    disabled={timer > 0}
+    activeOpacity={0.7}
+    style={[
+      styles.resendBtn,
+      timer > 0 && styles.resendBtnDisabled
+    ]}
+  >
+    <Text style={[
+      styles.resendBtnText,
+      timer > 0 && styles.resendBtnTextDisabled
+    ]}>
+      Resend OTP
+    </Text>
+  </TouchableOpacity>
+</View>
 
             {/* Secure & Private Banner */}
             <View style={styles.secureBanner}>
@@ -658,9 +710,12 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
             {/* Verify Button */}
             <TouchableOpacity
-              style={styles.primaryBtn}
+              style={[
+                styles.primaryBtn, 
+                { opacity: isOtpComplete && !loading ? 1 : 0.5 } // Visual validation rule indicator
+              ]}
               onPress={handleVerifyOTP}
-              disabled={loading}
+              disabled={!isOtpComplete || loading} // Programmatic execution lock
               activeOpacity={0.8}
             >
               {loading ? (
@@ -681,7 +736,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
             </View>
 
             {/* Bottom Login/Register Link */}
-            {mode === 'login' ? (
+            {type === 'login' ? (
               <Text style={styles.accountText}>
                 Don't have an account?{' '}
                 <Text
@@ -861,11 +916,40 @@ const styles = StyleSheet.create({
     color: '#2962FF',
     fontWeight: '700',
   },
+  // resendText: {
+  //   textAlign: 'center',
+  //   fontSize: moderateScale(13),
+  //   color: '#555',
+  //   marginTop: verticalScale(10),
+  // },
+  resendContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: verticalScale(15),
+  },
   resendText: {
-    textAlign: 'center',
     fontSize: moderateScale(13),
     color: '#555',
-    marginTop: verticalScale(10),
+  },
+  resendBtn: {
+    paddingVertical: moderateScale(4),
+    paddingHorizontal: moderateScale(8),
+    borderRadius: moderateScale(6),
+    backgroundColor: '#E8EFFF', // Light blue background when active
+  },
+  resendBtnDisabled: {
+    backgroundColor: '#F2F4F7', // Gray background when disabled
+  },
+  resendBtnText: {
+    color: '#2962FF', // High-contrast blue
+    fontWeight: '700',
+    fontSize: moderateScale(13),
+    textDecorationLine: 'underline',
+  },
+  resendBtnTextDisabled: {
+    color: '#98A2B3', // Muted gray text when disabled
+    textDecorationLine: 'none',
   },
 
   // Secure Banner
