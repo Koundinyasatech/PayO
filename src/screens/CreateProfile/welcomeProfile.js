@@ -428,7 +428,7 @@ export default function DashboardScreen({ navigation }) {
         {/* PRIMARY CTA EXPLORE BUTTON */}
         <TouchableOpacity 
           style={styles.exploreButton}
-          onPress={() => navigation.navigate('TransactionPin')}
+          onPress={() => navigation.navigate('Main')}
         >
           <Text style={styles.exploreButtonText}>Start Exploring PAYO</Text>
           <Icon name="arrow-right" size={moderateScale(16)} color="#FFFFFF" style={styles.buttonArrow} />

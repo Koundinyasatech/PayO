@@ -204,7 +204,7 @@ const BiometricScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.secondaryButton}
             activeOpacity={0.7}
-            onPress={() => navigation.navigate('Main')}
+            onPress={() => navigation.navigate('WelcomeProfile')}
           >
             <View style={styles.buttonInnerContent}>
               <Image source={IMAGES.iconClock} style={styles.btnLeftIcon} />

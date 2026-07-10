@@ -272,7 +272,7 @@ export default function AppNavigator() {
 
 
         <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="TransactionPin" component={TransactionPinScreen} />
+        <Stack.Screen name="TransactionPin" component={TransactionPinScreen} options={{ animation: 'fade' }} />
           <Stack.Screen name="Biometric" component={Biometric} />
            <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
         <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
