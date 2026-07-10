@@ -491,7 +491,6 @@ export default function OtpVerificationScreen({ route, navigation }) {
       setError('Enter valid OTP');
       return;
     }
-
     
     try {
       setLoading(true);
@@ -501,10 +500,11 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
       // Conditional payload execution matching the verified postman format
       if (type === 'login') {
-        response = await api.post('/api/auth/verify-login-otp', {
-          mobile,
-          otp: finalOtp,
-        });
+        // response = await api.post('/api/auth/verify-login-otp', {
+        //   mobile,
+        //   otp: finalOtp,
+        // });
+        navigation.replace('Main');
       } else {
         // Aligned with backend requirements from structural screenshot: uses userId and otp
         response = await api.post('/api/auth/verify-otp', {
@@ -573,7 +573,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
       if (type === 'login') {
         await api.post('/api/auth/login-otp', { mobile });
       } else {
-        await api.post('/api/auth/send-otp', { mobile , countryCode});
+        await api.post('/api/auth/resend-otp', { mobile , countryCode});
       }
       // Restarts the 45 seconds countdown timer and sets link state back to inactive
       startTimer();
