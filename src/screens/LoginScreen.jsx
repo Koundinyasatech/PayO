@@ -518,7 +518,6 @@
 //         email,
 //         password,
 //       });
-
 //       if (response?.data?.message === 'Login success') {
 //         const token = response?.data?.token;
 
@@ -966,26 +965,32 @@ export default function LoginScreen({ navigation }) {
       // API call matching requested mobile & countryCode payload criteria
       const response = await api.post('/api/auth/login', {
         mobile,
-        countryCode: '+91',
+        mobile_cont_code: '+91',
       });
 
-      if (response?.data?.message === 'Login success') {
-        const token = response?.data?.token;
+      if (response?.data?.Message === 'Login OTP generated') {
 
-        // Save token
-        await Keychain.setGenericPassword('userToken', token);
-        setMessage('');
+          navigation.navigate('OTP', { 
+      mobile, 
+      type: 'login' 
+    });
+  
+        // const token = response?.data?.token;
 
-        if (response.data.kycStatus === 'approved') {
-          navigation.navigate('Main');
-          await AsyncStorage.setItem('hasCompletedOnboarding', 'true');
-        } else if (response.data.kycStatus === 'not_started') {
-          navigation.navigate('KycNotStarted');
-        } else if (response.data.kycStatus === "under_review") {
-          navigation.navigate('KycUnderReview');
-        } else {
-          setMessage(response?.data?.message || 'Login failed');
-        }
+        // // Save token
+        // await Keychain.setGenericPassword('userToken', token);
+        // setMessage('');
+
+        // if (response.data.kycStatus === 'approved') {
+        //   navigation.navigate('Main');
+        //   await AsyncStorage.setItem('hasCompletedOnboarding', 'true');
+        // } else if (response.data.kycStatus === 'not_started') {
+        //   navigation.navigate('KycNotStarted');
+        // } else if (response.data.kycStatus === "under_review") {
+        //   navigation.navigate('KycUnderReview');
+        // } else {
+        //   setMessage(response?.data?.message || 'Login failed');
+        // }
       } else {
         setMessage(response?.data?.message || 'Login failed');
       }

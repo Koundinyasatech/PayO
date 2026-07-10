@@ -500,11 +500,14 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
       // Conditional payload execution matching the verified postman format
       if (type === 'login') {
-        // response = await api.post('/api/auth/verify-login-otp', {
-        //   mobile,
-        //   otp: finalOtp,
-        // });
-        navigation.replace('Main');
+        response = await api.post('/api/auth/verify-login-otp', {
+          mobile,
+          otp: finalOtp,
+        });
+//         if(response.data?.token || response.data?.status === "200"){
+// navigation.replace('Main');
+//         }
+        
       } else {
         // Aligned with backend requirements from structural screenshot: uses userId and otp
         response = await api.post('/api/auth/verify-otp', {
