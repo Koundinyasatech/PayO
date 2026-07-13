@@ -302,6 +302,7 @@
 // });
 
 
+
 import React, { useState } from 'react';
 import {
   View,
@@ -313,7 +314,6 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
   Keyboard,
   Image,
   ScrollView,
@@ -332,86 +332,53 @@ export default function RegisterMobileScreen({ navigation }) {
   const [mobile, setMobile] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [modalVisible, setModalVisible] = useState(false); 
   const { setUserId } = useAuth();
 
   const isValidMobile = mobile?.length === 10;
 
-   // Exact API implementation untouched
-//  const handleSendOTP = async () => {
-//   if (!mobile || mobile.length !== 10) {
-//     setError('Enter valid mobile number');
-//     return;
-//   }
+  // 🚨 Helper function to dismiss keyboard and open modal safely
+  const openModal = () => {
+    Keyboard.dismiss();
+    setModalVisible(true);
+  };
 
-//   try {
-//     setLoading(true);
-//     setError('');
-
-//     const response = await api.post('/api/auth/send-otp', {
-//       mobile,
-//       countryCode: '+91',
-//     });
-
-//     console.log('OTP RESPONSE:', response.data);
-
-//     if (
-//       response.data?.status === '200' ||
-//       response.data?.message === 'OTP Sent Successfully'
-//     ) {
-//       navigation.navigate('OTP', {
-//         mobile,
-//         countryCode: '+91',
-//         userId: response.data?.userId,
-//         // otp: response.data?.otp, // Remove this in production if backend doesn't return OTP
-//       });
-//     } else {
-//       setError(response.data?.message || 'Something went wrong');
-//     }
-//   } catch (error) {
-//     console.log('ERROR:', error?.response?.data || error.message);
-//     setError(error.response?.data?.message || 'Something went wrong');
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-const handleSendOTP = async () => {
-  if (!mobile || mobile.length !== 10) {
-    setError('Enter valid mobile number');
-    return;
-  }
-
-  try {
-    setLoading(true);
-    setError('');
-
-    const response = await api.post('/api/auth/send-otp', {
-      mobile,
-      countryCode: '+91',
-    });
-
-    if (
-      response.data?.status === '200' ||
-      response.data?.message === 'OTP Sent Successfully'
-    ) {
-      navigation.navigate('OTP', {
-        mobile,
-        countryCode: '+91',
-        userId: response.data?.userId,
-        type: 'register', // <-- identifies the flow
-      });
-
-      setUserId(response.data.userId);
-    } else {
-      setError(response.data?.message || 'Something went wrong');
+  const handleSendOTP = async () => {
+    if (!mobile || mobile.length !== 10) {
+      setError('Enter valid mobile number');
+      return;
     }
-  } catch (error) {
-    setError(error.response?.data?.message || 'Something went wrong');
-  } finally {
-    setLoading(false);
-  }
-};
+  navigation.navigate('MakePayment')
+    // try {
+    //   setLoading(true);
+    //   setError('');
 
+    //   const response = await api.post('/api/auth/send-otp', {
+    //     mobile,
+    //     countryCode: '+91',
+    //   });
+
+    //   if (
+    //     response.data?.status === '200' ||
+    //     response.data?.message === 'OTP Sent Successfully'
+    //   ) {
+    //     navigation.navigate('OTP', {
+    //       mobile,
+    //       countryCode: '+91',
+    //       userId: response.data?.userId,
+    //       type: 'register', 
+    //     });
+
+    //     setUserId(response.data.userId);
+    //   } else {
+    //     setError(response.data?.message || 'Something went wrong');
+    //   }
+    // } catch (error) {
+    //   setError(error.response?.data?.message || 'Something went wrong');
+    // } finally {
+    //   setLoading(false);
+    // }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -421,140 +388,186 @@ const handleSendOTP = async () => {
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView 
-            contentContainerStyle={styles.scrollContent} 
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent} 
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          
+          {/* Header Section */}
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+              <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
+            </TouchableOpacity>
             
-            {/* Header Section */}
-            <View style={styles.header}>
-              <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-                <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
-              </TouchableOpacity>
-              
-              <Image 
-                source={require('../../assets/images/LogoContainer.png')} // Update path to your PayO logo
-                style={styles.logo}
-              />
-            </View>
-
-            {/* Hero Illustration */}
             <Image 
-              source={require('../../assets/images/registerscreen.png')} // Update path to your 3D Hero image
-              style={styles.heroImage}
+              source={require('../../assets/images/LogoContainer.png')} 
+              style={styles.logo}
             />
+          </View>
 
-            {/* Title & Subtitle */}
-            <View style={styles.titleContainer}>
-               <Text style={styles.titleBlack}>
-                 Enter Your <Text style={styles.titleBlue}>Mobile Number</Text>
-               </Text>
-             
-              <Text style={styles.desc}>
-                We will send a one time code to verify your number. Standard rates may apply.
-              </Text>
-            </View>
+          {/* Hero Illustration */}
+          <Image 
+            source={require('../../assets/images/registerscreen.png')} 
+            style={styles.heroImage}
+          />
 
-            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {/* Title & Subtitle */}
+          <View style={styles.titleContainer}>
+             <Text style={styles.titleBlack}>
+               Enter Your <Text style={styles.titleBlue}>Mobile Number</Text>
+             </Text>
+           
+            <Text style={styles.desc}>
+              We will send a one time code to verify your number. Standard rates may apply.
+            </Text>
+          </View>
 
-            {/* Input Section */}
-            <View style={styles.inputSection}>
-              <Text style={styles.label}>Mobile Number</Text>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-              <View style={styles.inputContainerRow}>
-                {/* Country Code Box */}
-                <View style={styles.countryCodeBox}>
-                  <Text style={styles.flagEmoji}>🇮🇳</Text> 
-                  <Text style={styles.countryCodeText}>+91</Text>
-                  <Icon name="chevron-down" size={moderateScale(16)} color="#333" />
-                </View>
+          {/* Input Section */}
+          <View style={styles.inputSection}>
+            <Text style={styles.label}>Mobile Number</Text>
 
-                {/* Mobile Input Box */}
-                <View style={[styles.mobileInputBox, isValidMobile && styles.mobileInputBoxValid]}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter Mobile Number"
-                    placeholderTextColor="#999"
-                    keyboardType="phone-pad"
-                    value={mobile}
-                    onChangeText={(text) => {
-                      const numeric = text.replace(/[^0-9]/g, '');
-                      setMobile(numeric);
-                      setError('');
-                    }}
-                    maxLength={10}
-                  />
-                  {/* Green checkmark appears when valid */}
-                  {isValidMobile && (
-                    <Icon name="check-circle" size={moderateScale(20)} color="#28A745" />
-                  )}
-                </View>
+            <View style={styles.inputContainerRow}>
+              {/* Country Code Box */}
+              <View style={styles.countryCodeBox}>
+                <Text style={styles.flagEmoji}>🇮🇳</Text> 
+                <Text style={styles.countryCodeText}>+91</Text>
+                <Icon name="chevron-down" size={moderateScale(16)} color="#333" />
+              </View>
+
+              {/* Mobile Input Box */}
+              <View style={[styles.mobileInputBox, isValidMobile && styles.mobileInputBoxValid]}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Mobile Number"
+                  placeholderTextColor="#999"
+                  keyboardType="phone-pad"
+                  value={mobile}
+                  onChangeText={(text) => {
+                    const numeric = text.replace(/[^0-9]/g, '');
+                    setMobile(numeric);
+                    setError('');
+                  }}
+                  maxLength={10}
+                />
+                {/* Green checkmark appears when valid */}
+                {isValidMobile && (
+                  <Icon name="check-circle" size={moderateScale(20)} color="#28A745" />
+                )}
               </View>
             </View>
+          </View>
 
-            {/* Terms & Conditions Check */}
-            <View style={styles.termsRow}>
-              <Image 
-                source={require('../../assets/images/shield-check1.png')} 
-                style={styles.termsShieldIcon} 
-              />
-              <Text style={styles.termsText}>
-                By continuing you agree to PAYO's <Text style={styles.link}>Terms of Service</Text> & <Text style={styles.link}>Privacy Policy</Text>
-              </Text>
+          {/* Terms & Conditions Check */}
+          <View style={styles.termsRow}>
+            <Image 
+              source={require('../../assets/images/shield-check1.png')} 
+              style={styles.termsShieldIcon} 
+            />
+            <View style={styles.termsTextContainer}>
+              <Text style={styles.termsText}>By continuing you agree to PAYO's </Text>
+              
+              <TouchableOpacity onPress={openModal} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                <Text style={[styles.link, { fontSize: moderateScale(11) }]}>Terms of Service</Text>
+              </TouchableOpacity>
+              
+              <Text style={styles.termsText}> & </Text>
+              
+              <TouchableOpacity onPress={openModal} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                <Text style={[styles.link, { fontSize: moderateScale(11) }]}>Privacy Policy</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Primary Button */}
+          <TouchableOpacity
+            style={[styles.primaryBtn, { opacity: isValidMobile ? 1 : 0.6 }]}
+            onPress={handleSendOTP}
+            disabled={!isValidMobile || loading}
+            activeOpacity={0.8}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <View style={styles.btnContent}>
+                <Text style={styles.buttonText}>Send OTP</Text>
+                <Icon name="arrow-right" size={moderateScale(18)} color="#FFF" style={styles.btnArrow} />
+              </View>
+            )}
+          </TouchableOpacity>
+
+          {/* Divider */}
+          <View style={styles.dividerRow}>
+            <View style={styles.line} />
+            <Text style={styles.orText}>OR</Text>
+            <View style={styles.line} />
+          </View>
+
+          {/* Bottom Links */}
+          <View style={styles.bottomLinksContainer}>
+            <View style={styles.bottomRow}>
+              <Text style={styles.accountText}>Already have an account? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                <Text style={[styles.link, { fontSize: moderateScale(13) }]}>Login</Text>
+              </TouchableOpacity>
             </View>
 
-            {/* Primary Button */}
-            <TouchableOpacity
-              style={[styles.primaryBtn, { opacity: isValidMobile ? 1 : 0.6 }]}
-              onPress={handleSendOTP}
-              disabled={!isValidMobile || loading}
-              activeOpacity={0.8}
-            >
-              {loading ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <View style={styles.btnContent}>
-                  <Text style={styles.buttonText}>Send OTP</Text>
-                  <Icon name="arrow-right" size={moderateScale(18)} color="#FFF" style={styles.btnArrow} />
-                </View>
-              )}
-            </TouchableOpacity>
-
-            {/* Divider */}
-            <View style={styles.dividerRow}>
-              <View style={styles.line} />
-              <Text style={styles.orText}>OR</Text>
-              <View style={styles.line} />
+            <View style={styles.bottomRow}>
+              <Text style={styles.privacyText}>By Continuing, you agree to our </Text>
+              <TouchableOpacity onPress={openModal} hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}>
+                <Text style={[styles.link, { fontSize: moderateScale(12) }]}>Privacy Policy</Text>
+              </TouchableOpacity>
             </View>
+          </View>
 
-            {/* Bottom Links */}
-            <View style={styles.bottomLinksContainer}>
-              <Text style={styles.accountText}>
-                Already have an account?{' '}
-                <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
-                  Login
-                </Text>
-              </Text>
+          {/* Security Badge */}
+          <View style={styles.badgeContainer}>
+            <Image 
+              source={require('../../assets/images/vector.png')} 
+              style={styles.badgeShieldIcon} 
+            />
+            <Text style={styles.badgeText}>100% Secure & Encrypted</Text>
+          </View>
 
-              <Text style={styles.privacyText}>
-                By Continuing, you agree to our <Text style={styles.link}>Privacy Policy</Text>
-              </Text>
-            </View>
-
-            {/* Security Badge */}
-            <View style={styles.badgeContainer}>
-              <Image 
-                source={require('../../assets/images/vector.png')} 
-                style={styles.badgeShieldIcon} 
-              />
-              <Text style={styles.badgeText}>100% Secure & Encrypted</Text>
-            </View>
-
-          </ScrollView>
-        </TouchableWithoutFeedback>
+        </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* 🚨 REPLACED NATIVE MODAL WITH FOOLPROOF ABSOLUTE OVERLAY */}
+      {modalVisible && (
+        <View style={styles.absoluteOverlay}>
+          <View style={styles.modalContent}>
+            {/* Modal Header */}
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Terms & Privacy Policy</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+                <Icon name="x" size={moderateScale(24)} color="#333" />
+              </TouchableOpacity>
+            </View>
+            
+            {/* Modal Scrollable Content */}
+            <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
+              <Text style={styles.modalBodyText}>
+                <Text style={styles.modalSectionTitle}>1. Terms of Service{'\n'}</Text>
+                Welcome to PAYO. By using our application, you agree to comply with and be bound by the following terms and conditions of use. Please review them carefully.{'\n\n'}
+                
+                • You must provide accurate and complete information when creating an account.{'\n'}
+                • You are responsible for maintaining the confidentiality of your account credentials.{'\n'}
+                • Any misuse of the application or violation of these terms may result in account termination.{'\n\n'}
+                
+                <Text style={styles.modalSectionTitle}>2. Privacy Policy{'\n'}</Text>
+                We value your privacy and are committed to protecting your personal data. This policy outlines how we collect, use, and safeguard your information.{'\n\n'}
+                
+                • Data Collection: We collect information you provide directly to us, such as your mobile number and transaction details.{'\n'}
+                • Data Usage: Your information is used to provide, maintain, and improve our services, as well as to process transactions securely.{'\n'}
+                • Data Protection: We implement strict security measures to ensure your data is encrypted and protected against unauthorized access.
+              </Text>
+            </ScrollView>
+          </View>
+        </View>
+      )}
+
     </SafeAreaView>
   );
 }
@@ -696,7 +709,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 
-  // Terms Check
+  // Terms Check Styles
   termsRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -709,11 +722,16 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: moderateScale(10),
   },
-  termsText: {
+  termsTextContainer: {
     flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  termsText: {
     fontSize: moderateScale(11),
     color: '#666',
-    lineHeight: moderateScale(16),
+    lineHeight: moderateScale(18),
   },
   link: {
     color: '#2962FF',
@@ -770,14 +788,20 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // Bottom Area
+  // Bottom Area Styles
   bottomLinksContainer: {
     alignItems: 'center',
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginBottom: verticalScale(5),
   },
   accountText: {
     fontSize: moderateScale(13),
     color: '#555',
-    marginBottom: verticalScale(10),
   },
   privacyText: {
     fontSize: moderateScale(12),
@@ -806,8 +830,63 @@ const styles = StyleSheet.create({
     marginLeft: moderateScale(8),
     fontWeight: '600',
   },
-});
 
+  // 🚨 CUSTOM OVERLAY MODAL STYLES (Replaced native Modal)
+  absoluteOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9999,      // Ensures it renders above everything else
+    elevation: 100,    // Ensures it renders above on Android
+  },
+  modalContent: {
+    width: windowWidth * 0.85,
+    maxHeight: '80%',
+    backgroundColor: '#FFF',
+    borderRadius: moderateScale(15),
+    padding: moderateScale(20),
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: verticalScale(15),
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    paddingBottom: verticalScale(10),
+  },
+  modalTitle: {
+    fontSize: moderateScale(18),
+    fontWeight: '700',
+    color: '#333',
+  },
+  closeButton: {
+    padding: moderateScale(5),
+  },
+  modalScroll: {
+    marginTop: verticalScale(5),
+  },
+  modalSectionTitle: {
+    fontSize: moderateScale(15),
+    fontWeight: '700',
+    color: '#2962FF',
+  },
+  modalBodyText: {
+    fontSize: moderateScale(14),
+    color: '#555',
+    lineHeight: moderateScale(22),
+  },
+});
 
 // import React, { useState } from 'react';
 // import {
@@ -832,49 +911,93 @@ const styles = StyleSheet.create({
 
 // // Using your custom responsive utility
 // import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
+// import { useAuth } from '../context/AuthContext';
 
-// export default function RegisterMobileScreen({ navigation, route }) {
-//   const { mode = 'register' } = route.params || {};
 
+// export default function RegisterMobileScreen({ navigation }) {
 //   const [mobile, setMobile] = useState('');
 //   const [loading, setLoading] = useState(false);
 //   const [error, setError] = useState('');
+//   const { setUserId } = useAuth();
 
 //   const isValidMobile = mobile?.length === 10;
 
 //    // Exact API implementation untouched
-//   const handleSendOTP = async () => {
-//     if (!mobile || mobile.length !== 10) {
-//       setError('Enter valid mobile number');
-//       return;
+// //  const handleSendOTP = async () => {
+// //   if (!mobile || mobile.length !== 10) {
+// //     setError('Enter valid mobile number');
+// //     return;
+// //   }
+
+// //   try {
+// //     setLoading(true);
+// //     setError('');
+
+// //     const response = await api.post('/api/auth/send-otp', {
+// //       mobile,
+// //       countryCode: '+91',
+// //     });
+
+// //     console.log('OTP RESPONSE:', response.data);
+
+// //     if (
+// //       response.data?.status === '200' ||
+// //       response.data?.message === 'OTP Sent Successfully'
+// //     ) {
+// //       navigation.navigate('OTP', {
+// //         mobile,
+// //         countryCode: '+91',
+// //         userId: response.data?.userId,
+// //         // otp: response.data?.otp, // Remove this in production if backend doesn't return OTP
+// //       });
+// //     } else {
+// //       setError(response.data?.message || 'Something went wrong');
+// //     }
+// //   } catch (error) {
+// //     console.log('ERROR:', error?.response?.data || error.message);
+// //     setError(error.response?.data?.message || 'Something went wrong');
+// //   } finally {
+// //     setLoading(false);
+// //   }
+// // };
+
+// const handleSendOTP = async () => {
+//   if (!mobile || mobile.length !== 10) {
+//     setError('Enter valid mobile number');
+//     return;
+//   }
+
+//   try {
+//     setLoading(true);
+//     setError('');
+
+//     const response = await api.post('/api/auth/send-otp', {
+//       mobile,
+//       countryCode: '+91',
+//     });
+
+//     if (
+//       response.data?.status === '200' ||
+//       response.data?.message === 'OTP Sent Successfully'
+//     ) {
+//       navigation.navigate('OTP', {
+//         mobile,
+//         countryCode: '+91',
+//         userId: response.data?.userId,
+//         type: 'register', // <-- identifies the flow
+//       });
+
+//       setUserId(response.data.userId);
+//     } else {
+//       setError(response.data?.message || 'Something went wrong');
 //     }
+//   } catch (error) {
+//     setError(error.response?.data?.message || 'Something went wrong');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 
-//     try {
-//       setLoading(true);
-//       setError('');
-
-//       let response;
-
-//       if (mode === 'login') {
-//         response = await api.post('/api/auth/send-login-otp', { mobile });
-//       } else {
-//         response = await api.post('/api/auth/send-otp', { mobile });
-//       }
-
-//       console.log('OTP RESPONSE:', response.data);
-
-//       if (response.data?.message === 'OTP sent') {
-//         navigation.navigate('OTP', { mobile, mode });
-//       } else {
-//         setError(response.data?.message || 'Something went wrong');
-//       }
-//     } catch (error) {
-//       console.log('ERROR:', error?.response?.data || error.message);
-//       setError(error.response?.data?.message || 'Something went wrong');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
 
 //   return (
 //     <SafeAreaView style={styles.safeArea}>
@@ -911,15 +1034,9 @@ const styles = StyleSheet.create({
 
 //             {/* Title & Subtitle */}
 //             <View style={styles.titleContainer}>
-//               {mode === 'login' ? (
-//                  <Text style={styles.titleBlack}>
-//                    Login with <Text style={styles.titleBlue}>Mobile</Text>
-//                  </Text>
-//               ) : (
-//                  <Text style={styles.titleBlack}>
-//                    Enter Your <Text style={styles.titleBlue}>Mobile Number</Text>
-//                  </Text>
-//               )}
+//                <Text style={styles.titleBlack}>
+//                  Enter Your <Text style={styles.titleBlue}>Mobile Number</Text>
+//                </Text>
              
 //               <Text style={styles.desc}>
 //                 We will send a one time code to verify your number. Standard rates may apply.
@@ -935,7 +1052,6 @@ const styles = StyleSheet.create({
 //               <View style={styles.inputContainerRow}>
 //                 {/* Country Code Box */}
 //                 <View style={styles.countryCodeBox}>
-//                   {/* Assuming you have a small flag icon, or you can use text/emoji */}
 //                   <Text style={styles.flagEmoji}>🇮🇳</Text> 
 //                   <Text style={styles.countryCodeText}>+91</Text>
 //                   <Icon name="chevron-down" size={moderateScale(16)} color="#333" />
@@ -1001,21 +1117,12 @@ const styles = StyleSheet.create({
 
 //             {/* Bottom Links */}
 //             <View style={styles.bottomLinksContainer}>
-//               {mode === 'login' ? (
-//                 <Text style={styles.accountText}>
-//                   Don't have an account?{' '}
-//                   <Text style={styles.link} onPress={() => navigation.navigate('RegisterMobile', { mode: 'register' })}>
-//                     Register
-//                   </Text>
+//               <Text style={styles.accountText}>
+//                 Already have an account?{' '}
+//                 <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
+//                   Login
 //                 </Text>
-//               ) : (
-//                 <Text style={styles.accountText}>
-//                   Already have an account?{' '}
-//                   <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
-//                     Login
-//                   </Text>
-//                 </Text>
-//               )}
+//               </Text>
 
 //               <Text style={styles.privacyText}>
 //                 By Continuing, you agree to our <Text style={styles.link}>Privacy Policy</Text>
@@ -1286,3 +1393,4 @@ const styles = StyleSheet.create({
 //     fontWeight: '600',
 //   },
 // });
+

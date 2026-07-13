@@ -402,7 +402,7 @@ export default function DashboardScreen({ navigation }) {
           <View style={styles.featureCard}>
             <View style={styles.featureIconWrapper}>
               <Image 
-                source={require('../../../assets/images/shield-check (1).png')} 
+                source={require('../../../assets/images/shield-check.png')} 
                 style={styles.featureIcon} 
                 resizeMode="contain" 
               />
