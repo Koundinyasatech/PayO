@@ -1,0 +1,64 @@
+name: PayO Frontend CI
+
+on:
+  push:
+    branches:
+      - responsive_code
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Release APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: payo-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload APK to Amazon S3
+        run: |
+          DATE=$(date +'%Y%m%d-%H%M')
+          SHORT_SHA=${GITHUB_SHA::7}
+          FILE_NAME="payo-${SHORT_SHA}-${DATE}.apk"
+
+          aws s3 cp \
+            android/app/build/outputs/apk/release/app-release.apk \
+            s3://${S3_BUCKET}/releases/${FILE_NAME}
+
+          echo "APK uploaded successfully: ${FILE_NAME}"
