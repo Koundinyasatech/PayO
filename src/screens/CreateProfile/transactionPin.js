@@ -1,13 +1,14 @@
 
 
 
+////////////////////////////////////////////////////////////////////////// main code /////////////////////////////
+
 // import React, { useState, useRef, useEffect } from 'react';
 // import {
 //   View,
 //   Text,
 //   StyleSheet,
 //   TouchableOpacity,
-//   Alert,
 //   StatusBar,
 //   ScrollView,
 //   KeyboardAvoidingView,
@@ -19,7 +20,6 @@
 // } from 'react-native';
 
 // import { SafeAreaView } from 'react-native-safe-area-context';
-// import api from '../../api/axios';
 // import Icon from 'react-native-vector-icons/Feather';
 
 // import {
@@ -28,10 +28,11 @@
 // } from 'react-native-responsive-screen';
 
 // import { moderateScale } from 'react-native-size-matters';
-// import { useRoute } from "@react-navigation/native";
+// import { useRoute, useIsFocused } from "@react-navigation/native";
 
 // export default function TransactionPinScreen({ navigation }) {
 //   const route = useRoute();
+//   const isFocused = useIsFocused();
 //   const { amount, name, address, sender, senderData } = route.params || {};
 
 //   const [pin, setPin] = useState('');
@@ -40,22 +41,24 @@
 //   const [showConfirmPin, setShowConfirmPin] = useState(false);
 //   const [error, setError] = useState('');
 
-//   // Track focus states to show/hide the box cursor lines dynamically
-//   const [isPinFocused, setIsPinFocused] = useState(true); // Default true since autoFocus is true
-//   const [isConfirmPinFocused, setIsConfirmPinFocused] = useState(false);
-
-//   // Simple state to control the visibility/blinking loop of the custom cursor line
+//   const [activeInputField, setActiveInputField] = useState('pin');
+//   const [isKeyboardActive, setIsKeyboardActive] = useState(true);
 //   const [cursorVisible, setCursorVisible] = useState(true);
 
 //   const pinInputRef = useRef(null);
 //   const confirmPinInputRef = useRef(null);
 
+//   // Validation Rules
 //   const is4Digits = pin?.length === 4;
 //   const isNotSequential = pin.length > 0 && !/^(0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321|3210)$/.test(pin);
 //   const isNotRepeated = pin.length > 0 && !/^(.)\1{3}$/.test(pin) && !/(.)\1{1}(.)\2{1}/.test(pin); 
 //   const isNotEasyToGuess = pin.length > 0 && !/^(1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
 
-//   // Standard safe interval loop to drive the blinking behavior smoothly
+//   // Checks if the active PIN inputs meet structural rules
+//   const isPinValidStructure = is4Digits && isNotSequential && isNotRepeated && isNotEasyToGuess;
+//    // Entire form matches and is ready for next step
+// const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === confirmPin;
+
 //   useEffect(() => {
 //     const interval = setInterval(() => {
 //       setCursorVisible((visible) => !visible);
@@ -63,14 +66,44 @@
 //     return () => clearInterval(interval);
 //   }, []);
 
-//   const handleContinue = async () => {
+//   useEffect(() => {
+//     if (isFocused) {
+//       setTimeout(() => {
+//         if (activeInputField === 'pin') {
+//           pinInputRef.current?.focus();
+//         } else {
+//           confirmPinInputRef.current?.focus();
+//         }
+//       }, 200);
+//     }
+//   }, [isFocused, activeInputField]);
+
+//   const handleContinue = () => {
+//     if (!isFormValid) return;
+//     setError('');
 //     navigation.navigate('Biometric');
 //   };
 
-//   const renderPinBoxes = (value, isMasked, isInputFocused) => {
+//   const focusPinInput = () => {
+//     setActiveInputField('pin');
+//     pinInputRef.current?.focus();
+//   };
+
+//   const focusConfirmPinInput = () => {
+//     setActiveInputField('confirmPin');
+//     confirmPinInputRef.current?.focus();
+//   };
+
+//   const renderPinBoxes = (value, isMasked, isSectionFocused, isTargetPinField) => {
 //     return Array(4).fill(0).map((_, index) => {
 //       const char = value[index];
-//       const isCurrentBoxActive = isInputFocused && index === value.length;
+//       const isCurrentBoxActive = isSectionFocused && isKeyboardActive && index === value.length;
+
+//       // Determine if validation errors exist for the active/completed PIN field 
+//       const hasValidationError = isTargetPinField && pin.length === 4 && !isPinValidStructure;
+//       // Determine if confirmation fails mismatch state
+//       const hasMismatchError = !isTargetPinField && confirmPin.length === 4 && pin !== confirmPin;
+//       const isRedErrorState = hasValidationError || hasMismatchError;
 
 //       return (
 //         <View 
@@ -78,17 +111,17 @@
 //           style={[
 //             styles.pinBox, 
 //             char ? styles.pinBoxFilled : null,
-//             isCurrentBoxActive ? styles.pinBoxActiveBorder : null
+//             isCurrentBoxActive ? styles.pinBoxActiveBorder : null,
+//             isRedErrorState ? styles.pinBoxErrorBorder : null
 //           ]}
 //         >
 //           {char ? (
 //             isMasked ? (
-//               <View style={styles.filledBlueDot} />
+//               <View style={[styles.filledBlueDot, isRedErrorState && styles.filledRedDot]} />
 //             ) : (
-//               <Text style={styles.pinText}>{char}</Text>
+//               <Text style={[styles.pinText, isRedErrorState && styles.pinTextError]}>{char}</Text>
 //             )
 //           ) : isCurrentBoxActive && cursorVisible ? (
-//             /* Renders the cursor line inside the current empty box when blinking phase is true */
 //             <View style={styles.cursorLine} />
 //           ) : null}
 //         </View>
@@ -101,10 +134,7 @@
 //       <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />
 
 //       <View style={styles.header}>
-//         <TouchableOpacity 
-//           style={styles.backButtonCircle} 
-//           onPress={() => navigation.goBack()}
-//         >
+//         <TouchableOpacity style={styles.backButtonCircle} onPress={() => navigation.goBack()}>
 //           <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
 //         </TouchableOpacity>
 
@@ -126,7 +156,7 @@
 //           <ScrollView
 //             contentContainerStyle={styles.scrollContent}
 //             showsVerticalScrollIndicator={false}
-//             keyboardShouldPersistTaps="handled"
+//             keyboardShouldPersistTaps="always"
 //           >
 //             <View style={styles.illustrationContainer}>
 //               <Image 
@@ -149,26 +179,24 @@
 //               This pin protects your wallet and authorizes transactions
 //             </Text>
 
-//             {error ? <Text style={styles.errorCenter}>{error}</Text> : null}
+//             {pin.length === 4 && !isPinValidStructure && (
+//               <Text style={styles.errorCenter}>PIN security requirement not met</Text>
+//             )}
+//             {confirmPin.length === 4 && pin !== confirmPin && (
+//               <Text style={styles.errorCenter}>PINs do not match</Text>
+//             )}
 
 //             <View style={styles.outerCenterContainer}>
               
 //               {/* Create Pin Row */}
-//               <View style={styles.sectionContainer}>
+//               <TouchableOpacity activeOpacity={1} style={styles.sectionContainer} onPress={focusPinInput}>
 //                 <Text style={styles.fieldLabel}>Create Pin</Text>
 //                 <View style={styles.inputRowContainer}>
-//                   <TouchableOpacity 
-//                     activeOpacity={1}
-//                     style={styles.pinBoxesWrapper}
-//                     onPress={() => pinInputRef.current?.focus()}
-//                   >
-//                     {renderPinBoxes(pin, !showPin, isPinFocused)}
-//                   </TouchableOpacity>
+//                   <View style={styles.pinBoxesWrapper}>
+//                     {renderPinBoxes(pin, !showPin, activeInputField === 'pin', true)}
+//                   </View>
                   
-//                   <TouchableOpacity 
-//                     style={styles.showButton} 
-//                     onPress={() => setShowPin(!showPin)}
-//                   >
+//                   <TouchableOpacity style={styles.showButton} onPress={() => setShowPin(!showPin)}>
 //                     <Icon name={showPin ? "eye-off" : "eye"} size={moderateScale(18)} color="#2563EB" />
 //                     <Text style={styles.showText}>{showPin ? 'Hide' : 'Show'}</Text>
 //                   </TouchableOpacity>
@@ -180,28 +208,23 @@
 //                   onChangeText={(text) => setPin(text.replace(/[^0-9]/g, '').slice(0, 4))}
 //                   keyboardType="number-pad"
 //                   maxLength={4}
-//                   autoFocus={true}
-//                   onFocus={() => setIsPinFocused(true)}
-//                   onBlur={() => setIsPinFocused(false)}
+//                   onFocus={() => {
+//                     setActiveInputField('pin');
+//                     setIsKeyboardActive(true);
+//                   }}
+//                   onBlur={() => setIsKeyboardActive(false)}
 //                 />
-//               </View>
+//               </TouchableOpacity>
 
 //               {/* Confirm Pin Row */}
-//               <View style={styles.sectionContainer}>
+//               <TouchableOpacity activeOpacity={1} style={styles.sectionContainer} onPress={focusConfirmPinInput}>
 //                 <Text style={styles.fieldLabel}>Confirm Pin</Text>
 //                 <View style={styles.inputRowContainer}>
-//                   <TouchableOpacity 
-//                     activeOpacity={1}
-//                     style={styles.pinBoxesWrapper}
-//                     onPress={() => confirmPinInputRef.current?.focus()}
-//                   >
-//                     {renderPinBoxes(confirmPin, !showConfirmPin, isConfirmPinFocused)}
-//                   </TouchableOpacity>
+//                   <View style={styles.pinBoxesWrapper}>
+//                     {renderPinBoxes(confirmPin, !showConfirmPin, activeInputField === 'confirmPin', false)}
+//                   </View>
 
-//                   <TouchableOpacity 
-//                     style={styles.showButton} 
-//                     onPress={() => setShowConfirmPin(!showConfirmPin)}
-//                   >
+//                   <TouchableOpacity style={styles.showButton} onPress={() => setShowConfirmPin(!showConfirmPin)}>
 //                     <Icon name={showConfirmPin ? "eye-off" : "eye"} size={moderateScale(18)} color="#2563EB" />
 //                     <Text style={styles.showText}>{showConfirmPin ? 'Hide' : 'Show'}</Text>
 //                   </TouchableOpacity>
@@ -213,10 +236,13 @@
 //                   onChangeText={(text) => setConfirmPin(text.replace(/[^0-9]/g, '').slice(0, 4))}
 //                   keyboardType="number-pad"
 //                   maxLength={4}
-//                   onFocus={() => setIsConfirmPinFocused(true)}
-//                   onBlur={() => setIsConfirmPinFocused(false)}
+//                   onFocus={() => {
+//                     setActiveInputField('confirmPin');
+//                     setIsKeyboardActive(true);
+//                   }}
+//                   onBlur={() => setIsKeyboardActive(false)}
 //                 />
-//               </View>
+//               </TouchableOpacity>
 
 //             </View>
 
@@ -235,19 +261,27 @@
 //                     <View style={styles.gridItem}>
 //                       <Image 
 //                         source={require('../../../assets/images/Status Icon Container.png')} 
-//                         style={styles.checkIcon} 
+//                         style={[styles.checkIcon, pin.length > 0 && !is4Digits && styles.tintIconRed]} 
 //                         resizeMode="contain"
 //                       />
-//                       <Text style={[styles.ruleText, is4Digits && styles.ruleTextActive]}>4 digits</Text>
+//                       <Text style={[
+//                         styles.ruleText, 
+//                         is4Digits && styles.ruleTextActive,
+//                         pin.length > 0 && !is4Digits && styles.ruleTextError
+//                       ]}>4 digits</Text>
 //                     </View>
                     
 //                     <View style={styles.gridItem}>
 //                       <Image 
 //                         source={require('../../../assets/images/Status Icon Container.png')} 
-//                         style={styles.checkIcon} 
+//                         style={[styles.checkIcon, pin.length > 0 && !isNotEasyToGuess && styles.tintIconRed]} 
 //                         resizeMode="contain"
 //                       />
-//                       <Text style={[styles.ruleText, isNotEasyToGuess && styles.ruleTextActive]}>Not easy to guess</Text>
+//                       <Text style={[
+//                         styles.ruleText, 
+//                         isNotEasyToGuess && styles.ruleTextActive,
+//                         pin.length > 0 && !isNotEasyToGuess && styles.ruleTextError
+//                       ]}>Not easy to guess</Text>
 //                     </View>
 //                   </View>
                   
@@ -255,26 +289,39 @@
 //                     <View style={styles.gridItem}>
 //                       <Image 
 //                         source={require('../../../assets/images/Status Icon Container.png')} 
-//                         style={styles.checkIcon} 
+//                         style={[styles.checkIcon, pin.length > 0 && !isNotSequential && styles.tintIconRed]} 
 //                         resizeMode="contain"
 //                       />
-//                       <Text style={[styles.ruleText, isNotSequential && styles.ruleTextActive]}>Not sequential (e.g. 1234)</Text>
+//                       <Text style={[
+//                         styles.ruleText, 
+//                         isNotSequential && styles.ruleTextActive,
+//                         pin.length > 0 && !isNotSequential && styles.ruleTextError
+//                       ]}>Not sequential (e.g. 1234)</Text>
 //                     </View>
                     
 //                     <View style={styles.gridItem}>
 //                       <Image 
 //                         source={require('../../../assets/images/Status Icon Container.png')} 
-//                         style={styles.checkIcon} 
+//                         style={[styles.checkIcon, pin.length > 0 && !isNotRepeated && styles.tintIconRed]} 
 //                         resizeMode="contain"
 //                       />
-//                       <Text style={[styles.ruleText, isNotRepeated && styles.ruleTextActive]}>Not repeated (e.g. 1122)</Text>
+//                       <Text style={[
+//                         styles.ruleText, 
+//                         isNotRepeated && styles.ruleTextActive,
+//                         pin.length > 0 && !isNotRepeated && styles.ruleTextError
+//                       ]}>Not repeated (e.g. 1122)</Text>
 //                     </View>
 //                   </View>
 //                 </View>
 //               </View>
 //             </View>
 
-//             <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+//             {/* Dynamic Interactive Button */}
+//             <TouchableOpacity 
+//               disabled={!isFormValid}
+//               style={[styles.continueButton, !isFormValid && styles.continueButtonDisabled]} 
+//               onPress={handleContinue}
+//             >
 //               <Text style={styles.continueButtonText}>Continue</Text>
 //               <Icon name="arrow-right" size={moderateScale(16)} color="#FFF" style={styles.btnArrow} />
 //             </TouchableOpacity>
@@ -387,8 +434,9 @@
 //     width: '100%',
 //   },
 //   sectionContainer: {
-//     marginBottom: hp('3.5%'),
-//     width: wp('70%'),
+//     marginBottom: hp('2.5%'),
+//     width: wp('75%'),
+//     paddingVertical: hp('0.5%'),
 //   },
 //   fieldLabel: {
 //     fontSize: moderateScale(15),
@@ -397,7 +445,7 @@
 //     marginBottom: hp('1.2%'),
 //     textAlign: 'left',
 //     alignSelf: 'flex-start',
-//     marginLeft: wp('3%'),
+//     marginLeft: wp('1%'),
 //   },
 //   inputRowContainer: {
 //     flexDirection: 'row',
@@ -407,7 +455,7 @@
 //   pinBoxesWrapper: {
 //     flexDirection: 'row',
 //     gap: wp('3%'),
-//     marginLeft: wp('3%'),
+//     paddingVertical: hp('0.5%'),
 //   },
 //   pinBox: {
 //     width: wp('11.5%'),
@@ -425,16 +473,25 @@
 //   pinBoxFilled: {
 //     borderColor: '#2563EB',
 //   },
+//   pinBoxErrorBorder: {
+//     borderColor: '#EF4444',
+//   },
 //   filledBlueDot: {
 //     width: moderateScale(9),
 //     height: moderateScale(9),
 //     borderRadius: moderateScale(4.5),
 //     backgroundColor: '#2563EB',
 //   },
+//   filledRedDot: {
+//     backgroundColor: '#EF4444',
+//   },
 //   pinText: {
 //     fontSize: moderateScale(15),
 //     fontWeight: '600',
 //     color: '#2563EB',
+//   },
+//   pinTextError: {
+//     color: '#EF4444',
 //   },
 //   cursorLine: {
 //     width: 2,
@@ -444,7 +501,8 @@
 //   showButton: {
 //     alignItems: 'center',
 //     justifyContent: 'center',
-//     width: wp('12%'),
+//     width: wp('14%'),
+//     height: wp('11.5%'),
 //   },
 //   showText: {
 //     fontSize: moderateScale(9),
@@ -455,8 +513,8 @@
 //   hiddenInput: {
 //     position: 'absolute',
 //     opacity: 0,
-//     width: 1, 
-//     height: 1,
+//     width: 0, 
+//     height: 0,
 //   },
 //   rulesCard: {
 //     backgroundColor: '#F4F3FF',
@@ -500,6 +558,9 @@
 //     width: moderateScale(16),  
 //     height: moderateScale(16),
 //   },
+//   tintIconRed: {
+//     tintColor: '#EF4444',
+//   },
 //   ruleText: {
 //     fontSize: moderateScale(10),
 //     color: '#9CA3AF',
@@ -508,7 +569,10 @@
 //     flex: 1,
 //   },
 //   ruleTextActive: {
-//     color: '#374151',
+//     color: '#10B981', // Clean green when conditions pass
+//   },
+//   ruleTextError: {
+//     color: '#EF4444', // Red when invalid input fails requirement
 //   },
 //   continueButton: {
 //     flexDirection: 'row',
@@ -520,6 +584,10 @@
 //     marginTop: hp('3%'),
 //     position: 'relative',
 //     marginHorizontal: wp('2%'),
+//   },
+//   continueButtonDisabled: {
+//     backgroundColor: '#9CA3AF',
+//     opacity: 0.6,
 //   },
 //   continueButtonText: {
 //     color: '#FFF',
@@ -535,6 +603,7 @@
 //     textAlign: 'center',
 //     marginBottom: hp('1%'),
 //     fontSize: moderateScale(12),
+//     fontWeight: '600'
 //   },
 //   secureFooterContainer: {
 //     flexDirection: 'row',
@@ -551,6 +620,12 @@
 // });
 
 
+// 1. Add these package imports at the top
+
+import axios from 'axios';
+import { ActivityIndicator } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
+import { NetworkInfo } from 'react-native-network-info';
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
@@ -577,17 +652,22 @@ import {
 
 import { moderateScale } from 'react-native-size-matters';
 import { useRoute, useIsFocused } from "@react-navigation/native";
+import { useAuth } from '../../context/AuthContext';
+
 
 export default function TransactionPinScreen({ navigation }) {
   const route = useRoute();
   const isFocused = useIsFocused();
+  
   const { amount, name, address, sender, senderData } = route.params || {};
-
+  const { userId } = useAuth();
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [showPin, setShowPin] = useState(false);
   const [showConfirmPin, setShowConfirmPin] = useState(false);
+  
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [activeInputField, setActiveInputField] = useState('pin');
   const [isKeyboardActive, setIsKeyboardActive] = useState(true);
@@ -599,15 +679,29 @@ export default function TransactionPinScreen({ navigation }) {
   // Validation Rules
   const is4Digits = pin?.length === 4;
   
-  // Success States
+  // Success States (True means rule passed, False means it failed/shows error)
   const isNotSequential = pin.length > 0 && !/^(0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321|3210)$/.test(pin);
   const isNotRepeated = pin.length > 0 && !/^(.)\1{3}$/.test(pin) && !/(.)\1{1}(.)\2{1}/.test(pin); 
-  const isNotEasyToGuess = pin.length > 0 && !/^(1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
+  
+  // Updated regex pattern to include '1234' into the easy-to-guess constraints
+  const isNotEasyToGuess = pin.length > 0 && !/^(1234|1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
 
-  // Checks if the active PIN inputs meet structural rules
   const isPinValidStructure = is4Digits && isNotSequential && isNotRepeated && isNotEasyToGuess;
-   // Entire form matches and is ready for next step
-const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === confirmPin;
+  const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === confirmPin;
+
+  useEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: false,
+    });
+
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (e.data.action.type === 'GO_BACK') {
+        e.preventDefault();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -628,10 +722,49 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
     }
   }, [isFocused, activeInputField]);
 
-  const handleContinue = () => {
-    if (!isFormValid) return;
+  const handleContinue = async () => {
+    if (!isFormValid || loading) return;
+    
     setError('');
-    navigation.navigate('Biometric');
+    setLoading(true);
+
+    try {
+      const fetchedIp = await NetworkInfo.getIPAddress();
+      const uniqueId = await DeviceInfo.getUniqueId();
+      const deviceModel = await DeviceInfo.getModel();
+      const systemName = DeviceInfo.getSystemName();     
+      const systemVersion = DeviceInfo.getSystemVersion(); 
+
+      const payload = {
+        userId: userId,                      
+        pin: pin,                                   
+        ipAddress: fetchedIp,      
+        deviceId: uniqueId, 
+        deviceName: deviceModel,
+        userAgent: `${systemName} ${systemVersion}`, 
+        location: "Hyderabad",                      
+      };
+
+      console.log("Sending Dynamic Payload: ", payload);
+      
+      const response = await axios.post(`https://purr-expediter-doorway.ngrok-free.dev/api/auth/set-pin`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (response.data?.Status === "200") {
+        Keyboard.dismiss();
+        navigation.navigate('Biometric');
+      } else {
+        setError(response.data?.Message || 'PIN validation check failed on backend.');
+      }
+    } catch (err) {
+      console.error("API Call Interrupted:", err);
+      setError(err.response?.data?.Message || 'Dynamic connection failed. Please check network setup.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const focusPinInput = () => {
@@ -649,9 +782,7 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
       const char = value[index];
       const isCurrentBoxActive = isSectionFocused && isKeyboardActive && index === value.length;
 
-      // Determine if validation errors exist for the active/completed PIN field 
       const hasValidationError = isTargetPinField && pin.length === 4 && !isPinValidStructure;
-      // Determine if confirmation fails mismatch state
       const hasMismatchError = !isTargetPinField && confirmPin.length === 4 && pin !== confirmPin;
       const isRedErrorState = hasValidationError || hasMismatchError;
 
@@ -683,21 +814,6 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButtonCircle} onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
-        </TouchableOpacity>
-
-        <View style={styles.logoContainer}>
-          <Image 
-            source={require('../../../assets/images/LogoContainer.png')} 
-            style={styles.logoImage}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={{ width: moderateScale(36) }} />
-      </View>
-
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -708,6 +824,26 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="always"
           >
+            {/* Header - Logo centered dynamically */}
+            <View style={styles.header}>
+              {/* Back Button Commented Out
+              <TouchableOpacity style={styles.backButtonCircle} onPress={() => navigation.goBack()}>
+                <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
+              </TouchableOpacity>
+              */}
+
+              <View style={styles.logoContainer}>
+                <Image 
+                  source={require('../../../assets/images/LogoContainer.png')} 
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+              </View>
+              {/* Spacer Commented Out
+              <View style={{ width: moderateScale(36) }} />
+              */}
+            </View>
+
             <View style={styles.illustrationContainer}>
               <Image 
                 source={require('../../../assets/images/Header Image (1).png')} 
@@ -729,6 +865,10 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
               This pin protects your wallet and authorizes transactions
             </Text>
 
+            {error ? (
+              <Text style={styles.errorCenter}>{error}</Text>
+            ) : null}
+
             {pin.length === 4 && !isPinValidStructure && (
               <Text style={styles.errorCenter}>PIN security requirement not met</Text>
             )}
@@ -737,8 +877,6 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
             )}
 
             <View style={styles.outerCenterContainer}>
-              
-              {/* Create Pin Row */}
               <TouchableOpacity activeOpacity={1} style={styles.sectionContainer} onPress={focusPinInput}>
                 <Text style={styles.fieldLabel}>Create Pin</Text>
                 <View style={styles.inputRowContainer}>
@@ -766,7 +904,6 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
                 />
               </TouchableOpacity>
 
-              {/* Confirm Pin Row */}
               <TouchableOpacity activeOpacity={1} style={styles.sectionContainer} onPress={focusConfirmPinInput}>
                 <Text style={styles.fieldLabel}>Confirm Pin</Text>
                 <View style={styles.inputRowContainer}>
@@ -793,7 +930,6 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
                   onBlur={() => setIsKeyboardActive(false)}
                 />
               </TouchableOpacity>
-
             </View>
 
             <View style={styles.rulesCard}>
@@ -870,14 +1006,19 @@ const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === co
               </View>
             </View>
 
-            {/* Dynamic Interactive Button */}
             <TouchableOpacity 
-              disabled={!isFormValid}
-              style={[styles.continueButton, !isFormValid && styles.continueButtonDisabled]} 
+              disabled={!isFormValid || loading}
+              style={[styles.continueButton, (!isFormValid || loading) && styles.continueButtonDisabled]} 
               onPress={handleContinue}
             >
-              <Text style={styles.continueButtonText}>Continue</Text>
-              <Icon name="arrow-right" size={moderateScale(16)} color="#FFF" style={styles.btnArrow} />
+              {loading ? (
+                <ActivityIndicator size="small" color="#FFF" />
+              ) : (
+                <>
+                  <Text style={styles.continueButtonText}>Continue</Text>
+                  <Icon name="arrow-right" size={moderateScale(16)} color="#FFF" style={styles.btnArrow} />
+                </>
+              )}
             </TouchableOpacity>
 
             <View style={styles.secureFooterContainer}>
@@ -910,10 +1051,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center', // Changed to center the logo perfectly now that the back button is gone
     marginTop: hp('2%'),
     marginBottom: hp('1.5%'),
-    paddingHorizontal: wp('5%'),
   },
   backButtonCircle: {
     width: moderateScale(36),
@@ -1106,10 +1246,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ruleTextActive: {
-    color: '#10B981', // Clean green when conditions pass
+    color: '#10B981', 
   },
   ruleTextError: {
-    color: '#EF4444', // Red when invalid input fails requirement
+    color: '#EF4444', 
   },
   continueButton: {
     flexDirection: 'row',

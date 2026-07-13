@@ -411,6 +411,8 @@ import Icon from 'react-native-vector-icons/Feather';
 
 // Using your custom responsive utility
 import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
+import { NetworkInfo } from 'react-native-network-info';
+import DeviceInfo from 'react-native-device-info';
 
 export default function OtpVerificationScreen({ route, navigation }) {
   // Destructured userId from parameters to align with the upload image payload signature
@@ -491,6 +493,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
       setError('Enter valid OTP');
       return;
     }
+    // navigation.replace('WalletScreen');
     
     try {
       setLoading(true);
@@ -500,11 +503,26 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
       // Conditional payload execution matching the verified postman format
       if (type === 'login') {
-        // response = await api.post('/api/auth/verify-login-otp', {
-        //   mobile,
-        //   otp: finalOtp,
-        // });
-        navigation.replace('Main');
+         const fetchedIp = await NetworkInfo.getIPAddress();
+              const uniqueId = await DeviceInfo.getUniqueId();
+              const deviceModel = await DeviceInfo.getModel();
+              const systemName = DeviceInfo.getSystemName();     
+              const systemVersion = DeviceInfo.getSystemVersion(); 
+        
+
+        response = await api.post('/api/auth/verify-login-otp', {
+          mobile,
+          otp: finalOtp,
+           ipAddress: fetchedIp,      
+        deviceId: uniqueId, 
+        deviceName: deviceModel,
+        userAgent: `${systemName} ${systemVersion}`, 
+        location: "Hyderabad", 
+        });
+//         if(response.data?.token || response.data?.status === "200"){
+// navigation.replace('Main');
+//         }
+        
       } else {
         // Aligned with backend requirements from structural screenshot: uses userId and otp
         response = await api.post('/api/auth/verify-otp', {
@@ -513,6 +531,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
         });
       }
 
+      console.log("response.data.token")
       // Explicit status structural fallback matching image response status "200"
       if (response.data?.token || response.data?.status === "200") {
         if (response.data.token) {
@@ -522,6 +541,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
         // Navigation branches dynamically based on flow initiation
         if (type === 'login') {
           navigation.replace('Main');
+          // navigation.replace('WalletScreen');
         } else {
           navigation.replace('OtpVerified');
         }
@@ -571,7 +591,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
     try {
       if (type === 'login') {
-        await api.post('/api/auth/login-otp', { mobile });
+        await api.post('/api/auth/resend-login-otp', { mobile , mobile_cont_code: '+91', });
       } else {
         await api.post('/api/auth/resend-otp', { mobile , countryCode});
       }
