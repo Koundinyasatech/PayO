@@ -1373,34 +1373,29 @@
 
 
 //////////////////////////////////////////////////////////////
-
 // screens/WalletScreen.js
+
 import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Image,
-  Modal,
-  Platform,
-  ToastAndroid,
+  View, Text, StyleSheet, TouchableOpacity, TextInput,
+  ScrollView, Image, Modal, Platform, ToastAndroid,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { useAppSelector } from '../../redux/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 
+
+import {
+  setAmount,
+  setPaymentMethod,
+  fetchConversionRates,
+} from '../../redux/features/depositSlice';
+
 import api from '../../api/axios';
+import { moderateScale } from '../../utils/responsive';
 
-// ─── Responsive utilities ──────────────────────────────────────────────────────
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
-
-// ─── Asset imports ──────────────────────────────────────────────────────────────
 import upiImg from '../../../assets/images/wallet/Payment Icon.png';
 import bankImg from '../../../assets/images/wallet/Payment Icon (1).png';
 import cardImg from '../../../assets/images/wallet/Payment Icon (2).png';
@@ -1408,20 +1403,17 @@ import netBankingImg from '../../../assets/images/wallet/wallet.png';
 import wallet from '../../../assets/images/wallet/Wallet image 1.png';
 import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
 
-export default function WalletScreen({ visible, onClose, onPaymentSuccess, navigation }) {
+
+
+export default function WalletScreen({ visible, onClose, navigation }) {
   const dispatch = useDispatch();
   const [localAmount, setLocalAmount] = useState('1,000');
   const [walletData, setWalletData] = useState(null);
   const loading = useSelector((state) => state.deposit.loading);
 
   useEffect(() => {
-    if (visible) {
-      fetchWalletBalance();
-    } else {
-      // Reset Redux state when modal closes
-      // dispatch(resetDepositFlow());
-    }
-  }, [visible, dispatch]);
+    if (visible) fetchWalletBalance();
+  }, [visible]);
 
   const fetchWalletBalance = async () => {
     try {
@@ -1430,7 +1422,26 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
     } catch (error) {
       console.log('Error fetching wallet balance:', error?.response || error.message);
     }
+
+
+    /////////////////////////////////
+
+
+
   };
+
+
+  //   const fetchCountries = async () => {
+  //   try {
+  //     const response = await api.get('https://purr-expediter-doorway.ngrok-free.dev/api/countries'); // assuming baseURL is already set
+  //     console.log('Countries response:', response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching countries:', error.response?.data || error.message);
+  //   }
+  // };
+
+  // fetchCountries()
+  
 
   const presets = [
     { label: '+ ₹ 500', value: '500' },
@@ -1448,7 +1459,6 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
       tagBg: '#E8F5E9',
       tagColor: '#2E7D32',
       imageSource: upiImg,
-      enabled: true,
     },
     {
       id: 'bank_transfer',
@@ -1458,7 +1468,6 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
       tagBg: '#E8EAF6',
       tagColor: '#283593',
       imageSource: bankImg,
-      enabled: true,
     },
     {
       id: 'card',
@@ -1468,7 +1477,6 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
       tagBg: '#E8F5E9',
       tagColor: '#2E7D32',
       imageSource: cardImg,
-      enabled: true,
     },
     {
       id: 'net_banking',
@@ -1478,7 +1486,6 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
       tagBg: '#E8F5E9',
       tagColor: '#2E7D32',
       imageSource: netBankingImg,
-      enabled: true,
     },
     {
       id: 'crypto',
@@ -1488,7 +1495,6 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
       tagBg: '#E8EAF6',
       tagColor: '#283593',
       imageSource: cryptoImg,
-      enabled: true,
     },
   ];
 
@@ -1497,46 +1503,98 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
     return clean ? parseInt(clean, 10).toLocaleString('en-IN') : '';
   };
 
-  const handlePaymentSelect = async (method) => {
-    const numericalAmount = parseFloat(localAmount.replace(/[^0-9]/g, ''));
+  // const handlePaymentSelect = async (method) => {
+  //   const numericalAmount = parseFloat(localAmount.replace(/[^0-9]/g, ''));
 
-    if (!numericalAmount || numericalAmount <= 0) {
-      if (Platform.OS === 'android') {
-        ToastAndroid.show('Please enter a valid amount', ToastAndroid.SHORT);
-      }
-      return;
+  //   if (!numericalAmount || numericalAmount <= 0) {
+  //     if (Platform.OS === 'android') {
+  //       ToastAndroid.show('Please enter a valid amount', ToastAndroid.SHORT);
+  //     }
+  //     return;
+  //   }
+
+  //   // Save amount & method
+  //   dispatch(setAmount(numericalAmount));
+  //   dispatch(setPaymentMethod({
+  //     id: method.id,
+  //     title: method.title,
+  //     imageSource: method.imageSource,
+  //     tag: method.tag,
+  //   }));
+
+  //   // Fetch rates & navigate
+  //   try {
+  //     console.log('🔵 Dispatching fetchConversionRates...');
+  //     const resultAction = await dispatch(fetchConversionRates({
+  //       amount: numericalAmount,
+  //       paymentMethod: method.id,
+  //     }));
+  //     console.log('🔵 Result action:', resultAction);
+
+  //     // Safely unwrap if available
+  //     if (resultAction && typeof resultAction.unwrap === 'function') {
+  //       await resultAction.unwrap();
+  //       console.log('✅ Unwrap succeeded');
+  //     } else {
+  //       console.warn('⚠️ unwrap not available, assuming success');
+  //     }
+
+  //     // Validate navigation before using it
+  //     if (!navigation || typeof navigation.navigate !== 'function') {
+  //       console.error('❌ Navigation prop is missing or invalid', navigation);
+  //       if (Platform.OS === 'android') {
+  //         ToastAndroid.show('Navigation error – please try again', ToastAndroid.SHORT);
+  //       }
+  //       return;
+  //     }
+
+  //     console.log('✅ Navigating to ConfirmDeposite');
+  //     navigation.navigate('ConfirmDeposite');
+  //   } catch (error) {
+  //     console.log('❌ Error in handlePaymentSelect:', error);
+  //     const message = typeof error === 'string' ? error : error.message;
+  //     if (Platform.OS === 'android') {
+  //       ToastAndroid.show(message || 'Failed to get rates', ToastAndroid.SHORT);
+  //     }
+  //   }
+  // };
+const handlePaymentSelect = (method) => {
+  const numericalAmount = parseFloat(localAmount.replace(/[^0-9]/g, ''));
+
+  if (!numericalAmount || numericalAmount <= 0) {
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('Please enter a valid amount', ToastAndroid.SHORT);
     }
+    return;
+  }
 
-    // 1. Save amount and method in Redux
-    dispatch(setAmount(numericalAmount));
-    // dispatch(setPaymentMethod(method.id));
-    dispatch(setPaymentMethod(method));
+  // 1. Save to Redux (sync – instant)
+  dispatch(setAmount(numericalAmount));
+  dispatch(setPaymentMethod({
+    id: method.id,
+    title: method.title,
+    imageSource: method.imageSource,
+    tag: method.tag,
+  }));
 
-    // 2. Fetch conversion rates
-    try {
-      const resultAction = await dispatch(fetchConversionRates({
-        amount: numericalAmount,
-        paymentMethod: method.id,
-      }));
-      await resultAction.unwrap(); // throw if rejected
+  // 2. Start the fetch – but DON'T await it
+  dispatch(fetchConversionRates({
+    amount: numericalAmount,
+    paymentMethod: method.id,
+  }));
 
-      // 3. Navigate to confirmation screen
-      navigation.navigate('ConfirmDeposite');
-    } catch (error) {
-      const message = typeof error === 'string' ? error : error.message;
-      if (Platform.OS === 'android') {
-        ToastAndroid.show(message || 'Failed to get rates', ToastAndroid.SHORT);
-      }
-    }
-  };
+  // 3. ✅ NAVIGATE IMMEDIATELY – no delay!
+  navigation.navigate('ConfirmDeposite');
+};
+
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} animationType="fade" onRequestClose={onClose}>
       <SafeAreaView style={styles.container}>
-        {/* Header Bar */}
+        {/* Header – back button now calls onClose */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <FeatherIcon name="chevron-left" size={moderateScale(26)} color="#4A5568" />
+          <TouchableOpacity  onPress={() => navigation.goBack()} style={styles.backButton}>
+            <FeatherIcon name="chevron-left" size={moderateScale(26)} color="#4a8cff" />
           </TouchableOpacity>
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>Add Money to Wallet</Text>
@@ -1548,7 +1606,7 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollBody}>
-          {/* Balance Gradient Card */}
+          {/* Balance Card */}
           <LinearGradient colors={['#6366F1', '#4F46E5']} style={styles.balanceCard}>
             <View style={styles.balanceCardLeft}>
               <View style={styles.balanceRow}>
@@ -1568,7 +1626,7 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
             </View>
           </LinearGradient>
 
-          {/* Amount Entry */}
+          {/* Amount Input */}
           <Text style={styles.sectionLabel}>ENTER AMOUNT</Text>
           <View style={styles.amountInputContainer}>
             <Text style={styles.currencySymbol}>₹</Text>
@@ -1610,22 +1668,18 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
               <TouchableOpacity
                 key={method.id}
                 onPress={() => handlePaymentSelect(method)}
+                
                 activeOpacity={0.7}
-                style={[
-                  styles.methodRow,
-                  idx !== paymentMethods.length - 1 && styles.methodBorder,
-                ]}
+                style={[styles.methodRow, idx !== paymentMethods.length - 1 && styles.methodBorder]}
                 disabled={loading}
               >
                 <View style={styles.methodIconWrapper}>
                   <Image source={method.imageSource} style={styles.methodImage} resizeMode="contain" />
                 </View>
-
                 <View style={styles.methodMeta}>
                   <Text style={styles.methodTitle}>{method.title}</Text>
                   <Text style={styles.methodSubtitle}>{method.subtitle}</Text>
                 </View>
-
                 <View style={styles.methodRight}>
                   <View style={[styles.tagBadge, { backgroundColor: method.tagBg }]}>
                     <Text style={[styles.tagBadgeText, { color: method.tagColor }]}>{method.tag}</Text>
@@ -1636,7 +1690,7 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
             ))}
           </View>
 
-          {/* Security Banner */}
+          {/* Security Banner & Promo Card – unchanged */}
           <View style={styles.securityBanner}>
             <View style={styles.shieldIconContainer}>
               <Image source={require('../../../assets/images/wallet/Security Icon.png')} />
@@ -1650,7 +1704,6 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
             </View>
           </View>
 
-          {/* Promo Card */}
           <LinearGradient colors={['#2563EB', '#1D4ED8']} style={styles.promoCard}>
             <View style={styles.promoLeft}>
               <View style={styles.coinStackGraphic}>
@@ -1673,9 +1726,13 @@ export default function WalletScreen({ visible, onClose, onPaymentSuccess, navig
 }
 
 
+// ... your styles (unchanged) ...
 // ─── Styles ──────────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F4F8F6' },
+  container: {
+    flex: 1, 
+    backgroundColor: '#ffff'
+   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1841,12 +1898,13 @@ const styles = StyleSheet.create({
     color: '#FFF',
   },
   methodsWrapperCard: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#F2F4F4',
     borderRadius: moderateScale(16),
     paddingHorizontal: moderateScale(6),
     borderWidth: 1,
     borderColor: '#E5E7EB',
     marginBottom: moderateScale(16),
+   
   },
   methodRow: {
     flexDirection: 'row',

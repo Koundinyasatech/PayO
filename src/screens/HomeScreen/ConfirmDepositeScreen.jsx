@@ -663,26 +663,26 @@ import {
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native'; 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSelector, useDispatch } from 'react-redux';
 import { updatePaymentStatus, resetDepositFlow } from '../../redux/features/depositSlice';
-// import api from '../../api/axios';   // ← real API call is commented out
 
 // Responsive scaling (adjust path if needed)
 const scale = (size) => size;
 const verticalScale = (size) => size;
 const moderateScale = (size, factor = 0.5) => size;
 
-export default function ConfirmDepositScreen({ navigation, route }) {
+export default function ConfirmDepositScreen() {
+  const navigation = useNavigation(); 
   const dispatch = useDispatch();
 
   // Read all data from Redux
   const {
     amount,
-    paymentMethod,
-    paymentMethodImage,   // <-- image asset
+    paymentMethod,        
     expectedCrypto,
     cryptoRate,
     processingFee,
@@ -694,27 +694,30 @@ export default function ConfirmDepositScreen({ navigation, route }) {
     error,
   } = useSelector((state) => state.deposit);
 
-  const formattedAmount = amount.toLocaleString('en-IN');
-  const methodDisplay = paymentMethod?.toUpperCase() || 'N/A';
+  
+
+  // Derive values safely
+  const formattedAmount = amount?.toLocaleString('en-IN') || '0';
+  const methodTitle = paymentMethod?.title || 'N/A';
+  const methodImage = paymentMethod?.imageSource || null; // asset reference
   const feeDisplay = processingFee?.toFixed(2) || '0.00';
   const rewardsDisplay = rewardsEarned || 0;
+const displayEstimatedTime = paymentMethod?.tag || estimatedTime || 'INSTANT';
+
 
   const handleBack = () => {
-    navigation.goBack();
+    if (navigation) {
+      navigation.goBack();
+    } else {
+      console.warn('navigation is undefined in handleBack');
+    }
   };
 
   const handleProceed = async () => {
     try {
       dispatch(updatePaymentStatus('PENDING'));
 
-      // 🔴 Real deposit API call – commented out
-      // const res = await api.post('/api/wallet/deposit', {
-      //   amount: amount,
-      //   paymentMethod: paymentMethod,
-      // });
-      // dispatch(updatePaymentStatus('SUCCESS'));
-
-      // ✅ Mock deposit success
+      // Simulate deposit API call
       await new Promise((resolve) => setTimeout(resolve, 600));
       dispatch(updatePaymentStatus('SUCCESS'));
 
@@ -723,7 +726,12 @@ export default function ConfirmDepositScreen({ navigation, route }) {
       }
 
       dispatch(resetDepositFlow());
-      navigation.popToTop();
+      // Safely pop to top (or navigate to home)
+      if (navigation && navigation.popToTop) {
+        navigation.popToTop();
+      } else if (navigation) {
+        navigation.navigate('MakePayment'); 
+      }
     } catch (error) {
       dispatch(updatePaymentStatus('FAILED'));
       const msg = error.response?.data?.message || 'Deposit failed. Please try again.';
@@ -765,18 +773,17 @@ export default function ConfirmDepositScreen({ navigation, route }) {
 
         {/* Main Deposit Card */}
         <View style={styles.summaryCard}>
-          {/* Conversion Visual Row – added payment method image */}
+          {/* Conversion Visual Row – with payment method image */}
           <View style={styles.conversionRow}>
             <View style={styles.conversionColumn}>
               <Text style={styles.conversionLabel}>You are adding</Text>
               <Text style={styles.conversionValue}>₹{formattedAmount}</Text>
               <View style={styles.viaBadge}>
                 <Text style={styles.viaText}>via </Text>
-                {/* Display the payment method image */}
-                {paymentMethodImage && (
-                  <Image source={paymentMethodImage} style={{ width: 20, height: 20, marginRight: 4 }} resizeMode="contain" />
+                {methodImage && (
+                  <Image source={methodImage} style={{ width: 20, height: 20, marginRight: 4 }} resizeMode="contain" />
                 )}
-                <Text style={styles.upiText}>{methodDisplay}</Text>
+                <Text style={styles.upiText}>{methodTitle}</Text>
               </View>
             </View>
 
@@ -789,7 +796,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
             </View>
           </View>
 
-          {/* Current Price Banner – unchanged */}
+          {/* Current Price Banner */}
           <View style={styles.priceChip}>
             <View style={styles.priceChipLeft}>
               <View style={styles.payoLogoCircle}>
@@ -808,7 +815,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
             </View>
           </View>
 
-          {/* Transaction Detailed Fields – added image in Payment Method row */}
+          {/* Transaction Detailed Fields */}
           <View style={styles.detailsList}>
             {/* Processing Fee */}
             <View style={styles.detailRow}>
@@ -820,7 +827,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
               <Text style={styles.feeValue}>₹{feeDisplay}</Text>
             </View>
 
-            {/* Payment Method – now with image */}
+            {/* Payment Method – with image */}
             <View style={styles.detailRow}>
               <View style={styles.detailLabelContainer}>
                 <FeatherIcon name="credit-card" size={moderateScale(16)} color="#6366F1" style={styles.rowIcon} />
@@ -828,24 +835,27 @@ export default function ConfirmDepositScreen({ navigation, route }) {
               </View>
               <Text style={styles.dottedDivider} numberOfLines={1}>....................................................................</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', paddingLeft: 4, zIndex: 2 }}>
-                {paymentMethodImage && (
-                  <Image source={paymentMethodImage} style={{ width: 20, height: 20, marginRight: 6 }} resizeMode="contain" />
+                {methodImage && (
+                  <Image source={methodImage} style={{ width: 20, height: 20, marginRight: 6 }} resizeMode="contain" />
                 )}
-                <Text style={styles.upiMethodText}>{methodDisplay}</Text>
+                <Text style={styles.upiMethodText}>{methodTitle}</Text>
               </View>
             </View>
 
-            {/* Estimated Time – unchanged */}
+            {/* Estimated Time */}
             <View style={styles.detailRow}>
               <View style={styles.detailLabelContainer}>
                 <FeatherIcon name="clock" size={moderateScale(16)} color="#6366F1" style={styles.rowIcon} />
                 <Text style={styles.detailLabel}>Estimated Time</Text>
               </View>
               <Text style={styles.dottedDivider} numberOfLines={1}>....................................................................</Text>
-              <Text style={styles.instantValue}>{estimatedTime || 'INSTANT'} ⚡</Text>
+              {/* <Text style={styles.instantValue}>{estimatedTime || 'INSTANT'} ⚡</Text> */}
+              <Text style={styles.instantValue}>
+  {paymentMethod?.tag || estimatedTime || 'INSTANT'} ⚡
+</Text>
             </View>
 
-            {/* Deposit To – unchanged */}
+            {/* Deposit To */}
             <View style={styles.detailRow}>
               <View style={styles.detailLabelContainer}>
                 <FeatherIcon name="lock" size={moderateScale(16)} color="#6366F1" style={styles.rowIcon} />
@@ -860,7 +870,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Promo Code Banner – unchanged */}
+        {/* Promo Code Banner */}
         <TouchableOpacity style={styles.promoCard} onPress={() => {}}>
           <View style={styles.promoLeft}>
             <View style={styles.promoIconContainer}>
@@ -877,7 +887,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
           </View>
         </TouchableOpacity>
 
-        {/* Rewards Section – unchanged */}
+        {/* Rewards Section */}
         <View style={styles.rewardsCard}>
           <View style={styles.rewardsLeft}>
             <View style={styles.giftIconContainer}>
@@ -893,16 +903,17 @@ export default function ConfirmDepositScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Disclaimer – unchanged */}
+        {/* Disclaimer */}
         <View style={styles.disclaimerContainer}>
           <FeatherIcon name="info" size={moderateScale(16)} color="#6366F1" style={styles.infoIcon} />
           <Text style={styles.disclaimerText}>
             The PAYO amount you receive may vary slightly due to market fluctuations
           </Text>
-          <MaterialCommunityIcons name="wallet-outline" size={moderateScale(28)} color="#A5B4FC" style={styles.disclaimerWalletArt} />
+          {/* <MaterialCommunityIcons name="wallet-outline" size={moderateScale(28)} color="#A5B4FC" style={styles.disclaimerWalletArt} /> */}
+          <Image source={require('../../../assets/images/wallet/wallet.png')} size={moderateScale(28)} />
         </View>
 
-        {/* Proceed Button – unchanged */}
+        {/* Proceed Button */}
         <TouchableOpacity style={styles.proceedButtonAction} onPress={handleProceed} disabled={loading}>
           <LinearGradient colors={['#6366F1', '#4F46E5']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.proceedGradient}>
             <MaterialCommunityIcons name="shield-check-outline" size={moderateScale(20)} color="#FFF" style={{ marginRight: moderateScale(8) }} />
@@ -911,7 +922,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Footer – unchanged */}
+        {/* Footer */}
         <View style={styles.secureNoteRow}>
           <FeatherIcon name="lock" size={moderateScale(12)} color="#9CA3AF" />
           <Text style={styles.secureNoteText}>Your payment details are 100% secure and encrypted</Text>
@@ -921,6 +932,8 @@ export default function ConfirmDepositScreen({ navigation, route }) {
   );
 }
 
+// ... (your styles remain unchanged) ...
+
 
 
 // ─── Styles ──────────────────────────────────────────────────────────────────────
@@ -929,7 +942,7 @@ export default function ConfirmDepositScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F8F6',
+    backgroundColor: '#ffff',
   },
   header: {
     flexDirection: 'row',
