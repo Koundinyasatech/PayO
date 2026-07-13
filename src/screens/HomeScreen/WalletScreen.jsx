@@ -807,6 +807,7 @@ import wallet from '../../../assets/images/wallet/Wallet image 1.png';
 import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
 
 export default function WalletScreen({ visible, onClose, onPaymentSuccess, navigation }) {
+  console.log("09876")
   const [amount, setAmount] = useState('1,000');
   const [walletData, setWalletData] = useState(null);
 

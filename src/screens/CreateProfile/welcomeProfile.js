@@ -328,7 +328,7 @@
 // });
 
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -348,6 +348,23 @@ import {
 import { moderateScale } from 'react-native-size-matters';
 
 export default function DashboardScreen({ navigation }) {
+
+    useEffect(() => {
+      // 1. Disable the iOS swipe-to-go-back gesture
+      navigation.setOptions({
+        gestureEnabled: false,
+      });
+  
+      // 2. Block the Android hardware back button and standard back actions
+      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        if (e.data.action.type === 'GO_BACK') {
+          e.preventDefault(); // Stops the screen from going back
+        }
+      });
+  
+      return unsubscribe;
+    }, [navigation]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />

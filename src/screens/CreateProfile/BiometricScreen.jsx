@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -45,6 +45,22 @@ const IMAGES = {
 const BiometricScreen = ({ navigation }) => {
 
   const [loading, setLoading] = React.useState(false);
+
+    useEffect(() => {
+      // 1. Disable the iOS swipe-to-go-back gesture
+      navigation.setOptions({
+        gestureEnabled: false,
+      });
+  
+      // 2. Block the Android hardware back button and standard back actions
+      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        if (e.data.action.type === 'GO_BACK') {
+          e.preventDefault(); // Stops the screen from going back
+        }
+      });
+  
+      return unsubscribe;
+    }, [navigation]);
 
   const handleEnableBiometric = async () => {
     setLoading(true);
@@ -214,7 +230,7 @@ const BiometricScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           {/* Skip Anchor */}
-          <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('Main')}>
+          <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('WelcomeProfile')}>
             <Text style={styles.skipButtonText}>Skip for now</Text>
           </TouchableOpacity>
         </View>

@@ -621,6 +621,7 @@
 
 
 // 1. Add these package imports at the top
+
 import axios from 'axios';
 import { ActivityIndicator } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -657,9 +658,9 @@ import { useAuth } from '../../context/AuthContext';
 export default function TransactionPinScreen({ navigation }) {
   const route = useRoute();
   const isFocused = useIsFocused();
-  // Safe routing authentication variables
+  
   const { amount, name, address, sender, senderData } = route.params || {};
-const { userId } = useAuth();
+  const { userId } = useAuth();
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [showPin, setShowPin] = useState(false);
@@ -678,13 +679,29 @@ const { userId } = useAuth();
   // Validation Rules
   const is4Digits = pin?.length === 4;
   
-  // Success States
+  // Success States (True means rule passed, False means it failed/shows error)
   const isNotSequential = pin.length > 0 && !/^(0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321|3210)$/.test(pin);
   const isNotRepeated = pin.length > 0 && !/^(.)\1{3}$/.test(pin) && !/(.)\1{1}(.)\2{1}/.test(pin); 
-  const isNotEasyToGuess = pin.length > 0 && !/^(1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
+  
+  // Updated regex pattern to include '1234' into the easy-to-guess constraints
+  const isNotEasyToGuess = pin.length > 0 && !/^(1234|1212|2525|1020|0000|1111|2222|3333|4444|5555|6666|7777|8888|9999)$/.test(pin);
 
   const isPinValidStructure = is4Digits && isNotSequential && isNotRepeated && isNotEasyToGuess;
   const isFormValid = isPinValidStructure && confirmPin.length === 4 && pin === confirmPin;
+
+  useEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: false,
+    });
+
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (e.data.action.type === 'GO_BACK') {
+        e.preventDefault();
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -705,7 +722,6 @@ const { userId } = useAuth();
     }
   }, [isFocused, activeInputField]);
 
-  // --- DYNAMIC PAYLOAD HANDLER ---
   const handleContinue = async () => {
     if (!isFormValid || loading) return;
     
@@ -713,39 +729,23 @@ const { userId } = useAuth();
     setLoading(true);
 
     try {
-      // Fetch dynamic device configurations asynchronously
       const fetchedIp = await NetworkInfo.getIPAddress();
       const uniqueId = await DeviceInfo.getUniqueId();
       const deviceModel = await DeviceInfo.getModel();
-      const systemName = DeviceInfo.getSystemName();     // e.g., Android / iOS
-      const systemVersion = DeviceInfo.getSystemVersion(); // e.g., 14 / 15
-
-      // Constructing your exact Postman JSON schema dynamically
-      // const payload = {
-      //   userId: userId || 108,                      // Route parameter nundi context dynamically fetch avthundi
-      //   pin: pin,                                   // Input string parameter
-      //   ipAddress: fetchedIp || "127.0.0.1",       // App dynamic client execution IP
-      //   deviceId: uniqueId || "UNKNOWN_DEVICE_ID", 
-      //   deviceName: deviceModel || "Mobile Device",
-      //   userAgent: `${systemName} ${systemVersion}`, // Generated client string format (e.g. "Android 15")
-      //   location: "Hyderabad"                       // Reverse Geocoding component processing implementation sequence or default fallback
-      // };
+      const systemName = DeviceInfo.getSystemName();     
+      const systemVersion = DeviceInfo.getSystemVersion(); 
 
       const payload = {
-        userId: userId,                      // Route parameter nundi context dynamically fetch avthundi
-        pin: pin,                                   // Input string parameter
-        ipAddress: fetchedIp ,      // App dynamic client execution IP
-        deviceId: uniqueId , 
+        userId: userId,                      
+        pin: pin,                                   
+        ipAddress: fetchedIp,      
+        deviceId: uniqueId, 
         deviceName: deviceModel,
-        userAgent: `${systemName} ${systemVersion}`, // Generated client string format (e.g. "Android 15")
-        location: "Hyderabad" ,                      // Reverse Geocoding component processing implementation sequence or default fallback
+        userAgent: `${systemName} ${systemVersion}`, 
+        location: "Hyderabad",                      
       };
 
       console.log("Sending Dynamic Payload: ", payload);
-
-      // Execute target network communication layer request
-      // (Remember to replace localhost with your internal base machine gateway IP if using a physical testing device: e.g. 10.0.2.2 or 192.168.x.x)
-      const baseUrl = Platform.OS === 'android' ? 'http://10.0.2.2:3001' : 'http://localhost:3001';
       
       const response = await axios.post(`https://purr-expediter-doorway.ngrok-free.dev/api/auth/set-pin`, payload, {
         headers: {
@@ -814,21 +814,6 @@ const { userId } = useAuth();
     <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F9FBF9" barStyle="dark-content" />
 
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButtonCircle} onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
-        </TouchableOpacity>
-
-        <View style={styles.logoContainer}>
-          <Image 
-            source={require('../../../assets/images/LogoContainer.png')} 
-            style={styles.logoImage}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={{ width: moderateScale(36) }} />
-      </View>
-
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -839,6 +824,26 @@ const { userId } = useAuth();
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="always"
           >
+            {/* Header - Logo centered dynamically */}
+            <View style={styles.header}>
+              {/* Back Button Commented Out
+              <TouchableOpacity style={styles.backButtonCircle} onPress={() => navigation.goBack()}>
+                <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
+              </TouchableOpacity>
+              */}
+
+              <View style={styles.logoContainer}>
+                <Image 
+                  source={require('../../../assets/images/LogoContainer.png')} 
+                  style={styles.logoImage}
+                  resizeMode="contain"
+                />
+              </View>
+              {/* Spacer Commented Out
+              <View style={{ width: moderateScale(36) }} />
+              */}
+            </View>
+
             <View style={styles.illustrationContainer}>
               <Image 
                 source={require('../../../assets/images/Header Image (1).png')} 
@@ -1031,9 +1036,6 @@ const { userId } = useAuth();
   );
 }
 
-// Keeping styles block unmodified...
-
-
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
@@ -1049,10 +1051,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center', // Changed to center the logo perfectly now that the back button is gone
     marginTop: hp('2%'),
     marginBottom: hp('1.5%'),
-    paddingHorizontal: wp('5%'),
   },
   backButtonCircle: {
     width: moderateScale(36),
@@ -1245,10 +1246,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   ruleTextActive: {
-    color: '#10B981', // Clean green when conditions pass
+    color: '#10B981', 
   },
   ruleTextError: {
-    color: '#EF4444', // Red when invalid input fails requirement
+    color: '#EF4444', 
   },
   continueButton: {
     flexDirection: 'row',
