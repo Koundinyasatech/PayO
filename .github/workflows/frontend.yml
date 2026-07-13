@@ -5,13 +5,16 @@ on:
     branches:
       - responsive_code
 
+permissions:
+  contents: read
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
 
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
 
     steps:
       - name: Checkout Repository
@@ -20,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Setup Java
@@ -38,7 +41,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      - name: Upload APK as GitHub Artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: payo-release-apk
@@ -49,20 +52,24 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Verify AWS Credentials
+        run: |
+          aws sts get-caller-identity
 
       - name: Upload APK to Amazon S3
         run: |
           DATE=$(date +'%Y%m%d-%H%M')
-          SHORT_SHA=${GITHUB_SHA::7}
+          SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           FILE_NAME="payo-${SHORT_SHA}-${DATE}.apk"
 
           aws s3 cp \
             android/app/build/outputs/apk/release/app-release.apk \
             s3://${S3_BUCKET}/releases/${FILE_NAME}
 
-          echo "======================================"
+          echo "===================================="
           echo "APK Uploaded Successfully"
           echo "File: ${FILE_NAME}"
-          echo "S3 Bucket: ${S3_BUCKET}"
-          echo "======================================"
+          echo "Bucket: ${S3_BUCKET}"
+          echo "===================================="
