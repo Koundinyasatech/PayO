@@ -1,161 +1,68 @@
-# name: Frontend APK Pipeline
-
-# on:
-#   push:
-#     branches:
-#       - responsive_code
-
-# jobs:
-#   build-apk:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       # 1️⃣ Checkout Code
-#       - name: Checkout
-#         uses: actions/checkout@v4
-
-#       # 2️⃣ Setup Node
-#       - name: Setup Node
-#         uses: actions/setup-node@v4
-#         with:
-#           node-version: 20
-
-#       # 3️⃣ Setup Java
-#       - name: Setup Java
-#         uses: actions/setup-java@v4
-#         with:
-#           distribution: 'temurin'
-#           java-version: '17'
-
-#       # 4️⃣ Install dependencies
-#       - name: Install dependencies
-#         run: npm install
-
-#       # 5️⃣ Build APK
-#       - name: Build APK
-#         run: |
-#           cd android
-#           chmod +x gradlew
-#           ./gradlew assembleRelease
-
-#       # 6️⃣ Configure AWS
-#       - name: Configure AWS
-#         uses: aws-actions/configure-aws-credentials@v4
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: ap-south-1
-
-#       # 7️⃣ Get / Increment Version
-#       - name: Get Version
-#         id: version
-#         run: |
-#           VERSION_FILE="version.txt"
-
-#           if aws s3 ls s3://${{ secrets.S3_BUCKET_APPS }}/$VERSION_FILE; then
-#             VERSION=$(aws s3 cp s3://${{ secrets.S3_BUCKET_APPS }}/$VERSION_FILE -)
-#             VERSION=$((VERSION + 1))
-#           else
-#             VERSION=1
-#           fi
-
-#           echo $VERSION > $VERSION_FILE
-#           aws s3 cp $VERSION_FILE s3://${{ secrets.S3_BUCKET_APPS }}/$VERSION_FILE
-
-#           echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-#       # 8️⃣ Upload APK to S3 (Version + Date + Time)
-#       - name: Upload APK
-#         run: |
-#           DATE=$(date +'%Y-%m-%d-%H-%M')
-#           FILE_NAME="payo-v${VERSION}-$DATE.apk"
-
-#           aws s3 cp android/app/build/outputs/apk/release/app-release.apk \
-#           s3://${{ secrets.S3_BUCKET_APPS }}/$FILE_NAME
-
-#           echo "=================================="
-#           echo "APK Uploaded Successfully"
-#           echo "Download Link:"
-#           echo "https://${{ secrets.S3_BUCKET_APPS }}.s3.amazonaws.com/$FILE_NAME"
-#           echo "=================================="
-
-name: Frontend APK Pipeline
+name: PayO Frontend CI
 
 on:
   push:
     branches:
-      - Frontend_UI
+      - responsive_code
 
 jobs:
   build-apk:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+
     steps:
-      # Checkout Code
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Setup Node
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
-      # Setup Java
       - name: Setup Java
-        uses: actions/setup-java@v4.7.1
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
+      - name: Install Dependencies
+        run: npm ci
 
-      # Build APK
-      - name: Build APK
+      - name: Build Release APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease
 
-      # Configure AWS
-      - name: Configure AWS
+      - name: Upload APK as GitHub Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: payo-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: ${{ env.AWS_REGION }}
 
-      # Get / Increment Version
-      - name: Get Version
-        id: version
+      - name: Upload APK to Amazon S3
         run: |
-          VERSION_FILE="version.txt"
+          DATE=$(date +'%Y%m%d-%H%M')
+          SHORT_SHA=${GITHUB_SHA::7}
+          FILE_NAME="payo-${SHORT_SHA}-${DATE}.apk"
 
-          if aws s3 ls s3://${{ secrets.S3_BUCKET_APPS }}/$VERSION_FILE; then
-            VERSION=$(aws s3 cp s3://${{ secrets.S3_BUCKET_APPS }}/$VERSION_FILE -)
-            VERSION=$((VERSION + 1))
-          else
-            VERSION=1
-          fi
+          aws s3 cp \
+            android/app/build/outputs/apk/release/app-release.apk \
+            s3://${S3_BUCKET}/releases/${FILE_NAME}
 
-          echo $VERSION > $VERSION_FILE
-          aws s3 cp $VERSION_FILE s3://${{ secrets.S3_BUCKET_APPS }}/$VERSION_FILE
-
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      # Upload APK
-      - name: Upload APK
-        run: |
-          DATE=$(date +'%Y-%m-%d-%H-%M')
-          FILE_NAME="payo-v${VERSION}-$DATE.apk"
-
-          aws s3 cp android/app/build/outputs/apk/release/app-release.apk \
-          s3://${{ secrets.S3_BUCKET_APPS }}/$FILE_NAME
-
-          echo "=================================="
+          echo "======================================"
           echo "APK Uploaded Successfully"
-          echo "Download Link:"
-          echo "https://${{ secrets.S3_BUCKET_APPS }}.s3.amazonaws.com/$FILE_NAME"
-          echo "=================================="
+          echo "File: ${FILE_NAME}"
+          echo "S3 Bucket: ${S3_BUCKET}"
+          echo "======================================"
