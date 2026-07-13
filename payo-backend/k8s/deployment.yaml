@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payo-backend
+  namespace: payo-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payo-backend
+  template:
+    metadata:
+      labels:
+        app: payo-backend
+    spec:
+      containers:
+      - name: payo-backend
+        image: 011237054417.dkr.ecr.ap-south-1.amazonaws.com/payo-backend:latest
+        ports:
+        - containerPort: 3000
