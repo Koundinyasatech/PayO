@@ -574,7 +574,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
     try {
       if (type === 'login') {
-        await api.post('/api/auth/login-otp', { mobile });
+        await api.post('/api/auth/resend-login-otp', { mobile , mobile_cont_code: '+91', });
       } else {
         await api.post('/api/auth/resend-otp', { mobile , countryCode});
       }
