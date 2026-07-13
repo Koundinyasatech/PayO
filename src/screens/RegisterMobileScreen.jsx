@@ -384,36 +384,41 @@ const handleSendOTP = async () => {
     setError('Enter valid mobile number');
     return;
   }
+  try{
+navigation.navigate('WalletScreen')
+  }catch{
 
-  try {
-    setLoading(true);
-    setError('');
-
-    const response = await api.post('/api/auth/send-otp', {
-      mobile,
-      countryCode: '+91',
-    });
-
-    if (
-      response.data?.status === '200' ||
-      response.data?.message === 'OTP Sent Successfully'
-    ) {
-      navigation.navigate('OTP', {
-        mobile,
-        countryCode: '+91',
-        userId: response.data?.userId,
-        type: 'register', // <-- identifies the flow
-      });
-
-      setUserId(response.data.userId);
-    } else {
-      setError(response.data?.message || 'Something went wrong');
-    }
-  } catch (error) {
-    setError(error.response?.data?.message || 'Something went wrong');
-  } finally {
-    setLoading(false);
   }
+
+  // try {
+  //   setLoading(true);
+  //   setError('');
+
+  //   const response = await api.post('/api/auth/send-otp', {
+  //     mobile,
+  //     countryCode: '+91',
+  //   });
+
+  //   if (
+  //     response.data?.status === '200' ||
+  //     response.data?.message === 'OTP Sent Successfully'
+  //   ) {
+  //     navigation.navigate('OTP', {
+  //       mobile,
+  //       countryCode: '+91',
+  //       userId: response.data?.userId,
+  //       type: 'register', // <-- identifies the flow
+  //     });
+
+  //     setUserId(response.data.userId);
+  //   } else {
+  //     setError(response.data?.message || 'Something went wrong');
+  //   }
+  // } catch (error) {
+  //   setError(error.response?.data?.message || 'Something went wrong');
+  // } finally {
+  //   setLoading(false);
+  // }
 };
 
 

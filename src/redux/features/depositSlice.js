@@ -1,94 +1,109 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+// import api from '../../api/axios';
 
-// 1. Initial State matching the 3 UI screens
 const initialState = {
-  // Screen 1: User Inputs
   amount: 0,
   currency: 'INR',
-  paymentMethod: null, // e.g., 'UPI' | 'BANK_TRANSFER' | 'CARD'
-  
-  // Screen 2: Rates & Live Data (fetched via API)
-  cryptoRate: 0,        // e.g., 70.12 INR per PAYO
-  expectedCrypto: 0,    // e.g., 14.265 PAYO
+
+  // Store the entire payment method object
+  paymentMethod: null,
+
+  cryptoRate: 0,
+  expectedCrypto: 0,
   processingFee: 0,
+
   promoCode: '',
   rewardsEarned: 0,
-  
-  // Screen 3: Final Payment Setup
+
   upiId: '',
   qrCodeUrl: '',
-  paymentStatus: 'IDLE', // 'IDLE' | 'PENDING' | 'SUCCESS' | 'FAILED'
-  
-  // System Status
+
+  estimatedTime: 'INSTANT',
+
+  paymentStatus: 'IDLE',
+
   loading: false,
   error: null,
 };
 
-// 2. Async Thunk for API Calls (e.g., getting current exchange rates)
 export const fetchConversionRates = createAsyncThunk(
   'deposit/fetchConversionRates',
   async ({ amount, paymentMethod }, { rejectWithValue }) => {
     try {
-      // Replace this mock with your actual API endpoint:
-      // const response = await axios.post('/api/v1/deposit/calculate', { amount, paymentMethod });
+      // Real API
+      // const response = await api.post('/api/wallet/calculate', {
+      //   amount,
+      //   paymentMethod,
+      // });
+
       // return response.data;
-      
-      // Simulating a fast network delay
-      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      await new Promise(resolve => setTimeout(resolve, 400));
 
       return {
         cryptoRate: 70.12,
-        expectedCrypto: amount / 70.12, 
-        processingFee: 0.00,
-        upiId: 'payo@upi',
-        qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?data=upi://pay',
+        expectedCrypto: amount / 70.12,
+        processingFee: 0,
+        upiId: 'payo@mockupi',
+        qrCodeUrl:
+          'https://api.qrserver.com/v1/create-qr-code/?data=mock',
+        estimatedTime: 'INSTANT',
       };
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch conversion rates');
+      return rejectWithValue('Failed to fetch conversion rates');
     }
   }
 );
 
-// 3. Slice Definition
 const depositSlice = createSlice({
   name: 'deposit',
+
   initialState,
+
   reducers: {
-    // Screen 1 updates
     setAmount: (state, action) => {
       state.amount = action.payload;
     },
+
+    // Store complete object
     setPaymentMethod: (state, action) => {
       state.paymentMethod = action.payload;
     },
-    // Screen 2 updates
+
     applyPromoCode: (state, action) => {
       state.promoCode = action.payload;
-      state.rewardsEarned = 10; // Simple flat bonus logic example
+      state.rewardsEarned = 10;
     },
-    // Screen 3 updates
+
     updatePaymentStatus: (state, action) => {
       state.paymentStatus = action.payload;
     },
-    // Reset flow entirely back to clean slate on completion/cancel
+
     resetDepositFlow: () => initialState,
   },
-  
-  // Handle asynchronous lifecycle state changes
-  extraReducers: (builder) => {
+
+  extraReducers: builder => {
     builder
-      .addCase(fetchConversionRates.pending, (state) => {
+
+      .addCase(fetchConversionRates.pending, state => {
         state.loading = true;
         state.error = null;
       })
+
       .addCase(fetchConversionRates.fulfilled, (state, action) => {
         state.loading = false;
+
         state.cryptoRate = action.payload.cryptoRate;
         state.expectedCrypto = action.payload.expectedCrypto;
         state.processingFee = action.payload.processingFee;
+
         state.upiId = action.payload.upiId;
         state.qrCodeUrl = action.payload.qrCodeUrl;
+
+        state.estimatedTime =
+          action.payload.estimatedTime || 'INSTANT';
       })
+
       .addCase(fetchConversionRates.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -96,14 +111,12 @@ const depositSlice = createSlice({
   },
 });
 
-// Export sync actions
-export const { 
-  setAmount, 
-  setPaymentMethod, 
-  applyPromoCode, 
-  updatePaymentStatus, 
-  resetDepositFlow 
+export const {
+  setAmount,
+  setPaymentMethod,
+  applyPromoCode,
+  updatePaymentStatus,
+  resetDepositFlow,
 } = depositSlice.actions;
 
-// Export default reducer for store integration
 export default depositSlice.reducer;
