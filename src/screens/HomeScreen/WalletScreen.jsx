@@ -1404,7 +1404,6 @@ import wallet from '../../../assets/images/wallet/Wallet image 1.png';
 import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
 
 
-
 export default function WalletScreen({ visible, onClose, navigation }) {
   const dispatch = useDispatch();
   const [localAmount, setLocalAmount] = useState('1,000');
