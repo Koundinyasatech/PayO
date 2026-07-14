@@ -227,7 +227,7 @@ import Recents from '../screens/HomeScreen/Recents';
 import UserProfile from '../screens/UserProfile/UserProfile';
 import TransactionHistory from '../screens/HomeScreen/TransactionHistory';
 import TnsHistorySingleUser from '../screens/HomeScreen/TnsHistorySingleUser';
-import WalletScreen from '../screens/HomeScreen/WalletScreen';
+
 import MarketScreen from '../screens/Market/market';
 import CoinDetailsScreen from '../screens/Market/singleMarket';
 
@@ -248,6 +248,9 @@ import DashboardScreen from '../screens/CreateProfile/welcomeProfile.js';
 import Biometric from '../screens/CreateProfile/BiometricScreen.jsx';
 import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.jsx';
 import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.jsx';
+import WalletScreen from '../screens/HomeScreen/WalletScreen.jsx';
+import AddMoneytoWallet from '../screens/HomeScreen/AddMoneytoWallet.jsx';
+import NotFoundScreen from '../screens/HomeScreen/NotFoundScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -268,7 +271,7 @@ export default function AppNavigator() {
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OtpVerified" component={OtpVerified} options={{ animation: 'fade' }} />
-
+          <Stack.Screen name="NotFound" component={NotFoundScreen} />
 
 
         <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -299,6 +302,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="WalletScreen" component={WalletScreen} />
+        <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
         <Stack.Screen name="CoinDetailsScreen" component={CoinDetailsScreen} />
         <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
