@@ -791,7 +791,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: scale(20),
-    paddingTop: verticalScale(40),
+    paddingTop: verticalScale(20),
     paddingBottom: verticalScale(15),
   },
   iconButton: {
