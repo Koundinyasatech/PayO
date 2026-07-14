@@ -1118,10 +1118,10 @@ export default function HomeScreen({ navigation }) {
       </View> */}
 
       <Header
-        onMenuPress={() => console.log('Open Menu Drawer')}
-        onNotificationPress={() => navigation.navigate('Notifications')}
-        onProfilePress={() => navigation.navigate('UserProfile')}
-        notificationCount={3}
+        // onMenuPress={() => console.log('Open Menu Drawer')}
+        // onNotificationPress={() => navigation.navigate('Notifications')}
+        // onProfilePress={() => navigation.navigate('UserProfile')}
+        // notificationCount={3}
       />
 
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
