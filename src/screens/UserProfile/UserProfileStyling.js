@@ -288,15 +288,27 @@
 
 
 
+
 import { StyleSheet } from 'react-native';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive'; // Updated to use your new custom utility
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+
+// 1. Import the global theme
+import { theme } from '../../MainTheme/theme'; // Adjust path if necessary
+
+// 2. Local fallback colors (These were not in your theme.js)
+const localColors = {
+  bgLightPurple: '#F5F7FF',
+  borderLight: '#E5E7EB',
+  borderPurple: '#C7D2FE',
+};
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F6F9',
+    backgroundColor: theme.colors.bgApp, // Updated to theme
     paddingHorizontal: scale(16),
   },
+  
   // --- Header ---
   header: {
     flexDirection: 'row',
@@ -307,14 +319,11 @@ export default StyleSheet.create({
     width: scale(36),
     height: scale(36),
     borderRadius: scale(18),
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: localColors.borderLight, 
   },
   headerTextContainer: {
     flex: 1,
@@ -323,11 +332,11 @@ export default StyleSheet.create({
   title: {
     fontSize: moderateScale(18),
     fontWeight: '700',
-    color: '#1F2937',
+    color: theme.colors.textMain, // Updated to theme
   },
   subtitle: {
-    fontSize: moderateScale(12),
-    color: '#6B7280',
+    fontSize: moderateScale(11),
+    color: theme.colors.textMuted, // Updated to theme
     marginTop: verticalScale(2),
   },
   headerIcons: {
@@ -335,24 +344,28 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   iconBtn: {
-    width: scale(36),
-    height: scale(36),
-    borderRadius: scale(18),
-    backgroundColor: '#EEF2FF',
+    width: scale(32),
+    height: scale(32),
+    borderRadius: scale(16),
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: scale(8),
+    borderWidth: 1,
+    borderColor: localColors.borderLight,
   },
   badge: {
     position: 'absolute',
     top: -2,
     right: -2,
-    backgroundColor: '#EF4444',
+    backgroundColor: theme.colors.statusDanger, // Updated to theme
     width: scale(14),
     height: scale(14),
     borderRadius: scale(7),
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.bgSurface, // Updated to theme
   },
   badgeText: {
     color: '#fff',
@@ -362,41 +375,63 @@ export default StyleSheet.create({
   
   // --- Profile Card ---
   profileCard: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: localColors.bgLightPurple, 
     borderRadius: scale(16),
     padding: scale(16),
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: verticalScale(16),
+    borderWidth: 1,
+    borderColor: '#E0E7FF',
+    shadowColor: theme.colors.primaryIndigo, // Updated to theme
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+    overflow: 'hidden',
   },
   profileImageContainer: {
     position: 'relative',
-  },
-  profileCircle: {
-    width: scale(64),
-    height: scale(64),
-    borderRadius: scale(32),
-    backgroundColor: '#D1D5DB',
+    width: scale(72),
+    height: scale(72),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#4F46E5',
   },
-  profileAvatarText: {
-    fontSize: moderateScale(30),
+  // Simulating the blue arc from the screenshot
+  profileArcBorder: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: scale(36),
+    borderWidth: 3,
+    borderColor: theme.colors.primaryBlue, // Updated to theme
+    borderRightColor: 'transparent',
+    borderBottomColor: 'transparent',
+    transform: [{ rotate: '-45deg' }],
+  },
+  profileImage: {
+    width: scale(60),
+    height: scale(60),
+    borderRadius: scale(30),
+    backgroundColor: '#D1D5DB',
   },
   editIconBadge: {
     position: 'absolute',
-    bottom: 0,
-    right: -4,
-    backgroundColor: '#4F46E5',
+    bottom: 2,
+    right: 2,
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     width: scale(22),
     height: scale(22),
     borderRadius: scale(11),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#EEF2FF',
+    borderWidth: 1,
+    borderColor: localColors.borderLight,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   profileInfo: {
     marginLeft: scale(16),
@@ -405,11 +440,11 @@ export default StyleSheet.create({
   profileName: {
     fontSize: moderateScale(18),
     fontWeight: '700',
-    color: '#1F2937',
+    color: theme.colors.textMain, // Updated to theme
   },
   profilePhone: {
-    fontSize: moderateScale(14),
-    color: '#6B7280',
+    fontSize: moderateScale(13),
+    color: theme.colors.textMuted, // Updated to theme
     marginTop: verticalScale(2),
   },
   kycBadge: {
@@ -421,53 +456,57 @@ export default StyleSheet.create({
     marginTop: verticalScale(6),
   },
   kycText: {
-    color: '#EF4444',
-    fontSize: moderateScale(10),
+    color: theme.colors.statusDanger, // Updated to theme
+    fontSize: moderateScale(9),
     fontWeight: '700',
+    letterSpacing: 0.5,
   },
 
   // --- Balance & Transactions ---
   balanceContainer: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     borderRadius: scale(12),
     padding: scale(16),
     marginBottom: verticalScale(16),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: localColors.borderPurple,
   },
   balanceHalf: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  statIcon: {
+  statIconWrapper: {
     width: scale(32),
     height: scale(32),
-    marginRight: scale(12),
-    resizeMode: 'contain',
+    borderRadius: scale(8),
+    backgroundColor: localColors.bgLightPurple, 
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: scale(10),
+  },
+  statIconWrapperRed: {
+    backgroundColor: '#FEE2E2',
   },
   statLabel: {
-    fontSize: moderateScale(12),
-    color: '#6B7280',
+    fontSize: moderateScale(11),
+    color: theme.colors.textMuted, // Updated to theme
   },
   statValue: {
     fontSize: moderateScale(16),
     fontWeight: '700',
-    color: '#1F2937',
+    color: theme.colors.textMain, // Updated to theme
     marginTop: verticalScale(2),
   },
   token: {
-    fontSize: moderateScale(12),
-    color: '#10B981',
+    fontSize: moderateScale(10),
+    color: theme.colors.statusSuccess, // Updated to theme
     fontWeight: '600',
   },
   verticalDivider: {
     width: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: localColors.borderLight, 
     marginHorizontal: scale(12),
   },
 
@@ -476,11 +515,11 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#C7D2FE',
+    borderColor: '#C4B5FD', // Light purple dashed border
     borderStyle: 'dashed',
     borderRadius: scale(12),
     padding: scale(12),
-    backgroundColor: '#F8FAFC',
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     marginBottom: verticalScale(16),
   },
   rewardIcon: {
@@ -490,13 +529,14 @@ export default StyleSheet.create({
     resizeMode: 'contain',
   },
   referralLabel: {
-    fontSize: moderateScale(12),
-    color: '#6B7280',
+    fontSize: moderateScale(11),
+    color: theme.colors.primaryPurple, // Updated to theme
+    fontWeight: '600',
   },
   referralCode: {
     fontSize: moderateScale(16),
     fontWeight: '700',
-    color: '#4F46E5',
+    color: theme.colors.textMain, // Updated to theme
     marginTop: verticalScale(2),
   },
 
@@ -504,22 +544,22 @@ export default StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: verticalScale(16),
+    marginBottom: verticalScale(12),
   },
   actionBtnOutline: {
     flex: 0.48,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: localColors.bgLightPurple, 
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: localColors.borderPurple, 
     paddingVertical: verticalScale(10),
     borderRadius: scale(8),
   },
   actionBtnText: {
-    fontSize: moderateScale(13),
-    color: '#374151',
+    fontSize: moderateScale(12),
+    color: theme.colors.textMain, // Updated to theme
     fontWeight: '500',
     marginRight: scale(8),
   },
@@ -527,7 +567,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#4F46E5',
+    backgroundColor: theme.colors.primaryIndigo, // Updated to theme
     borderRadius: scale(10),
     paddingVertical: verticalScale(14),
     paddingHorizontal: scale(16),
@@ -550,31 +590,33 @@ export default StyleSheet.create({
     paddingHorizontal: scale(4),
   },
   sectionTitle: {
-    fontSize: moderateScale(16),
+    fontSize: moderateScale(14),
     fontWeight: '700',
-    color: '#1F2937',
+    color: theme.colors.textMain, // Updated to theme
   },
   viewAll: {
-    fontSize: moderateScale(12),
-    color: '#4F46E5',
+    fontSize: moderateScale(11),
+    color: theme.colors.primaryBlue, // Updated to theme
     fontWeight: '500',
   },
   listCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     borderRadius: scale(12),
     paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(8),
+    paddingVertical: verticalScale(4),
     marginBottom: verticalScale(20),
+    borderWidth: 1,
+    borderColor: localColors.borderLight, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.03,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 1,
   },
   listItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: verticalScale(12),
+    paddingVertical: verticalScale(14),
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
@@ -582,40 +624,38 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: verticalScale(12),
+    paddingVertical: verticalScale(14),
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
   listLabel: {
-    fontSize: moderateScale(14),
-    color: '#6B7280',
-  },
-  listLabelDark: {
-    fontSize: moderateScale(14),
-    color: '#374151',
-    fontWeight: '500',
+    fontSize: moderateScale(13),
+    color: theme.colors.textMain, // Updated to theme
+    fontWeight: '400',
   },
   listValue: {
-    fontSize: moderateScale(14),
-    color: '#1F2937',
-    fontWeight: '500',
+    fontSize: moderateScale(13),
+    color: theme.colors.textMuted, // Updated to theme
+    fontWeight: '400',
   },
   dangerText: {
-    fontSize: moderateScale(14),
-    color: '#EF4444',
-    fontWeight: '500',
+    fontSize: moderateScale(13),
+    color: theme.colors.statusDanger, // Updated to theme
+    fontWeight: '400',
   },
 
   // --- Security Banner ---
   securityBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F3E8FF',
+    backgroundColor: localColors.bgLightPurple, 
     borderRadius: scale(12),
     padding: scale(16),
     marginBottom: verticalScale(24),
     position: 'relative',
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: localColors.borderLight,
   },
   bannerIcon: {
     width: scale(32),
@@ -628,38 +668,429 @@ export default StyleSheet.create({
     zIndex: 1,
   },
   bannerTitle: {
-    fontSize: moderateScale(14),
+    fontSize: moderateScale(13),
     fontWeight: '700',
-    color: '#1F2937',
+    color: theme.colors.textMain, // Updated to theme
   },
   bannerSub: {
-    fontSize: moderateScale(12),
-    color: '#6B7280',
+    fontSize: moderateScale(11),
+    color: theme.colors.textMuted, // Updated to theme
     marginTop: verticalScale(4),
+    lineHeight: 16,
   },
   watermarkIcon: {
     position: 'absolute',
-    right: -20,
-    bottom: -20,
-    width: scale(80),
-    height: scale(80),
-    opacity: 0.1,
+    right: -10,
+    bottom: -15,
+    width: scale(70),
+    height: scale(70),
+    opacity: 0.2,
     resizeMode: 'contain',
   },
-
-  // --- Logout ---
-  logoutBtn: {
-    borderWidth: 1,
-    borderColor: '#EF4444',
-    borderRadius: scale(10),
-    paddingVertical: verticalScale(14),
-    alignItems: 'center',
-    marginBottom: verticalScale(40),
-    backgroundColor: '#ffffff',
-  },
-  logoutText: {
-    color: '#EF4444',
-    fontSize: moderateScale(16),
-    fontWeight: '700',
-  },
 });
+
+// import { StyleSheet } from 'react-native';
+// import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+
+// // CSS Variables translated to React Native constants
+// const colors = {
+//   primaryBlue: '#3b82f6',
+//   primaryIndigo: '#4f46e5',
+//   primaryPurple: '#7c3aed',
+//   bgApp: '#FAFBFC', // Light background from image
+//   bgSurface: '#ffffff',
+//   bgLightPurple: '#F5F7FF',
+//   textMain: '#1f2937',
+//   textMuted: '#6b7280',
+//   statusSuccess: '#10b981',
+//   statusDanger: '#ef4444',
+//   borderLight: '#E5E7EB',
+//   borderPurple: '#C7D2FE',
+// };
+
+// export default StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: colors.bgApp,
+//     paddingHorizontal: scale(16),
+//   },
+  
+//   // --- Header ---
+//   header: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginVertical: verticalScale(16),
+//   },
+//   backButton: {
+//     width: scale(36),
+//     height: scale(36),
+//     borderRadius: scale(18),
+//     backgroundColor: colors.bgSurface,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderWidth: 1,
+//     borderColor: colors.borderLight,
+//   },
+//   headerTextContainer: {
+//     flex: 1,
+//     marginLeft: scale(12),
+//   },
+//   title: {
+//     fontSize: moderateScale(18),
+//     fontWeight: '700',
+//     color: colors.textMain,
+//   },
+//   subtitle: {
+//     fontSize: moderateScale(11),
+//     color: colors.textMuted,
+//     marginTop: verticalScale(2),
+//   },
+//   headerIcons: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   iconBtn: {
+//     width: scale(32),
+//     height: scale(32),
+//     borderRadius: scale(16),
+//     backgroundColor: colors.bgSurface,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginLeft: scale(8),
+//     borderWidth: 1,
+//     borderColor: colors.borderLight,
+//   },
+//   badge: {
+//     position: 'absolute',
+//     top: -2,
+//     right: -2,
+//     backgroundColor: colors.statusDanger,
+//     width: scale(14),
+//     height: scale(14),
+//     borderRadius: scale(7),
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderWidth: 1,
+//     borderColor: colors.bgSurface,
+//   },
+//   badgeText: {
+//     color: '#fff',
+//     fontSize: moderateScale(8),
+//     fontWeight: 'bold',
+//   },
+  
+//   // --- Profile Card ---
+//   profileCard: {
+//     backgroundColor: colors.bgLightPurple,
+//     borderRadius: scale(16),
+//     padding: scale(16),
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginBottom: verticalScale(16),
+//     borderWidth: 1,
+//     borderColor: '#E0E7FF',
+//     shadowColor: colors.primaryIndigo,
+//     shadowOffset: { width: 0, height: 4 },
+//     shadowOpacity: 0.05,
+//     shadowRadius: 8,
+//     elevation: 2,
+//     overflow: 'hidden',
+//   },
+//   profileImageContainer: {
+//     position: 'relative',
+//     width: scale(72),
+//     height: scale(72),
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   // Simulating the blue arc from the screenshot
+//   profileArcBorder: {
+//     position: 'absolute',
+//     width: '100%',
+//     height: '100%',
+//     borderRadius: scale(36),
+//     borderWidth: 3,
+//     borderColor: colors.primaryBlue,
+//     borderRightColor: 'transparent',
+//     borderBottomColor: 'transparent',
+//     transform: [{ rotate: '-45deg' }],
+//   },
+//   profileImage: {
+//     width: scale(60),
+//     height: scale(60),
+//     borderRadius: scale(30),
+//     backgroundColor: '#D1D5DB',
+//   },
+//   editIconBadge: {
+//     position: 'absolute',
+//     bottom: 2,
+//     right: 2,
+//     backgroundColor: colors.bgSurface,
+//     width: scale(22),
+//     height: scale(22),
+//     borderRadius: scale(11),
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderWidth: 1,
+//     borderColor: colors.borderLight,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.1,
+//     shadowRadius: 2,
+//     elevation: 2,
+//   },
+//   profileInfo: {
+//     marginLeft: scale(16),
+//     flex: 1,
+//   },
+//   profileName: {
+//     fontSize: moderateScale(18),
+//     fontWeight: '700',
+//     color: colors.textMain,
+//   },
+//   profilePhone: {
+//     fontSize: moderateScale(13),
+//     color: colors.textMuted,
+//     marginTop: verticalScale(2),
+//   },
+//   kycBadge: {
+//     backgroundColor: '#FEE2E2',
+//     alignSelf: 'flex-start',
+//     paddingHorizontal: scale(8),
+//     paddingVertical: verticalScale(4),
+//     borderRadius: scale(4),
+//     marginTop: verticalScale(6),
+//   },
+//   kycText: {
+//     color: colors.statusDanger,
+//     fontSize: moderateScale(9),
+//     fontWeight: '700',
+//     letterSpacing: 0.5,
+//   },
+
+//   // --- Balance & Transactions ---
+//   balanceContainer: {
+//     flexDirection: 'row',
+//     backgroundColor: colors.bgSurface,
+//     borderRadius: scale(12),
+//     padding: scale(16),
+//     marginBottom: verticalScale(16),
+//     borderWidth: 1,
+//     borderColor: colors.borderPurple,
+//   },
+//   balanceHalf: {
+//     flex: 1,
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   statIconWrapper: {
+//     width: scale(32),
+//     height: scale(32),
+//     borderRadius: scale(8),
+//     backgroundColor: colors.bgLightPurple,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     marginRight: scale(10),
+//   },
+//   statIconWrapperRed: {
+//     backgroundColor: '#FEE2E2',
+//   },
+//   statLabel: {
+//     fontSize: moderateScale(11),
+//     color: colors.textMuted,
+//   },
+//   statValue: {
+//     fontSize: moderateScale(16),
+//     fontWeight: '700',
+//     color: colors.textMain,
+//     marginTop: verticalScale(2),
+//   },
+//   token: {
+//     fontSize: moderateScale(10),
+//     color: colors.statusSuccess,
+//     fontWeight: '600',
+//   },
+//   verticalDivider: {
+//     width: 1,
+//     backgroundColor: colors.borderLight,
+//     marginHorizontal: scale(12),
+//   },
+
+//   // --- Referral Card ---
+//   referralCard: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     borderWidth: 1.5,
+//     borderColor: '#C4B5FD', // Light purple dashed border
+//     borderStyle: 'dashed',
+//     borderRadius: scale(12),
+//     padding: scale(12),
+//     backgroundColor: colors.bgSurface,
+//     marginBottom: verticalScale(16),
+//   },
+//   rewardIcon: {
+//     width: scale(36),
+//     height: scale(36),
+//     marginRight: scale(12),
+//     resizeMode: 'contain',
+//   },
+//   referralLabel: {
+//     fontSize: moderateScale(11),
+//     color: colors.primaryPurple,
+//     fontWeight: '600',
+//   },
+//   referralCode: {
+//     fontSize: moderateScale(16),
+//     fontWeight: '700',
+//     color: colors.textMain,
+//     marginTop: verticalScale(2),
+//   },
+
+//   // --- Action Buttons ---
+//   actionRow: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     marginBottom: verticalScale(12),
+//   },
+//   actionBtnOutline: {
+//     flex: 0.48,
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     backgroundColor: colors.bgLightPurple,
+//     borderWidth: 1,
+//     borderColor: colors.borderPurple,
+//     paddingVertical: verticalScale(10),
+//     borderRadius: scale(8),
+//   },
+//   actionBtnText: {
+//     fontSize: moderateScale(12),
+//     color: colors.textMain,
+//     fontWeight: '500',
+//     marginRight: scale(8),
+//   },
+//   addBankPrimaryBtn: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     justifyContent: 'space-between',
+//     backgroundColor: colors.primaryIndigo,
+//     borderRadius: scale(10),
+//     paddingVertical: verticalScale(14),
+//     paddingHorizontal: scale(16),
+//     marginBottom: verticalScale(24),
+//   },
+//   addBankPrimaryText: {
+//     flex: 1,
+//     color: '#ffffff',
+//     fontSize: moderateScale(14),
+//     fontWeight: '600',
+//     marginLeft: scale(12),
+//   },
+
+//   // --- Lists & Sections ---
+//   sectionHeader: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     marginBottom: verticalScale(8),
+//     paddingHorizontal: scale(4),
+//   },
+//   sectionTitle: {
+//     fontSize: moderateScale(14),
+//     fontWeight: '700',
+//     color: colors.textMain,
+//   },
+//   viewAll: {
+//     fontSize: moderateScale(11),
+//     color: colors.primaryBlue,
+//     fontWeight: '500',
+//   },
+//   listCard: {
+//     backgroundColor: colors.bgSurface,
+//     borderRadius: scale(12),
+//     paddingHorizontal: scale(16),
+//     paddingVertical: verticalScale(4),
+//     marginBottom: verticalScale(20),
+//     borderWidth: 1,
+//     borderColor: colors.borderLight,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 1 },
+//     shadowOpacity: 0.03,
+//     shadowRadius: 2,
+//     elevation: 1,
+//   },
+//   listItem: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     paddingVertical: verticalScale(14),
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#F3F4F6',
+//   },
+//   listItemTouch: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     paddingVertical: verticalScale(14),
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#F3F4F6',
+//   },
+//   listLabel: {
+//     fontSize: moderateScale(13),
+//     color: colors.textMain,
+//     fontWeight: '400',
+//   },
+//   listValue: {
+//     fontSize: moderateScale(13),
+//     color: colors.textMuted,
+//     fontWeight: '400',
+//   },
+//   dangerText: {
+//     fontSize: moderateScale(13),
+//     color: colors.statusDanger,
+//     fontWeight: '400',
+//   },
+
+//   // --- Security Banner ---
+//   securityBanner: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     backgroundColor: colors.bgLightPurple,
+//     borderRadius: scale(12),
+//     padding: scale(16),
+//     marginBottom: verticalScale(24),
+//     position: 'relative',
+//     overflow: 'hidden',
+//     borderWidth: 1,
+//     borderColor: colors.borderLight,
+//   },
+//   bannerIcon: {
+//     width: scale(32),
+//     height: scale(32),
+//     marginRight: scale(12),
+//     resizeMode: 'contain',
+//   },
+//   bannerTextContainer: {
+//     flex: 1,
+//     zIndex: 1,
+//   },
+//   bannerTitle: {
+//     fontSize: moderateScale(13),
+//     fontWeight: '700',
+//     color: colors.textMain,
+//   },
+//   bannerSub: {
+//     fontSize: moderateScale(11),
+//     color: colors.textMuted,
+//     marginTop: verticalScale(4),
+//     lineHeight: 16,
+//   },
+//   watermarkIcon: {
+//     position: 'absolute',
+//     right: -10,
+//     bottom: -15,
+//     width: scale(70),
+//     height: scale(70),
+//     opacity: 0.2,
+//     resizeMode: 'contain',
+//   },
+// });

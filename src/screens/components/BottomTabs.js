@@ -15,6 +15,7 @@ import SendScreen from './sendScreen';
 import TransactionHistory from '../HomeScreen/TransactionHistory';
 import WalletScreen from '../HomeScreen/WalletScreen';
 import MarketScreen from '../Market/market';
+//import AddMoneytoWallet from '../HomeScreen/AddMoneytoWallet';
 
 const Tab = createBottomTabNavigator();
 

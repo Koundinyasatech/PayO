@@ -825,25 +825,16 @@
 
 
 import { StyleSheet } from 'react-native';
-import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/responsive'; // Adjust relative path as needed
+import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/responsive'; 
 
-// Values extracted from main.css variables
-const colors = {
-  primaryBlue: '#226ade',
-  primaryIndigo: '#4f46e5',
-  primaryPurple: '#7c3aed',
-  bgApp: '#f4f6f9',
-  bgSurface: '#ffffff',
-  textMain: '#1f2937',
-  textMuted: '#6b7280',
-  success: '#10b981',
-  danger: '#ef4444',
-};
+// 1. Import the centralized theme
+import { theme } from '../../MainTheme/theme'; 
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.bgApp,
+    // 2. Replace local colors with theme.colors
+    backgroundColor: theme.colors.bgApp, 
   },
   scrollContent: {
     paddingBottom: verticalScale(100),
@@ -859,8 +850,8 @@ export default StyleSheet.create({
     paddingBottom: verticalScale(15),
   },
   iconButton: {
-    width: scale(35), // Added fixed width for a consistent white circle
-    height: scale(35), // Added fixed height for a consistent white circle
+    width: scale(35), 
+    height: scale(35), 
     backgroundColor: '#fff',
     borderRadius: scale(20),
     elevation: 1,
@@ -871,13 +862,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   headerNotificationIcon: {
-    width: scale(18), // Reduced size to make the bell smaller
-    height: scale(18), // Reduced size to make the bell smaller
+    width: scale(18), 
+    height: scale(18), 
   },
   logo: {
     width: scale(110),
     height: verticalScale(30),
-    marginLeft: scale(40), // Nudges the PAYO logo slightly to the right
+    marginLeft: scale(40), 
   },
   headerRight: {
     flexDirection: 'row',
@@ -886,9 +877,9 @@ export default StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: -2, // Adjusted slightly to sit properly on the fixed-size circle
-    right: -2, // Adjusted slightly 
-    backgroundColor: colors.danger,
+    top: -2, 
+    right: -2, 
+    backgroundColor: theme.colors.statusDanger, // Updated to theme
     width: scale(16),
     height: scale(16),
     borderRadius: scale(8),
@@ -904,17 +895,17 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   profileIconContainer: {
-    width: scale(32), // Reduced from 36
-    height: scale(32), // Reduced from 36
-    borderRadius: scale(16), // Half of width/height for a perfect circle
-    backgroundColor: colors.primaryBlue,
+    width: scale(32), 
+    height: scale(32), 
+    borderRadius: scale(16), 
+    backgroundColor: theme.colors.primaryBlue, // Updated to theme
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
   headerProfileImg: {
-    width: scale(18), // Reduced from 20
-    height: scale(18), // Reduced from 20
+    width: scale(18), 
+    height: scale(18), 
   },
 
   /* WALLET CARD */
@@ -925,7 +916,7 @@ export default StyleSheet.create({
     padding: scale(20),
     position: 'relative',
     elevation: 8,
-    shadowColor: colors.primaryIndigo,
+    shadowColor: theme.colors.primaryIndigo, // Updated to theme
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -995,7 +986,7 @@ export default StyleSheet.create({
     height: scale(14),
   },
   addMoneyText: {
-    color: colors.primaryBlue,
+    color: theme.colors.primaryBlue, // Updated to theme
     fontWeight: '600',
     marginLeft: scale(6),
     fontSize: moderateScale(13),
@@ -1015,11 +1006,11 @@ export default StyleSheet.create({
   sectionHeading: {
     fontSize: moderateScale(18),
     fontWeight: '700',
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
   },
   viewAllText: {
     fontSize: moderateScale(14),
-    color: colors.primaryBlue,
+    color: theme.colors.primaryBlue, // Updated to theme
     fontWeight: '500',
   },
 
@@ -1030,27 +1021,24 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: scale(20),
     marginTop: verticalScale(10),
-    // gap: scale(22),
   },
   actionItem: {
     alignItems: 'center',
-    
   },
   actionIconBtn: {
     width: scale(50),
     height: scale(50),
     borderRadius: scale(16),
-    backgroundColor: colors.primaryBlue,
+    backgroundColor: theme.colors.primaryBlue, // Updated to theme
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: verticalScale(8),
     marginHorizontal: scale(1),
     elevation: 3,
-    shadowColor: colors.primaryBlue,
+    shadowColor: theme.colors.primaryBlue, // Updated to theme
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    
   },
   actionImageFormat: {
     width: scale(20),
@@ -1058,7 +1046,7 @@ export default StyleSheet.create({
   },
   actionLabel: {
     fontSize: moderateScale(13),
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
     fontWeight: '500',
   },
 
@@ -1103,7 +1091,7 @@ export default StyleSheet.create({
 
   /* COMMON CARD (Crypto Market & News uses this base) */
   card: {
-    backgroundColor: colors.bgSurface,
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     borderRadius: moderateScale(16),
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.05)',
@@ -1124,7 +1112,7 @@ export default StyleSheet.create({
     marginBottom: verticalScale(8),
   },
   tableHeaderText: {
-    color: colors.textMuted,
+    color: theme.colors.textMuted, // Updated to theme
     fontSize: moderateScale(11),
     fontWeight: '600',
   },
@@ -1151,18 +1139,18 @@ export default StyleSheet.create({
     fontSize: moderateScale(14),
   },
   coinSymbol: {
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
     fontWeight: '700',
     fontSize: moderateScale(14),
   },
   coinName: {
-    color: colors.textMuted,
+    color: theme.colors.textMuted, // Updated to theme
     fontSize: moderateScale(11),
     marginTop: verticalScale(2),
   },
   coinPrice: {
     fontWeight: '600',
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
   },
 
   /* CRYPTO NEWS */
@@ -1183,7 +1171,7 @@ export default StyleSheet.create({
     marginLeft: scale(14),
   },
   newsHeadline: {
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
     fontSize: moderateScale(14),
     fontWeight: '600',
     lineHeight: verticalScale(20),
@@ -1195,7 +1183,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   newsTime: {
-    color: colors.textMuted,
+    color: theme.colors.textMuted, // Updated to theme
     fontSize: moderateScale(11),
   },
   tagPill: {

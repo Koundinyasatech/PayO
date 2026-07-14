@@ -715,24 +715,26 @@ const displayEstimatedTime = paymentMethod?.tag || estimatedTime || 'INSTANT';
 
   const handleProceed = async () => {
     try {
-      dispatch(updatePaymentStatus('PENDING'));
+      // dispatch(updatePaymentStatus('PENDING'));
         navigation.navigate('MakePayment'); 
 
       // Simulate deposit API call
       await new Promise((resolve) => setTimeout(resolve, 600));
-      dispatch(updatePaymentStatus('SUCCESS'));
+        navigation.navigate('MakePayment'); 
 
-      if (Platform.OS === 'android') {
-        ToastAndroid.show('Deposit successful!', ToastAndroid.SHORT);
-      }
+      // dispatch(updatePaymentStatus('SUCCESS'));
 
-      dispatch(resetDepositFlow());
-      // Safely pop to top (or navigate to home)
-      if (navigation && navigation.popToTop) {
-        navigation.popToTop();
-      } else if (navigation) {
-        // navigation.navigate('MakePayment'); 
-      }
+      // if (Platform.OS === 'android') {
+      //   ToastAndroid.show('Deposit successful!', ToastAndroid.SHORT);
+      // }
+
+      // dispatch(resetDepositFlow());
+      // // Safely pop to top (or navigate to home)
+      // if (navigation && navigation.popToTop) {
+      //   navigation.popToTop();
+      // } else if (navigation) {
+      //   // navigation.navigate('MakePayment'); 
+      // }
     } catch (error) {
       dispatch(updatePaymentStatus('FAILED'));
       const msg = error.response?.data?.message || 'Deposit failed. Please try again.';
