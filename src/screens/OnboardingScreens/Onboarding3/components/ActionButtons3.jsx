@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     paddingHorizontal: moderateScale(30),
-    marginTop: verticalScale(30),
+    marginTop: verticalScale(25),
     alignItems: 'center',
     flex: 1,
     justifyContent: 'flex-start', // 🚨 FIX: Changed from 'space-between' to pull the badge UP

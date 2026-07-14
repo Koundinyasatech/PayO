@@ -1591,12 +1591,7 @@ const handlePaymentSelect = (method) => {
 
 console.log("98")
   return (
-    
-    // <Modal
-    // // visible={visible} 
-    // // animationType="fade" 
-    // // onRequestClose={onClose}
-    // >
+    // <Modal visible={visible} animationType="fade" onRequestClose={onClose}>
       <SafeAreaView style={styles.container}>
         {/* Header – back button now calls onClose */}
         <View style={styles.header}>
