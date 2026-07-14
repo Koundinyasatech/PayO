@@ -967,6 +967,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import api from '../../api/axios';
 import styles from './homeStyling';
 import { windowWidth } from '../../utils/responsive';
+import HomeHeader from '../components/header';
+import Header from '../components/header';
 
 export default function HomeScreen({ navigation }) {
   const [balanceVisible, setBalanceVisible] = useState(true);
@@ -1081,7 +1083,7 @@ export default function HomeScreen({ navigation }) {
       <StatusBar backgroundColor="#f4f6f9" barStyle="dark-content" />
 
       {/* Header with Custom Image Icons */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity style={styles.iconButton}>
           <Icon name="menu" size={24} color="#1f2937" />
         </TouchableOpacity>
@@ -1109,7 +1111,14 @@ export default function HomeScreen({ navigation }) {
             />
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
+
+      <Header
+        onMenuPress={() => console.log('Open Menu Drawer')}
+        onNotificationPress={() => navigation.navigate('Notifications')}
+        onProfilePress={() => navigation.navigate('UserProfile')}
+        notificationCount={3}
+      />
 
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         
