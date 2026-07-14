@@ -1,10 +1,10 @@
 // // homeStyling.js — PART 1
 
 // import { StyleSheet } from 'react-native';
-// import {
-//   widthPercentageToDP as wp,
-//   heightPercentageToDP as hp,
-// } from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 // import { moderateScale } from 'react-native-size-matters';
 
 // export default StyleSheet.create({
@@ -627,61 +627,6 @@
 //     borderRadius: moderateScale(20),
 //   },
 
-// bottomNav: {
-//   position: 'absolute',
-//   bottom: 0,
-//   left: 0,
-//   right: 0,
-
-//   backgroundColor: '#2E1065',
-
-//   borderTopLeftRadius: moderateScale(30),
-//   borderTopRightRadius: moderateScale(30),
-
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-//   alignItems: 'center',
-
-//   paddingHorizontal: wp('2%'),
-
-//   elevation: 20,
-//   zIndex: 999,
-// },
-
-//   navItem: {
-//   alignItems: 'center',
-//   justifyContent: 'center',
-//   flex: 1,
-//   paddingTop: hp('1%'),
-// },
-
-//   navLabel: {
-//     fontSize: moderateScale(9),
-//     marginTop: hp('0.5%'),
-//     fontWeight: '600',
-//   },
-
-//   navActive: {
-//     color: '#F472B6',
-//   },
-
-//   navInactive: {
-//     color: '#aaa',
-//   },
-
-//   centerIcon: {
-//     position: 'absolute',
-//     top: hp('-4.2%'),
-//     width: wp('18%'),
-//     height: wp('18%'),
-//     borderRadius: wp('9%'),
-//     backgroundColor: '#7C3AED',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     alignSelf: 'center',
-//     elevation: 25,
-//     zIndex: 1000,
-//   },
 
 //   // Add these to your existing styles
 // // Add these to your existing styles
@@ -846,7 +791,7 @@ export default StyleSheet.create({
     backgroundColor: colors.bgApp,
   },
   scrollContent: {
-    paddingBottom: verticalScale(100),
+    paddingBottom: verticalScale(130),
   },
 
   /* HEADER */
@@ -1207,6 +1152,62 @@ export default StyleSheet.create({
     fontSize: moderateScale(10),
     fontWeight: '600',
   },
+
+//   bottomNav: {
+//   position: 'absolute',
+//   bottom: 0,
+//   left: 0,
+//   right: 0,
+
+//   backgroundColor: '#2E1065',
+
+//   borderTopLeftRadius: moderateScale(30),
+//   borderTopRightRadius: moderateScale(30),
+
+//   flexDirection: 'row',
+//   justifyContent: 'space-around',
+//   alignItems: 'center',
+
+//   paddingHorizontal: wp('2%'),
+
+//   elevation: 20,
+//   zIndex: 999,
+// },
+
+//   navItem: {
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   flex: 1,
+//   paddingTop: hp('1%'),
+// },
+
+//   navLabel: {
+//     fontSize: moderateScale(9),
+//     marginTop: hp('0.5%'),
+//     fontWeight: '600',
+//   },
+
+//   navActive: {
+//     color: '#F472B6',
+//   },
+
+//   navInactive: {
+//     color: '#aaa',
+//   },
+
+//   centerIcon: {
+//     position: 'absolute',
+//     top: hp('-4.2%'),
+//     width: wp('18%'),
+//     height: wp('18%'),
+//     borderRadius: wp('9%'),
+//     backgroundColor: '#7C3AED',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     alignSelf: 'center',
+//     elevation: 25,
+//     zIndex: 1000,
+//   },
 });
 
 // import { StyleSheet } from 'react-native';
