@@ -1101,7 +1101,11 @@ export default function HomeScreen({ navigation }) {
             />
             <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.profileIconContainer}>
+          {/* UPDATED: Added onPress navigation here */}
+          <TouchableOpacity 
+            style={styles.profileIconContainer}
+            onPress={() => navigation.navigate('UserProfile')}
+          >
             <Image 
               source={require('../../../assets/images/Profile Icon.png')} 
               style={styles.headerProfileImg} 
@@ -1139,7 +1143,7 @@ export default function HomeScreen({ navigation }) {
           </View>
           <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹0.0' : '≈ ₹***'}</Text>
 
-          <TouchableOpacity style={styles.addMoneyBtn}>
+          <TouchableOpacity onPress={()=>navigation.navigate('WalletScreen')} style={styles.addMoneyBtn}>
             <Image 
               source={require('../../../assets/images/icon-container.png')} 
               style={styles.addMoneyIcon} 

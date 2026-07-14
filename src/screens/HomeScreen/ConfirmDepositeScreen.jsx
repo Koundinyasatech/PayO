@@ -715,7 +715,7 @@ const displayEstimatedTime = paymentMethod?.tag || estimatedTime || 'INSTANT';
 
   const handleProceed = async () => {
     try {
-      dispatch(updatePaymentStatus('PENDING'));
+      // dispatch(updatePaymentStatus('PENDING'));
         navigation.navigate('MakePayment'); 
 
       // Simulate deposit API call

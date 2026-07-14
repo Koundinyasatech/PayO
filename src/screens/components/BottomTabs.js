@@ -312,6 +312,8 @@ import HomeScreen from '../HomeScreen/HomeScreen';
 import SendScreen from './sendScreen';
 import TransactionHistory from '../HomeScreen/TransactionHistory';
 import WalletScreen from '../HomeScreen/WalletScreen';
+import MarketScreen from '../Market/market';
+//import AddMoneytoWallet from '../HomeScreen/AddMoneytoWallet';
 import ProfileScreen from '../UserProfile/UserProfile';
 
 import { getThemeColors, styles } from './BottomTabStyling';
