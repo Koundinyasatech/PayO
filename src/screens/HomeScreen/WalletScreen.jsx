@@ -1589,7 +1589,7 @@ const handlePaymentSelect = (method) => {
 
 
   return (
-    <Modal visible={visible} animationType="fade" onRequestClose={onClose}>
+    // <Modal visible={visible} animationType="fade" onRequestClose={onClose}>
       <SafeAreaView style={styles.container}>
         {/* Header – back button now calls onClose */}
         <View style={styles.header}>
@@ -1721,7 +1721,7 @@ const handlePaymentSelect = (method) => {
           </LinearGradient>
         </ScrollView>
       </SafeAreaView>
-    </Modal>
+    // </Modal>
   );
 }
 

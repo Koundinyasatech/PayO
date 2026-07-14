@@ -210,7 +210,7 @@ import Receive from '../screens/Receive';
 
 /* PAYMENT FLOW */
 import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
-
+import MakePayment from '../screens/MakePayment.jsx';
 
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
@@ -277,6 +277,8 @@ export default function AppNavigator() {
            <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
         <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
         <Stack.Screen name="ConfirmDeposite" component={ConfirmDepositeScreen} />
+        <Stack.Screen name="MakePayment" component={MakePayment} />
+        
 
 
 
