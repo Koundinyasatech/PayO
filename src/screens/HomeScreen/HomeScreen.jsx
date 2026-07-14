@@ -1103,7 +1103,7 @@ export default function HomeScreen({ navigation }) {
             />
             <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
           </TouchableOpacity>
-          {/* UPDATED: Added onPress navigation here */}
+          UPDATED: Added onPress navigation here
           <TouchableOpacity 
             style={styles.profileIconContainer}
             onPress={() => navigation.navigate('UserProfile')}
