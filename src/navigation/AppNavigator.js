@@ -250,6 +250,7 @@ import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.jsx'
 import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.jsx';
 import WalletScreen from '../screens/HomeScreen/WalletScreen.jsx';
 import AddMoneytoWallet from '../screens/HomeScreen/AddMoneytoWallet.jsx';
+import NotFoundScreen from '../screens/HomeScreen/NotFoundScreen.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -270,7 +271,7 @@ export default function AppNavigator() {
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OtpVerified" component={OtpVerified} options={{ animation: 'fade' }} />
-
+          <Stack.Screen name="NotFound" component={NotFoundScreen} />
 
 
         <Stack.Screen name="Profile" component={ProfileScreen} />

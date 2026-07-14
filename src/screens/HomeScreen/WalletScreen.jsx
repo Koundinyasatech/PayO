@@ -480,7 +480,7 @@ export default function WalletScreen({ navigation }) {
                 <TouchableOpacity
                   activeOpacity={0.9}
                   style={styles.addMoneyBtn}
-                  onPress={() => setModalVisible(true)}>
+                  onPress={() => navigation.navigate('AddMoneytoWallet')}>
                   <Image 
                     source={require('../../../assets/images/walletscr/icon-container.png')} 
                     style={styles.addMoneyIcon} 

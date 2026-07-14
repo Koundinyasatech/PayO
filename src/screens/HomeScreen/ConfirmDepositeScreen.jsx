@@ -720,21 +720,21 @@ const displayEstimatedTime = paymentMethod?.tag || estimatedTime || 'INSTANT';
 
       // Simulate deposit API call
       await new Promise((resolve) => setTimeout(resolve, 600));
-        navigation.navigate('MakePayment'); 
-
       // dispatch(updatePaymentStatus('SUCCESS'));
 
       // if (Platform.OS === 'android') {
       //   ToastAndroid.show('Deposit successful!', ToastAndroid.SHORT);
       // }
 
-      // dispatch(resetDepositFlow());
-      // // Safely pop to top (or navigate to home)
+      dispatch(resetDepositFlow());
+      // Safely pop to top (or navigate to home)
       // if (navigation && navigation.popToTop) {
       //   navigation.popToTop();
       // } else if (navigation) {
       //   // navigation.navigate('MakePayment'); 
       // }
+        navigation.navigate('MakePayment'); 
+
     } catch (error) {
       dispatch(updatePaymentStatus('FAILED'));
       const msg = error.response?.data?.message || 'Deposit failed. Please try again.';
