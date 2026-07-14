@@ -57,5 +57,8 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
          <string>Camera access for QR scanning</string>
+
+		 <key>NSFaceIDUsageDescription</key>
+<string>We use Face ID to securely log you in without a PIN.</string>
 </dict>
 </plist>
