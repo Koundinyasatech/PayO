@@ -1405,7 +1405,6 @@ import wallet from '../../../assets/images/wallet/Wallet image 1.png';
 import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
 
 
-
 export default function WalletScreen({ visible, onClose, navigation }) {
   console.log("9876567")
   const dispatch = useDispatch();
