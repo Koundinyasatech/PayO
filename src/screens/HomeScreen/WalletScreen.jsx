@@ -1378,7 +1378,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, TextInput,
-  ScrollView, Image, Modal, Platform, ToastAndroid,
+  ScrollView, Image, Platform, ToastAndroid,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
@@ -1406,6 +1407,7 @@ import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
 
 
 export default function WalletScreen({ visible, onClose, navigation }) {
+  console.log("9876567")
   const dispatch = useDispatch();
   const [localAmount, setLocalAmount] = useState('1,000');
   const [walletData, setWalletData] = useState(null);
@@ -1587,7 +1589,7 @@ const handlePaymentSelect = (method) => {
   navigation.navigate('ConfirmDeposite');
 };
 
-
+console.log("98")
   return (
     // <Modal visible={visible} animationType="fade" onRequestClose={onClose}>
       <SafeAreaView style={styles.container}>
