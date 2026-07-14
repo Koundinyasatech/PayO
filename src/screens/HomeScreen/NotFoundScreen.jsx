@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   oopsText: {
     fontSize: 30,
     fontWeight: '700',
-    color: '##7B2FF7',
+    color: '#7B2FF7',
     marginBottom: 8,
   },
   titleText: {
