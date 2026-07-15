@@ -1118,48 +1118,66 @@ export default function HomeScreen({ navigation }) {
       </View> */}
 
       <Header
-        onMenuPress={() => console.log('Open Menu Drawer')}
-        onNotificationPress={() => navigation.navigate('Notifications')}
-        onProfilePress={() => navigation.navigate('UserProfile')}
-        notificationCount={3}
+        // onMenuPress={() => console.log('Open Menu Drawer')}
+        // onNotificationPress={() => navigation.navigate('Notifications')}
+        // onProfilePress={() => navigation.navigate('UserProfile')}
+        // notificationCount={3}
       />
+
+      
 
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         
         {/* Gradient Wallet Card */}
-        <LinearGradient 
-          colors={['#7c3aed', '#3b82f6']} 
+     <LinearGradient 
+          colors={['#6366f1', '#4f46e5']} 
           start={{ x: 0, y: 0 }} 
           end={{ x: 1, y: 1 }} 
           style={styles.walletCard}
         >
+          {/* Subtle Background Glow circles */}
+          <View style={styles.cardLightHighlight} />
+
+          {/* TOP ROW: Title & Eye Icon + View Wallet Button */}
           <View style={styles.walletHeaderRow}>
             <View style={styles.rowCenter}>
               <Text style={styles.walletLabel}>Total Wallet Balance</Text>
-              <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)} style={{marginLeft: 8}}>
-                <Icon name={balanceVisible ? 'eye-off' : 'eye'} size={16} color="rgba(255,255,255,0.8)" />
+              <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)} style={{ marginLeft: 8 }}>
+                <Icon name={balanceVisible ? 'eye-off' : 'eye'} size={18} color="rgba(255,255,255,0.8)" />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.viewWalletBtn}>
+
+            <TouchableOpacity 
+              style={styles.viewWalletBtn}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('WalletScreen')}
+            >
               <Text style={styles.viewWalletText}>View Wallet</Text>
               <Icon name="chevron-right" size={14} color="#fff" />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.balanceRow}>
-            <Text style={styles.balanceAmount}>{balanceVisible ? available : '****'}</Text>
-            <Text style={styles.balanceCurrency}>PAYO</Text>
+          {/* MIDDLE ROW: Main Balance Text */}
+          <View style={styles.balanceContainer}>
+            <View style={styles.balanceRow}>
+              <Text style={styles.balanceAmount}>{balanceVisible ? available : '****'}</Text>
+              <Text style={styles.balanceCurrency}>PAYO</Text>
+            </View>
+            
+            <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹8,71,500' : '≈ ₹***'}</Text>
           </View>
-          <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹0.0' : '≈ ₹***'}</Text>
 
-          <TouchableOpacity onPress={()=>navigation.navigate('WalletScreen')} style={styles.addMoneyBtn}>
-            <Image 
-              source={require('../../../assets/images/icon-container.png')} 
-              style={styles.addMoneyIcon} 
-              resizeMode="contain"
-            />
-            <Text style={styles.addMoneyText}>Add Money</Text>
-          </TouchableOpacity>
+          {/* BOTTOM ROW: Add Money Button aligned perfectly to the bottom-right corner */}
+          <View style={styles.bottomActionRow}>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('AddMoneytoWallet')} 
+              style={styles.addMoneyBtn}
+              activeOpacity={0.9}
+            >
+              <Icon name="plus" size={22} color="#22c55e" style={{ marginRight: 6 }} />
+              <Text style={styles.addMoneyText}>Add Money</Text>
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
 
         {/* Quick Actions */}
@@ -1207,7 +1225,7 @@ export default function HomeScreen({ navigation }) {
         <Image
           source={item.image}
           style={styles.bannerCard}
-          resizeMode="cover" // <-- Change this from "stretch" to "cover"
+          resizeMode="stretch" // <-- Change this from "stretch" to "cover"
         />
       </View>
     )}
