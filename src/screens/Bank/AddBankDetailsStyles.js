@@ -3,189 +3,163 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { moderateScale } from 'react-native-size-matters';
 
 export default StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
-    flexGrow: 1,
-    backgroundColor: '#f3e8ff',
-    paddingHorizontal: wp('5%'),
+    paddingHorizontal: wp('6%'),
     paddingTop: hp('2%'),
     paddingBottom: hp('5%'),
   },
-
   header: {
-    marginTop: hp('1%'),
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: hp('6%'),
-    position: 'relative',
-    marginBottom: hp('2%'),
-  },
-
-  backButton: {
-    position: 'absolute',
-    left: 0,
-    padding: wp('1%'),
-  },
-
-  back: {
-    fontSize: moderateScale(24),
-    color: '#4B0082',
-  },
-
-  title: {
-    textAlign: 'center',
-    color: '#6a0dad',
-    fontSize: moderateScale(20),
-    fontWeight: 'bold',
-  },
-
-  card: {
-    width: '100%',
-    padding: wp('5%'),
-    borderRadius: moderateScale(15),
-    backgroundColor: '#ffffff',
-    elevation: 5,
-  },
-
-  sectionTitle: {
-    color: '#6a0dad',
-    fontWeight: 'bold',
-    marginTop: hp('1%'),
-    marginBottom: hp('0.6%'),
-    fontSize: moderateScale(14),
-  },
-
-  input: {
-    width: '100%',
-    paddingVertical: hp('1.7%'),
-    paddingHorizontal: wp('3.5%'),
-    marginBottom: hp('1.2%'),
-    borderRadius: moderateScale(10),
-    borderWidth: 1,
-    borderColor: '#d1c4e9',
-    fontSize: moderateScale(14),
-    backgroundColor: '#fafafa',
-    color: '#000',
-  },
-
-  dropdownInput: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: hp('2%'),
+    position: 'relative',
+  },
+  iconButton: {
+    position: 'absolute',
+    left: 0,
+    padding: wp('2%'),
+  },
+  iconButtonRight: {
+    position: 'absolute',
+    right: 0,
+    padding: wp('2%'),
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#000',
+    letterSpacing: 0.5,
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: '#444',
+    fontSize: 14,
+    marginBottom: hp('2%'),
+    lineHeight: 20,
+  },
+  label: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: hp('0.8%'),
+  },
+  required: {
+    color: 'red',
+  },
+  input: {
     borderWidth: 1,
-    borderColor: '#d1c4e9',
-    borderRadius: moderateScale(12),
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingVertical: hp('1.5%'),
     paddingHorizontal: wp('3%'),
-    paddingVertical: hp('1.7%'),
-    marginBottom: hp('1.2%'),
+    marginBottom: hp('1.5%'),
+    fontSize: 15,
     backgroundColor: '#fff',
+    color: '#000',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
   },
-
-  bankIcon: {
-    fontSize: moderateScale(16),
-    marginRight: wp('2.5%'),
+  radioGroup: {
+    marginBottom: hp('1.5%'),
   },
-
-  dropdownText: {
-    flex: 1,
-    fontSize: moderateScale(14),
-    color: '#333',
-  },
-
-  dropdownArrow: {
-    fontSize: moderateScale(16),
-    color: '#777',
-  },
-
-  dropdown: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#d1c4e9',
-    borderRadius: moderateScale(12),
-    maxHeight: hp('25%'),
-    marginBottom: hp('1.2%'),
-    overflow: 'hidden',
-  },
-
-  dropdownItem: {
-    padding: wp('3.5%'),
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-
   radioRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: hp('0.8%'),
   },
-
   radioOuter: {
-    width: moderateScale(22),
-    height: moderateScale(22),
-    borderRadius: moderateScale(11),
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     borderWidth: 2,
     borderColor: '#ccc',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: wp('3%'),
   },
-
   radioOuterActive: {
-    borderColor: '#7b1fa2',
+    borderColor: '#285CE0',
   },
-
   radioInner: {
-    width: moderateScale(10),
-    height: moderateScale(10),
-    borderRadius: moderateScale(5),
-    backgroundColor: '#7b1fa2',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#285CE0',
   },
-
   radioText: {
-    fontSize: moderateScale(15),
+    fontSize: 15,
+    color: '#000',
+  },
+  dropdown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp('3%'),
+    marginBottom: hp('1.5%'),
+    backgroundColor: '#fff',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+  },
+  dropdownText: {
+    fontSize: 15,
     color: '#333',
   },
-
-  button: {
-    width: '100%',
-    paddingVertical: hp('2%'),
-    backgroundColor: '#7b1fa2',
-    borderRadius: moderateScale(12),
-    marginTop: hp('2%'),
-    alignItems: 'center',
-    marginBottom: hp('2%'),
+  dropdownList: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    maxHeight: hp('25%'),
+    marginBottom: hp('1.5%'),
+    backgroundColor: '#fff',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 3,
   },
-
+  dropdownItem: {
+    paddingVertical: hp('1.5%'),
+    paddingHorizontal: wp('3%'),
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  dropdownItemText: {
+    fontSize: 15,
+    color: '#000',
+  },
+  button: {
+    backgroundColor: '#7B2FF7',
+    borderRadius: 10,
+    paddingVertical: hp('1.8%'),
+    alignItems: 'center',
+    marginTop: hp('2%'),
+    shadowColor: '#285CE0',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+  },
   buttonText: {
     color: '#fff',
-    fontSize: moderateScale(16),
-    fontWeight: 'bold',
-  },
-
-  uploadBox: {
-    width: '100%',
-    height: hp('18%'),
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: '#d1c4e9',
-    borderRadius: moderateScale(12),
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
-    marginBottom: hp('2%'),
-  },
-
-  uploadText: {
-    marginTop: hp('1%'),
-    fontSize: moderateScale(14),
-    color: '#7b1fa2',
-    fontWeight: '500',
-  },
-
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: moderateScale(12),
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
 });
