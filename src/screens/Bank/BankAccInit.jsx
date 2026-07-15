@@ -1,96 +1,219 @@
+// import React from 'react';
+// import { View, Text, Image, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+// import Icon from 'react-native-vector-icons/Ionicons';
+// import styles from './BankAccInitStyles';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+
+// const BankAccInit = () => {
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+//       <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        
+//         {/* Header */}
+//         <View style={styles.header}>
+//           <TouchableOpacity style={styles.backButtonCircle}>
+//             <Icon name="chevron-back" size={22} color="#000" />
+//           </TouchableOpacity>
+//           <Text style={styles.headerTitle}>Add Bank Account</Text>
+//           <Icon name="help-circle-outline" size={22} color="#5B4BFF" />
+//         </View>
+
+//         <Text style={styles.subText}>
+//           Securely link your bank account to send and receive money
+//         </Text>
+
+//         {/* Progress Line */}
+//         <View style={styles.progressLine} />
+
+//         {/* Illustration */}
+//         <Image
+//           source={require('../../../assets/images/addBankdetails/Bank 1.png')}
+//           style={styles.illustration}
+//           resizeMode="contain"
+//         />
+
+//         {/* Features */}
+//         <View style={styles.featuresContainer}>
+//           <View style={styles.featureItem}>
+//             <Image
+//               source={require('../../../assets/images/addBankdetails/Secure Icon.png')}
+//               style={styles.featureIcon}
+//               resizeMode="contain"
+//             />
+//             <View>
+//               <Text style={styles.featureTitle}>100% Secure</Text>
+//               <Text style={styles.featureDesc}>Your data is safe with us</Text>
+//             </View>
+//           </View>
+
+//           <View style={styles.featureItem}>
+//             <Image
+//               source={require('../../../assets/images/addBankdetails/Verification Icon.png')}
+//               style={styles.featureIcon}
+//               resizeMode="contain"
+//             />
+//             <View>
+//               <Text style={styles.featureTitle}>Instant Verification</Text>
+//               <Text style={styles.featureDesc}>Quick account verification</Text>
+//             </View>
+//           </View>
+
+//           <View style={styles.featureItem}>
+//             <Image
+//               source={require('../../../assets/images/addBankdetails/wallet (1).png')}
+//               style={styles.featureIcon}
+//               resizeMode="contain"
+//             />
+//             <View>
+//               <Text style={styles.featureTitle}>Easy Payments</Text>
+//               <Text style={styles.featureDesc}>Send & receive money instantly</Text>
+//             </View>
+//           </View>
+//         </View>
+
+//         {/* Security Info */}
+//         <View style={styles.securityContainer}>
+//           <View style={styles.securityLeft}>
+//             <Image
+//               source={require('../../../assets/images/addBankdetails/Secure Icon.png')}
+//               style={styles.securityIcon}
+//               resizeMode="contain"
+//             />
+//             <View>
+//               <Text style={styles.securityTitle}>Secure & Trusted</Text>
+//               <Text style={styles.securityDesc}>Your account is protected with</Text>
+//               <Text style={styles.securityDesc}>bank‑grade security.</Text>
+//             </View>
+//           </View>
+//           <Image
+//             source={require('../../../assets/images/addBankdetails/Create pin 1.png')}
+//             style={styles.securityIconBtms}
+//             resizeMode="contain"
+//           />
+//         </View>
+
+//         {/* Button */}
+//         <TouchableOpacity style={styles.button}>
+//           <Text style={styles.buttonText}>Add New Bank Account →</Text>
+//         </TouchableOpacity>
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default BankAccInit;
+
+///////////////////////////////////////
+
 import React from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
-
+import { View, Text, Image, TouchableOpacity, ScrollView, SafeAreaView, StatusBar } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 import styles from './BankAccInitStyles';
-import Icon from "react-native-vector-icons/Feather";
 
-export default function BankAccInit({ navigation }) {
+const BankAccInit = () => {
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.container}>
-
-      {/* HEADER */}
-      <View style={styles.header}>
-
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.navigate('UserProfile')}
-        >
-          <Text style={styles.back}>
-            <Icon name="chevron-left" size={28} color="#000000" />
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.title}>Add Bank Account</Text>
-
-      </View>
-
-      {/* SUBTITLE */}
-      <Text style={styles.subtitle}>
-        Securely link your bank account{"\n"}
-        to send and receive money
-      </Text>
-
-      {/* ICON */}
-      <View style={styles.iconWrapper}>
-        <Text style={styles.icon}>🏦</Text>
-      </View>
-
-      {/* FEATURES */}
-      <View style={styles.featureContainer}>
-
-        <View style={styles.featureRow}>
-          <View style={styles.circle}>
-            <Text style={styles.circleIcon}>✔</Text>
-          </View>
-          <View>
-            <Text style={styles.featureTitle}>100% Secure</Text>
-            <Text style={styles.featureDesc}>
-              Your data is safe with us
-            </Text>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.backButtonCircle} onPress={() => navigation.goBack()}>
+            <Icon name="chevron-back" size={20} color="#000" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Add Bank Account</Text>
+          <View style={styles.helpIcon}>
+            <Icon name="help-circle-outline" size={22} color="#5B4BFF" />
           </View>
         </View>
 
-        <View style={styles.featureRow}>
-          <View style={styles.circle}>
-            <Text style={styles.circleIcon}>⚡</Text>
-          </View>
-          <View>
-            <Text style={styles.featureTitle}>Instant Verification</Text>
-            <Text style={styles.featureDesc}>
-              Quick account verification
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.featureRow}>
-          <View style={styles.circle}>
-            <Text style={styles.circleIcon}>💸</Text>
-          </View>
-          <View>
-            <Text style={styles.featureTitle}>Easy Payments</Text>
-            <Text style={styles.featureDesc}>
-              Send & receive money instantly
-            </Text>
-          </View>
-        </View>
-
-      </View>
-
-      {/* BUTTON */}
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('AddBankDetails')}
-      >
-        <Text style={styles.buttonText}>
-          Add New Bank Account
+        <Text style={styles.subText}>
+          Securely link your bank account to send and receive money
         </Text>
-      </TouchableOpacity>
 
+        {/* Illustration */}
+        <Image
+          source={require('../../../assets/images/addBankdetails/Bank 1.png')}
+          style={styles.illustration}
+          resizeMode="contain"
+        />
+
+        {/* Features - horizontal row with gray circle behind icon */}
+        <View style={styles.featuresContainer}>
+          <View style={styles.featureItem}>
+            <View style={styles.featureIconWrapper}>
+              <Image
+                source={require('../../../assets/images/addBankdetails/Secure Icon.png')}
+                style={styles.featureIcon}
+                resizeMode="contain"
+              />
+            </View>
+            <View>
+              <Text style={styles.featureTitle}>100% Secure</Text>
+              <Text style={styles.featureDesc}>Your data is safe with us</Text>
+            </View>
+          </View>
+
+          <View style={styles.featureItem}>
+            <View style={styles.featureIconWrapper}>
+              <Image
+                source={require('../../../assets/images/addBankdetails/Verification Icon.png')}
+                style={styles.featureIcon}
+                resizeMode="contain"
+              />
+            </View>
+            <View>
+              <Text style={styles.featureTitle}>Instant Verification</Text>
+              <Text style={styles.featureDesc}>Quick account verification</Text>
+            </View>
+          </View>
+
+          <View style={styles.featureItem}>
+            <View style={styles.featureIconWrapper}>
+              <Image
+                source={require('../../../assets/images/addBankdetails/wallet (1).png')}
+                style={styles.featureIcon}
+                resizeMode="contain"
+              />
+            </View>
+            <View>
+              <Text style={styles.featureTitle}>Easy Payments</Text>
+              <Text style={styles.featureDesc}>Send & receive money instantly</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Security Info */}
+        <View style={styles.securityContainer}>
+          <View style={styles.securityLeft}>
+            <Image
+              source={require('../../../assets/images/addBankdetails/Secure Icon.png')}
+              style={styles.securityIcon}
+              resizeMode="contain"
+            />
+            <View>
+              <Text style={styles.securityTitle}>Secure & Trusted</Text>
+              <Text style={styles.securityDesc}>Your account is protected with bank‑grade security.</Text>
+            </View>
+          </View>
+          <Image
+            source={require('../../../assets/images/addBankdetails/Create pin 1.png')}
+            style={styles.securityIconRight}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Button */}
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddBankDetails')}>
+          <Text style={styles.buttonText}>Add New Bank Account →</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
-}
+};
+
+export default BankAccInit;

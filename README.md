@@ -32,6 +32,7 @@ npm install react-redux react-native-worklets
 
 npm install @react-navigation/native
 npm install react-native-screens react-native-safe-area-context
+npm install react-native-vector-icons
 
 
 
