@@ -791,7 +791,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: scale(20),
-    paddingTop: verticalScale(40),
+    paddingTop: verticalScale(20),
     paddingBottom: verticalScale(15),
   },
   iconButton: {
@@ -854,23 +854,116 @@ export default StyleSheet.create({
   },
 
   /* WALLET CARD */
+  // walletCard: {
+  //   marginHorizontal: scale(20),
+  //   marginTop: verticalScale(5),
+  //   borderRadius: moderateScale(20),
+  //   padding: scale(20),
+  //   position: 'relative',
+  //   elevation: 8,
+  //   shadowColor: theme.colors.primaryIndigo, // Updated to theme
+  //   shadowOffset: { width: 0, height: 4 },
+  //   shadowOpacity: 0.3,
+  //   shadowRadius: 8,
+  // },
+  // walletHeaderRow: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   marginBottom: verticalScale(15),
+  // },
+  // rowCenter: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  // walletLabel: {
+  //   color: 'rgba(255, 255, 255, 0.9)',
+  //   fontSize: moderateScale(14),
+  //   fontWeight: '500',
+  // },
+  // viewWalletBtn: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: 'rgba(255,255,255,0.15)',
+  //   paddingHorizontal: scale(10),
+  //   paddingVertical: verticalScale(4),
+  //   borderRadius: scale(20),
+  // },
+  // viewWalletText: {
+  //   color: '#fff',
+  //   fontSize: moderateScale(12),
+  //   marginRight: scale(4),
+  // },
+  // balanceRow: {
+  //   flexDirection: 'row',
+  //   alignItems: 'baseline',
+  // },
+  // balanceAmount: {
+  //   color: '#fff',
+  //   fontSize: moderateScale(32),
+  //   fontWeight: 'bold',
+  // },
+  // balanceCurrency: {
+  //   color: 'rgba(255,255,255,0.8)',
+  //   fontSize: moderateScale(16),
+  //   marginLeft: scale(8),
+  //   fontWeight: '600',
+  // },
+  // fiatAmount: {
+  //   color: 'rgba(255,255,255,0.7)',
+  //   fontSize: moderateScale(14),
+  //   marginTop: verticalScale(4),
+  // },
+  // addMoneyBtn: {
+  //   position: 'absolute',
+  //   bottom: scale(20),
+  //   right: scale(20),
+  //   backgroundColor: '#fff',
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   paddingHorizontal: scale(14),
+  //   paddingVertical: verticalScale(8),
+  //   borderRadius: scale(20),
+  //   elevation: 2,
+  // },
+  // addMoneyIcon: {
+  //   width: scale(14),
+  //   height: scale(14),
+  // },
+  // addMoneyText: {
+  //   color: theme.colors.primaryBlue, // Updated to theme
+  //   fontWeight: '600',
+  //   marginLeft: scale(6),
+  //   fontSize: moderateScale(13),
+  // },
+
   walletCard: {
     marginHorizontal: scale(20),
     marginTop: verticalScale(5),
-    borderRadius: moderateScale(20),
+    borderRadius: moderateScale(24),
     padding: scale(20),
     position: 'relative',
+    overflow: 'hidden',
     elevation: 8,
-    shadowColor: theme.colors.primaryIndigo, // Updated to theme
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#4f46e5',
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowRadius: 15,
+  },
+  cardLightHighlight: {
+    position: 'absolute',
+    width: scale(180),
+    height: scale(180),
+    borderRadius: scale(90),
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
+    top: -scale(30),
+    right: -scale(20),
   },
   walletHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: verticalScale(15),
+    width: '100%',
   },
   rowCenter: {
     flexDirection: 'row',
@@ -884,15 +977,24 @@ export default StyleSheet.create({
   viewWalletBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(4),
-    borderRadius: scale(20),
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.4)',
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(6),
+    borderRadius: theme.borderRadius.full,
+    
+   
   },
   viewWalletText: {
     color: '#fff',
-    fontSize: moderateScale(12),
+    fontSize: moderateScale(15),
     marginRight: scale(4),
+    fontWeight: '500',
+  },
+  balanceContainer: {
+    marginTop: verticalScale(20),
+    alignItems: 'flex-start',
   },
   balanceRow: {
     flexDirection: 'row',
@@ -900,41 +1002,44 @@ export default StyleSheet.create({
   },
   balanceAmount: {
     color: '#fff',
-    fontSize: moderateScale(32),
-    fontWeight: 'bold',
+    fontSize: moderateScale(36),
+    fontWeight: '700',
   },
   balanceCurrency: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: moderateScale(16),
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: moderateScale(20),
     marginLeft: scale(8),
     fontWeight: '600',
   },
   fiatAmount: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: moderateScale(14),
-    marginTop: verticalScale(4),
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: moderateScale(15),
+    marginTop: verticalScale(6),
+    fontWeight: '400',
+  },
+  bottomActionRow: {
+    width: '100%',
+    alignItems: 'flex-end', // Aligns the button smoothly to the right edge
+    marginTop: verticalScale(4), 
   },
   addMoneyBtn: {
-    position: 'absolute',
-    bottom: scale(20),
-    right: scale(20),
-    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: scale(14),
-    paddingVertical: verticalScale(8),
-    borderRadius: scale(20),
-    elevation: 2,
-  },
-  addMoneyIcon: {
-    width: scale(14),
-    height: scale(14),
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(12),
+    borderRadius: scale(24),
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
   addMoneyText: {
-    color: theme.colors.primaryBlue, // Updated to theme
-    fontWeight: '600',
-    marginLeft: scale(6),
-    fontSize: moderateScale(13),
+    color: '#1e40af', // Deep blue tint text matching the mockup accent
+    fontWeight: '700',
+    fontSize: moderateScale(15),
   },
 
   /* COMMON SECTIONS */
@@ -1004,13 +1109,13 @@ export default StyleSheet.create({
   },
   bannerWrapper: {
     width: windowWidth * 0.78, 
-    marginRight: 16, 
+    marginRight: 6, 
   },
   bannerCard: {
     width: '100%',
     height: verticalScale(130), 
-    borderRadius: moderateScale(16),
-    backgroundColor: '#e5e7eb',
+    // borderRadius: moderateScale(16),
+    // backgroundColor: '#e5e7eb',
     overflow: 'hidden',
   },
   

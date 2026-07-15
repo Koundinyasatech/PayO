@@ -3,14 +3,14 @@ import { StyleSheet, Platform } from 'react-native';
 // --- Design Tokens (Variables) ---
 export const theme = {
   colors: {
-    primaryBlue: '#3b82f6', 
+    primaryBlue: '#285CE0', 
     primaryIndigo: '#4f46e5',
-    primaryPurple: '#7c3aed',
-    bgApp: '#ffffff', 
+    primaryPurple: '#7C3AED', 
+    bgApp: '#F9FFFB', 
     bgSurface: '#ffffff',
-    textMain: '#1f2937', 
-    textMuted: '#6b7280', 
-    statusSuccess: '#10b981', 
+    textMain: '#05070D',  ////// profile 
+    textMuted: '#414141',  
+    statusSuccess: '#03B244',  ////// profile 
     statusDanger: '#ef4444',
     // Custom Tag Colors
     tagBtcBg: '#fff7ed',

@@ -540,8 +540,9 @@ export default function OtpVerificationScreen({ route, navigation }) {
         
         // Navigation branches dynamically based on flow initiation
         if (type === 'login') {
-          navigation.replace('Main');
+          navigation.replace('AddBankHome');
           // navigation.replace('WalletScreen');
+          // navigation.replace('KYCVerification')
         } else {
           navigation.replace('OtpVerified');
         }
