@@ -235,6 +235,8 @@
 // });
 
 
+
+
 import { StyleSheet } from 'react-native';
 import { theme } from '../../MainTheme/theme';
 
@@ -329,10 +331,10 @@ export default StyleSheet.create({
 
   // Main Card Styles
   mainCard: {
-    borderRadius: moderateScale(24),
-    padding: moderateScale(20),
+    borderRadius: moderateScale(20),
+    padding: moderateScale(10),
     marginBottom: verticalScale(20),
-    overflow: 'hidden', // Ensures colors don't bleed out of bounds
+    overflow: 'hidden', 
     ...theme.shadows.md,
   },
   cardTopRow: {
@@ -361,8 +363,15 @@ export default StyleSheet.create({
     fontSize: theme.typography.size.xs,
     fontWeight: theme.typography.weight.semibold,
   },
+  // Added styling for the 3D Wallet Icon
+  wallet3DIcon: {
+    width: moderateScale(74),
+    height: moderateScale(60),
+    resizeMode: 'contain',
+    marginTop: verticalScale(-8), // Adjusts icon to sit perfectly in the corner
+  },
   balanceSection: {
-    marginTop: verticalScale(10),
+    marginTop: verticalScale(0), // Reduced because the icon overlaps a bit
   },
   balanceLabelRow: {
     flexDirection: 'row',
@@ -418,7 +427,7 @@ export default StyleSheet.create({
     fontSize: theme.typography.size.sm,
   },
 
-  // Action Buttons row explicitly side-by-side
+  // Action Buttons
   actionRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -426,7 +435,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   actionBtn: {
-    flex: 1, // Changed to 1 so they dynamically take 50% minus margin
+    flex: 1, 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -563,7 +572,7 @@ export default StyleSheet.create({
     borderRadius: theme.borderRadius.full,
   },
 
-  // Send Button
+  // Send Button Layout Updates
   sendPrimaryBtn: {
     backgroundColor: theme.colors.primaryIndigo,
     flexDirection: 'row',
@@ -573,13 +582,17 @@ export default StyleSheet.create({
     borderRadius: theme.borderRadius.md,
     marginTop: verticalScale(8),
     marginBottom: verticalScale(20),
+    position: 'relative', // Necessary to absolutely position the arrow
     ...theme.shadows.sm,
   },
   sendPrimaryBtnText: {
     color: '#fff',
     fontSize: theme.typography.size.base,
     fontWeight: theme.typography.weight.semibold,
-    marginRight: scale(8),
+  },
+  sendArrowIcon: {
+    position: 'absolute',
+    right: scale(20), // Locks arrow to the right edge
   },
 
   // Bottom Promos
@@ -635,10 +648,11 @@ export default StyleSheet.create({
 });
 
 
-// import { StyleSheet, Dimensions } from 'react-native';
+
+// import { StyleSheet } from 'react-native';
 // import { theme } from '../../MainTheme/theme';
 
-// import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/responsive'; 
+// import { scale, verticalScale, moderateScale } from '../../utils/responsive'; 
 
 // export default StyleSheet.create({
 //   container: {
@@ -652,9 +666,12 @@ export default StyleSheet.create({
 //     backgroundColor: theme.colors.bgApp,
 //   },
 //   scrollContent: {
-//     paddingBottom: verticalScale(100),
+//     flexGrow: 1, 
+//   },
+//   innerContainer: {
 //     paddingHorizontal: scale(20),
-//     paddingTop: verticalScale(10),
+//     paddingTop: verticalScale(16),
+//     paddingBottom: verticalScale(100),
 //   },
   
 //   // Header Styles
@@ -673,7 +690,15 @@ export default StyleSheet.create({
 //     justifyContent: 'center',
 //     ...theme.shadows.sm,
 //   },
-//   // Custom Header Image Icons
+//   headerActionBtn: {
+//     width: moderateScale(40),
+//     height: moderateScale(40),
+//     borderRadius: moderateScale(20),
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     ...theme.shadows.sm,
+//   },
 //   customHeaderIcon: {
 //     width: moderateScale(20),
 //     height: moderateScale(20),
@@ -695,6 +720,7 @@ export default StyleSheet.create({
 //   },
 //   headerRight: {
 //     flexDirection: 'row',
+//     alignItems: 'center',
 //   },
 //   badge: {
 //     position: 'absolute',
@@ -717,9 +743,10 @@ export default StyleSheet.create({
 
 //   // Main Card Styles
 //   mainCard: {
-//     borderRadius: theme.borderRadius.xl,
+//     borderRadius: moderateScale(24),
 //     padding: moderateScale(20),
 //     marginBottom: verticalScale(20),
+//     overflow: 'hidden', // Ensures colors don't bleed out of bounds
 //     ...theme.shadows.md,
 //   },
 //   cardTopRow: {
@@ -779,7 +806,7 @@ export default StyleSheet.create({
 //     flexDirection: 'row',
 //     justifyContent: 'space-between',
 //     alignItems: 'center',
-//     marginTop: verticalScale(8),
+//     marginTop: verticalScale(12),
 //   },
 //   addMoneyBtn: {
 //     flexDirection: 'row',
@@ -789,7 +816,6 @@ export default StyleSheet.create({
 //     paddingVertical: verticalScale(8),
 //     borderRadius: theme.borderRadius.full,
 //   },
-//   // Custom Add Money Icon
 //   addMoneyIcon: {
 //     width: moderateScale(14),
 //     height: moderateScale(14),
@@ -806,20 +832,22 @@ export default StyleSheet.create({
 //     fontSize: theme.typography.size.sm,
 //   },
 
-//   // Action Buttons
+//   // Action Buttons row explicitly side-by-side
 //   actionRow: {
 //     flexDirection: 'row',
 //     justifyContent: 'space-between',
 //     marginBottom: verticalScale(20),
+//     alignItems: 'center',
 //   },
 //   actionBtn: {
-//     flex: 0.48,
+//     flex: 1, // Changed to 1 so they dynamically take 50% minus margin
 //     flexDirection: 'row',
 //     alignItems: 'center',
 //     justifyContent: 'center',
 //     backgroundColor: '#fff',
-//     paddingVertical: verticalScale(12),
-//     borderRadius: theme.borderRadius.md,
+//     paddingVertical: verticalScale(14),
+//     marginHorizontal: scale(6), 
+//     borderRadius: moderateScale(12),
 //     borderWidth: 1,
 //     borderColor: '#e5e7eb',
 //     ...theme.shadows.sm,
@@ -830,7 +858,6 @@ export default StyleSheet.create({
 //     marginRight: scale(8),
 //     fontSize: theme.typography.size.sm,
 //   },
-//   // Custom Action Image Icons (Copy/Share)
 //   actionIcon: {
 //     width: moderateScale(18),
 //     height: moderateScale(18),
@@ -839,7 +866,7 @@ export default StyleSheet.create({
 
 //   // Promo Banner
 //   promoBanner: {
-//     borderRadius: theme.borderRadius.lg,
+//     borderRadius: moderateScale(16),
 //     padding: moderateScale(16),
 //     marginBottom: verticalScale(24),
 //   },
@@ -850,6 +877,10 @@ export default StyleSheet.create({
 //   },
 //   promoEmoji: {
 //     fontSize: moderateScale(28),
+//   },
+//   promoTextContainer: {
+//     flex: 1, 
+//     marginLeft: scale(12)
 //   },
 //   promoTitle: {
 //     color: '#fff',
@@ -895,6 +926,8 @@ export default StyleSheet.create({
 //   dataCard: {
 //     padding: moderateScale(16),
 //     marginBottom: verticalScale(16),
+//     ...theme.shadows.sm,
+//     borderColor: '#e5e7eb', 
 //   },
 //   dataCardRow: {
 //     flexDirection: 'row',
@@ -980,7 +1013,6 @@ export default StyleSheet.create({
 //     justifyContent: 'center',
 //     marginRight: scale(12),
 //   },
-//   // Custom Promo Images Styling
 //   promoImageLarge: {
 //     width: moderateScale(32),
 //     height: moderateScale(32),
@@ -1015,3 +1047,5 @@ export default StyleSheet.create({
 //     fontWeight: theme.typography.weight.bold,
 //   },
 // });
+
+

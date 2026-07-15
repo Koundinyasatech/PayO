@@ -6,7 +6,7 @@ export const theme = {
     primaryBlue: '#3b82f6', 
     primaryIndigo: '#4f46e5',
     primaryPurple: '#7c3aed',
-    bgApp: '#f4f6f9', 
+    bgApp: '#ffffff', 
     bgSurface: '#ffffff',
     textMain: '#1f2937', 
     textMuted: '#6b7280', 
