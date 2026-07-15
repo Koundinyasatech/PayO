@@ -152,16 +152,16 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  Modal,
   StyleSheet,
   Dimensions,
   TouchableWithoutFeedback,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-import styles from '../HomeScreen/homeStyling'; // Retaining your existing main styles reference
+import styles from '../HomeScreen/homeStyling'; 
 
 const { width, height } = Dimensions.get('window');
 
@@ -169,7 +169,6 @@ export default function Header() {
   const navigation = useNavigation();
   const [sidebarVisible, setSidebarVisible] = useState(false);
   
-  // Manage state locally or replace with api variables if needed
   const notificationCount = 3; 
 
   const menuItems = [
@@ -207,7 +206,7 @@ export default function Header() {
           <Icon name="menu" size={24} color="#1f2937" />
         </TouchableOpacity>
         
-        {/* Brand Logo Alignment Zone */}
+        {/* Brand Logo */}
         <Image 
           source={require('../../../assets/images/LogoContainer.png')} 
           style={styles.logo} 
@@ -216,7 +215,6 @@ export default function Header() {
         
         {/* Right Operations Cluster */}
         <View style={styles.headerRight}>
-          {/* Notification Alert Target */}
           <TouchableOpacity 
             style={styles.iconButton} 
             onPress={() => navigation.navigate('Notifications')} 
@@ -234,7 +232,6 @@ export default function Header() {
             )}
           </TouchableOpacity>
 
-          {/* Profile Anchor View */}
           <TouchableOpacity 
             style={styles.profileIconContainer} 
             onPress={() => navigation.navigate('UserProfile')} 
@@ -249,15 +246,10 @@ export default function Header() {
         </View>
       </View>
 
-      {/* Sidebar Overlay Drawer */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={sidebarVisible}
-        onRequestClose={() => setSidebarVisible(false)}
-      >
+      {/* Inline Sidebar Overlay Drawer */}
+      {sidebarVisible && (
         <View style={sidebarStyles.overlay}>
-          {/* Dismiss tap area on the right side */}
+          {/* Absolute backdrop position catches taps anywhere outside the menu container */}
           <TouchableWithoutFeedback onPress={() => setSidebarVisible(false)}>
             <View style={sidebarStyles.backdropTouch} />
           </TouchableWithoutFeedback>
@@ -283,8 +275,12 @@ export default function Header() {
               </View>
 
               {/* Main Scrolling Navigation Menu Rows */}
-              <View style={sidebarStyles.menuList}>
-                {menuItems.map((item, index) => (
+              <ScrollView 
+                style={sidebarStyles.menuList}
+                contentContainerStyle={sidebarStyles.scrollContent} // Added internal padding here
+                showsVerticalScrollIndicator={false}
+              >
+                {menuItems?.map((item, index) => (
                   <TouchableOpacity
                     key={index}
                     style={sidebarStyles.menuItem}
@@ -314,42 +310,44 @@ export default function Header() {
                     </Text>
                   </TouchableOpacity>
                 ))}
-              </View>
+              </ScrollView>
 
             </SafeAreaView>
           </View>
         </View>
-      </Modal>
+      )}
     </>
   );
 }
 
 const sidebarStyles = StyleSheet.create({
   overlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: width,
+    height: height,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    flexDirection: 'row',
+    zIndex: 1000, 
   },
   backdropTouch: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject, 
   },
   drawerContainer: {
     width: width * 0.76,
     height: '100%',
-    backgroundColor: '#E5E7EB', // Matches the clean container backdrop color from your design mockup
+    backgroundColor: '#E5E7EB', 
   },
   safeAreaContainer: {
     flex: 1,
   },
   profileHeader: {
-    backgroundColor: '#3B60C4', // Rich blue backdrop block style match
+    backgroundColor: '#3B60C4', 
     paddingHorizontal: scale(16),
     paddingVertical: verticalScale(20),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopRightRadius: moderateScale(12),
-    borderTopLeftRadius: moderateScale(12),
   },
   userInfoRow: {
     flexDirection: 'row',
@@ -381,8 +379,11 @@ const sidebarStyles = StyleSheet.create({
   },
   menuList: {
     flex: 1,
+  },
+  scrollContent: {
     paddingTop: verticalScale(16),
     paddingHorizontal: scale(16),
+    paddingBottom: verticalScale(65), // Creates safety padding at the bottom of list items
   },
   menuItem: {
     flexDirection: 'row',
@@ -394,7 +395,7 @@ const sidebarStyles = StyleSheet.create({
     width: scale(32),
     height: scale(32),
     borderRadius: scale(16),
-    backgroundColor: '#D1D5DB', // Muted circle tint color matching design
+    backgroundColor: '#D1D5DB', 
     alignItems: 'center',
     justifyContent: 'center',
   },
