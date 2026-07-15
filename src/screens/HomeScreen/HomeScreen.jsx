@@ -1246,7 +1246,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>Crypto Market</Text>
             <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')}>
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={styles.viewAllText}>View All {">"}</Text>
             </TouchableOpacity>
           </View>
 
@@ -1292,7 +1292,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>Crypto News</Text>
             <TouchableOpacity onPress={() => setNewsCount(prev => prev + 3)}>
-              <Text style={styles.viewAllText}>View More</Text>
+              <Text style={styles.viewAllText}>View More {">"}</Text>
             </TouchableOpacity>
           </View>
 
