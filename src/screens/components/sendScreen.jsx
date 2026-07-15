@@ -109,7 +109,7 @@ export default function SendScreen({
       <SafeAreaView
         style={styles.safeArea}
         edges={['top', 'bottom']}>
-        <Header />
+        {/* <Header /> */}
 
         {activeTab !== 'amount' && (
           <>
