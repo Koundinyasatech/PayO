@@ -949,7 +949,7 @@
 
 
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -973,6 +973,7 @@ import Header from '../components/header';
 export default function HomeScreen({ navigation }) {
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [available, setAvailable] = useState('0.0');
+    const [avbRuppee, setAvbRuppee] = useState('1000');
   const [expertCoins, setExpertCoins] = useState([]);
   const [marketNews, setMarketNews] = useState([]);
   const [newsCount, setNewsCount] = useState(3);
@@ -980,6 +981,19 @@ export default function HomeScreen({ navigation }) {
   const scrollRef = useRef(null);
   const flatListRef = useRef(null);
   const [activeBanner, setActiveBanner] = useState(0);
+  // const isRestricted = avbRuppee < 100;
+
+   const isRestricted = useMemo(() => {
+    // Sanitize the string: strip out currency symbols, spaces, or commas (e.g., "₹ 150" or "1,200")
+    const numericValue = parseFloat(String(avbRuppee).replace(/[^\d.]/g, ''));
+    
+    // If parsing fails for any reason, default to restricted safety state
+    if (isNaN(numericValue)) return true; 
+    
+    return numericValue < 100;
+  }, [avbRuppee]);
+  console.log (isRestricted,"isRestricted",avbRuppee)
+  
 
   // References the local banner assets
   const bannerData = [
@@ -990,7 +1004,7 @@ export default function HomeScreen({ navigation }) {
   ];
 
   useEffect(() => {
-    if (bannerData.length === 0) return;
+    if (bannerData?.length === 0) return;
     
     const interval = setInterval(() => {
       setActiveBanner((prev) => {
@@ -1164,7 +1178,7 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.balanceCurrency}>PAYO</Text>
             </View>
             
-            <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹8,71,500' : '≈ ₹***'}</Text>
+            <Text style={styles.fiatAmount}>{balanceVisible ? `₹ ${avbRuppee}` : ''}</Text>
           </View>
 
           {/* BOTTOM ROW: Add Money Button aligned perfectly to the bottom-right corner */}
@@ -1181,7 +1195,7 @@ export default function HomeScreen({ navigation }) {
         </LinearGradient>
 
         {/* Quick Actions */}
-        <View style={styles.sectionContainer}>
+       <View style={styles.sectionContainer}>
           <Text style={styles.sectionHeading}>Quick Actions</Text>
           <View style={styles.actionsGrid}>
             {[
@@ -1192,7 +1206,11 @@ export default function HomeScreen({ navigation }) {
             ].map((action) => (
               <TouchableOpacity 
                 key={action.id} 
-                style={styles.actionItem}
+                // 1. Disable the button completely when restricted
+                disabled={isRestricted}
+                // 2. Reduce opacity to 40% when inactive to make it look faded/disabled
+                style={[styles.actionItem, isRestricted && { opacity: 0.4 }]}
+                activeOpacity={0.7}
                 onPress={() => navigation.navigate(action.route, action.params)}
               >
                 <View style={styles.actionIconBtn}>

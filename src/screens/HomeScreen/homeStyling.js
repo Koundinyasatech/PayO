@@ -1007,7 +1007,7 @@ export default StyleSheet.create({
   },
   balanceCurrency: {
     color: 'rgba(255,255,255,0.9)',
-    fontSize: moderateScale(20),
+    fontSize: moderateScale(15),
     marginLeft: scale(8),
     fontWeight: '600',
   },
@@ -1015,7 +1015,7 @@ export default StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     fontSize: moderateScale(15),
     marginTop: verticalScale(6),
-    fontWeight: '400',
+    fontWeight: '700',
   },
   bottomActionRow: {
     width: '100%',
