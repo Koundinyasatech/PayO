@@ -1164,7 +1164,7 @@ export default function HomeScreen({ navigation }) {
               <Text style={styles.balanceCurrency}>PAYO</Text>
             </View>
             
-            <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹8,71,500' : '≈ ₹***'}</Text>
+            <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹0.0' : '≈ ₹***'}</Text>
           </View>
 
           {/* BOTTOM ROW: Add Money Button aligned perfectly to the bottom-right corner */}
