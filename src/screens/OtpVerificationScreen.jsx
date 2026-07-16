@@ -540,9 +540,9 @@ navigation.replace('Main');
         
         // Navigation branches dynamically based on flow initiation
         if (type === 'login') {
-          //navigation.replace('AddBankHome');
-          // navigation.replace('WalletScreen');
-          // navigation.replace('KYCVerification')
+
+          navigation.replace('OtpVerified');
+
         } else {
           navigation.replace('OtpVerified');
         }
