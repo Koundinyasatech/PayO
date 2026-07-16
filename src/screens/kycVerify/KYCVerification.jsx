@@ -853,20 +853,20 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
+import { NativeModules } from 'react-native';
 
 import styles from '../kycVerify/KYCVerificationStyles';
 
 // Keep this for the gallery picker
-import { launchImageLibrary } from 'react-native-image-picker';
 
 // Import the new library to fix the front camera bug
 import ImageCropPicker from 'react-native-image-crop-picker';
-
 import { pick } from '@react-native-documents/picker';
 import { Dropdown } from 'react-native-element-dropdown';
 import api, { getToken } from '../../api/axios';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function KYCVerification({
   navigation,
@@ -935,26 +935,51 @@ export default function KYCVerification({
       Alert.alert('Bank Statement Uploaded');
     }
   };
+ 
+
+  // const openImagePicker = async () => {
+  //   const response = await launchImageLibrary({
+  //     mediaType: 'photo',
+  //     quality: 0.8,
+  //     selectionLimit: 1,
+  //   });
+
+  //   if (!response.didCancel && response.assets?.length > 0) {
+  //     const asset = response.assets[0];
+  //     const file = {
+  //       name: asset.fileName,
+  //       type: asset.type,
+  //       uri: asset.uri,
+  //       size: asset.fileSize,
+  //     };
+  //     console.log('IMAGE FILE:', file);
+  //     saveSelectedFile(file);
+  //   }
+  // };
 
   const openImagePicker = async () => {
-    const response = await launchImageLibrary({
+  try {
+    const image = await ImageCropPicker.openPicker({
       mediaType: 'photo',
-      quality: 0.8,
-      selectionLimit: 1,
+      cropping: false,
     });
 
-    if (!response.didCancel && response.assets?.length > 0) {
-      const asset = response.assets[0];
-      const file = {
-        name: asset.fileName,
-        type: asset.type,
-        uri: asset.uri,
-        size: asset.fileSize,
-      };
-      console.log('IMAGE FILE:', file);
-      saveSelectedFile(file);
+    const file = {
+      name: image.filename || `image_${Date.now()}.jpg`,
+      type: image.mime,
+      uri: image.path,
+      size: image.size,
+    };
+
+    console.log('IMAGE FILE:', file);
+    saveSelectedFile(file);
+  } catch (err) {
+    if (err.code !== 'E_PICKER_CANCELLED') {
+      console.log('Image Picker Error:', err);
+      Alert.alert('Error', 'Failed to pick image');
     }
-  };
+  }
+};
 
   const openPdfPicker = async () => {
     try {
@@ -1027,6 +1052,7 @@ export default function KYCVerification({
   // -------------------------------------------
 
   const uploadAadhar = async () => {
+    console.log(otherIdFile,"otherIdFile")
     try {
       const aadharBase64 = await RNFS.readFile(
         aadhaarFile?.uri,
@@ -1037,17 +1063,49 @@ export default function KYCVerification({
         faceFile?.uri,
         'base64'
       );
+       const panBase64 = await RNFS.readFile(
+        panFile?.uri,
+        'base64'
+      );
+       const passbookBase64 = await RNFS.readFile(
+        passbookFile?.uri,
+        'base64'
+      );
+
+      console.log(otherIdFile?.uri, 'PASSPORT URI');
+      console.log(panFile?.uri, 'PAN URI');
       console.log(aadhaarFile?.uri, "5656");
 
       const payload = {
-        aadharFront: `data:${aadhaarFile?.type};base64,${aadharBase64}`,
-        selfie: `data:${faceFile.type};base64,${selfieBase64}`,
-      };
+         "documents": [
+       { "documentType": "AADHAAR",
+        "frontImage": `data:${aadhaarFile?.type};base64,${aadharBase64}`,
+         "backImage": "",
+    
+         },
+          {   "documentType": "PAN",
+         "frontImage": `data:${panFile?.type};base64,${panBase64}`,
+         "backImage": "",
+    
+         },
+          {     "documentType": "BANK",
+         "frontImage":  `data:${passbookFile?.type};base64,${passbookBase64}`,
+         "backImage": "",
+    
+         },
+         {    "documentType": "SELFIE",
+         "frontImage": `data:${faceFile.type};base64,${selfieBase64}`,
+         "backImage": "", 
+         },
+
+
+  ]
+}
 
       console.log('Payload:', payload);
 
       const response = await api.post(
-        '/api/kyc/upload-aadhar-documents',
+        '/api/kyc/upload-document',
         payload
       );
 
@@ -1118,32 +1176,32 @@ export default function KYCVerification({
     }
   };
 
-  const uploadPassbook = async () => {
-    try {
-      const passbookBase64 = await RNFS.readFile(
-        passbookFile?.uri,
-        'base64'
-      );
+  // const uploadPassbook = async () => {
+  //   try {
+  //     const passbookBase64 = await RNFS.readFile(
+  //       passbookFile?.uri,
+  //       'base64'
+  //     );
 
-      const payload = {
-        passbook: `data:${passbookFile?.type};base64,${passbookBase64}`,
-      };
+  //     const payload = {
+  //       passbook: `data:${passbookFile?.type};base64,${passbookBase64}`,
+  //     };
 
-      console.log('Passbook Payload:', payload);
+  //     console.log('Passbook Payload:', payload);
 
-      const response = await api.post(
-        '/api/kyc/upload-passbook-documents',
-        payload
-      );
+  //     const response = await api.post(
+  //       '/api/kyc/upload-passbook-documents',
+  //       payload
+  //     );
 
-      console.log('Passbook Upload Response:', response.data);
+  //     console.log('Passbook Upload Response:', response.data);
 
-      return response.data;
-    } catch (error) {
-      console.error('Passbook Upload Error:', error);
-      throw error;
-    }
-  };
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Passbook Upload Error:', error);
+  //     throw error;
+  //   }
+  // };
 
 
 //   const uploadPassbook = async () => {
@@ -1270,11 +1328,11 @@ export default function KYCVerification({
       console.log('Starting Aadhar upload...');
       await uploadAadhar();
 
-      console.log('Starting PAN upload...');
-      await uploadPan();
+      // console.log('Starting PAN upload...');
+      // await uploadPan();
 
-      console.log('Starting Passbook upload...');
-      await uploadPassbook();
+      // console.log('Starting Passbook upload...');
+      // await uploadPassbook();
 
       console.log('Starting Cancelled Cheque upload...');
       // await uploadCheque();
