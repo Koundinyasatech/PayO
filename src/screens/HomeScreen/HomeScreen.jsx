@@ -1186,7 +1186,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.actionsGrid}>
             {[
               { id: 'send', image: require('../../../assets/images/Icon.png'), label: 'Send', route: 'SendScreen', params: { tab: 'scan' } },
-              { id: 'receive', image: require('../../../assets/images/Icon (1).png'), label: 'Receive', route: 'Receive' },
+              { id: 'receive', image: require('../../../assets/images/Icon (1).png'), label: 'Receive', route: 'ReferEarn' },
               { id: 'scan', image: require('../../../assets/images/Icon (2).png'), label: 'Scan QR', route: 'SendScreen', params: { tab: 'scan' } },
               { id: 'exchange', image: require('../../../assets/images/Icon (3).png'), label: 'Exchange', route: 'ExchangeScreen' }
             ].map((action) => (
