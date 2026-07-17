@@ -1057,6 +1057,7 @@ export default StyleSheet.create({
     fontSize: moderateScale(18),
     fontWeight: '700',
     color: theme.colors.textMain, // Updated to theme
+    
   },
   viewAllText: {
     fontSize: moderateScale(14),

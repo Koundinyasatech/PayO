@@ -777,11 +777,11 @@ import { pick } from '@react-native-documents/picker';
 
 
 export default function KYCVerification({
-  navigation,
+  navigation, route
 }) {
   // const [activeTab, setActiveTab] = useState('aadhaar');
   const [isLoading, setIsLoading] = useState(false);
-  const existingFiles = route.params?.existingFiles || {};
+  const existingFiles = route?.params?.existingFiles || {};
   
   const [activeTab, setActiveTab] = useState(route.params?.replaceTab || 'aadhaar');
 
