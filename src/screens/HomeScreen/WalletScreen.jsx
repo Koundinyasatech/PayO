@@ -628,6 +628,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -977,7 +979,7 @@ export default function WalletScreen({ navigation }) {
 // } from 'react-native';
 
 // import LinearGradient from 'react-native-linear-gradient';
-// import Icon from 'react-native-vector-icons/Feather'; // Kept for back arrow, eye, and arrow-right
+// import Icon from 'react-native-vector-icons/Feather'; 
 // import api from '../../api/axios';
 // import styles from './WalletScreenStyles';
 // import { SafeAreaView } from 'react-native-safe-area-context';
@@ -1079,209 +1081,205 @@ export default function WalletScreen({ navigation }) {
 //         keyboardShouldPersistTaps="handled"
 //         contentContainerStyle={styles.scrollContent}>
         
-//         {/* HEADER */}
-//         <View style={styles.header}>
-//           <TouchableOpacity
-//             style={styles.headerIconBtn}
-//             activeOpacity={0.8}
-//             onPress={() => navigation.goBack()}>
-//             <Icon name="chevron-left" size={24} color={theme.colors.textMain} />
-//           </TouchableOpacity>
-
-//           <View style={styles.headerTitleContainer}>
-//             <Text style={styles.headerTitle}>Wallet ID</Text>
-//             <Text style={styles.headerSubtitle} numberOfLines={1}>
-//               {wallet?.id || 'PXYZ6273849A'}
-//             </Text>
-//           </View>
-
-//           <View style={styles.headerRight}>
-//             <TouchableOpacity style={[styles.headerIconBtn, { marginRight: 8 }]} activeOpacity={0.8}>
-//               {/* Custom Bell Icon */}
-//               <Image 
-//                 source={require('../../../assets/images/walletscr/Icon (4).png')} 
-//                 style={styles.customHeaderIcon} 
-//               />
-//               <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
-//             </TouchableOpacity>
-            
-//             <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.8}>
-//               {/* Custom Settings Icon */}
-//               <Image 
-//                 source={require('../../../assets/images/walletscr/Settings Icon.png')} 
-//                 style={styles.customHeaderIcon} 
-//               />
-//             </TouchableOpacity>
-//           </View>
-//         </View>
-
-//         {/* MAIN WALLET CARD */}
-//         <LinearGradient
-//           colors={[theme.colors.primaryPurple, theme.colors.primaryBlue]}
-//           start={{ x: 0, y: 0 }}
-//           end={{ x: 1, y: 1 }}
-//           style={styles.mainCard}>
+//         {/* INNER CONTAINER enforces strict padding so items don't touch screen edges */}
+//         <View style={styles.innerContainer}>
           
-//           <View style={styles.cardTopRow}>
-//             <View style={styles.activePill}>
-//               <View style={styles.dot} />
-//               <Text style={styles.activePillText}>Active Wallet</Text>
-//             </View>
-//             {/* Kept original icon or you can replace with wallet image if you have one */}
-//             <Icon name="credit-card" size={32} color="#ffffff80" />
-//           </View>
+//           {/* HEADER */}
+//           <View style={styles.header}>
+//             <TouchableOpacity
+//               style={styles.headerIconBtn}
+//               activeOpacity={0.8}
+//               onPress={() => navigation.goBack()}>
+//               <Icon name="chevron-left" size={24} color={theme.colors.textMain} />
+//             </TouchableOpacity>
 
-//           <View style={styles.balanceSection}>
-//             <View style={styles.balanceLabelRow}>
-//               <Text style={styles.balanceLabel}>Total Wallet Balance</Text>
-//               <Icon name="eye-off" size={16} color="#d1d5db" style={{ marginLeft: 6 }} />
+//             <View style={styles.headerTitleContainer}>
+//               <Text style={styles.headerTitle}>Wallet ID</Text>
+//               <Text style={styles.headerSubtitle} numberOfLines={1}>
+//                 {wallet?.id || 'PXYZ6273849A'}
+//               </Text>
 //             </View>
-            
-//             <View style={styles.balanceValueRow}>
-//               <Text style={styles.balanceText}>{wallet?.balance?.toLocaleString() || '12,450'}</Text>
-//               <Text style={styles.currencyText}>PAYO</Text>
-//             </View>
-            
-//             <View style={styles.bottomCardRow}>
-//               <Text style={styles.fiatText}>≈ ₹8,71,500</Text>
-//               <TouchableOpacity
-//                 activeOpacity={0.9}
-//                 style={styles.addMoneyBtn}
-//                 onPress={() => setModalVisible(true)}>
-//                 {/* Custom Plus Icon */}
+
+//             <View style={styles.headerRight}>
+//               <TouchableOpacity style={styles.headerActionBtn} activeOpacity={0.8}>
 //                 <Image 
-//                   source={require('../../../assets/images/walletscr/icon-container.png')} 
-//                   style={styles.addMoneyIcon} 
+//                   source={require('../../../assets/images/walletscr/Icon (4).png')} 
+//                   style={styles.customHeaderIcon} 
 //                 />
-//                 <Text style={styles.addMoneyText}>Add Money</Text>
+//                 <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
+//               </TouchableOpacity>
+              
+//               <TouchableOpacity style={[styles.headerActionBtn, { marginLeft: 8 }]} activeOpacity={0.8}>
+//                 <Image 
+//                   source={require('../../../assets/images/walletscr/Settings Icon.png')} 
+//                   style={styles.customHeaderIcon} 
+//                 />
 //               </TouchableOpacity>
 //             </View>
 //           </View>
-//         </LinearGradient>
 
-//         {/* COPY & SHARE BUTTONS */}
-//         <View style={styles.actionRow}>
-//           <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={handleCopy}>
-//             <Text style={styles.actionBtnText}>Copy address</Text>
-//             {/* Custom Copy Icon */}
-//             <Image 
-//               source={require('../../../assets/images/walletscr/Content Copy Icon.png')} 
-//               style={styles.actionIcon} 
-//             />
-//           </TouchableOpacity>
-
-//           <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={handleShare}>
-//             <Text style={styles.actionBtnText}>Share address</Text>
-//             {/* Custom Share Icon */}
-//             <Image 
-//               source={require('../../../assets/images/walletscr/Share Icon.png')} 
-//               style={styles.actionIcon} 
-//             />
-//           </TouchableOpacity>
-//         </View>
-
-//         {/* REFERRAL PROMO BANNER */}
-//         <LinearGradient
-//           colors={['#2563eb', '#38bdf8']}
-//           start={{ x: 0, y: 0 }}
-//           end={{ x: 1, y: 0 }}
-//           style={styles.promoBanner}>
-//           <View style={styles.promoContent}>
-//             <Text style={styles.promoEmoji}>🚀</Text>
-//             <View style={{ flex: 1, marginLeft: 12 }}>
-//               <Text style={styles.promoTitle}>Invite Friends & Earn PAYO</Text>
-//               <Text style={styles.promoSub}>Get ₹500 for every referral</Text>
+//           {/* MAIN WALLET CARD */}
+//           <LinearGradient
+//             colors={[theme.colors.primaryPurple, theme.colors.primaryBlue]}
+//             start={{ x: 0, y: 0 }}
+//             end={{ x: 1, y: 1 }}
+//             style={styles.mainCard}>
+            
+//             <View style={styles.cardTopRow}>
+//               <View style={styles.activePill}>
+//                 <View style={styles.dot} />
+//                 <Text style={styles.activePillText}>Active Wallet</Text>
+//               </View>
+//               <Icon name="credit-card" size={32} color="#ffffff80" />
 //             </View>
-//             <TouchableOpacity style={styles.promoBtn}>
-//               <Text style={styles.promoBtnText}>Refer Now {'>'}</Text>
+
+//             <View style={styles.balanceSection}>
+//               <View style={styles.balanceLabelRow}>
+//                 <Text style={styles.balanceLabel}>Total Wallet Balance</Text>
+//                 <Icon name="eye-off" size={16} color="#d1d5db" style={{ marginLeft: 6 }} />
+//               </View>
+              
+//               <View style={styles.balanceValueRow}>
+//                 <Text style={styles.balanceText}>{wallet?.balance?.toLocaleString() || '12,450'}</Text>
+//                 <Text style={styles.currencyText}>PAYO</Text>
+//               </View>
+              
+//               <View style={styles.bottomCardRow}>
+//                 <Text style={styles.fiatText}>≈ ₹8,71,500</Text>
+//                 <TouchableOpacity
+//                   activeOpacity={0.9}
+//                   style={styles.addMoneyBtn}
+//                   onPress={() => navigation.navigate('AddMoneytoWallet')}>
+//                   <Image 
+//                     source={require('../../../assets/images/walletscr/icon-container.png')} 
+//                     style={styles.addMoneyIcon} 
+//                   />
+//                   <Text style={styles.addMoneyText}>Add Money</Text>
+//                 </TouchableOpacity>
+//               </View>
+//             </View>
+//           </LinearGradient>
+
+//           {/* COPY & SHARE BUTTONS */}
+//           <View style={styles.actionRow}>
+//             <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={handleCopy}>
+//               <Text style={styles.actionBtnText}>Copy address</Text>
+//               <Image 
+//                 source={require('../../../assets/images/walletscr/Content Copy Icon.png')} 
+//                 style={styles.actionIcon} 
+//               />
+//             </TouchableOpacity>
+
+//             <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={handleShare}>
+//               <Text style={styles.actionBtnText}>Share address</Text>
+//               <Image 
+//                 source={require('../../../assets/images/walletscr/Share Icon.png')} 
+//                 style={styles.actionIcon} 
+//               />
 //             </TouchableOpacity>
 //           </View>
-//         </LinearGradient>
 
-//         {/* TOKEN HOLDINGS HEADER */}
-//         <View style={styles.sectionHeader}>
-//           <Text style={styles.sectionTitle}>Token Holdings</Text>
-//           <TouchableOpacity>
-//             <Text style={styles.historyText}>History</Text>
-//           </TouchableOpacity>
-//         </View>
+//           {/* REFERRAL PROMO BANNER */}
+//           <LinearGradient
+//             colors={['#2563eb', '#38bdf8']}
+//             start={{ x: 0, y: 0 }}
+//             end={{ x: 1, y: 0 }}
+//             style={styles.promoBanner}>
+//             <View style={styles.promoContent}>
+//               <Text style={styles.promoEmoji}>🚀</Text>
+//               <View style={styles.promoTextContainer}>
+//                 <Text style={styles.promoTitle}>Invite Friends & Earn PAYO</Text>
+//                 <Text style={styles.promoSub}>Get ₹500 for every referral</Text>
+//               </View>
+//               <TouchableOpacity style={styles.promoBtn}>
+//                 <Text style={styles.promoBtnText}>Refer Now {'>'}</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </LinearGradient>
 
-//         {/* REFERRAL REWARDS CARD */}
-//         <View style={[globalStyles.card, styles.dataCard]}>
-//           <View style={styles.dataCardRow}>
-//             <Text style={styles.cardTitleText}>Referral rewards</Text>
-//             <View style={{ alignItems: 'flex-end' }}>
-//               <Text style={styles.cardAmountText}>{wallet?.referralRewards || '200.0'}</Text>
-//               <Text style={styles.cardStatusTextPending}>Pending</Text>
+//           {/* TOKEN HOLDINGS HEADER */}
+//           <View style={styles.sectionHeader}>
+//             <Text style={styles.sectionTitle}>Token Holdings</Text>
+//             <TouchableOpacity>
+//               <Text style={styles.historyText}>History</Text>
+//             </TouchableOpacity>
+//           </View>
+
+//           {/* REFERRAL REWARDS CARD */}
+//           <View style={[globalStyles.card, styles.dataCard]}>
+//             <View style={styles.dataCardRow}>
+//               <Text style={styles.cardTitleText}>Referral rewards</Text>
+//               <View style={{ alignItems: 'flex-end' }}>
+//                 <Text style={styles.cardAmountText}>{wallet?.referralRewards || '200.0'}</Text>
+//                 <Text style={styles.cardStatusTextPending}>Pending</Text>
+//               </View>
+//             </View>
+//             <View style={styles.dataCardRow}>
+//               <Text style={styles.cardSubText}>• Unlocks in {wallet?.unlockInDays || 3} days</Text>
+//               <Text style={styles.cardStatusTextLocked}>Locked</Text>
 //             </View>
 //           </View>
-//           <View style={styles.dataCardRow}>
-//             <Text style={styles.cardSubText}>• Unlocks in {wallet?.unlockInDays || 3} days</Text>
-//             <Text style={styles.cardStatusTextLocked}>Locked</Text>
+
+//           {/* DAILY LIMIT CARD */}
+//           <View style={[globalStyles.card, styles.dataCard]}>
+//             <View style={styles.dataCardRow}>
+//               <Text style={styles.cardTitleText}>Daily Transaction Limit</Text>
+//               <Text style={styles.limitHighlightText}>
+//                 {wallet?.dailyUsed?.toLocaleString() || '6,200'} /{wallet?.dailyLimit?.toLocaleString() || '10,000'}
+//               </Text>
+//             </View>
+            
+//             <View style={styles.progressBarBg}>
+//               <View style={[styles.progressBarFill, { width: `${Math.min(progress, 100)}%` }]} />
+//             </View>
+
+//             <View style={styles.dataCardRow}>
+//               <Text style={styles.cardSubText}>Used {wallet?.dailyUsed?.toLocaleString() || '6,200'}</Text>
+//               <Text style={styles.cardSubText}>Limit: {wallet?.dailyLimit?.toLocaleString() || '10,000'}</Text>
+//             </View>
 //           </View>
+
+//           {/* SEND PAYO BUTTON */}
+//           <TouchableOpacity
+//             style={styles.sendPrimaryBtn}
+//             activeOpacity={0.8}
+//             onPress={() => navigation.navigate('SendScreen')}>
+//             <Text style={styles.sendPrimaryBtnText}>Send PAYO</Text>
+//             <Icon name="arrow-right" size={20} color="#fff" />
+//           </TouchableOpacity>
+
+//           {/* BOTTOM PROMOS */}
+//           <View style={[styles.bottomPromoCard, { backgroundColor: '#ecfdf5' }]}>
+//             <View style={styles.transparentIconBg}>
+//               <Image 
+//                 source={require('../../../assets/images/walletscr/Promo Icon.png')} 
+//                 style={styles.promoImageLarge} 
+//               />
+//             </View>
+//             <View style={styles.bottomPromoTextContainer}>
+//               <Text style={styles.bottomPromoTitle}>Have a promo code?</Text>
+//               <Text style={styles.bottomPromoSub}>Apply code and get exciting rewards</Text>
+//             </View>
+//             <Text style={[styles.bottomPromoAction, { color: '#8b5cf6' }]}>Apply Now {'>'}</Text>
+//           </View>
+
+//           <View style={[styles.bottomPromoCard, { backgroundColor: '#fff7ed' }]}>
+//             <View style={styles.transparentIconBg}>
+//               <Image 
+//                 source={require('../../../assets/images/walletscr/Frame (1).png')} 
+//                 style={styles.promoImageLarge} 
+//               />
+//             </View>
+//             <View style={styles.bottomPromoTextContainer}>
+//               <Text style={styles.bottomPromoTitle}>Rewards You'll Earn</Text>
+//               <Text style={styles.bottomPromoSub}>You will earn 10 PAYO as a bonus on this deposit</Text>
+//             </View>
+//             <View style={styles.bonusTag}>
+//               <Text style={styles.bonusTagText}>+10 PAYO</Text>
+//             </View>
+//           </View>
+
 //         </View>
-
-//         {/* DAILY LIMIT CARD */}
-//         <View style={[globalStyles.card, styles.dataCard]}>
-//           <View style={styles.dataCardRow}>
-//             <Text style={styles.cardTitleText}>Daily Transaction Limit</Text>
-//             <Text style={styles.limitHighlightText}>
-//               {wallet?.dailyUsed?.toLocaleString() || '6,200'} /{wallet?.dailyLimit?.toLocaleString() || '10,000'}
-//             </Text>
-//           </View>
-          
-//           <View style={styles.progressBarBg}>
-//             <View style={[styles.progressBarFill, { width: `${Math.min(progress, 100)}%` }]} />
-//           </View>
-
-//           <View style={styles.dataCardRow}>
-//             <Text style={styles.cardSubText}>Used {wallet?.dailyUsed?.toLocaleString() || '6,200'}</Text>
-//             <Text style={styles.cardSubText}>Limit: {wallet?.dailyLimit?.toLocaleString() || '10,000'}</Text>
-//           </View>
-//         </View>
-
-//         {/* SEND PAYO BUTTON */}
-//         <TouchableOpacity
-//           style={styles.sendPrimaryBtn}
-//           activeOpacity={0.8}
-//           onPress={() => navigation.navigate('SendScreen')}>
-//           <Text style={styles.sendPrimaryBtnText}>Send PAYO</Text>
-//           <Icon name="arrow-right" size={20} color="#fff" />
-//         </TouchableOpacity>
-
-//         {/* BOTTOM PROMOS */}
-//         <View style={[styles.bottomPromoCard, { backgroundColor: '#ecfdf5' }]}>
-//           <View style={styles.transparentIconBg}>
-//             {/* Custom Promo Coins Icon */}
-//             <Image 
-//               source={require('../../../assets/images/walletscr/Promo Icon.png')} 
-//               style={styles.promoImageLarge} 
-//             />
-//           </View>
-//           <View style={styles.bottomPromoTextContainer}>
-//             <Text style={styles.bottomPromoTitle}>Have a promo code?</Text>
-//             <Text style={styles.bottomPromoSub}>Apply code and get exciting rewards</Text>
-//           </View>
-//           <Text style={[styles.bottomPromoAction, { color: '#8b5cf6' }]}>Apply Now {'>'}</Text>
-//         </View>
-
-//         <View style={[styles.bottomPromoCard, { backgroundColor: '#fff7ed' }]}>
-//           <View style={styles.transparentIconBg}>
-//             {/* Custom Gift Icon */}
-//             <Image 
-//               source={require('../../../assets/images/walletscr/Frame (1).png')} 
-//               style={styles.promoImageLarge} 
-//             />
-//           </View>
-//           <View style={styles.bottomPromoTextContainer}>
-//             <Text style={styles.bottomPromoTitle}>Rewards You'll Earn</Text>
-//             <Text style={styles.bottomPromoSub}>You will earn 10 PAYO as a bonus on this deposit</Text>
-//           </View>
-//           <View style={styles.bonusTag}>
-//             <Text style={styles.bonusTagText}>+10 PAYO</Text>
-//           </View>
-//         </View>
-
 //       </ScrollView>
 
 //       <AddMoneyModal 
@@ -1294,3 +1292,6 @@ export default function WalletScreen({ navigation }) {
 //     </SafeAreaView>
 //   );
 // }
+
+
+

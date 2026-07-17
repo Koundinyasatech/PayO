@@ -236,6 +236,7 @@ import AddBankDetails from '../screens/Bank/AddBankDetails';
 import TpinScreen from '../screens/Bank/TpinScreen';
 import BankAddedScreen from '../screens/Bank/BankAddedScreen';
 import KYCVerification from '../screens/kycVerify/KYCVerification';
+import KycFilesReview from '../screens/kycVerify/KycFilesReview.jsx'
 import KycUnderReview from '../screens/kycVerify/KycUnderReview';
 import KycComplete from '../screens/kycVerify/KycComplete';
 import KycFail from '../screens/kycVerify/KycFail';
@@ -251,6 +252,7 @@ import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.j
 import WalletScreen from '../screens/HomeScreen/WalletScreen.jsx';
 import AddMoneytoWallet from '../screens/HomeScreen/AddMoneytoWallet.jsx';
 import NotFoundScreen from '../screens/HomeScreen/NotFoundScreen.jsx';
+import PaymentCompleteDetails from '../screens/HomeScreen/completeTransaction.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -271,17 +273,16 @@ export default function AppNavigator() {
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OtpVerified" component={OtpVerified} options={{ animation: 'fade' }} />
-          <Stack.Screen name="NotFound" component={NotFoundScreen} />
+        <Stack.Screen name="NotFound" component={NotFoundScreen} />
 
 
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} options={{ animation: 'fade' }} />
-          <Stack.Screen name="Biometric" component={Biometric} />
-           <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
+        <Stack.Screen name="Biometric" component={Biometric} />
+        <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
         <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
         <Stack.Screen name="ConfirmDeposite" component={ConfirmDepositeScreen} />
         <Stack.Screen name="MakePayment" component={MakePayment} />
-        
 
 
 
@@ -291,6 +292,7 @@ export default function AppNavigator() {
 
         {/* /// KYC VERIFICATION //////// */}
         <Stack.Screen name="KYCVerification" component={KYCVerification} />
+        <Stack.Screen name="KycFilesReview" component={KycFilesReview} />
         <Stack.Screen name="KycUnderReview" component={KycUnderReview} />
         <Stack.Screen name="KycComplete" component={KycComplete} />
         <Stack.Screen name="KycFail" component={KycFail} />
@@ -320,6 +322,8 @@ export default function AppNavigator() {
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
+        <Stack.Screen name="PaymentCompleteDetails" component={PaymentCompleteDetails} />
+        
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />

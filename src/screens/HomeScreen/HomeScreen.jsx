@@ -1138,6 +1138,7 @@ export default function HomeScreen({ navigation }) {
         // notificationCount={3}
       />
 
+
       
 
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -1151,6 +1152,7 @@ export default function HomeScreen({ navigation }) {
         >
           {/* Subtle Background Glow circles */}
           <View style={styles.cardLightHighlight} />
+          
 
           {/* TOP ROW: Title & Eye Icon + View Wallet Button */}
           <View style={styles.walletHeaderRow}>
@@ -1197,6 +1199,7 @@ export default function HomeScreen({ navigation }) {
         {/* Quick Actions */}
        <View style={styles.sectionContainer}>
           <Text style={styles.sectionHeading}>Quick Actions</Text>
+         
           <View style={styles.actionsGrid}>
             {[
               { id: 'send', image: require('../../../assets/images/Icon.png'), label: 'Send', route: 'SendScreen', params: { tab: 'scan' } },
@@ -1264,7 +1267,7 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>Crypto Market</Text>
             <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')}>
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={styles.viewAllText}>View All {">"}</Text>
             </TouchableOpacity>
           </View>
 
@@ -1304,13 +1307,23 @@ export default function HomeScreen({ navigation }) {
             })}
           </View>
         </View>
-
+ <TouchableOpacity onPress={()=>{
+           navigation.replace(
+          'successfullPayment',
+          {
+            amount:"999",
+            name:"sowmya",
+          },
+        );
+          }}>
+  <Text>success</Text>
+</TouchableOpacity>
         {/* Crypto News */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>Crypto News</Text>
             <TouchableOpacity onPress={() => setNewsCount(prev => prev + 3)}>
-              <Text style={styles.viewAllText}>View More</Text>
+              <Text style={styles.viewAllText}>View More {">"}</Text>
             </TouchableOpacity>
           </View>
 

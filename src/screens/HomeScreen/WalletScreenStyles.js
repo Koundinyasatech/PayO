@@ -639,10 +639,11 @@
 //////////////////////////////////////////////////////////////////////////////
 
 
-// import { StyleSheet, Dimensions } from 'react-native';
+
+// import { StyleSheet } from 'react-native';
 // import { theme } from '../../MainTheme/theme';
 
-// import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/responsive'; 
+// import { scale, verticalScale, moderateScale } from '../../utils/responsive'; 
 
 // export default StyleSheet.create({
 //   container: {
@@ -656,9 +657,12 @@
 //     backgroundColor: theme.colors.bgApp,
 //   },
 //   scrollContent: {
-//     paddingBottom: verticalScale(100),
+//     flexGrow: 1, 
+//   },
+//   innerContainer: {
 //     paddingHorizontal: scale(20),
-//     paddingTop: verticalScale(10),
+//     paddingTop: verticalScale(16),
+//     paddingBottom: verticalScale(100),
 //   },
   
 //   // Header Styles
@@ -677,7 +681,15 @@
 //     justifyContent: 'center',
 //     ...theme.shadows.sm,
 //   },
-//   // Custom Header Image Icons
+//   headerActionBtn: {
+//     width: moderateScale(40),
+//     height: moderateScale(40),
+//     borderRadius: moderateScale(20),
+//     backgroundColor: '#fff',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     ...theme.shadows.sm,
+//   },
 //   customHeaderIcon: {
 //     width: moderateScale(20),
 //     height: moderateScale(20),
@@ -699,6 +711,7 @@
 //   },
 //   headerRight: {
 //     flexDirection: 'row',
+//     alignItems: 'center',
 //   },
 //   badge: {
 //     position: 'absolute',
@@ -721,9 +734,10 @@
 
 //   // Main Card Styles
 //   mainCard: {
-//     borderRadius: theme.borderRadius.xl,
+//     borderRadius: moderateScale(24),
 //     padding: moderateScale(20),
 //     marginBottom: verticalScale(20),
+//     overflow: 'hidden', // Ensures colors don't bleed out of bounds
 //     ...theme.shadows.md,
 //   },
 //   cardTopRow: {
@@ -783,7 +797,7 @@
 //     flexDirection: 'row',
 //     justifyContent: 'space-between',
 //     alignItems: 'center',
-//     marginTop: verticalScale(8),
+//     marginTop: verticalScale(12),
 //   },
 //   addMoneyBtn: {
 //     flexDirection: 'row',
@@ -793,7 +807,6 @@
 //     paddingVertical: verticalScale(8),
 //     borderRadius: theme.borderRadius.full,
 //   },
-//   // Custom Add Money Icon
 //   addMoneyIcon: {
 //     width: moderateScale(14),
 //     height: moderateScale(14),
@@ -810,20 +823,22 @@
 //     fontSize: theme.typography.size.sm,
 //   },
 
-//   // Action Buttons
+//   // Action Buttons row explicitly side-by-side
 //   actionRow: {
 //     flexDirection: 'row',
 //     justifyContent: 'space-between',
 //     marginBottom: verticalScale(20),
+//     alignItems: 'center',
 //   },
 //   actionBtn: {
-//     flex: 0.48,
+//     flex: 1, // Changed to 1 so they dynamically take 50% minus margin
 //     flexDirection: 'row',
 //     alignItems: 'center',
 //     justifyContent: 'center',
 //     backgroundColor: '#fff',
-//     paddingVertical: verticalScale(12),
-//     borderRadius: theme.borderRadius.md,
+//     paddingVertical: verticalScale(14),
+//     marginHorizontal: scale(6), 
+//     borderRadius: moderateScale(12),
 //     borderWidth: 1,
 //     borderColor: '#e5e7eb',
 //     ...theme.shadows.sm,
@@ -834,7 +849,6 @@
 //     marginRight: scale(8),
 //     fontSize: theme.typography.size.sm,
 //   },
-//   // Custom Action Image Icons (Copy/Share)
 //   actionIcon: {
 //     width: moderateScale(18),
 //     height: moderateScale(18),
@@ -843,7 +857,7 @@
 
 //   // Promo Banner
 //   promoBanner: {
-//     borderRadius: theme.borderRadius.lg,
+//     borderRadius: moderateScale(16),
 //     padding: moderateScale(16),
 //     marginBottom: verticalScale(24),
 //   },
@@ -854,6 +868,10 @@
 //   },
 //   promoEmoji: {
 //     fontSize: moderateScale(28),
+//   },
+//   promoTextContainer: {
+//     flex: 1, 
+//     marginLeft: scale(12)
 //   },
 //   promoTitle: {
 //     color: '#fff',
@@ -899,6 +917,8 @@
 //   dataCard: {
 //     padding: moderateScale(16),
 //     marginBottom: verticalScale(16),
+//     ...theme.shadows.sm,
+//     borderColor: '#e5e7eb', 
 //   },
 //   dataCardRow: {
 //     flexDirection: 'row',
@@ -984,7 +1004,6 @@
 //     justifyContent: 'center',
 //     marginRight: scale(12),
 //   },
-//   // Custom Promo Images Styling
 //   promoImageLarge: {
 //     width: moderateScale(32),
 //     height: moderateScale(32),
