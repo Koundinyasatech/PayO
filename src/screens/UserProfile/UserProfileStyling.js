@@ -1102,11 +1102,7 @@ import { StyleSheet } from 'react-native';
 import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 import { theme } from '../../MainTheme/theme'; 
 
-const localColors = {
-  bgLightPurple: '#F5F7FF',
-  borderLight: '#E5E7EB',
-  borderPurple: '#C7D2FE',
-};
+
 
 export default StyleSheet.create({
   container: {
@@ -1129,7 +1125,7 @@ export default StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: localColors.borderLight, 
+    borderColor: theme.colors.borderLight, 
   },
   headerTextContainer: {
     flex: 1,
@@ -1158,7 +1154,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     marginLeft: scale(8),
     borderWidth: 1,
-    borderColor: localColors.borderLight,
+    borderColor: theme.colors.borderLight,
   },
   badge: {
     position: 'absolute',
@@ -1258,7 +1254,7 @@ profileCardBgImage: {
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: localColors.borderLight,
+    borderColor: theme.colors.borderLight,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -1280,7 +1276,7 @@ profileCardBgImage: {
     marginTop: verticalScale(2),
   },
   kycBadge: {
-    backgroundColor: '#03B2441A', // Soft green color matching successful verification layout style
+    backgroundColor: '#ff000023', // Soft green color matching successful verification layout style
     alignSelf: 'flex-start',
     paddingHorizontal: scale(8),
     paddingVertical: verticalScale(4),
@@ -1288,7 +1284,7 @@ profileCardBgImage: {
     marginTop: verticalScale(6),
   },
   kycText: {
-    color: theme.colors.statusSuccess, 
+    color: theme.colors.statusDanger, 
     fontSize: moderateScale(9),
     fontWeight: '700',
     letterSpacing: 0.5,
@@ -1303,7 +1299,7 @@ profileCardBgImage: {
     padding: scale(16),
     marginBottom: verticalScale(16),
     borderWidth: 1,
-    borderColor: localColors.borderPurple,
+    borderColor: theme.colors.borderPurple,
   },
   balanceHalf: {
     flex: 1,
@@ -1344,7 +1340,7 @@ profileCardBgImage: {
   },
   verticalDivider: {
     width: 1,
-    backgroundColor: localColors.borderLight, 
+    backgroundColor: theme.colors.borderLight, 
     marginHorizontal: scale(12),
   },
 
@@ -1403,9 +1399,9 @@ profileCardBgImage: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: localColors.bgLightPurple, 
+    backgroundColor: theme.colors.bgLightPurple, 
     borderWidth: 1,
-    borderColor: localColors.borderPurple, 
+    borderColor: theme.colors.borderPurple, 
     paddingVertical: verticalScale(10),
     borderRadius: scale(8),
   },
@@ -1487,7 +1483,7 @@ rightIcon: {
     paddingVertical: verticalScale(4),
     marginBottom: verticalScale(20),
     borderWidth: 1,
-    borderColor: localColors.borderLight, 
+    borderColor: theme.colors.borderLight, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.03,
@@ -1572,7 +1568,7 @@ watermarkIcon: {
   right: 0,
   bottom: 0,
   top: 20, 
-  width: scale(130), // Increased width to match full-height display structure from image
+  width: scale(110), // Increased width to match full-height display structure from image
   height: '100%',
   opacity: 0.9,
   resizeMode: 'cover',

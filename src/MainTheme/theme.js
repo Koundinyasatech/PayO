@@ -8,6 +8,9 @@ export const theme = {
     primaryPurple: '#7C3AED', 
     bgApp: '#F9FFFB', 
     bgSurface: '#ffffff',
+    bgLightPurple: '#F5F7FF',
+    borderLight: '#E5E7EB',
+    borderPurple: '#C7D2FE',
     textMain: '#05070D',  ////// profile 
     textMuted: '#414141',  
     statusSuccess: '#03B244',  ////// profile 
