@@ -756,9 +756,6 @@
 
 
 
-
-
-
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -773,15 +770,18 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
-import styles from './KYCVerificationStyles'; 
-
-import { launchImageLibrary } from 'react-native-image-picker';
+import { NativeModules } from 'react-native';
+import styles from './KYCVerificationStyles';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import { pick } from '@react-native-documents/picker';
 
-export default function KYCVerification({ navigation, route }) {
-  // Extract existing files if returning from Review Screen
-  const existingFiles = route.params?.existingFiles || {};
+
+export default function KYCVerification({
+  navigation, route
+}) {
+  // const [activeTab, setActiveTab] = useState('aadhaar');
+  const [isLoading, setIsLoading] = useState(false);
+  const existingFiles = route?.params?.existingFiles || {};
   
   const [activeTab, setActiveTab] = useState(route.params?.replaceTab || 'aadhaar');
 
@@ -810,18 +810,51 @@ export default function KYCVerification({ navigation, route }) {
       setPassbookFile(file);
     }
   };
+ 
+
+  // const openImagePicker = async () => {
+  //   const response = await launchImageLibrary({
+  //     mediaType: 'photo',
+  //     quality: 0.8,
+  //     selectionLimit: 1,
+  //   });
+
+  //   if (!response.didCancel && response.assets?.length > 0) {
+  //     const asset = response.assets[0];
+  //     const file = {
+  //       name: asset.fileName,
+  //       type: asset.type,
+  //       uri: asset.uri,
+  //       size: asset.fileSize,
+  //     };
+  //     console.log('IMAGE FILE:', file);
+  //     saveSelectedFile(file);
+  //   }
+  // };
 
   const openImagePicker = async () => {
-    const response = await launchImageLibrary({ mediaType: 'photo', quality: 0.8, selectionLimit: 1 });
-    if (!response.didCancel && response.assets?.length > 0) {
-      saveSelectedFile({
-        name: response.assets[0].fileName,
-        type: response.assets[0].type,
-        uri: response.assets[0].uri,
-        size: response.assets[0].fileSize,
-      });
+  try {
+    const image = await ImageCropPicker.openPicker({
+      mediaType: 'photo',
+      cropping: false,
+    });
+
+    const file = {
+      name: image.filename || `image_${Date.now()}.jpg`,
+      type: image.mime,
+      uri: image.path,
+      size: image.size,
+    };
+
+    console.log('IMAGE FILE:', file);
+    saveSelectedFile(file);
+  } catch (err) {
+    if (err.code !== 'E_PICKER_CANCELLED') {
+      console.log('Image Picker Error:', err);
+      Alert.alert('Error', 'Failed to pick image');
     }
-  };
+  }
+};
 
   const openPdfPicker = async () => {
     try {
@@ -853,7 +886,77 @@ export default function KYCVerification({ navigation, route }) {
       } else {
         Alert.alert("Permission Denied", "Camera access is required for selfie.");
       }
-    } catch (err) { console.warn(err); }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+  // -------------------------------------------
+
+  const uploadAadhar = async () => {
+    console.log(otherIdFile,"otherIdFile")
+    try {
+      const aadharBase64 = await RNFS.readFile(
+        aadhaarFile?.uri,
+        'base64'
+      );
+
+      const selfieBase64 = await RNFS.readFile(
+        faceFile?.uri,
+        'base64'
+      );
+       const panBase64 = await RNFS.readFile(
+        panFile?.uri,
+        'base64'
+      );
+       const passbookBase64 = await RNFS.readFile(
+        passbookFile?.uri,
+        'base64'
+      );
+
+      
+      console.log(panFile?.uri, 'PAN URI');
+      console.log(aadhaarFile?.uri, "5656");
+
+      const payload = {
+         "documents": [
+       { "documentType": "AADHAAR",
+        "frontImage": `data:${aadhaarFile?.type};base64,${aadharBase64}`,
+         "backImage": "",
+    
+         },
+          {   "documentType": "PAN",
+         "frontImage": `data:${panFile?.type};base64,${panBase64}`,
+         "backImage": "",
+    
+         },
+          {     "documentType": "BANK",
+         "frontImage":  `data:${passbookFile?.type};base64,${passbookBase64}`,
+         "backImage": "",
+    
+         },
+         {    "documentType": "SELFIE",
+         "frontImage": `data:${faceFile.type};base64,${selfieBase64}`,
+         "backImage": "", 
+         },
+
+
+  ]
+}
+
+      console.log('Payload:', payload);
+
+      const response = await api.post(
+        '/api/kyc/upload-document',
+        payload
+      );
+
+      console.log('Upload Response:', response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error('Upload Error:', error);
+      throw error;
+    }
   };
 
   // Determine if Continue button should be active for the current tab
@@ -876,6 +979,233 @@ export default function KYCVerification({ navigation, route }) {
       });
     }
   };
+
+  // const uploadPassbook = async () => {
+  //   try {
+  //     const passbookBase64 = await RNFS.readFile(
+  //       passbookFile?.uri,
+  //       'base64'
+  //     );
+
+  //     const payload = {
+  //       passbook: `data:${passbookFile?.type};base64,${passbookBase64}`,
+  //     };
+
+  //     console.log('Passbook Payload:', payload);
+
+  //     const response = await api.post(
+  //       '/api/kyc/upload-passbook-documents',
+  //       payload
+  //     );
+
+  //     console.log('Passbook Upload Response:', response.data);
+
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Passbook Upload Error:', error);
+  //     throw error;
+  //   }
+  // };
+
+
+//   const uploadPassbook = async () => {
+//   try {
+//     const fileBase64 = await RNFS.readFile(
+//       passbookFile?.uri,
+//       'base64',
+//     );
+
+//     const payload = {
+//       passbook: `data:${passbookFile?.type};base64,${fileBase64}`,
+//     };
+
+//     const response = await api.post(
+//       '/api/kyc/upload-passbook',
+//       payload,
+//     );
+
+//     return response.data;
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
+  const uploadCheque = async () => {
+    try {
+      const chequeBase64 = await RNFS.readFile(
+        chequeFile?.uri,
+        'base64'
+      );
+
+      const payload = {
+        cheque: `data:${chequeFile?.type};base64,${chequeBase64}`,
+      };
+
+      console.log('Cheque Payload:', payload);
+
+      const response = await api.post(
+        '/api/kyc/upload-cheque-documents',
+        payload
+      );
+
+      console.log('Cheque Upload Response:', response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error('Cheque Upload Error:', error);
+      throw error;
+    }
+  };
+
+  const uploadStatement = async () => {
+    try {
+      const statementBase64 = await RNFS.readFile(
+        statementFile?.uri,
+        'base64'
+      );
+
+      const payload = {
+        statement: `data:${statementFile?.type};base64,${statementBase64}`,
+      };
+
+      console.log('Statement Payload:', payload);
+
+      const response = await api.post(
+        '/api/kyc/upload-statement-documents',
+        payload
+      );
+
+      console.log('Statement Upload Response:', response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error('Statement Upload Error:', error);
+      throw error;
+    }
+  };
+
+  const submitForReview = async () => {
+    const payload = {
+      token: token
+    }
+    const response = await api.post(
+      '/api/kyc/submit-for-review',
+      payload
+    );
+  }
+
+  const handleSubmit = async () => {
+  
+    if (!aadhaarFile) {
+      Alert.alert('Aadhaar Required', 'Please upload your Aadhaar card');
+      return;
+    }
+
+    if (!panFile) {
+      Alert.alert('PAN Card Required', 'Please upload your PAN card');
+      return;
+    }
+
+    if (!passbookFile) {
+      Alert.alert('Passbook Required', 'Please upload your Bank Passbook');
+      return;
+    }
+
+    // if (!chequeFile) {
+    //   Alert.alert('Cheque Required', 'Please upload your Cancelled Cheque');
+    //   return;
+    // }
+
+    // if (!statementFile) {
+    //   Alert.alert('Statement Required', 'Please upload your Bank Statement');
+    //   return;
+    // }
+
+    if (!faceFile) {
+      Alert.alert('Selfie Required', 'Please capture your selfie');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      console.log('Starting Aadhar upload...');
+      await uploadAadhar();
+
+      // console.log('Starting PAN upload...');
+      // await uploadPan();
+
+      // console.log('Starting Passbook upload...');
+      // await uploadPassbook();
+
+      console.log('Starting Cancelled Cheque upload...');
+      // await uploadCheque();
+
+      console.log('Starting Bank Statement upload...');
+      // await uploadStatement();
+
+      // await submitForReview();
+
+      // Alert.alert(
+      //   'Success',
+      //   'All documents uploaded successfully',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       onPress: () => navigation.navigate('KycUnderReview'),
+      //     },
+      //   ],
+      // );
+      await submitForReview();
+
+// Save that onboarding/KYC registration flow is completed
+// await AsyncStorage.setItem(
+//   'hasCompletedOnboarding',
+//   'true',
+// );
+
+Alert.alert(
+  'Success',
+  'All documents uploaded successfully',
+  [
+    {
+      text: 'OK',
+      onPress: () => navigation.reset({
+        index: 0,
+        routes: [{ name: 'KycUnderReview' }],
+      }),
+    },
+  ],
+);
+    } catch (error) {
+      console.error('Upload Error:', error);
+      Alert.alert(
+        'Upload Failed',
+        error.message || 'Failed to upload documents. Please try again.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Helper function to render correct upload box title
+  // const getUploadTitle = () => {
+  //   if (activeTab === 'aadhaar') return 'Upload Aadhaar Card';
+  //   if (activeTab === 'pan') return 'Upload PAN Card';
+  //   if (activeTab === 'passbook') return 'Upload Bank Passbook';
+  //   if (activeTab === 'cheque') return 'Upload Cancelled Cheque';
+  //   if (activeTab === 'statement') return 'Upload Bank Statement';
+  //   return 'Upload Document';
+  // };
+
+  const getUploadTitle = () => {
+  if (activeTab === 'aadhaar') return 'Upload Aadhaar Card';
+  if (activeTab === 'pan') return 'Upload PAN Card';
+  if (activeTab === 'passbook')
+    return 'Upload Passbook / Cancel Cheque';
+
+  return 'Upload Document';
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>
