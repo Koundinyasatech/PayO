@@ -518,6 +518,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
         deviceName: deviceModel,
         userAgent: `${systemName} ${systemVersion}`, 
         location: "Hyderabad", 
+        country_code: countryCode
         });
 //         if(response.data?.token || response.data?.status === "200"){
 // navigation.replace('Main');
@@ -592,9 +593,9 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
     try {
       if (type === 'login') {
-        await api.post('/api/auth/resend-login-otp', { mobile , mobile_cont_code: '+91', });
+        await api.post('/api/auth/resend-login-otp', { mobile , country_code: '+91', });
       } else {
-        await api.post('/api/auth/resend-otp', { mobile , countryCode});
+        await api.post('/api/auth/resend-otp', { mobile , country_code});
       }
       // Restarts the 45 seconds countdown timer and sets link state back to inactive
       startTimer();
