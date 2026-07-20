@@ -387,7 +387,7 @@ const AddBankDetails = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
         >
           {/* Header */}
-          <View style={styles.header}>
+          <View style={styles.header }>
             <TouchableOpacity
               style={styles.iconButton}
               onPress={() => navigation?.goBack?.()}
