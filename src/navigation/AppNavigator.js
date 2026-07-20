@@ -223,6 +223,7 @@ import Recents from '../screens/HomeScreen/Recents';
 // import UpiPin from "../screens/Bank/UpiPin";
 // import SuccessScreen from "../screens/Bank/SuccessScreen";
 import UserProfile from '../screens/UserProfile/UserProfile';
+import Settings from '../screens/UserProfile/Settings.jsx';
 import TransactionHistory from '../screens/HomeScreen/TransactionHistory';
 import TnsHistorySingleUser from '../screens/HomeScreen/TnsHistorySingleUser';
 
@@ -301,6 +302,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Buttom" component={BottomNav} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
+        <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="WalletScreen" component={WalletScreen} />
         <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />

@@ -388,6 +388,317 @@
 
 
 
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  BackHandler,
+  ScrollView,
+  ToastAndroid,
+  Platform,
+  Image,
+  Switch,
+  ImageBackground
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import styles from './UserProfileStyling';
+import api from '../../api/axios';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Clipboard from '@react-native-clipboard/clipboard';
+import Share from 'react-native-share';
+import RNFS from 'react-native-fs';
+import Icon from 'react-native-vector-icons/Feather';
+import { useFocusEffect } from '@react-navigation/native';
+import BottomNav from '../components/bottomNav';
+import { verticalScale } from '../../utils/responsive';
+
+export default function UserProfile({ navigation }) {
+  const [profiledata, setProfileData] = useState({});
+  const [bankData, setBankData] = useState([]);
+  const [address, setAddress] = useState('');
+  const [qr, setQr] = useState(null);
+  const [biometricEnabled, setBiometricEnabled] = useState(true);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      }
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => backHandler.remove();
+  }, [navigation]);
+
+  const fetchQr = async () => {
+    try {
+      const res = await api.get('api/wallet/generate-address');
+      const data = res.data;
+      const qrImage = data.qr?.startsWith('data:image')
+        ? data.qr
+        : `data:image/png;base64,${data.qr}`;
+      setQr(qrImage);
+      setAddress(data.address);
+      return { qrImage, address: data.address };
+    } catch (err) {
+      console.log('QR ERROR:', err.message);
+      return null;
+    }
+  };
+
+  const fetchProfileData = async () => {
+    try {
+      const res = await api.get('/api/wallet/profile');
+      setProfileData(res?.data?.data);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const fetchBankDetails = async () => {
+    try {
+      const res = await api.get('/api/bank/all-banks');
+      setBankData(res?.data?.data || []);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileData();
+      fetchBankDetails();
+    }, [])
+  );
+
+  const handleCopy = () => {
+    const walletAddress = profiledata?.walletAddress || '0xDummyAddress123';
+    if (!walletAddress) return;
+    Clipboard.setString(walletAddress);
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('Wallet Address copied', ToastAndroid.SHORT);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const result = await fetchQr();
+      if (!result) return;
+      const { qrImage, address } = result;
+      const base64Data = qrImage.replace(/^data:image\/png;base64,/, '');
+      const filePath = `${RNFS.CachesDirectoryPath}/payo_qr.png`;
+      await RNFS.writeFile(filePath, base64Data, 'base64');
+      await Share.open({
+        url: 'file://' + filePath,
+        message: `Send PAYO to this WalletID:\n${address}`,
+      });
+    } catch (error) {
+      console.log('Share error:', error);
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#F4F6F9' }} edges={['top', 'bottom']}>
+      <View style={styles.container}>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.navigate('Main')} style={styles.backButton}>
+            <Icon name="chevron-left" size={24} color="#285CE0" />
+          </TouchableOpacity>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.title}>Profile</Text>
+            <Text style={styles.subtitle}>Manage your account and preferences</Text>
+          </View>
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={styles.iconBtn}>
+              <Icon name="bell" size={20} color="#4F46E5" />
+              <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.iconBtn}
+              onPress={() => navigation.navigate('Settings')}
+            >
+              <Icon name="settings" size={20} color="#4F46E5" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: 120 }} 
+        >
+          {/* PROFILE CARD */}
+          <ImageBackground
+            source={require('../../../assets/images/profile/backbgdImage.png')} 
+            style={styles.profileCard}
+            imageStyle={styles.profileCardBgImage}
+          >
+            <View style={styles.profileImageContainer}>
+              <View style={styles.profileArcBorder} />
+              <View style={styles.profileCircle}>
+                <Text style={styles.profileAvatarText}>👤</Text>
+              </View>
+              <View style={styles.editIconBadge}>
+                <Icon name="edit-2" size={12} color="#4F46E5" />
+              </View>
+            </View>
+            
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>{profiledata?.name || 'User 1'}</Text>
+              <Text style={styles.profilePhone}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
+              <View style={styles.kycBadge}>
+                <Text style={styles.kycText}>• KYC NOT VERIFIED</Text>
+              </View>
+            </View>
+          </ImageBackground>
+
+          {/* BALANCE & TRANSACTIONS */}
+          <View style={styles.balanceContainer}>
+            <View style={styles.balanceHalf}>
+              <View style={styles.statIconWrapper}>
+                <Image source={require('../../../assets/images/Wallet Icon.png')} style={styles.statIcon} />
+              </View>
+              <View>
+                <Text style={styles.statLabel}>Balance</Text>
+                <Text style={styles.statValue}>{profiledata?.balance || '100.0'} <Text style={styles.token}>PAYO</Text></Text>
+              </View>
+            </View>
+            <View style={styles.verticalDivider} />
+            <View style={styles.balanceHalf}>
+              <View style={[styles.statIconWrapper, styles.statIconWrapperRed]}>
+                <Image source={require('../../../assets/images/Arrow_left.png')} style={styles.statIcon} />
+              </View>
+              <View>
+                <Text style={styles.statLabel}>Transactions</Text>
+                <Text style={styles.statValue}>{profiledata?.transactionCount || '0'}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* REFERRAL CODE */}
+          <View style={styles.referralCard}>
+            <View style={styles.statIconWrapper}>
+              <Image source={require('../../../assets/images/Reward Icon.png')} style={styles.statIcon} />
+            </View>
+            <View>
+              <Text style={styles.referralLabel}>Your Referral Code</Text>
+              <Text style={styles.referralCode}>{profiledata?.referralCode || 'PAYO7630'}</Text>
+            </View>
+          </View>
+
+          {/* ACTIONS */}
+          <View style={styles.actionRow}>
+            <TouchableOpacity style={styles.actionBtnOutline} onPress={handleCopy}>
+              <Text style={styles.actionBtnText}>Copy address</Text>
+              <Image source={require('../../../assets/images/profile/Content Copy Icon.png')} style={styles.copyIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionBtnOutline} onPress={handleShare}>
+              <Text style={styles.actionBtnText}>Share address</Text>
+              <Image source={require('../../../assets/images/profile/share.png')} style={styles.shareIcon} />
+            </TouchableOpacity>
+          </View>
+
+          {/* ADD BANK BUTTON */}
+          <TouchableOpacity
+            style={styles.addBankPrimaryBtn}
+            onPress={() => navigation.navigate('AddBankHome')}
+          >
+            <Icon name="plus-circle" size={18} color="#fff" style={styles.leftIcon} />
+            <Text style={styles.addBankPrimaryText}>Add Bank Account</Text>
+            <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
+          </TouchableOpacity>
+
+          {/* PERSONAL INFO */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Personal Information</Text>
+            <TouchableOpacity><Text style={styles.viewAll}>View All {'>'}</Text></TouchableOpacity>
+          </View>
+          <View style={styles.listCard}>
+            <View style={styles.listItem}>
+              <Text style={styles.listLabel}>Name</Text>
+              <Text style={styles.listValue}>{profiledata?.name || 'Raju'}</Text>
+            </View>
+            <View style={styles.listItem}>
+              <Text style={styles.listLabel}>Email</Text>
+              <Text style={styles.listValue}>{profiledata?.email || 'Raju@gmail.com'}</Text>
+            </View>
+            <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14)}]}>
+              <Text style={styles.listLabel}>Linked Mobile</Text>
+              <Text style={styles.listValue}>+91 {profiledata?.mobile || '8332 285 718'}</Text>
+            </View>
+          </View>
+
+          {/* ACCOUNT */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Account</Text>
+            <TouchableOpacity><Text style={styles.viewAll}>View All {'>'}</Text></TouchableOpacity>
+          </View>
+          <View style={styles.listCard}>
+            <TouchableOpacity style={styles.listItemTouch}>
+              <Text style={styles.listLabel}>KYC Verification</Text>
+              <Text style={styles.dangerText}>Not Approved {'>'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.listItemTouch}>
+              <Text style={styles.listLabel}>Personal Information</Text>
+              <Icon name="chevron-right" size={16} color="#9CA3AF" />
+            </TouchableOpacity>
+            <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14) }]}>
+              <Text style={styles.listLabel}>Linked Mobile</Text>
+              <Text style={styles.listValue}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
+            </View>
+          </View>
+
+          {/* SECURITY */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Security</Text>
+            <TouchableOpacity><Text style={styles.viewAll}>View All {'>'}</Text></TouchableOpacity>
+          </View>
+          <View style={styles.listCard}>
+            <TouchableOpacity style={styles.listItemTouch}>
+              <Text style={styles.listLabel}>Change PIN</Text>
+              <Icon name="chevron-right" size={16} color="#9CA3AF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.listItemTouch}>
+              <Text style={styles.listLabel}>Change Password</Text>
+              <Icon name="chevron-right" size={16} color="#9CA3AF" />
+            </TouchableOpacity>
+            <View style={styles.listItemTouch}>
+              <Text style={styles.listLabel}>Biometric Login</Text>
+              <Switch
+                trackColor={{ false: '#D1D5DB', true: '#10B981' }}
+                thumbColor={'#ffffff'}
+                onValueChange={() => setBiometricEnabled(!biometricEnabled)}
+                value={biometricEnabled}
+              />
+            </View>
+            <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14), paddingTop: 12 }]}>
+              <Text style={styles.listLabel}>Change Mobile No.</Text>
+              <Text style={styles.listValue}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
+            </View>
+          </View>
+
+          {/* SECURITY BANNER */}
+          <View style={styles.securityBanner}>
+            <Image source={require('../../../assets/images/Security-Icon.png')} style={styles.bannerIcon} />
+            <View style={styles.bannerTextContainer}>
+              <Text style={styles.bannerTitle}>Secure & Trusted</Text>
+              <Text style={styles.bannerSub}>Your account is protected with bank-grade security.</Text>
+            </View>
+            <Image source={require('../../../assets/images/locksecure.png')} style={styles.watermarkIcon} />
+          </View>
+
+        </ScrollView>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+
+
+
+
 // import React, { useEffect, useState, useCallback } from 'react';
 // import {
 //   View,
@@ -398,7 +709,8 @@
 //   ToastAndroid,
 //   Platform,
 //   Image,
-//   Switch
+//   Switch,
+//   ImageBackground
 // } from 'react-native';
 // import { SafeAreaView } from 'react-native-safe-area-context';
 // import * as Keychain from 'react-native-keychain';
@@ -411,6 +723,7 @@
 // import Icon from 'react-native-vector-icons/Feather';
 // import { useFocusEffect } from '@react-navigation/native';
 // import BottomNav from '../components/bottomNav';
+// import { verticalScale } from '../../utils/responsive';
 
 // export default function UserProfile({ navigation }) {
 //   const [profiledata, setProfileData] = useState({});
@@ -526,25 +839,30 @@
 //               <Icon name="bell" size={20} color="#4F46E5" />
 //               <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
 //             </TouchableOpacity>
-//             <TouchableOpacity style={styles.iconBtn}>
-//               <Icon name="settings" size={20} color="#4F46E5" />
-//             </TouchableOpacity>
+//             <TouchableOpacity 
+//   style={styles.iconBtn}
+//   onPress={() => navigation.navigate('Settings')}
+// >
+//   <Icon name="settings" size={20} color="#4F46E5" />
+// </TouchableOpacity>
 //           </View>
 //         </View>
 
 //         <ScrollView
 //           showsVerticalScrollIndicator={false}
 //           keyboardShouldPersistTaps="handled"
-//           contentContainerStyle={{ paddingBottom: 100 }}
+//           contentContainerStyle={{ paddingBottom: 120 }} // Room for the sticky BottomNav overlay
 //         >
 //           {/* PROFILE CARD */}
-//           <View style={styles.profileCard}>
+//           {/* <View style={styles.profileCard}>
 //             <View style={styles.profileImageContainer}>
+              
+//               <View style={styles.profileArcBorder} />
 //               <View style={styles.profileCircle}>
 //                 <Text style={styles.profileAvatarText}>👤</Text>
 //               </View>
 //               <View style={styles.editIconBadge}>
-//                 <Icon name="edit-2" size={12} color="#fff" />
+//                 <Icon name="edit-2" size={12} color="#4F46E5" />
 //               </View>
 //             </View>
 //             <View style={styles.profileInfo}>
@@ -554,12 +872,39 @@
 //                 <Text style={styles.kycText}>• KYC NOT VERIFIED</Text>
 //               </View>
 //             </View>
-//           </View>
+//           </View> */}
+
+//           <ImageBackground
+//   source={require('../../../assets/images/profile/backbgdImage.png')} // Adjust this path to where you saved the wavy grey image
+//   style={styles.profileCard}
+//   imageStyle={styles.profileCardBgImage}
+// >
+//   <View style={styles.profileImageContainer}>
+//     {/* Dynamic status ring mockup */}
+//     <View style={styles.profileArcBorder} />
+//     <View style={styles.profileCircle}>
+//       <Text style={styles.profileAvatarText}>👤</Text>
+//     </View>
+//     <View style={styles.editIconBadge}>
+//       <Icon name="edit-2" size={12} color="#4F46E5" />
+//     </View>
+//   </View>
+  
+//   <View style={styles.profileInfo}>
+//     <Text style={styles.profileName}>{profiledata?.name || 'User 1'}</Text>
+//     <Text style={styles.profilePhone}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
+//     <View style={styles.kycBadge}>
+//       <Text style={styles.kycText}>• KYC NOT VERIFIED</Text>
+//     </View>
+//   </View>
+// </ImageBackground>
 
 //           {/* BALANCE & TRANSACTIONS */}
 //           <View style={styles.balanceContainer}>
 //             <View style={styles.balanceHalf}>
-//               <Image source={require('../../../assets/images/Wallet Icon.png')} style={styles.statIcon} />
+//               <View style={styles.statIconWrapper}>
+//                 <Image source={require('../../../assets/images/Wallet Icon.png')} style={styles.statIcon} />
+//               </View>
 //               <View>
 //                 <Text style={styles.statLabel}>Balance</Text>
 //                 <Text style={styles.statValue}>{profiledata?.balance || '100.0'} <Text style={styles.token}>PAYO</Text></Text>
@@ -567,7 +912,9 @@
 //             </View>
 //             <View style={styles.verticalDivider} />
 //             <View style={styles.balanceHalf}>
-//               <Image source={require('../../../assets/images/icon-bg.png')} style={styles.statIcon} />
+//               <View style={[styles.statIconWrapper, styles.statIconWrapperRed]}>
+//                 <Image source={require('../../../assets/images/Arrow_left.png')} style={styles.statIcon} />
+//               </View>
 //               <View>
 //                 <Text style={styles.statLabel}>Transactions</Text>
 //                 <Text style={styles.statValue}>{profiledata?.transactionCount || '0'}</Text>
@@ -577,7 +924,10 @@
 
 //           {/* REFERRAL CODE */}
 //           <View style={styles.referralCard}>
-//             <Image source={require('../../../assets/images/Reward Icon.png')} style={styles.rewardIcon} />
+//              <View style={styles.statIconWrapper}>
+//                 <Image source={require('../../../assets/images/Reward Icon.png')} style={styles.statIcon} />
+//               </View>
+//             {/* <Image source={require('../../../assets/images/Reward Icon.png')}style={styles.statIcon}/> */}
 //             <View>
 //               <Text style={styles.referralLabel}>Your Referral Code</Text>
 //               <Text style={styles.referralCode}>{profiledata?.referralCode || 'PAYO7630'}</Text>
@@ -588,22 +938,26 @@
 //           <View style={styles.actionRow}>
 //             <TouchableOpacity style={styles.actionBtnOutline} onPress={handleCopy}>
 //               <Text style={styles.actionBtnText}>Copy address</Text>
-//               <Icon name="copy" size={16} color="#4F46E5" />
+//               {/* <Icon name="copy" size={16} color="#4F46E5" /> */}
+//               <Image source={require('../../../assets/images/profile/Content Copy Icon.png')} style={styles.copyIcon} />
+
 //             </TouchableOpacity>
 //             <TouchableOpacity style={styles.actionBtnOutline} onPress={handleShare}>
 //               <Text style={styles.actionBtnText}>Share address</Text>
-//               <Icon name="share" size={16} color="#4F46E5" />
+//               {/* <Icon name="share" size={16} color="#4F46E5" /> */}
+//               <Image source={require('../../../assets/images/profile/share.png')} style={styles.shareIcon} />
 //             </TouchableOpacity>
 //           </View>
 
-//           <TouchableOpacity
-//             style={styles.addBankPrimaryBtn}
-//             onPress={() => navigation.navigate('AddBankHome')}
-//           >
-//             <Icon name="plus-circle" size={18} color="#fff" />
-//             <Text style={styles.addBankPrimaryText}>Add Bank Account</Text>
-//             <Icon name="chevron-right" size={18} color="#fff" />
-//           </TouchableOpacity>
+//           {/* ADD BANK BUTTON */}
+//          <TouchableOpacity
+//   style={styles.addBankPrimaryBtn}
+//   onPress={() => navigation.navigate('AddBankHome')}
+// >
+//   <Icon name="plus-circle" size={18} color="#fff" style={styles.leftIcon} />
+//   <Text style={styles.addBankPrimaryText}>Add Bank Account</Text>
+//   <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
+// </TouchableOpacity>
 
 //           {/* PERSONAL INFO */}
 //           <View style={styles.sectionHeader}>
@@ -619,7 +973,7 @@
 //               <Text style={styles.listLabel}>Email</Text>
 //               <Text style={styles.listValue}>{profiledata?.email || 'Raju@gmail.com'}</Text>
 //             </View>
-//             <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+//             <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14)}]}>
 //               <Text style={styles.listLabel}>Linked Mobile</Text>
 //               <Text style={styles.listValue}>+91 {profiledata?.mobile || '8332 285 718'}</Text>
 //             </View>
@@ -639,7 +993,7 @@
 //               <Text style={styles.listLabel}>Personal Information</Text>
 //               <Icon name="chevron-right" size={16} color="#9CA3AF" />
 //             </TouchableOpacity>
-//             <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: 0 }]}>
+//             <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14) }]}>
 //               <Text style={styles.listLabel}>Linked Mobile</Text>
 //               <Text style={styles.listValue}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
 //             </View>
@@ -652,15 +1006,15 @@
 //           </View>
 //           <View style={styles.listCard}>
 //             <TouchableOpacity style={styles.listItemTouch}>
-//               <Text style={styles.listLabelDark}>Change PIN</Text>
+//               <Text style={styles.listLabel}>Change PIN</Text>
 //               <Icon name="chevron-right" size={16} color="#9CA3AF" />
 //             </TouchableOpacity>
 //             <TouchableOpacity style={styles.listItemTouch}>
-//               <Text style={styles.listLabelDark}>Change Password</Text>
+//               <Text style={styles.listLabel}>Change Password</Text>
 //               <Icon name="chevron-right" size={16} color="#9CA3AF" />
 //             </TouchableOpacity>
 //             <View style={styles.listItemTouch}>
-//               <Text style={styles.listLabelDark}>Biometric Login</Text>
+//               <Text style={styles.listLabel}>Biometric Login</Text>
 //               <Switch
 //                 trackColor={{ false: '#D1D5DB', true: '#10B981' }}
 //                 thumbColor={'#ffffff'}
@@ -668,31 +1022,37 @@
 //                 value={biometricEnabled}
 //               />
 //             </View>
-//             <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: 0, paddingTop: 12 }]}>
-//               <Text style={styles.listLabelDark}>Change Mobile No.</Text>
+//             <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14), paddingTop: 12 }]}>
+//               <Text style={styles.listLabel}>Change Mobile No.</Text>
 //               <Text style={styles.listValue}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
 //             </View>
 //           </View>
 
 //           {/* SECURITY BANNER */}
-//           <View style={styles.securityBanner}>
-//             <Image source={require('../../../assets/images/Security-Icon.png')} style={styles.bannerIcon} />
-//             <View style={styles.bannerTextContainer}>
-//               <Text style={styles.bannerTitle}>Secure & Trusted</Text>
-//               <Text style={styles.bannerSub}>Your account is protected with bank-grade security.</Text>
-//             </View>
-//             <Image source={require('../../../assets/images/locksecure.png')} style={styles.watermarkIcon} />
-//           </View>
+//           {/* SECURITY BANNER */}
+// <View style={styles.securityBanner}>
+//   <Image source={require('../../../assets/images/Security-Icon.png')} style={styles.bannerIcon} />
+//   <View style={styles.bannerTextContainer}>
+//     <Text style={styles.bannerTitle}>Secure & Trusted</Text>
+//     <Text style={styles.bannerSub}>Your account is protected with bank-grade security.</Text>
+//   </View>
+//   <Image source={require('../../../assets/images/locksecure.png')} style={styles.watermarkIcon} />
+// </View>
 
-//           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-//             <Text style={styles.logoutText}>Logout</Text>
-//           </TouchableOpacity>
+// {/* LOGOUT BUTTON - IDENTICAL TO ADD BANK UI */}
+// <TouchableOpacity style={styles.logoutPrimaryBtn} onPress={handleLogout}>
+//   <Icon name="log-out" size={18} color="#fff" style={styles.leftIcon} />
+//   <Text style={styles.logoutPrimaryText}>Logout Account</Text>
+//   <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
+// </TouchableOpacity>
 
 //         </ScrollView>
 //       </View>
-//       <BottomNav navigation={navigation} currentRoute="Scan" />
 //     </SafeAreaView>
 //   );
+<<<<<<< HEAD
+// }
+=======
 // }
 
 
@@ -1045,3 +1405,4 @@ export default function UserProfile ({ navigation }) {
     </SafeAreaView>
   );
 }
+>>>>>>> 5f182fb646002ac1d723cf1ac62f97a1eadf19b2
