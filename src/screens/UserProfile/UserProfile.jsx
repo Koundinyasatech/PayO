@@ -722,7 +722,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import BottomNav from '../components/bottomNav';
 import { verticalScale } from '../../utils/responsive';
 
-export default function UserProfile({ navigation }) {
+export default function UserProfile ({ navigation }) {
   const [profiledata, setProfileData] = useState({});
   const [bankData, setBankData] = useState([]);
   const [address, setAddress] = useState('');
@@ -824,7 +824,7 @@ export default function UserProfile({ navigation }) {
       <View style={styles.container}>
         {/* HEADER */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.navigate('Main')} style={styles.backButton}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Icon name="chevron-left" size={24} color="#1F2937" />
           </TouchableOpacity>
           <View style={styles.headerTextContainer}>
@@ -869,29 +869,29 @@ export default function UserProfile({ navigation }) {
           </View> */}
 
           <ImageBackground
-  source={require('../../../assets/images/profile/backbgdImage.png')} // Adjust this path to where you saved the wavy grey image
-  style={styles.profileCard}
-  imageStyle={styles.profileCardBgImage}
->
-  <View style={styles.profileImageContainer}>
-    {/* Dynamic status ring mockup */}
-    <View style={styles.profileArcBorder} />
-    <View style={styles.profileCircle}>
-      <Text style={styles.profileAvatarText}>👤</Text>
-    </View>
-    <View style={styles.editIconBadge}>
-      <Icon name="edit-2" size={12} color="#4F46E5" />
-    </View>
-  </View>
-  
-  <View style={styles.profileInfo}>
-    <Text style={styles.profileName}>{profiledata?.name || 'User 1'}</Text>
-    <Text style={styles.profilePhone}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
-    <View style={styles.kycBadge}>
-      <Text style={styles.kycText}>• KYC NOT VERIFIED</Text>
-    </View>
-  </View>
-</ImageBackground>
+            source={require('../../../assets/images/profile/backbgdImage.png')} // Adjust this path to where you saved the wavy grey image
+            style={styles.profileCard}
+            imageStyle={styles.profileCardBgImage}
+          >
+            <View style={styles.profileImageContainer}>
+              {/* Dynamic status ring mockup */}
+              <View style={styles.profileArcBorder} />
+              <View style={styles.profileCircle}>
+                <Text style={styles.profileAvatarText}>👤</Text>
+              </View>
+              <View style={styles.editIconBadge}>
+                <Icon name="edit-2" size={12} color="#4F46E5" />
+              </View>
+            </View>
+
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>{profiledata?.name || 'User 1'}</Text>
+              <Text style={styles.profilePhone}>+91 {profiledata?.mobile || '1324 567 890'}</Text>
+              <View style={styles.kycBadge}>
+                <Text style={styles.kycText}>• KYC NOT VERIFIED</Text>
+              </View>
+            </View>
+          </ImageBackground>
 
           {/* BALANCE & TRANSACTIONS */}
           <View style={styles.balanceContainer}>
@@ -918,9 +918,9 @@ export default function UserProfile({ navigation }) {
 
           {/* REFERRAL CODE */}
           <View style={styles.referralCard}>
-             <View style={styles.statIconWrapper}>
-                <Image source={require('../../../assets/images/Reward Icon.png')} style={styles.statIcon} />
-              </View>
+            <View style={styles.statIconWrapper}>
+              <Image source={require('../../../assets/images/Reward Icon.png')} style={styles.statIcon} />
+            </View>
             {/* <Image source={require('../../../assets/images/Reward Icon.png')}style={styles.statIcon}/> */}
             <View>
               <Text style={styles.referralLabel}>Your Referral Code</Text>
@@ -944,14 +944,14 @@ export default function UserProfile({ navigation }) {
           </View>
 
           {/* ADD BANK BUTTON */}
-         <TouchableOpacity
-  style={styles.addBankPrimaryBtn}
-  onPress={() => navigation.navigate('AddBankHome')}
->
-  <Icon name="plus-circle" size={18} color="#fff" style={styles.leftIcon} />
-  <Text style={styles.addBankPrimaryText}>Add Bank Account</Text>
-  <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
-</TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addBankPrimaryBtn}
+            onPress={() => navigation.navigate('AddBankHome')}
+          >
+            <Icon name="plus-circle" size={18} color="#fff" style={styles.leftIcon} />
+            <Text style={styles.addBankPrimaryText}>Add Bank Account</Text>
+            <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
+          </TouchableOpacity>
 
           {/* PERSONAL INFO */}
           <View style={styles.sectionHeader}>
@@ -967,7 +967,7 @@ export default function UserProfile({ navigation }) {
               <Text style={styles.listLabel}>Email</Text>
               <Text style={styles.listValue}>{profiledata?.email || 'Raju@gmail.com'}</Text>
             </View>
-            <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14)}]}>
+            <View style={[styles.listItem, { borderBottomWidth: 0, paddingBottom: verticalScale(14) }]}>
               <Text style={styles.listLabel}>Linked Mobile</Text>
               <Text style={styles.listValue}>+91 {profiledata?.mobile || '8332 285 718'}</Text>
             </View>
@@ -1024,21 +1024,21 @@ export default function UserProfile({ navigation }) {
 
           {/* SECURITY BANNER */}
           {/* SECURITY BANNER */}
-<View style={styles.securityBanner}>
-  <Image source={require('../../../assets/images/Security-Icon.png')} style={styles.bannerIcon} />
-  <View style={styles.bannerTextContainer}>
-    <Text style={styles.bannerTitle}>Secure & Trusted</Text>
-    <Text style={styles.bannerSub}>Your account is protected with bank-grade security.</Text>
-  </View>
-  <Image source={require('../../../assets/images/locksecure.png')} style={styles.watermarkIcon} />
-</View>
+          <View style={styles.securityBanner}>
+            <Image source={require('../../../assets/images/Security-Icon.png')} style={styles.bannerIcon} />
+            <View style={styles.bannerTextContainer}>
+              <Text style={styles.bannerTitle}>Secure & Trusted</Text>
+              <Text style={styles.bannerSub}>Your account is protected with bank-grade security.</Text>
+            </View>
+            <Image source={require('../../../assets/images/locksecure.png')} style={styles.watermarkIcon} />
+          </View>
 
-{/* LOGOUT BUTTON - IDENTICAL TO ADD BANK UI */}
-<TouchableOpacity style={styles.logoutPrimaryBtn} onPress={handleLogout}>
-  <Icon name="log-out" size={18} color="#fff" style={styles.leftIcon} />
-  <Text style={styles.logoutPrimaryText}>Logout Account</Text>
-  <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
-</TouchableOpacity>
+          {/* LOGOUT BUTTON - IDENTICAL TO ADD BANK UI */}
+          <TouchableOpacity style={styles.logoutPrimaryBtn} onPress={handleLogout}>
+            <Icon name="log-out" size={18} color="#fff" style={styles.leftIcon} />
+            <Text style={styles.logoutPrimaryText}>Logout Account</Text>
+            <Icon name="chevron-right" size={18} color="#fff" style={styles.rightIcon} />
+          </TouchableOpacity>
 
         </ScrollView>
       </View>

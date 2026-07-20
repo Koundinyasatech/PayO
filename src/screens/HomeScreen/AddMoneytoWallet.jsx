@@ -340,7 +340,7 @@ import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
 
 export default function AddMoneytoWallet({ visible, onClose, navigation }) {
   const dispatch = useDispatch();
-  const [localAmount, setLocalAmount] = useState('1,000');
+  const [localAmount, setLocalAmount] = useState('100');
   const [walletData, setWalletData] = useState(null);
   const loading = useSelector((state) => state.deposit.loading);
 
@@ -377,7 +377,7 @@ export default function AddMoneytoWallet({ visible, onClose, navigation }) {
   
 
   const presets = [
-    { label: '+ ₹ 500', value: '500' },
+    { label: '+ ₹ 100', value: '100' },
     { label: '+ ₹ 1,000', value: '1,000' },
     { label: '+ ₹ 2,500', value: '2,500' },
     { label: '+ ₹ 5,500', value: '5,500' },

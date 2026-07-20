@@ -541,7 +541,7 @@ navigation.replace('Main');
         // Navigation branches dynamically based on flow initiation
         if (type === 'login') {
 
-          navigation.replace('OtpVerified');
+         navigation.replace('Main');
 
         } else {
           navigation.replace('OtpVerified');

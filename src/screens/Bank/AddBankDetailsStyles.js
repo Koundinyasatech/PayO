@@ -194,6 +194,11 @@ export default StyleSheet.create({
     position: 'absolute',
     left: 0,
     padding: wp('2%'),
+    backgroundColor:'#e8e8e8',
+    borderRadius:50,
+    elevation:3,
+   
+
   },
   iconButtonRight: {
     position: 'absolute',
