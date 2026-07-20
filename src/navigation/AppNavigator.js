@@ -170,8 +170,6 @@
 
 
 
-
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -253,6 +251,7 @@ import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.j
 import WalletScreen from '../screens/HomeScreen/WalletScreen.jsx';
 import AddMoneytoWallet from '../screens/HomeScreen/AddMoneytoWallet.jsx';
 import NotFoundScreen from '../screens/HomeScreen/NotFoundScreen.jsx';
+import PaymentCompleteDetails from '../screens/HomeScreen/completeTransaction.jsx';
 
 const Stack = createNativeStackNavigator();
 
@@ -273,17 +272,16 @@ export default function AppNavigator() {
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OtpVerified" component={OtpVerified} options={{ animation: 'fade' }} />
-          <Stack.Screen name="NotFound" component={NotFoundScreen} />
+        <Stack.Screen name="NotFound" component={NotFoundScreen} />
 
 
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} options={{ animation: 'fade' }} />
-          <Stack.Screen name="Biometric" component={Biometric} />
-           <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
+        <Stack.Screen name="Biometric" component={Biometric} />
+        <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
         <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
         <Stack.Screen name="ConfirmDeposite" component={ConfirmDepositeScreen} />
         <Stack.Screen name="MakePayment" component={MakePayment} />
-        
 
 
 
@@ -324,6 +322,8 @@ export default function AppNavigator() {
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
+        <Stack.Screen name="PaymentCompleteDetails" component={PaymentCompleteDetails} />
+        
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />

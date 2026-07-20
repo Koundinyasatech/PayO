@@ -861,7 +861,7 @@ export default function WalletScreen({ navigation }) {
                 <Text style={styles.promoTitle}>Invite Friends & Earn PAYO</Text>
                 <Text style={styles.promoSub}>Get ₹500 for every referral</Text>
               </View>
-              <TouchableOpacity style={styles.promoBtn}>
+              <TouchableOpacity onPress={()=>navigation.navigate('Receive')} style={styles.promoBtn}>
                 <Text style={styles.promoBtnText}>Refer Now {'>'}</Text>
               </TouchableOpacity>
             </View>

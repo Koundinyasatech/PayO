@@ -519,9 +519,9 @@ export default function OtpVerificationScreen({ route, navigation }) {
         userAgent: `${systemName} ${systemVersion}`, 
         location: "Hyderabad", 
         });
-        if(response.data?.token || response.data?.status === "200"){
-navigation.replace('Main');
-        }
+//         if(response.data?.token || response.data?.status === "200"){
+// navigation.replace('Main');
+//         }
         
       } else {
         // Aligned with backend requirements from structural screenshot: uses userId and otp
@@ -540,7 +540,7 @@ navigation.replace('Main');
         
         // Navigation branches dynamically based on flow initiation
         if (type === 'login') {
-          //navigation.replace('AddBankHome');
+          navigation.replace('Main');
           // navigation.replace('WalletScreen');
           // navigation.replace('KYCVerification')
         } else {
@@ -1086,5 +1086,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
 

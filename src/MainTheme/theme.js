@@ -12,7 +12,7 @@ export const theme = {
     borderLight: '#E5E7EB',
     borderPurple: '#C7D2FE',
     textMain: '#05070D',  ////// profile 
-    textMuted: '#414141',  
+    textMuted: '#414141', 
     statusSuccess: '#03B244',  ////// profile 
     statusDanger: '#ef4444',
     // Custom Tag Colors
@@ -22,6 +22,7 @@ export const theme = {
     tagEthText: '#2563eb',
     tagPayoBg: '#f3e8ff',
     tagPayoText: '#9333ea',
+    grey:'#64748B'
   },
   typography: {
     // React Native handles font families differently, falling back to system defaults
@@ -77,7 +78,7 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
   },
   textMuted: {
-    color: theme.colors.textMuted,
+    color: theme.colors.grey, 
     fontSize: theme.typography.size.sm,
   },
   textSuccess: {
