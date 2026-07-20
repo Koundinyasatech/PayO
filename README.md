@@ -39,3 +39,6 @@ npm install react-native-vector-icons
 npm install react-native-curved-bottom-bar
 npm install react-native-svg
 npm install react-native-vector-icons
+
+
+npm install react-native-webview
