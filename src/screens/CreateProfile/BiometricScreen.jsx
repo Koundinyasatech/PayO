@@ -692,7 +692,7 @@ export default function BiometricScreen({ navigation }) {
               <TouchableOpacity
                 style={styles.secondaryButton}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('WelcomeProfile')}
+                onPress={() => navigation.replace('WelcomeProfile')}
               >
                 <View style={styles.buttonInnerContent}>
                   <Image source={IMAGES.iconClock} style={styles.btnLeftIcon} />
