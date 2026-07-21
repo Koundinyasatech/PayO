@@ -494,6 +494,13 @@ export default function OtpVerificationScreen({ route, navigation }) {
       return;
     }
     // navigation.replace('WalletScreen');
+    //  if (type === 'login') {
+    //       navigation.replace('Main');
+    //       // navigation.replace('WalletScreen');
+    //       // navigation.replace('KYCVerification')
+    //     } else {
+    //       navigation.replace('OtpVerified');
+    //     }
     
     try {
       setLoading(true);
@@ -518,6 +525,7 @@ export default function OtpVerificationScreen({ route, navigation }) {
         deviceName: deviceModel,
         userAgent: `${systemName} ${systemVersion}`, 
         location: "Hyderabad", 
+        country_code: countryCode
         });
 //         if(response.data?.token || response.data?.status === "200"){
 // navigation.replace('Main');
@@ -528,6 +536,8 @@ export default function OtpVerificationScreen({ route, navigation }) {
         response = await api.post('/api/auth/verify-otp', {
           userId: userId,
           otp: finalOtp,
+          country_code: countryCode
+
         });
       }
 

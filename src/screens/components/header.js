@@ -822,7 +822,7 @@ export default function Header() {
   // 1. ALL HOOKS DECLARATIONS (TOP LEVEL UNCONDITIONAL)
   const navigation = useNavigation();
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [walletBalance, setWalletBalance] = useState(1000);
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const isRestricted = useMemo(() => {
     return walletBalance < 100;
@@ -872,9 +872,10 @@ export default function Header() {
     { label: 'Wallet', icon: 'credit-card', route: 'WalletScreen', requiresAccess: false },
     { label: 'Markets', icon: 'trending-up', route: 'MarketScreen', requiresAccess: true },
     { label: 'Portfolio', icon: 'bar-chart-2', route: 'PortfolioScreen', requiresAccess: true },
-    { label: 'Transactions', icon: 'refresh-cw', route: 'TransactionsScreen', requiresAccess: true },
-    { label: 'Rewards', icon: 'gift', route: 'RewardsScreen', requiresAccess: true },
-    { label: 'Referrals', icon: 'users', route: 'ReferralsScreen', requiresAccess: true },
+    { label: 'Transactions', icon: 'refresh-cw', route: 'TransactionHistory', requiresAccess: true },
+    { label: 'Rewards', icon: 'gift', route: 'ReferEarn', requiresAccess: true },
+    { label: 'Referrals', icon: 'users', route: 'ReferEarn', requiresAccess: true },
+    { label: 'Verify KYC', icon: 'file', route: 'KYCVerification', requiresAccess: true },
   ];
 
   const bottomMenuItems = [

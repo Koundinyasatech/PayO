@@ -326,7 +326,7 @@
 //////////////////////////////////////////////////////////
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -335,123 +335,118 @@ import {
   StatusBar,
   Image,
   ScrollView,
+  Share,
   Platform,
-  ToastAndroid,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
 import Clipboard from '@react-native-clipboard/clipboard';
-import Share from 'react-native-share';
+import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
 
-// 1. Importing responsive utilities from your project structure
-import {
-  scale,
-  verticalScale,
-  moderateScale,
-} from '../utils/responsive';
+// Custom responsive utilities from your project structure
 
-// 2. Importing theme
-import { theme } from '../MainTheme/theme';
 
-const ReferEarn = ({ navigation }) => {
-  const referralCode = 'PAYO7630';
-  const totalReferrals = 6;
-  const totalRewards = 100;
+export default function Receive({ navigation }) {
+  const walletAddress = 'PX7KW78983CFHD02';
+  const [timer, setTimer] = useState(1800); // 30:00 minutes in seconds
+
+  // Active Countdown Timer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 1800));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds} sec`;
+  };
 
   const handleCopy = () => {
-    Clipboard.setString(referralCode);
-    if (Platform.OS === 'android') {
-      ToastAndroid.show('Referral code copied!', ToastAndroid.SHORT);
-    } else {
-      Alert.alert('Copied', 'Referral code copied to clipboard');
-    }
+    Clipboard.setString(walletAddress);
+    // You can optionally trigger an alert, toast, or haptic feedback here
   };
 
   const handleShare = async () => {
     try {
-      await Share.open({
-        message: `Join PAYO and earn rewards! Use my referral code: ${referralCode} to get started.`,
+      await Share.share({
+        message: `My PAYO Wallet Address: ${walletAddress}`,
       });
     } catch (error) {
-      console.log('Share error:', error);
+      console.log('Share error:', error.message);
     }
   };
 
+  const handleRegenerate = () => {
+    setTimer(1800); // Reset countdown
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar backgroundColor="#F4F8F6" barStyle="dark-content" />
 
       <ScrollView
-        contentContainerStyle={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Section */}
-        <View style={styles.headerRow}>
-          <TouchableOpacity
-            style={styles.backBtn}
+        {/* Header Bar */}
+        <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backBtn} 
             onPress={() => navigation.goBack()}
             activeOpacity={0.7}
           >
-            <Icon
-              name="chevron-left"
-              size={moderateScale(24)}
-              color="#285CE0"
-            />
+            <Icon name="chevron-left" size={moderateScale(24)} color="#285CE0" />
           </TouchableOpacity>
 
           <View style={styles.headerTitleContainer}>
-            <Text style={styles.headerTitle}>Refer and Earn</Text>
-            <Text style={styles.headerSubtitle}>Refer PAYO and earn rewards</Text>
+            <Text style={styles.headerTitle}>Receive PAYO</Text>
+            <Text style={styles.headerSubtitle}>Receive tokens instantly</Text>
           </View>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('UserProfile')}
-          
-          style={styles.profileBtn} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.profileBtn} activeOpacity={0.7}>
             <Icon name="user" size={moderateScale(20)} color="#FFF" />
           </TouchableOpacity>
         </View>
 
-        {/* Hero Banner Section */}
-        <View style={styles.heroContainer}>
-          <Image
-            source={require('../../assets/images/addBankdetails/Refer and earn 2 1.png')} // Replace with your exact graphic asset path
-            style={styles.heroImage}
-          />
+        {/* QR Code Scanner Frame Area */}
+        <View style={styles.qrSectionContainer}>
+          <View style={styles.scannerTarget}>
+            {/* Corner Brackets */}
+            <View style={[styles.bracket, styles.topLeftBracket]} />
+            <View style={[styles.bracket, styles.topRightBracket]} />
+            <View style={[styles.bracket, styles.bottomLeftBracket]} />
+            <View style={[styles.bracket, styles.bottomRightBracket]} />
+
+            {/* Glowing Laser Scan Indicator */}
+            <View style={styles.scanLaser} />
+
+            {/* QR Card */}
+            <View style={styles.qrCard}>
+              <Image
+                source={{ uri: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${walletAddress}` }}
+                style={styles.qrCodeImage}
+              />
+            </View>
+          </View>
         </View>
 
-        {/* Earn Promo Banner Card */}
-        <View style={styles.promoCard}>
-          <View style={styles.promoTextContainer}>
-            <Text style={styles.promoTitle}>Earn 50 PAYO</Text>
-            <Text style={styles.promoSubtitle}>
-              For every friend who joins payo and completes their first transaction
+        {/* Wallet Address Information Card */}
+        <View style={styles.addressContainer}>
+          <View style={styles.walletIconContainer}>
+            <Icon name="credit-card" size={moderateScale(22)} color="#7F3DFF" />
+          </View>
+          <View style={styles.addressTextColumn}>
+            <Text style={styles.addressLabel}>Wallet Address</Text>
+            <Text style={styles.addressText} numberOfLines={1} ellipsizeMode="middle">
+              {walletAddress}
             </Text>
           </View>
-          <View style={styles.giftIconContainer}>
-            {/* Elegant gift box container fallback if asset not present */}
-            {/* <Icon name="gift" size={moderateScale(32)} color="#FFD700" />
-             */}
-                <Image
-            source={require('../../assets/images/addBankdetails/Text.png')} // Replace with your exact graphic asset path
-            style={styles.heroImage}
-          />
-          </View>
         </View>
 
-        {/* Referral Code Box */}
-        <View style={styles.referralBox}>
-          <View style={styles.giftBoxIconBg}>
-            <Icon name="gift" size={moderateScale(22)} color="#7F3DFF" />
-          </View>
-          <View style={styles.referralCodeTextContainer}>
-            <Text style={styles.referralLabel}>Your Referral Code</Text>
-            <Text style={styles.referralCode}>{referralCode}</Text>
-          </View>
-        </View>
-
-        {/* Action Buttons Row */}
+        {/* Dynamic Action Buttons */}
         <View style={styles.actionButtonsRow}>
           <TouchableOpacity style={styles.actionBtn} onPress={handleCopy} activeOpacity={0.8}>
             <Text style={styles.actionBtnText}>Copy address</Text>
@@ -464,90 +459,50 @@ const ReferEarn = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Statistics Row (Referrals & Rewards) */}
-        <View style={styles.statsCard}>
-          <View style={styles.statsColumn}>
-              <Image 
-            source={require('../../assets/images/addBankdetails/wallet (2).png')}  
-             style={styles.statsIcon}
-            />
-            <View>
-              <Text style={styles.statsLabel}>Total Referrals</Text>
-              <Text style={styles.statsValue}>{totalReferrals}</Text>
-            </View>
-          </View>
-          
-          <View style={styles.statsDivider} />
-
-          <View style={styles.statsColumn}>
-            <Image 
-            source={require('../../assets/images/addBankdetails/Coins.png')} // Replace with your exact graphic asset path
-            
-            style={styles.statsIcon} />
-            <View>
-              <Text style={styles.statsLabel}>Total Rewards</Text>
-              <Text style={styles.statsValue}>{totalRewards}</Text>
-            </View>
-          </View>
+        {/* Expiry Countdown & Action */}
+        <View style={styles.expiryContainer}>
+          <Text style={styles.expiryText}>
+            QR expires in <Text style={styles.expiryTimer}>{formatTime(timer)}</Text>
+          </Text>
+          <TouchableOpacity onPress={handleRegenerate} activeOpacity={0.7}>
+            <Text style={styles.regenerateText}>Regenerate</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Instructions Panel "How it Works" */}
-        <View style={styles.instructionsCard}>
-          <Text style={styles.instructionsHeader}>How it works :</Text>
-
-          <View style={styles.stepContainer}>
-            <Text style={styles.stepTitle}>1. Share your referral code:</Text>
-            <Text style={styles.stepDesc}>Invite friends to join PAYO.</Text>
-          </View>
-
-          <View style={styles.stepContainer}>
-            <Text style={styles.stepTitle}>2. Friend completes KYC:</Text>
-            <Text style={styles.stepDesc}>Securely verify their account.</Text>
-          </View>
-
-          <View style={styles.stepContainer}>
-            <Text style={styles.stepTitle}>3. First transaction completed:</Text>
-            <Text style={styles.stepDesc}>Receive 50 PAYO instantly in your wallet.</Text>
-          </View>
-        </View>
-
-        {/* Disclaimer Banner Card */}
+        {/* Secure Disclaimer Card */}
         <View style={styles.disclaimerCard}>
           <Icon name="info" size={moderateScale(20)} color="#7F3DFF" />
           <Text style={styles.disclaimerText}>
             The PAYO amount you receive may vary slightly due to market fluctuations
           </Text>
-              <Image 
-            source={require('../../assets/images/addBankdetails/wallet (1).png')} // Replace with your exact graphic asset path
-            
-            style={styles.bottom} />
-          {/* <Icon name="pocket" size={moderateScale(24)} color="#7F3DFF" /> */}
+          <Image
+            source={require('../../assets/images/biomatric/Wallet image 1.png')} // Fallback placeholder if wallet asset isn't ready
+            style={styles.disclaimerImg}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
-};
-
-export default ReferEarn;
+}
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F4F8F6',
+    backgroundColor: '#F4F8F6', // Off-white/Minty hue background
   },
-  scrollContainer: {
+  scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: scale(20),
-    paddingBottom: verticalScale(20),
+    paddingHorizontal: moderateScale(20),
+    paddingBottom: verticalScale(30),
   },
 
   // Header Setup
-  headerRow: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: verticalScale(50),
-    // marginTop: verticalScale(),
+    height: verticalScale(70),
+    marginTop: verticalScale(10),
   },
   backBtn: {
     width: moderateScale(42),
@@ -583,114 +538,132 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(2),
   },
   profileBtn: {
-    width: moderateScale(38),
-    height: moderateScale(38),
+    width: moderateScale(40),
+    height: moderateScale(40),
     borderRadius: moderateScale(21),
     backgroundColor: '#285CE0',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
-  // Hero Image Banner Frame
-  heroContainer: {
-    width: '100%',
-    height: verticalScale(270),
-    borderWidth: 0.1,
-    // borderColor: '#2962FF',
-    borderRadius: moderateScale(12),
-    overflow: 'hidden',
-    marginTop: verticalScale(20),
-    backgroundColor: '#FFF',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-
-  // Promotion Information Banner Card
-  promoCard: {
-    backgroundColor: '#5655FF',
-    borderRadius: moderateScale(16),
-    padding: moderateScale(16),
-    flexDirection: 'row',
+  // QR Design Frame Setup
+  qrSectionContainer: {
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: verticalScale(17),
+    justifyContent: 'center',
+    marginVertical: verticalScale(40),
+  },
+  scannerTarget: {
+    width: moderateScale(220),
+    height: moderateScale(220),
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  bracket: {
+    position: 'absolute',
+    width: moderateScale(30),
+    height: moderateScale(30),
+    borderColor: '#333',
+  },
+  topLeftBracket: {
+    top: 0,
+    left: 0,
+    borderTopWidth: 3,
+    borderLeftWidth: 3,
+    borderTopLeftRadius: moderateScale(8),
+  },
+  topRightBracket: {
+    top: 0,
+    right: 0,
+    borderTopWidth: 3,
+    borderRightWidth: 3,
+    borderTopRightRadius: moderateScale(8),
+  },
+  bottomLeftBracket: {
+    bottom: 0,
+    left: 0,
+    borderBottomWidth: 3,
+    borderLeftWidth: 3,
+    borderBottomLeftRadius: moderateScale(8),
+  },
+  bottomRightBracket: {
+    bottom: 0,
+    right: 0,
+    borderBottomWidth: 3,
+    borderRightWidth: 3,
+    borderBottomRightRadius: moderateScale(8),
+  },
+  scanLaser: {
+    position: 'absolute',
+    top: '50%',
+    left: -moderateScale(15),
+    right: -moderateScale(15),
+    height: 1.5,
+    backgroundColor: '#D1C4E9',
+  },
+  qrCard: {
+    backgroundColor: '#FFF',
+    padding: moderateScale(15),
+    borderRadius: moderateScale(16),
     ...Platform.select({
       ios: {
-        shadowColor: '#5655FF',
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
       },
       android: {
-        elevation: 4,
+        elevation: 5,
       },
     }),
   },
-  promoTextContainer: {
-    flex: 0.8,
-  },
-  promoTitle: {
-    fontSize: moderateScale(18),
-    fontWeight: '800',
-    color: '#FFF',
-    marginBottom: verticalScale(4),
-  },
-  promoSubtitle: {
-    fontSize: moderateScale(12),
-    color: '#E0E0FF',
-    lineHeight: moderateScale(16),
-  },
-  giftIconContainer: {
-    width: moderateScale(50),
-    height: moderateScale(50),
-    justifyContent: 'center',
-    alignItems: 'center',
+  qrCodeImage: {
+    width: moderateScale(140),
+    height: moderateScale(140),
+    resizeMode: 'contain',
   },
 
-  // Referral Code Input Container
-  referralBox: {
+  // Wallet Address Component Details
+  addressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ffffff',
     borderWidth: 1.5,
-    borderColor: '#adadad',
+    borderColor: '#c4c4c4',
     borderStyle: 'dashed',
     borderRadius: moderateScale(16),
-    padding: moderateScale(16),
-    marginTop: verticalScale(20),
+    padding: moderateScale(14),
+    marginBottom: verticalScale(15),
   },
-  giftBoxIconBg: {
+  walletIconContainer: {
     width: moderateScale(44),
     height: moderateScale(44),
     borderRadius: moderateScale(12),
-    backgroundColor: '#f3ecff',
+    backgroundColor: '#E8DBFF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: moderateScale(12),
   },
-  referralCodeTextContainer: {
+  addressTextColumn: {
     flex: 1,
   },
-  referralLabel: {
+  addressLabel: {
     fontSize: moderateScale(12),
     color: '#7F3DFF',
     fontWeight: '600',
   },
-  referralCode: {
-    fontSize: moderateScale(16),
+  addressText: {
+    fontSize: moderateScale(14),
     color: '#1A1D21',
-    fontWeight: '800',
-    marginTop: verticalScale(2),
+    fontWeight: '700',
+    marginTop: verticalScale(4),
   },
 
-  // Action Buttons Setup
+  // Action Button Bar
   actionButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: verticalScale(15),
+    marginBottom: verticalScale(22),
   },
   actionBtn: {
     width: '48%',
@@ -710,7 +683,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
       },
       android: {
-        elevation: 3,
+        elevation: 1,
       },
     }),
   },
@@ -723,74 +696,30 @@ const styles = StyleSheet.create({
     marginLeft: moderateScale(8),
   },
 
-  // Stats Breakdown Styling
-  statsCard: {
-    flexDirection: 'row',
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#b49dfb',
-    borderRadius: moderateScale(12),
-    paddingVertical: moderateScale(16),
-    marginTop: verticalScale(20),
-    alignItems: 'center',
-  },
-  statsColumn: {
-    flex: 1,
-    flexDirection: 'row',
+  // Expiring Information Box
+  expiryContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: verticalScale(28),
   },
-  statsIcon: {
-    marginRight: moderateScale(10),
-  },
-  statsLabel: {
-    fontSize: moderateScale(11),
-    color: '#6E7179',
+  expiryText: {
+    fontSize: moderateScale(13),
+    color: '#555A60',
     fontWeight: '500',
   },
-  statsValue: {
-    fontSize: moderateScale(15),
-    color: '#285CE0',
-    fontWeight: '800',
-    marginTop: verticalScale(2),
-  },
-  statsDivider: {
-    width: 1,
-    height: '80%',
-    backgroundColor: '#E4DBFF',
-  },
-
-  // Instructions Setup
-  instructionsCard: {
-    backgroundColor: '#F7F8F9',
-    borderWidth: 1,
-    borderColor: '#E4E8EE',
-    borderRadius: moderateScale(16),
-    padding: moderateScale(20),
-    marginTop: verticalScale(20),
-  },
-  instructionsHeader: {
-    fontSize: moderateScale(14),
-    fontWeight: '700',
-    color: '#7F3DFF',
-    marginBottom: verticalScale(12),
-  },
-  stepContainer: {
-    marginBottom: verticalScale(14),
-  },
-  stepTitle: {
-    fontSize: moderateScale(13),
+  expiryTimer: {
     fontWeight: '700',
     color: '#1A1D21',
   },
-  stepDesc: {
-    fontSize: moderateScale(12),
-    color: '#6E7179',
-    marginTop: verticalScale(2),
-    paddingLeft: moderateScale(14),
+  regenerateText: {
+    fontSize: moderateScale(13),
+    color: '#7F3DFF',
+    fontWeight: '700',
+    marginTop: verticalScale(8),
+    textDecorationLine: 'none',
   },
 
-  // Disclaimer Layout Area
+  // Disclaimer Layout
   disclaimerCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -800,7 +729,6 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(16),
     paddingVertical: moderateScale(14),
     paddingHorizontal: moderateScale(16),
-    marginTop: verticalScale(20),
   },
   disclaimerText: {
     flex: 1,
@@ -810,8 +738,10 @@ const styles = StyleSheet.create({
     lineHeight: moderateScale(16),
     marginHorizontal: moderateScale(12),
   },
-  bottom:{
-    width:50,
-    height:50
-  }
+  disclaimerImg: {
+    width: moderateScale(70),
+    height: moderateScale(40),
+    resizeMode: 'contain',
+    opacity:0.5
+  },
 });

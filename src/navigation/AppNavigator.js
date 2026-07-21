@@ -250,6 +250,7 @@ import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.jsx'
 import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.jsx';
 import WalletScreen from '../screens/HomeScreen/WalletScreen.jsx';
 import AddMoneytoWallet from '../screens/HomeScreen/AddMoneytoWallet.jsx';
+// import  AddMoneytoWallet from "../screens/components/AddMoneyModal.jsx"
 import NotFoundScreen from '../screens/HomeScreen/NotFoundScreen.jsx';
 import PaymentCompleteDetails from '../screens/HomeScreen/completeTransaction.jsx';
 
@@ -304,7 +305,9 @@ export default function AppNavigator() {
         <Stack.Screen name="UserProfile" component={UserProfile} />
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="WalletScreen" component={WalletScreen} />
-        <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} />
+
+        {/* <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} /> */}
+          <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
         <Stack.Screen name="CoinDetailsScreen" component={CoinDetailsScreen} />
         <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />

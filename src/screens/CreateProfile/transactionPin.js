@@ -727,6 +727,7 @@ export default function TransactionPinScreen({ navigation }) {
     
     setError('');
     setLoading(true);
+    //  navigation.navigate('Biometric');
 
     try {
       const fetchedIp = await NetworkInfo.getIPAddress();
