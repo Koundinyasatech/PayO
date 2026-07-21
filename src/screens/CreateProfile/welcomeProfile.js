@@ -446,7 +446,7 @@ export default function DashboardScreen({ navigation }) {
         <TouchableOpacity 
           style={styles.exploreButton}
           onPress={() =>
-             navigation.navigate('Main')
+             navigation.replace('Main')
             // navigation.navigate('WalletScreen')
 
           }
