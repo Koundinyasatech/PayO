@@ -658,6 +658,345 @@ const handlePaymentSelect = (method) => {
   );
 }
 
+//////////////////////////////////////////// cashFreee ///////////////////////////////////////////
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   View, Text, StyleSheet, TouchableOpacity, TextInput,
+//   ScrollView, Image, Platform, ToastAndroid, Alert, ActivityIndicator
+// } from 'react-native';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+// import LinearGradient from 'react-native-linear-gradient';
+// import Icon from 'react-native-vector-icons/MaterialIcons';
+// import FeatherIcon from 'react-native-vector-icons/Feather';
+// import { useDispatch } from 'react-redux';
+
+// // Redux & API Integrations
+// import { setAmount, setPaymentMethod } from '../../redux/features/depositSlice';
+// import api from '../../api/axios';
+// import { createOrder, verifyPayment } from '../../api/walletApi'; // Imported from walletApi
+// import cashfreeService from '../../services/CashfreeService';     // Imported Cashfree service
+// import { moderateScale } from '../../utils/responsive';
+
+// // Assets
+// import upiImg from '../../../assets/images/wallet/Payment Icon.png';
+// import bankImg from '../../../assets/images/wallet/Payment Icon (1).png';
+// import cardImg from '../../../assets/images/wallet/Payment Icon (2).png';
+// import netBankingImg from '../../../assets/images/wallet/wallet.png';
+// import wallet from '../../../assets/images/wallet/Wallet image 1.png';
+// import cryptoImg from '../../../assets/images/wallet/cryptocurrency 1.png';
+// import CashfreeService from '../../services/CashfreeService';
+
+// export default function AddMoneytoWallet({ navigation }) {
+//   const dispatch = useDispatch();
+//   const [localAmount, setLocalAmount] = useState('100');
+//   const [walletData, setWalletData] = useState(null);
+//   const [loading, setLoading] = useState(false); // Controlled local loading state during payment processing
+
+//   // 1. Initial balance fetch on mount
+//   useEffect(() => {
+//     fetchWalletBalance();
+//   }, []);
+
+//   // 2. Manage Cashfree Callback Event Listeners throughout component lifecycle
+//   useEffect(() => {
+//     CashfreeService.initialize(
+//       handleSuccessCallback,
+//       handleFailureCallback
+//     );
+    
+//     return () => {
+//       CashfreeService.removeListeners();
+//     };
+//   }, []);
+
+//   const fetchWalletBalance = async () => {
+//     try {
+//       const res = await api.get('/api/wallet/getwalletdashboard');
+//       setWalletData(res?.data);
+//     } catch (error) {
+//       console.log('Error fetching wallet balance:', error?.response || error.message);
+//     }
+//   };
+
+//   // Cashfree Verification Handlers
+//   const handleSuccessCallback = async (orderId) => {
+//     try {
+//       setLoading(true);
+//       const verificationResponse = await verifyPayment(orderId);
+      
+//       if (verificationResponse && verificationResponse.success) {
+//         Alert.alert('Success', 'Money added successfully!');
+//         fetchWalletBalance(); // Update balance dashboard instantly
+//       } else {
+//         Alert.alert('Payment Pending', verificationResponse.message || 'Your payment is being processed.');
+//       }
+//     } catch (error) {
+//       Alert.alert('Error', 'Failed to verify payment with the server.');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleFailureCallback = (error, orderId) => {
+//     Alert.alert('Payment Failed', error?.message || 'Something went wrong during payment.');
+//     setLoading(false);
+//   };
+
+//   const presets = [
+//     { label: '+ ₹ 100', value: '100' },
+//     { label: '+ ₹ 1,000', value: '1,000' },
+//     { label: '+ ₹ 2,500', value: '2,500' },
+//     { label: '+ ₹ 5,500', value: '5,500' },
+//   ];
+
+//   const paymentMethods = [
+//     {
+//       id: 'upi',
+//       title: 'UPI',
+//       subtitle: 'Pay using any UPI app',
+//       tag: 'INSTANT',
+//       tagBg: '#E8F5E9',
+//       tagColor: '#2E7D32',
+//       imageSource: upiImg,
+//     },
+//     {
+//       id: 'card',
+//       title: 'Debit/Credit Card',
+//       subtitle: 'Visa, Mastercard, RuPay',
+//       tag: 'INSTANT',
+//       tagBg: '#E8F5E9',
+//       tagColor: '#2E7D32',
+//       imageSource: cardImg,
+//     },
+//     {
+//       id: 'net_banking',
+//       title: 'Net Banking',
+//       subtitle: 'All major Indian banks',
+//       tag: 'INSTANT',
+//       tagBg: '#E8F5E9',
+//       tagColor: '#2E7D32',
+//       imageSource: netBankingImg,
+//     },
+//     {
+//       id: 'bank_transfer',
+//       title: 'Bank Transfer',
+//       subtitle: 'IMPS, NEFT, RTGS',
+//       tag: '1-2 HOURS',
+//       tagBg: '#E8EAF6',
+//       tagColor: '#283593',
+//       imageSource: bankImg,
+//     },
+//     {
+//       id: 'crypto',
+//       title: 'Crypto Transfer',
+//       subtitle: 'BTC, ETH, USDT',
+//       tag: '1-2 HOURS',
+//       tagBg: '#E8EAF6',
+//       tagColor: '#283593',
+//       imageSource: cryptoImg,
+//     },
+//   ];
+
+//   const parseValueToString = (val) => {
+//     const clean = val.replace(/[^0-9]/g, '');
+//     return clean ? parseInt(clean, 10).toLocaleString('en-IN') : '';
+//   };
+
+//   // Modernized Core payment gateway logic
+//   const handlePaymentSelect = async (method) => {
+//     const numericalAmount = parseFloat(localAmount.replace(/[^0-9]/g, ''));
+
+//     if (!numericalAmount || numericalAmount <= 0) {
+//       if (Platform.OS === 'android') {
+//         ToastAndroid.show('Please enter a valid amount', ToastAndroid.SHORT);
+//       } else {
+//         Alert.alert('Invalid Amount', 'Please enter a valid amount.');
+//       }
+//       return;
+//     }
+
+//     // 1. Sync values locally & to global Redux state
+//     dispatch(setAmount(numericalAmount));
+//     dispatch(setPaymentMethod({
+//       id: method.id,
+//       title: method.title,
+//       imageSource: method.imageSource,
+//       tag: method.tag,
+//     }));
+
+//     // If method is manual bank or crypto, you can handle separate navigation branches here
+//     if (method.id === 'bank_transfer' || method.id === 'crypto') {
+//       navigation.navigate('ConfirmDeposite');
+//       return;
+//     }
+
+//     // 2. Direct Core Checkout Route via Cashfree Drop Component
+//     setLoading(true);
+//     try {
+//       const orderData = await createOrder(numericalAmount);
+//       const orderId = orderData.orderId;
+//       const paymentSessionId = orderData.payment_session_id || orderData.paymentSessionId;
+
+//       if (orderId && paymentSessionId) {
+//         await CashfreeService.startPayment(orderId, paymentSessionId);
+//       } else {
+//         Alert.alert('Error', 'Invalid order data received from server.');
+//         setLoading(false);
+//       }
+//     } catch (error) {
+//       console.log('Create Order Error:', error?.response?.data || error.message);
+//       Alert.alert(
+//         'Error',
+//         error.response?.data?.message || error.message || 'Could not initiate payment.'
+//       );
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       {/* Loading Overlay Spinner */}
+//       {loading && (
+//         <View style={styles.loadingOverlay}>
+//           <ActivityIndicator size="large" color="#4F46E5" />
+//           <Text style={styles.loadingText}>Processing Payment securely...</Text>
+//         </View>
+//       )}
+
+//       {/* Header Section */}
+//       <View style={styles.header}>
+//         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+//           <FeatherIcon name="chevron-left" size={moderateScale(26)} color="#4a8cff" />
+//         </TouchableOpacity>
+//         <View style={styles.headerTitleContainer}>
+//           <Text style={styles.headerTitle}>Add Money to Wallet</Text>
+//           <Text style={styles.headerSubtitle}>Choose a payment method to add funds</Text>
+//         </View>
+//         <TouchableOpacity style={styles.helpButton}>
+//           <FeatherIcon name="help-circle" size={moderateScale(22)} color="#3B82F6" />
+//         </TouchableOpacity>
+//       </View>
+
+//       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollBody}>
+//         {/* Balance Card */}
+//         <LinearGradient colors={['#6366F1', '#4F46E5']} style={styles.balanceCard}>
+//           <View style={styles.balanceCardLeft}>
+//             <View style={styles.balanceRow}>
+//               <Text style={styles.balanceLabel}>Total Wallet Balance</Text>
+//               <FeatherIcon name="eye" size={moderateScale(16)} color="#E0E7FF" style={{ marginLeft: moderateScale(6) }} />
+//             </View>
+//             <Text style={styles.cryptoBalance}>
+//               {walletData?.balance?.toLocaleString() || '0'}{' '}
+//               <Text style={styles.tokenTicker}>PAYO</Text>
+//             </Text>
+//             <Text style={styles.fiatBalance}>
+//               ≈ ₹{(walletData?.balance * 1).toLocaleString() || '0'}
+//             </Text>
+//           </View>
+//           <View style={styles.walletIconContainer}>
+//             <Image source={wallet} style={styles.walletHeaderImage} resizeMode="contain" />
+//           </View>
+//         </LinearGradient>
+
+//         {/* Amount Input */}
+//         <Text style={styles.sectionLabel}>ENTER AMOUNT</Text>
+//         <View style={styles.amountInputContainer}>
+//           <Text style={styles.currencySymbol}>₹</Text>
+//           <TextInput
+//             style={styles.amountInput}
+//             value={localAmount}
+//             onChangeText={(text) => setLocalAmount(parseValueToString(text))}
+//             keyboardType="number-pad"
+//             editable={!loading}
+//           />
+//           <View style={styles.currencySelector}>
+//             <Text style={styles.currencySelectorText}>INR</Text>
+//             <Icon name="keyboard-arrow-down" size={moderateScale(18)} color="#4A5568" />
+//           </View>
+//         </View>
+
+//         {/* Presets */}
+//         <View style={styles.presetsRow}>
+//           {presets.map((item, index) => {
+//             const formattedPresetValue = parseInt(item.value.replace(/[^0-9]/g, ''), 10).toLocaleString('en-IN');
+//             const isSelected = localAmount === formattedPresetValue;
+//             return (
+//               <TouchableOpacity
+//                 key={index}
+//                 onPress={() => setLocalAmount(formattedPresetValue)}
+//                 disabled={loading}
+//                 style={[styles.presetChip, isSelected && styles.presetChipActive]}
+//               >
+//                 <Text style={[styles.presetChipText, isSelected && styles.presetChipTextActive]}>
+//                   {item.label}
+//                 </Text>
+//               </TouchableOpacity>
+//             );
+//           })}
+//         </View>
+
+//         {/* Payment Methods */}
+//         <Text style={styles.sectionLabel}>SELECT PAYMENT METHOD</Text>
+//         <View style={styles.methodsWrapperCard}>
+//           {paymentMethods.map((method, idx) => (
+//             <TouchableOpacity
+//               key={method.id}
+//               onPress={() => handlePaymentSelect(method)}
+//               activeOpacity={0.7}
+//               style={[styles.methodRow, idx !== paymentMethods.length - 1 && styles.methodBorder]}
+//               disabled={loading}
+//             >
+//               <View style={styles.methodIconWrapper}>
+//                 <Image source={method.imageSource} style={styles.methodImage} resizeMode="contain" />
+//               </View>
+//               <View style={styles.methodMeta}>
+//                 <Text style={styles.methodTitle}>{method.title}</Text>
+//                 <Text style={styles.methodSubtitle}>{method.subtitle}</Text>
+//               </View>
+//               <View style={styles.methodRight}>
+//                 <View style={[styles.tagBadge, { backgroundColor: method.tagBg }]}>
+//                   <Text style={[styles.tagBadgeText, { color: method.tagColor }]}>{method.tag}</Text>
+//                 </View>
+//                 <FeatherIcon name="chevron-right" size={moderateScale(20)} color="#9CA3AF" />
+//               </View>
+//             </TouchableOpacity>
+//           ))}
+//         </View>
+
+//         {/* Security Banner & Promo Card */}
+//         <View style={styles.securityBanner}>
+//           <View style={styles.shieldIconContainer}>
+//             <Image source={require('../../../assets/images/wallet/Security Icon.png')} />
+//           </View>
+//           <View style={styles.securityMeta}>
+//             <Text style={styles.securityTitle}>100% Secure & Encrypted</Text>
+//             <Text style={styles.securitySubtitle}>Your money is safe with bank-grade security and encryption.</Text>
+//           </View>
+//         </View>
+
+//         <LinearGradient colors={['#2563EB', '#1D4ED8']} style={styles.promoCard}>
+//           <View style={styles.promoLeft}>
+//             <View style={styles.coinStackGraphic}>
+//               <Image source={require('../../../assets/images/wallet/Promo Icon.png')} />
+//             </View>
+//             <View style={styles.promoTexts}>
+//               <Text style={styles.promoTitle}>Have a promo code?</Text>
+//               <Text style={styles.promoSubtitle}>Apply code and get exciting rewards</Text>
+//             </View>
+//           </View>
+//           <TouchableOpacity style={styles.applyActionBtn}>
+//             <Text style={styles.applyActionText}>Apply Now</Text>
+//             <FeatherIcon name="chevron-right" size={moderateScale(14)} color="#FFF" style={{ marginLeft: moderateScale(2) }} />
+//           </TouchableOpacity>
+//         </LinearGradient>
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 // ... your styles (unchanged) ...
 // ─── Styles ──────────────────────────────────────────────────────────────────────
