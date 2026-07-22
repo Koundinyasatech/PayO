@@ -627,61 +627,6 @@
 //     borderRadius: moderateScale(20),
 //   },
 
-// bottomNav: {
-//   position: 'absolute',
-//   bottom: 0,
-//   left: 0,
-//   right: 0,
-
-//   backgroundColor: '#2E1065',
-
-//   borderTopLeftRadius: moderateScale(30),
-//   borderTopRightRadius: moderateScale(30),
-
-//   flexDirection: 'row',
-//   justifyContent: 'space-around',
-//   alignItems: 'center',
-
-//   paddingHorizontal: wp('2%'),
-
-//   elevation: 20,
-//   zIndex: 999,
-// },
-
-//   navItem: {
-//   alignItems: 'center',
-//   justifyContent: 'center',
-//   flex: 1,
-//   paddingTop: hp('1%'),
-// },
-
-//   navLabel: {
-//     fontSize: moderateScale(9),
-//     marginTop: hp('0.5%'),
-//     fontWeight: '600',
-//   },
-
-//   navActive: {
-//     color: '#F472B6',
-//   },
-
-//   navInactive: {
-//     color: '#aaa',
-//   },
-
-//   centerIcon: {
-//     position: 'absolute',
-//     top: hp('-4.2%'),
-//     width: wp('18%'),
-//     height: wp('18%'),
-//     borderRadius: wp('9%'),
-//     backgroundColor: '#7C3AED',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     alignSelf: 'center',
-//     elevation: 25,
-//     zIndex: 1000,
-//   },
 
 //   // Add these to your existing styles
 // // Add these to your existing styles
@@ -825,28 +770,19 @@
 
 
 import { StyleSheet } from 'react-native';
-import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/responsive'; // Adjust relative path as needed
+import { scale, verticalScale, moderateScale, windowWidth } from '../../utils/responsive'; 
 
-// Values extracted from main.css variables
-const colors = {
-  primaryBlue: '#226ade',
-  primaryIndigo: '#4f46e5',
-  primaryPurple: '#7c3aed',
-  bgApp: '#f4f6f9',
-  bgSurface: '#ffffff',
-  textMain: '#1f2937',
-  textMuted: '#6b7280',
-  success: '#10b981',
-  danger: '#ef4444',
-};
+// 1. Import the centralized theme
+import { theme } from '../../MainTheme/theme'; 
 
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.bgApp,
+    // 2. Replace local colors with theme.colors
+    backgroundColor: theme.colors.bgApp, 
   },
   scrollContent: {
-    paddingBottom: verticalScale(100),
+    paddingBottom: verticalScale(130),
   },
 
   /* HEADER */
@@ -855,12 +791,12 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: scale(20),
-    paddingTop: verticalScale(40),
+    paddingTop: verticalScale(20),
     paddingBottom: verticalScale(15),
   },
   iconButton: {
-    width: scale(35), // Added fixed width for a consistent white circle
-    height: scale(35), // Added fixed height for a consistent white circle
+    width: scale(35), 
+    height: scale(35), 
     backgroundColor: '#fff',
     borderRadius: scale(20),
     elevation: 1,
@@ -871,13 +807,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   headerNotificationIcon: {
-    width: scale(18), // Reduced size to make the bell smaller
-    height: scale(18), // Reduced size to make the bell smaller
+    width: scale(18), 
+    height: scale(18), 
   },
   logo: {
     width: scale(110),
     height: verticalScale(30),
-    marginLeft: scale(40), // Nudges the PAYO logo slightly to the right
+    marginLeft: scale(40), 
   },
   headerRight: {
     flexDirection: 'row',
@@ -886,9 +822,9 @@ export default StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: -2, // Adjusted slightly to sit properly on the fixed-size circle
-    right: -2, // Adjusted slightly 
-    backgroundColor: colors.danger,
+    top: -2, 
+    right: -2, 
+    backgroundColor: theme.colors.statusDanger, // Updated to theme
     width: scale(16),
     height: scale(16),
     borderRadius: scale(8),
@@ -904,37 +840,130 @@ export default StyleSheet.create({
     fontWeight: 'bold',
   },
   profileIconContainer: {
-    width: scale(32), // Reduced from 36
-    height: scale(32), // Reduced from 36
-    borderRadius: scale(16), // Half of width/height for a perfect circle
-    backgroundColor: colors.primaryBlue,
+    width: scale(32), 
+    height: scale(32), 
+    borderRadius: scale(16), 
+    backgroundColor: theme.colors.primaryBlue, // Updated to theme
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
   },
   headerProfileImg: {
-    width: scale(18), // Reduced from 20
-    height: scale(18), // Reduced from 20
+    width: scale(18), 
+    height: scale(18), 
   },
 
   /* WALLET CARD */
+  // walletCard: {
+  //   marginHorizontal: scale(20),
+  //   marginTop: verticalScale(5),
+  //   borderRadius: moderateScale(20),
+  //   padding: scale(20),
+  //   position: 'relative',
+  //   elevation: 8,
+  //   shadowColor: theme.colors.primaryIndigo, // Updated to theme
+  //   shadowOffset: { width: 0, height: 4 },
+  //   shadowOpacity: 0.3,
+  //   shadowRadius: 8,
+  // },
+  // walletHeaderRow: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   marginBottom: verticalScale(15),
+  // },
+  // rowCenter: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  // walletLabel: {
+  //   color: 'rgba(255, 255, 255, 0.9)',
+  //   fontSize: moderateScale(14),
+  //   fontWeight: '500',
+  // },
+  // viewWalletBtn: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: 'rgba(255,255,255,0.15)',
+  //   paddingHorizontal: scale(10),
+  //   paddingVertical: verticalScale(4),
+  //   borderRadius: scale(20),
+  // },
+  // viewWalletText: {
+  //   color: '#fff',
+  //   fontSize: moderateScale(12),
+  //   marginRight: scale(4),
+  // },
+  // balanceRow: {
+  //   flexDirection: 'row',
+  //   alignItems: 'baseline',
+  // },
+  // balanceAmount: {
+  //   color: '#fff',
+  //   fontSize: moderateScale(32),
+  //   fontWeight: 'bold',
+  // },
+  // balanceCurrency: {
+  //   color: 'rgba(255,255,255,0.8)',
+  //   fontSize: moderateScale(16),
+  //   marginLeft: scale(8),
+  //   fontWeight: '600',
+  // },
+  // fiatAmount: {
+  //   color: 'rgba(255,255,255,0.7)',
+  //   fontSize: moderateScale(14),
+  //   marginTop: verticalScale(4),
+  // },
+  // addMoneyBtn: {
+  //   position: 'absolute',
+  //   bottom: scale(20),
+  //   right: scale(20),
+  //   backgroundColor: '#fff',
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   paddingHorizontal: scale(14),
+  //   paddingVertical: verticalScale(8),
+  //   borderRadius: scale(20),
+  //   elevation: 2,
+  // },
+  // addMoneyIcon: {
+  //   width: scale(14),
+  //   height: scale(14),
+  // },
+  // addMoneyText: {
+  //   color: theme.colors.primaryBlue, // Updated to theme
+  //   fontWeight: '600',
+  //   marginLeft: scale(6),
+  //   fontSize: moderateScale(13),
+  // },
+
   walletCard: {
     marginHorizontal: scale(20),
     marginTop: verticalScale(5),
-    borderRadius: moderateScale(20),
+    borderRadius: moderateScale(24),
     padding: scale(20),
     position: 'relative',
+    overflow: 'hidden',
     elevation: 8,
-    shadowColor: colors.primaryIndigo,
-    shadowOffset: { width: 0, height: 4 },
+    shadowColor: '#4f46e5',
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowRadius: 15,
+  },
+  cardLightHighlight: {
+    position: 'absolute',
+    width: scale(180),
+    height: scale(180),
+    borderRadius: scale(90),
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
+    top: -scale(30),
+    right: -scale(20),
   },
   walletHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: verticalScale(15),
+    width: '100%',
   },
   rowCenter: {
     flexDirection: 'row',
@@ -948,15 +977,24 @@ export default StyleSheet.create({
   viewWalletBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: scale(10),
-    paddingVertical: verticalScale(4),
-    borderRadius: scale(20),
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.4)',
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(6),
+    borderRadius: theme.borderRadius.full,
+    
+   
   },
   viewWalletText: {
     color: '#fff',
-    fontSize: moderateScale(12),
+    fontSize: moderateScale(15),
     marginRight: scale(4),
+    fontWeight: '500',
+  },
+  balanceContainer: {
+    marginTop: verticalScale(20),
+    alignItems: 'flex-start',
   },
   balanceRow: {
     flexDirection: 'row',
@@ -964,41 +1002,44 @@ export default StyleSheet.create({
   },
   balanceAmount: {
     color: '#fff',
-    fontSize: moderateScale(32),
-    fontWeight: 'bold',
+    fontSize: moderateScale(36),
+    fontWeight: '700',
   },
   balanceCurrency: {
-    color: 'rgba(255,255,255,0.8)',
-    fontSize: moderateScale(16),
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: moderateScale(15),
     marginLeft: scale(8),
     fontWeight: '600',
   },
   fiatAmount: {
-    color: 'rgba(255,255,255,0.7)',
-    fontSize: moderateScale(14),
-    marginTop: verticalScale(4),
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: moderateScale(15),
+    marginTop: verticalScale(6),
+    fontWeight: '700',
+  },
+  bottomActionRow: {
+    width: '100%',
+    alignItems: 'flex-end', // Aligns the button smoothly to the right edge
+    marginTop: verticalScale(4), 
   },
   addMoneyBtn: {
-    position: 'absolute',
-    bottom: scale(20),
-    right: scale(20),
-    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: scale(14),
-    paddingVertical: verticalScale(8),
-    borderRadius: scale(20),
-    elevation: 2,
-  },
-  addMoneyIcon: {
-    width: scale(14),
-    height: scale(14),
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(12),
+    borderRadius: scale(24),
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
   addMoneyText: {
-    color: colors.primaryBlue,
-    fontWeight: '600',
-    marginLeft: scale(6),
-    fontSize: moderateScale(13),
+    color: '#1e40af', // Deep blue tint text matching the mockup accent
+    fontWeight: '700',
+    fontSize: moderateScale(15),
   },
 
   /* COMMON SECTIONS */
@@ -1015,11 +1056,12 @@ export default StyleSheet.create({
   sectionHeading: {
     fontSize: moderateScale(18),
     fontWeight: '700',
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
+    
   },
   viewAllText: {
     fontSize: moderateScale(14),
-    color: colors.primaryBlue,
+    color: theme.colors.primaryBlue, // Updated to theme
     fontWeight: '500',
   },
 
@@ -1030,27 +1072,24 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: scale(20),
     marginTop: verticalScale(10),
-    // gap: scale(22),
   },
   actionItem: {
     alignItems: 'center',
-    
   },
   actionIconBtn: {
     width: scale(50),
     height: scale(50),
     borderRadius: scale(16),
-    backgroundColor: colors.primaryBlue,
+    backgroundColor: theme.colors.primaryBlue, // Updated to theme
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: verticalScale(8),
     marginHorizontal: scale(1),
     elevation: 3,
-    shadowColor: colors.primaryBlue,
+    shadowColor: theme.colors.primaryBlue, // Updated to theme
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    
   },
   actionImageFormat: {
     width: scale(20),
@@ -1058,7 +1097,7 @@ export default StyleSheet.create({
   },
   actionLabel: {
     fontSize: moderateScale(13),
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
     fontWeight: '500',
   },
 
@@ -1071,13 +1110,13 @@ export default StyleSheet.create({
   },
   bannerWrapper: {
     width: windowWidth * 0.78, 
-    marginRight: 16, 
+    marginRight: 6, 
   },
   bannerCard: {
     width: '100%',
     height: verticalScale(130), 
-    borderRadius: moderateScale(16),
-    backgroundColor: '#e5e7eb',
+    // borderRadius: moderateScale(16),
+    // backgroundColor: '#e5e7eb',
     overflow: 'hidden',
   },
   
@@ -1103,7 +1142,7 @@ export default StyleSheet.create({
 
   /* COMMON CARD (Crypto Market & News uses this base) */
   card: {
-    backgroundColor: colors.bgSurface,
+    backgroundColor: theme.colors.bgSurface, // Updated to theme
     borderRadius: moderateScale(16),
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.05)',
@@ -1124,7 +1163,7 @@ export default StyleSheet.create({
     marginBottom: verticalScale(8),
   },
   tableHeaderText: {
-    color: colors.textMuted,
+    color: theme.colors.textMuted, // Updated to theme
     fontSize: moderateScale(11),
     fontWeight: '600',
   },
@@ -1151,18 +1190,18 @@ export default StyleSheet.create({
     fontSize: moderateScale(14),
   },
   coinSymbol: {
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
     fontWeight: '700',
     fontSize: moderateScale(14),
   },
   coinName: {
-    color: colors.textMuted,
+    color: theme.colors.textMuted, // Updated to theme
     fontSize: moderateScale(11),
     marginTop: verticalScale(2),
   },
   coinPrice: {
     fontWeight: '600',
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
   },
 
   /* CRYPTO NEWS */
@@ -1183,7 +1222,7 @@ export default StyleSheet.create({
     marginLeft: scale(14),
   },
   newsHeadline: {
-    color: colors.textMain,
+    color: theme.colors.textMain, // Updated to theme
     fontSize: moderateScale(14),
     fontWeight: '600',
     lineHeight: verticalScale(20),
@@ -1195,7 +1234,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   newsTime: {
-    color: colors.textMuted,
+    color: theme.colors.textMuted, // Updated to theme
     fontSize: moderateScale(11),
   },
   tagPill: {
@@ -1207,6 +1246,62 @@ export default StyleSheet.create({
     fontSize: moderateScale(10),
     fontWeight: '600',
   },
+
+//   bottomNav: {
+//   position: 'absolute',
+//   bottom: 0,
+//   left: 0,
+//   right: 0,
+
+//   backgroundColor: '#2E1065',
+
+//   borderTopLeftRadius: moderateScale(30),
+//   borderTopRightRadius: moderateScale(30),
+
+//   flexDirection: 'row',
+//   justifyContent: 'space-around',
+//   alignItems: 'center',
+
+//   paddingHorizontal: wp('2%'),
+
+//   elevation: 20,
+//   zIndex: 999,
+// },
+
+//   navItem: {
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   flex: 1,
+//   paddingTop: hp('1%'),
+// },
+
+//   navLabel: {
+//     fontSize: moderateScale(9),
+//     marginTop: hp('0.5%'),
+//     fontWeight: '600',
+//   },
+
+//   navActive: {
+//     color: '#F472B6',
+//   },
+
+//   navInactive: {
+//     color: '#aaa',
+//   },
+
+//   centerIcon: {
+//     position: 'absolute',
+//     top: hp('-4.2%'),
+//     width: wp('18%'),
+//     height: wp('18%'),
+//     borderRadius: wp('9%'),
+//     backgroundColor: '#7C3AED',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     alignSelf: 'center',
+//     elevation: 25,
+//     zIndex: 1000,
+//   },
 });
 
 // import { StyleSheet } from 'react-native';

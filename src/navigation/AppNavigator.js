@@ -170,8 +170,6 @@
 
 
 
-
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -210,7 +208,7 @@ import Receive from '../screens/Receive';
 
 /* PAYMENT FLOW */
 import EnterAddressScreen from '../screens/HomeScreen/enterAddress';
-
+import MakePayment from '../screens/MakePayment.jsx';
 
 import PaymentLoading from '../screens/HomeScreen/loadingScreen';
 import PaymentSuccess from '../screens/HomeScreen/successTokenScreen';
@@ -225,9 +223,10 @@ import Recents from '../screens/HomeScreen/Recents';
 // import UpiPin from "../screens/Bank/UpiPin";
 // import SuccessScreen from "../screens/Bank/SuccessScreen";
 import UserProfile from '../screens/UserProfile/UserProfile';
+import Settings from '../screens/UserProfile/Settings.jsx';
 import TransactionHistory from '../screens/HomeScreen/TransactionHistory';
 import TnsHistorySingleUser from '../screens/HomeScreen/TnsHistorySingleUser';
-import WalletScreen from '../screens/HomeScreen/WalletScreen';
+
 import MarketScreen from '../screens/Market/market';
 import CoinDetailsScreen from '../screens/Market/singleMarket';
 
@@ -236,6 +235,7 @@ import AddBankDetails from '../screens/Bank/AddBankDetails';
 import TpinScreen from '../screens/Bank/TpinScreen';
 import BankAddedScreen from '../screens/Bank/BankAddedScreen';
 import KYCVerification from '../screens/kycVerify/KYCVerification';
+import KycFilesReview from '../screens/kycVerify/KycFilesReview.jsx'
 import KycUnderReview from '../screens/kycVerify/KycUnderReview';
 import KycComplete from '../screens/kycVerify/KycComplete';
 import KycFail from '../screens/kycVerify/KycFail';
@@ -248,12 +248,20 @@ import DashboardScreen from '../screens/CreateProfile/welcomeProfile.js';
 import Biometric from '../screens/CreateProfile/BiometricScreen.jsx';
 import FaceAuthentication from '../screens/CreateProfile/FaceAuthentication.jsx';
 import ConfirmDepositeScreen from '../screens/HomeScreen/ConfirmDepositeScreen.jsx';
+import WalletScreen from '../screens/HomeScreen/WalletScreen.jsx';
+import AddMoneytoWallet from '../screens/HomeScreen/AddMoneytoWallet.jsx';
+// import  AddMoneytoWallet from "../screens/components/AddMoneyModal.jsx"
+import NotFoundScreen from '../screens/HomeScreen/NotFoundScreen.jsx';
+import PaymentCompleteDetails from '../screens/HomeScreen/completeTransaction.jsx';
+import { navigationRef } from './navigationRef.js';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+    //  ref={navigationRef}
+     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
 
         {/* AUTH */}
@@ -268,15 +276,16 @@ export default function AppNavigator() {
         <Stack.Screen name="RegisterMobile" component={RegisterMobileScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OTP" component={OtpVerificationScreen} options={{ animation: 'fade' }} />
         <Stack.Screen name="OtpVerified" component={OtpVerified} options={{ animation: 'fade' }} />
-
+        <Stack.Screen name="NotFound" component={NotFoundScreen} />
 
 
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="TransactionPin" component={TransactionPinScreen} options={{ animation: 'fade' }} />
-          <Stack.Screen name="Biometric" component={Biometric} />
-           <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
+        <Stack.Screen name="Biometric" component={Biometric} />
+        <Stack.Screen name="FaceAuthentication" component={FaceAuthentication} />
         <Stack.Screen name="WelcomeProfile" component={DashboardScreen} />
         <Stack.Screen name="ConfirmDeposite" component={ConfirmDepositeScreen} />
+        <Stack.Screen name="MakePayment" component={MakePayment} />
 
 
 
@@ -286,6 +295,7 @@ export default function AppNavigator() {
 
         {/* /// KYC VERIFICATION //////// */}
         <Stack.Screen name="KYCVerification" component={KYCVerification} />
+        <Stack.Screen name="KycFilesReview" component={KycFilesReview} />
         <Stack.Screen name="KycUnderReview" component={KycUnderReview} />
         <Stack.Screen name="KycComplete" component={KycComplete} />
         <Stack.Screen name="KycFail" component={KycFail} />
@@ -296,7 +306,11 @@ export default function AppNavigator() {
         <Stack.Screen name="Buttom" component={BottomNav} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="UserProfile" component={UserProfile} />
+        <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="WalletScreen" component={WalletScreen} />
+
+        {/* <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} /> */}
+          <Stack.Screen name="AddMoneytoWallet" component={AddMoneytoWallet} />
         <Stack.Screen name="MarketScreen" component={MarketScreen} />
         <Stack.Screen name="CoinDetailsScreen" component={CoinDetailsScreen} />
         <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
@@ -314,6 +328,8 @@ export default function AppNavigator() {
         <Stack.Screen name="SendPin" component={SendPinScreen} />
         <Stack.Screen name="loading" component={PaymentLoading} />
         <Stack.Screen name="successfullPayment" component={PaymentSuccess} />
+        <Stack.Screen name="PaymentCompleteDetails" component={PaymentCompleteDetails} />
+        
 
         {/* RECEIVE */}
         <Stack.Screen name="Receive" component={Receive} />
@@ -334,6 +350,7 @@ export default function AppNavigator() {
         <Stack.Screen name="TpinScreen" component={TpinScreen} />
         <Stack.Screen name="Notifications" component={NotificationScreen} />
         <Stack.Screen name="BankAddedScreen" component={BankAddedScreen} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

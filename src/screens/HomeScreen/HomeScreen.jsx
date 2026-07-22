@@ -949,7 +949,432 @@
 
 
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+// import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+// import {
+//   View,
+//   Text,
+//   TouchableOpacity,
+//   ScrollView,
+//   Image,
+//   StatusBar,
+//   FlatList,
+//   Linking,
+//   Alert,
+// } from 'react-native';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+// import LinearGradient from 'react-native-linear-gradient';
+// import Icon from 'react-native-vector-icons/Feather'; // Retained for common arrows/eye icons if needed
+// import { useFocusEffect } from '@react-navigation/native';
+// import api from '../../api/axios';
+// import styles from './homeStyling';
+// import { windowWidth } from '../../utils/responsive';
+// import HomeHeader from '../components/header';
+// import Header from '../components/header';
+
+// export default function HomeScreen({ navigation }) {
+//   const [balanceVisible, setBalanceVisible] = useState(true);
+//   const [available, setAvailable] = useState('0.0');
+//   const [avbRuppee, setAvbRuppee] = useState('10');
+//   const [expertCoins, setExpertCoins] = useState([]);
+//   const [marketNews, setMarketNews] = useState([]);
+//   const [newsCount, setNewsCount] = useState(3);
+  
+//   const scrollRef = useRef(null);
+//   const flatListRef = useRef(null);
+//   const [activeBanner, setActiveBanner] = useState(0);
+//   // const isRestricted = avbRuppee < 100;
+
+//   const isRestricted = useMemo(() => {
+//     const numericValue = parseFloat(String(avbRuppee).replace(/[^\d.]/g, ''));
+//     if (isNaN(numericValue)) return true; 
+//     return numericValue < 100;
+//   }, [avbRuppee]);
+
+//   console.log (isRestricted,"isRestricted",avbRuppee)
+  
+
+//   // References the local banner assets
+//   const bannerData = [
+//     { id: '1', image: require('../../../assets/images/banner1.png') },
+//     { id: '2', image: require('../../../assets/images/banner2.png') },
+//     { id: '3', image: require('../../../assets/images/banner3.png') },
+//     { id: '4', image: require('../../../assets/images/banner4.png') },
+//   ];
+
+//   useEffect(() => {
+//     if (bannerData?.length === 0) return;
+    
+//     const interval = setInterval(() => {
+//       setActiveBanner((prev) => {
+//         const nextIndex = (prev + 1) % bannerData.length;
+//         flatListRef.current?.scrollToIndex({
+//           index: nextIndex,
+//           animated: true,
+//         });
+//         return nextIndex;
+//       });
+//     }, 5000);
+//     return () => clearInterval(interval);
+//   }, [bannerData.length]);
+
+//   const onViewableItemsChanged = useRef(({ viewableItems }) => {
+//     if (viewableItems.length > 0 && viewableItems[0].index !== null) {
+//       setActiveBanner(viewableItems[0].index);
+//     }
+//   }).current;
+
+//   const viewabilityConfig = useRef({ itemVisiblePercentThreshold: 50 }).current;
+
+//   const fetchBalance = async () => {
+//     try {
+//       const response = await api.get('/api/wallet/balance');
+//       setAvailable(response?.data?.balance || '0.0'); 
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+
+//   const fetchExpertCoins = async () => {
+//     try {
+//       const res = await api.get('/api/market/overview');
+//       setExpertCoins(res?.data?.data?.slice(0, 5) || []);
+//     } catch (error) {
+//       console.log(error);
+//       setExpertCoins([
+//         { symbol: 'BTC', name: 'Bitcoin', price: 9250000, priceChangePercentage24h: 2.8 },
+//         { symbol: 'ETH', name: 'Ethereum', price: 245000, priceChangePercentage24h: -0.8 },
+//         { symbol: 'BNB', name: 'BNB', price: 68000, priceChangePercentage24h: 1.2 },
+//         { symbol: 'SOL', name: 'Solana', price: 15400, priceChangePercentage24h: 6.5 },
+//         { symbol: 'PAYO', name: 'PAYO', price: 70.12, priceChangePercentage24h: 4.2 },
+//       ]);
+//     }
+//   };
+
+//   const fetchMarketNews = async () => {
+//     try {
+//       const res = await api.get('/api/news/crypto-news');
+//       setMarketNews(res?.data?.data || []);
+//     } catch (error) {
+//       console.log(error);
+//       setMarketNews([
+//         { title: 'Bitcoin crosses new resistance level', publishedAt: new Date(), symbol: 'BTC' },
+//         { title: 'Ethereum ETF attracts record inflows', publishedAt: new Date(Date.now() - 600000), symbol: 'ETH' },
+//         { title: 'PAYO announces new wallet features', publishedAt: new Date(Date.now() - 3600000), symbol: 'PAYO' },
+//       ]);
+//     }
+//   };
+
+//   useFocusEffect(
+//     useCallback(() => {
+//       fetchBalance();
+//       fetchExpertCoins();
+//       fetchMarketNews();
+//     }, []),
+//   );
+
+//   const getCoinColor = (symbol) => {
+//     const sym = symbol?.toUpperCase();
+//     if (sym === 'BTC') return { bg: '#fff7ed', text: '#ea580c' };
+//     if (sym === 'ETH') return { bg: '#eff6ff', text: '#2563eb' };
+//     if (sym === 'BNB') return { bg: '#fef3c7', text: '#d97706' };
+//     if (sym === 'SOL') return { bg: '#f3e8ff', text: '#9333ea' };
+//     return { bg: '#f3e8ff', text: '#7c3aed' }; 
+//   };
+
+//   const getTimeAgo = (dateStr) => {
+//     const time = new Date(dateStr).getTime();
+//     const now = new Date().getTime();
+//     const diff = Math.floor((now - time) / 60000);
+//     if (diff < 60) return `${diff} min ago`;
+//     const hours = Math.floor(diff / 60);
+//     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+//   };
+
+//   const handleQuickAction = (route, params) => {
+//     if (isRestricted) {
+//       Alert.alert(
+//         'Access Restricted',
+//         'You are unable to access this. Please add money to your wallet.'
+//       );
+//     } else {
+//       navigation.navigate(route, params);
+//     }
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <StatusBar backgroundColor="#f4f6f9" barStyle="dark-content" />
+
+
+//       <Header />
+
+//       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      
+//      <LinearGradient 
+//           colors={['#6366f1', '#4f46e5']} 
+//           start={{ x: 0, y: 0 }} 
+//           end={{ x: 1, y: 1 }} 
+//           style={styles.walletCard}
+//         >
+//           <View style={styles.cardLightHighlight} />
+          
+
+//           {/* TOP ROW: Title & Eye Icon + View Wallet Button */}
+//           <View style={styles.walletHeaderRow}>
+//             <View style={styles.rowCenter}>
+//               <Text style={styles.walletLabel}>Total Wallet Balance</Text>
+//               <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)} style={{ marginLeft: 8 }}>
+//                 <Icon name={balanceVisible ? 'eye-off' : 'eye'} size={18} color="rgba(255,255,255,0.8)" />
+//               </TouchableOpacity>
+//             </View>
+
+//             <TouchableOpacity 
+//               style={styles.viewWalletBtn}
+//               activeOpacity={0.8}
+//               onPress={() => navigation.navigate('WalletScreen')}
+//             >
+//               <Text style={styles.viewWalletText}>View Wallet</Text>
+//               <Icon name="chevron-right" size={14} color="#fff" />
+//             </TouchableOpacity>
+//           </View>
+
+//           {/* MIDDLE ROW: Main Balance Text */}
+//           <View style={styles.balanceContainer}>
+//             <View style={styles.balanceRow}>
+//               <Text style={styles.balanceAmount}>{balanceVisible ? available : '****'}</Text>
+//               <Text style={styles.balanceCurrency}>PAYO</Text>
+//             </View>
+            
+//             <Text style={styles.fiatAmount}>{balanceVisible ? `₹ ${avbRuppee}` : ''}</Text>
+//           </View>
+
+//           {/* BOTTOM ROW: Add Money Button aligned perfectly to the bottom-right corner */}
+//           <View style={styles.bottomActionRow}>
+//             <TouchableOpacity 
+//               onPress={() => navigation.navigate('AddMoneytoWallet')} 
+//               style={styles.addMoneyBtn}
+//               activeOpacity={0.9}
+//             >
+//               <Icon name="plus" size={22} color="#22c55e" style={{ marginRight: 6 }} />
+//               <Text style={styles.addMoneyText}>Add Money</Text>
+//             </TouchableOpacity>
+//           </View>
+//         </LinearGradient>
+
+//         {/* Quick Actions */}
+//        {/* <View style={styles.sectionContainer}>
+//           <Text style={styles.sectionHeading}>Quick Actions</Text>
+         
+//           <View style={styles.actionsGrid}>
+//             {[
+//               { id: 'send', image: require('../../../assets/images/Icon.png'), label: 'Send', route: 'SendScreen', params: { tab: 'scan' } },
+//               { id: 'receive', image: require('../../../assets/images/Icon (1).png'), label: 'Receive', route: 'Receive' },
+//               { id: 'scan', image: require('../../../assets/images/Icon (2).png'), label: 'Scan QR', route: 'SendScreen', params: { tab: 'scan' } },
+//               { id: 'exchange', image: require('../../../assets/images/Icon (3).png'), label: 'Exchange', route: 'ExchangeScreen' }
+//             ].map((action) => (
+//               <TouchableOpacity 
+//                 key={action.id} 
+//                 // 1. Disable the button completely when restricted
+//                 disabled={isRestricted}
+//                 // 2. Reduce opacity to 40% when inactive to make it look faded/disabled
+//                 style={[styles.actionItem, isRestricted && { opacity: 0.4 }]}
+//                 activeOpacity={0.7}
+//                 onPress={() => navigation.navigate(action.route, action.params)}
+//               >
+//                 <View style={styles.actionIconBtn}>
+//                   <Image 
+//                     source={action.image} 
+//                     style={styles.actionImageFormat} 
+//                     resizeMode="contain"
+//                   />
+//                 </View>
+//                 <Text style={styles.actionLabel}>{action.label}</Text>
+//               </TouchableOpacity>
+//             ))}
+//           </View>
+//         </View> */}
+
+//         <View style={styles.sectionContainer
+//         ,
+//          isRestricted && { 
+//                 backgroundColor: '#e0e1e1', 
+//                 borderRadius: 16, 
+//                 paddingVertical: 15,
+//                 paddingHorizontal:15,
+//                 marginHorizontal: 15,
+//                 marginTop:15,
+//                 opacity: 0.7 
+//               }
+//                }>
+//           <Text style={styles.sectionHeading}>Quick Actions</Text>
+         
+//           <View 
+//             style={[
+//               styles.actionsGrid
+//               // , 
+//               // isRestricted && { 
+//               //   backgroundColor: '#F3F4F6', 
+//               //   borderRadius: 16, 
+//               //   paddingVertical: 15,
+//               //   opacity: 0.7 
+//               // }
+//             ]}
+//           >
+//             {[
+//               { id: 'send', image: require('../../../assets/images/Icon.png'), label: 'Send', route: 'SendScreen', params: { tab: 'scan' } },
+//               { id: 'receive', image: require('../../../assets/images/Icon (1).png'), label: 'Receive', route: 'Receive' },
+//               { id: 'scan', image: require('../../../assets/images/Icon (2).png'), label: 'Scan QR', route: 'SendScreen', params: { tab: 'scan' } },
+//               { id: 'exchange', image: require('../../../assets/images/Icon (3).png'), label: 'Exchange', route: 'ExchangeScreen' }
+//             ].map((action) => (
+//               <TouchableOpacity 
+//                 key={action.id} 
+//                 style={styles.actionItem}
+//                 activeOpacity={0.7}
+//                 onPress={() => handleQuickAction(action.route, action.params)}
+//               >
+//                 <View style={[styles.actionIconBtn, isRestricted && { backgroundColor: '#9CA3AF', shadowOpacity: 0, elevation: 0 }]}>
+//                   <Image 
+//                     source={action.image} 
+//                     style={styles.actionImageFormat} 
+//                     resizeMode="contain"
+//                   />
+//                 </View>
+//                 <Text style={styles.actionLabel}>{action.label}</Text>
+//               </TouchableOpacity>
+//             ))}
+//           </View>
+//         </View>
+
+//         {/* Image Banner Section with Edge-Clipping & Custom Dots Overlay */}
+// <View style={styles.carouselContainer}>
+//   <FlatList
+//     ref={flatListRef}
+//     data={bannerData}
+//     keyExtractor={(item) => item.id}
+//     horizontal
+//     showsHorizontalScrollIndicator={false}
+//     snapToInterval={(windowWidth * 0.78) + 16} 
+//     decelerationRate="fast"
+//     onViewableItemsChanged={onViewableItemsChanged}
+//     viewabilityConfig={viewabilityConfig}
+//     renderItem={({ item }) => (
+//       <View style={styles.bannerWrapper}>
+//         <Image
+//           source={item.image}
+//           style={styles.bannerCard}
+//           resizeMode="stretch" // <-- Change this from "stretch" to "cover"
+//         />
+//       </View>
+//     )}
+//   />
+  
+//   <View style={styles.bannerPagination}>
+//     {bannerData.map((_, i) => (
+//       <View 
+//         key={i} 
+//         style={[styles.dot, activeBanner === i && styles.dotActive]} 
+//       />
+//     ))}
+//   </View>
+// </View>
+
+//         {/* Crypto Market Table */}
+//         <View style={styles.sectionContainer}>
+//           <View style={styles.sectionHeaderRow}>
+//             <Text style={styles.sectionHeading}>Crypto Market</Text>
+//             <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')}>
+//               <Text style={styles.viewAllText}>View All {">"}</Text>
+//             </TouchableOpacity>
+//           </View>
+
+//           <View style={styles.card}>
+//             <View style={styles.tableHeader}>
+//               <Text style={[styles.tableHeaderText, {flex: 2}]}>COIN</Text>
+//               <Text style={[styles.tableHeaderText, {flex: 2, textAlign: 'right'}]}>PRICE</Text>
+//               <Text style={[styles.tableHeaderText, {flex: 1.5, textAlign: 'right'}]}>24H</Text>
+//             </View>
+
+//             {expertCoins.map((coin, index) => {
+//               const isPositive = coin.priceChangePercentage24h >= 0;
+//               const coinColors = getCoinColor(coin.symbol);
+//               return (
+//                 <TouchableOpacity 
+//                   key={index} 
+//                   style={styles.tableRow}
+//                   onPress={() => navigation.navigate('CoinDetailsScreen', { coin })}
+//                 >
+//                   <View style={[styles.tableCell, {flex: 2, flexDirection: 'row', alignItems: 'center'}]}>
+//                     <View style={[styles.coinIcon, {backgroundColor: coinColors.text}]}>
+//                       <Text style={styles.coinIconText}>{coin.symbol?.charAt(0)}</Text>
+//                     </View>
+//                     <View>
+//                       <Text style={styles.coinSymbol}>{coin.symbol?.toUpperCase()}</Text>
+//                       <Text style={styles.coinName}>{coin.name || coin.symbol}</Text>
+//                     </View>
+//                   </View>
+//                   <Text style={[styles.tableCell, styles.coinPrice, {flex: 2, textAlign: 'right'}]}>
+//                     ₹{coin.price?.toLocaleString()}
+//                   </Text>
+//                   <Text style={[styles.tableCell, {flex: 1.5, textAlign: 'right', color: isPositive ? '#10b981' : '#ef4444', fontWeight: '600'}]}>
+//                     {isPositive ? '▲' : '▼'} {Math.abs(coin.priceChangePercentage24h).toFixed(1)}%
+//                   </Text>
+//                 </TouchableOpacity>
+//               );
+//             })}
+//           </View>
+//         </View>
+//  <TouchableOpacity onPress={()=>{
+//            navigation.replace(
+//           'successfullPayment',
+//           {
+//             amount:"999",
+//             name:"sowmya",
+//           },
+//         );
+//           }}>
+//   <Text>success</Text>
+// </TouchableOpacity>
+//         {/* Crypto News */}
+//         <View style={styles.sectionContainer}>
+//           <View style={styles.sectionHeaderRow}>
+//             <Text style={styles.sectionHeading}>Crypto News</Text>
+//             <TouchableOpacity onPress={() => setNewsCount(prev => prev + 3)}>
+//               <Text style={styles.viewAllText}>View More {">"}</Text>
+//             </TouchableOpacity>
+//           </View>
+
+//           {marketNews?.slice(0, newsCount)?.map((item, index) => {
+//             const coinColors = getCoinColor(item.symbol || 'BTC');
+//             return (
+//               <TouchableOpacity 
+//                 key={index} 
+//                 style={[styles.card, styles.newsCard]} 
+//                 onPress={() => Linking.openURL(item.url || 'https://google.com')}
+//               >
+//                 <Image 
+//                   source={{ uri: item.image || 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&q=80&w=200' }} 
+//                   style={styles.newsImage} 
+//                 />
+//                 <View style={styles.newsContent}>
+//                   <Text style={styles.newsHeadline} numberOfLines={2}>{item.title}</Text>
+//                   <View style={styles.newsMetaRow}>
+//                     <Text style={styles.newsTime}>{getTimeAgo(item.publishedAt)}</Text>
+//                     <View style={[styles.tagPill, {backgroundColor: coinColors.bg}]}>
+//                       <Text style={[styles.tagText, {color: coinColors.text}]}>{item.symbol || 'BTC'}</Text>
+//                     </View>
+//                   </View>
+//                 </View>
+//               </TouchableOpacity>
+//             );
+//           })}
+//         </View>
+
+//       </ScrollView>
+//     </SafeAreaView>
+//   );
+// }
+
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -959,18 +1384,23 @@ import {
   StatusBar,
   FlatList,
   Linking,
+  Alert,
+  StyleSheet,
+  BackHandler,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Feather'; // Retained for common arrows/eye icons if needed
+import Icon from 'react-native-vector-icons/Feather';
 import { useFocusEffect } from '@react-navigation/native';
 import api from '../../api/axios';
 import styles from './homeStyling';
-import { windowWidth } from '../../utils/responsive';
+import { moderateScale, windowWidth } from '../../utils/responsive';
+import Header from '../components/header';
 
 export default function HomeScreen({ navigation }) {
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const [available, setAvailable] = useState('0.0');
+  const [available, setAvailable] = useState('0');
+  const [avbRuppee, setAvbRuppee] = useState('10000');
   const [expertCoins, setExpertCoins] = useState([]);
   const [marketNews, setMarketNews] = useState([]);
   const [newsCount, setNewsCount] = useState(3);
@@ -979,7 +1409,12 @@ export default function HomeScreen({ navigation }) {
   const flatListRef = useRef(null);
   const [activeBanner, setActiveBanner] = useState(0);
 
-  // References the local banner assets
+  const isRestricted = useMemo(() => {
+    const numericValue = parseFloat(String(avbRuppee).replace(/[^\d.]/g, ''));
+    if (isNaN(numericValue)) return true; 
+    return numericValue < 100;
+  }, [avbRuppee]);
+
   const bannerData = [
     { id: '1', image: require('../../../assets/images/banner1.png') },
     { id: '2', image: require('../../../assets/images/banner2.png') },
@@ -988,7 +1423,7 @@ export default function HomeScreen({ navigation }) {
   ];
 
   useEffect(() => {
-    if (bannerData.length === 0) return;
+    if (bannerData?.length === 0) return;
     
     const interval = setInterval(() => {
       setActiveBanner((prev) => {
@@ -1050,12 +1485,39 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  useFocusEffect(
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     fetchBalance();
+  //     fetchExpertCoins();
+  //     fetchMarketNews();
+  //   }, []),
+  // );
+useFocusEffect(
     useCallback(() => {
+      // 1. Fetch dashboard data
       fetchBalance();
       fetchExpertCoins();
       fetchMarketNews();
-    }, []),
+
+      // 2. Disable iOS swipe-to-go-back gesture
+      navigation.setOptions({
+        gestureEnabled: false,
+      });
+
+      // 3. Intercept Android Hardware Back Press and close the app
+      const onBackPress = () => {
+        BackHandler.exitApp(); // Closes the app completely
+        return true; // Prevents default navigation action
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
+
+      // Cleanup listener when HomeScreen loses focus
+      return () => backHandler.remove();
+    }, [navigation])
   );
 
   const getCoinColor = (symbol) => {
@@ -1076,109 +1538,162 @@ export default function HomeScreen({ navigation }) {
     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
   };
 
+  const handleQuickAction = (route, params) => {
+    if (isRestricted) {
+      Alert.alert(
+        'Access Restricted',
+        'You are unable to access this. Please add money to your wallet.',
+        [
+          {
+            text: 'OK',
+            style: 'cancel', // Keeps it subtle on the left
+            onPress: () => console.log('OK Pressed'),
+          },
+          {
+            text: 'Add Money',
+            onPress: () => navigation.navigate('AddMoneytoWallet'),
+          },
+        ],
+        { cancelable: true }
+      );
+    } else {
+      navigation.navigate(route, params);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#f4f6f9" barStyle="dark-content" />
 
-      {/* Header with Custom Image Icons */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.iconButton}>
-          <Icon name="menu" size={24} color="#1f2937" />
-        </TouchableOpacity>
-        
-        <Image 
-          source={require('../../../assets/images/LogoContainer.png')} 
-          style={styles.logo} 
-          resizeMode="contain" 
-        />
-        
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Image 
-              source={require('../../../assets/images/Icon (4).png')} 
-              style={styles.headerNotificationIcon} 
-              resizeMode="contain"
-            />
-            <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.profileIconContainer}>
-            <Image 
-              source={require('../../../assets/images/Profile Icon.png')} 
-              style={styles.headerProfileImg} 
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Header />
 
       <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         
         {/* Gradient Wallet Card */}
         <LinearGradient 
-          colors={['#7c3aed', '#3b82f6']} 
+          colors={['#6366f1', '#4f46e5']} 
           start={{ x: 0, y: 0 }} 
           end={{ x: 1, y: 1 }} 
           style={styles.walletCard}
         >
+          <View style={styles.cardLightHighlight} />
+          
           <View style={styles.walletHeaderRow}>
             <View style={styles.rowCenter}>
               <Text style={styles.walletLabel}>Total Wallet Balance</Text>
-              <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)} style={{marginLeft: 8}}>
-                <Icon name={balanceVisible ? 'eye-off' : 'eye'} size={16} color="rgba(255,255,255,0.8)" />
+              <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)} style={{ marginLeft: 8 }}>
+                <Icon name={balanceVisible ? 'eye-off' : 'eye'} size={18} color="rgba(255,255,255,0.8)" />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.viewWalletBtn}>
+
+            <TouchableOpacity 
+              style={styles.viewWalletBtn}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('WalletScreen')}
+            >
               <Text style={styles.viewWalletText}>View Wallet</Text>
               <Icon name="chevron-right" size={14} color="#fff" />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.balanceRow}>
-            <Text style={styles.balanceAmount}>{balanceVisible ? available : '****'}</Text>
-            <Text style={styles.balanceCurrency}>PAYO</Text>
+          <View style={styles.balanceContainer}>
+            <View style={styles.balanceRow}>
+              <Text style={styles.balanceAmount}>{balanceVisible ? available : '****'}</Text>
+              <Text style={styles.balanceCurrency}>PAYO</Text>
+            </View>
+            <Text style={styles.fiatAmount}>{balanceVisible ? `₹ ${avbRuppee}` : ''}</Text>
           </View>
-          <Text style={styles.fiatAmount}>{balanceVisible ? '≈ ₹0.0' : '≈ ₹***'}</Text>
 
-          <TouchableOpacity style={styles.addMoneyBtn}>
-            <Image 
-              source={require('../../../assets/images/icon-container.png')} 
-              style={styles.addMoneyIcon} 
-              resizeMode="contain"
-            />
-            <Text style={styles.addMoneyText}>Add Money</Text>
-          </TouchableOpacity>
+          <View style={styles.bottomActionRow}>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('AddMoneytoWallet')} 
+              style={styles.addMoneyBtn}
+              activeOpacity={0.9}
+            >
+              <Icon name="plus" size={22} color="#22c55e" style={{ marginRight: 6 }} />
+              <Text style={styles.addMoneyText}>Add Money</Text>
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
 
-        {/* Quick Actions */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionHeading}>Quick Actions</Text>
-          <View style={styles.actionsGrid}>
-            {[
-              { id: 'send', image: require('../../../assets/images/Icon.png'), label: 'Send', route: 'SendScreen', params: { tab: 'scan' } },
-              { id: 'receive', image: require('../../../assets/images/Icon (1).png'), label: 'Receive', route: 'Receive' },
-              { id: 'scan', image: require('../../../assets/images/Icon (2).png'), label: 'Scan QR', route: 'SendScreen', params: { tab: 'scan' } },
-              { id: 'exchange', image: require('../../../assets/images/Icon (3).png'), label: 'Exchange', route: 'ExchangeScreen' }
-            ].map((action) => (
-              <TouchableOpacity 
-                key={action.id} 
-                style={styles.actionItem}
-                onPress={() => navigation.navigate(action.route, action.params)}
-              >
-                <View style={styles.actionIconBtn}>
-                  <Image 
-                    source={action.image} 
-                    style={styles.actionImageFormat} 
-                    resizeMode="contain"
-                  />
-                </View>
-                <Text style={styles.actionLabel}>{action.label}</Text>
-              </TouchableOpacity>
-            ))}
+        {/* Quick Actions Container */}
+        <View style={[styles.sectionContainer,isRestricted && localStyles.restrictedCardBackground]}>
+          <Text style={[styles.sectionHeading, isRestricted && localStyles.Text ]}>Quick Actions</Text>
+         
+          <View style={[styles.actionsGridCard, 
+            // isRestricted && localStyles.restrictedCardBackground
+            ]}>
+            <View style={styles.actionsGrid}>
+              {[
+                { id: 'send', image: require('../../../assets/images/Icon.png'), label: 'Send', route: 'SendScreen', params: { tab: 'scan' } },
+                { id: 'receive', image: require('../../../assets/images/Icon (1).png'), label: 'Receive', route: 'Receive' },
+                { id: 'scan', image: require('../../../assets/images/Icon (2).png'), label: 'Scan QR', route: 'SendScreen', params: { tab: 'scan' } },
+                { id: 'exchange', image: require('../../../assets/images/Icon (3).png'), label: 'Exchange', route: 'ExchangeScreen' }
+              ].map((action) => (
+                <TouchableOpacity 
+                  key={action.id} 
+                  style={styles.actionItem}
+                  activeOpacity={isRestricted ? 1 : 0.7}
+                  onPress={() => handleQuickAction(action.route, action.params)}
+                >
+                  <View style={[
+                    styles.actionIconBtn, 
+                    isRestricted && { backgroundColor: '#E5E7EB', shadowOpacity: 0, elevation: 0 }
+                  ]}>
+                    <Image 
+                      source={action.image} 
+                      style={[styles.actionImageFormat, isRestricted && { tintColor: '#9CA3AF' }]} 
+                      resizeMode="contain"
+                    />
+                  </View>
+                  <Text style={[styles.actionLabel, isRestricted && { color: '#9CA3AF' }]}>{action.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Glass-Style Lock Overlay for a high-quality UI */}
+            {isRestricted && (
+              <View style={localStyles.lockOverlay}>
+                <Icon name="lock" size={15} color="#6B7280" style={localStyles.lockIcon} />
+                <Text style={localStyles.lockText}>Unlock by adding ₹100 or more to your Wallet</Text>
+              </View>
+            )}
           </View>
         </View>
 
-        {/* Image Banner Section with Edge-Clipping & Custom Dots Overlay */}
-<View style={styles.carouselContainer}>
+        {/* Banners */}
+        {/* <View style={styles.carouselContainer}>
+          <FlatList
+            ref={flatListRef}
+            data={bannerData}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={(windowWidth * 0.78) + 16} 
+            decelerationRate="fast"
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewabilityConfig}
+            renderItem={({ item }) => (
+              <View style={styles.bannerWrapper}>
+                <Image
+                  source={item.image}
+                  style={styles.bannerCard}
+                  resizeMode="cover"
+                />
+              </View>
+            )}
+          />
+          <View style={styles.bannerPagination}>
+            {bannerData.map((_, i) => (
+              <View 
+                key={i} 
+                style={[styles.dot, activeBanner === i && styles.dotActive]} 
+              />
+            ))}
+          </View>
+        </View> */}
+
+        <View style={styles.carouselContainer}>
   <FlatList
     ref={flatListRef}
     data={bannerData}
@@ -1194,7 +1709,7 @@ export default function HomeScreen({ navigation }) {
         <Image
           source={item.image}
           style={styles.bannerCard}
-          resizeMode="cover" // <-- Change this from "stretch" to "cover"
+          resizeMode="stretch" // <-- Change this from "stretch" to "cover"
         />
       </View>
     )}
@@ -1210,12 +1725,12 @@ export default function HomeScreen({ navigation }) {
   </View>
 </View>
 
-        {/* Crypto Market Table */}
+        {/* Crypto Market */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>Crypto Market</Text>
             <TouchableOpacity onPress={() => navigation.navigate('MarketScreen')}>
-              <Text style={styles.viewAllText}>View All</Text>
+              <Text style={styles.viewAllText}>View All {">"}</Text>
             </TouchableOpacity>
           </View>
 
@@ -1256,12 +1771,18 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
 
+        {/* <TouchableOpacity onPress={() => {
+          navigation.replace('successfullPayment', { amount: "999", name: "sowmya" });
+        }}>
+          <Text style={{ textAlign: 'center', marginVertical: 10, color: '#4f46e5' }}>success</Text>
+        </TouchableOpacity> */}
+
         {/* Crypto News */}
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeaderRow}>
             <Text style={styles.sectionHeading}>Crypto News</Text>
             <TouchableOpacity onPress={() => setNewsCount(prev => prev + 3)}>
-              <Text style={styles.viewAllText}>View More</Text>
+              <Text style={styles.viewAllText}>View More {">"}</Text>
             </TouchableOpacity>
           </View>
 
@@ -1295,6 +1816,44 @@ export default function HomeScreen({ navigation }) {
     </SafeAreaView>
   );
 }
+
+const localStyles = StyleSheet.create({
+  restrictedCardBackground: {
+    backgroundColor: '#F3F4F6',
+    borderColor: '#E5E7EB',
+    borderWidth: 1,
+    paddingHorizontal:20,
+    paddingVertical:20,
+    marginHorizontal:20,
+    marginVertical:20,
+    borderRadius: 16,
+  },
+  Text:{
+opacity:0.4,
+ fontSize: moderateScale(18),
+    fontWeight: '700',
+  },
+  lockOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(243, 244, 246, 0.85)',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop:10
+  },
+  lockIcon: {
+    marginRight: 8,
+    marginTop:12
+  },
+  lockText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#000102',
+    marginTop:13
+
+  },
+});
 
 
 

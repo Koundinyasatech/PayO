@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingHorizontal: moderateScale(30),
-    marginTop: verticalScale(0),
+    marginTop: verticalScale(-5),
   },
   titleBlack: {
-    fontSize: moderateScale(26),
+    fontSize: moderateScale(36),
     fontWeight: '800',
     color: '#000000',
     textAlign: 'center',
@@ -122,12 +122,12 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(5),
   },
   titlePurple: {
-    fontSize: moderateScale(26),
+    fontSize: moderateScale(22),
     fontWeight: '800',
     color: '#8A2BE2', // Purple shade from design
   },
   titleBlue: {
-    fontSize: moderateScale(26),
+    fontSize: moderateScale(22),
     fontWeight: '800',
     color: '#2962FF', // Brand blue
   },

@@ -57,23 +57,36 @@ export default function PaymentSuccess({
       }),
     ]).start();
 
-    const timer = setTimeout(() => {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: 'Main',
-            state: {
-              routes: [
-                {
-                  name: 'Home',
-                },
-              ],
-            },
-          },
-        ],
-      });
-    }, 3000);
+    // const timer = setTimeout(() => {
+    //   navigation.reset({
+    //     index: 0,
+    //     routes: [
+    //       {
+    //         name: 'Main',
+    //         state: {
+    //           routes: [
+    //             {
+    //               name: 'Home',
+    //             },
+    //           ],
+    //         },
+    //       },
+    //     ],
+    //   });
+    // }, 3000);
+
+    // Inside your PaymentSuccess component's useEffect:
+const timer = setTimeout(() => {
+  navigation.reset({
+    index: 0,
+    routes: [
+      {
+        name: 'PaymentCompleteDetails', // Matches Stack Router setup
+        params: { amount: amount, recipient: 'User 2' },
+      },
+    ],
+  });
+}, 3000);
 
     return () =>
       clearTimeout(timer);

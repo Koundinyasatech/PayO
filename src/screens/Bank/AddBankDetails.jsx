@@ -1,46 +1,295 @@
-import React, { useCallback, useState } from 'react';
+
+
+
+// //////////////////////////////////////////////////////////////
+
+// // AddBankDetails.js
+// import React, { useState } from 'react';
+// import {
+//   View,
+//   Text,
+//   TextInput,
+//   TouchableOpacity,
+//   ScrollView,
+//   SafeAreaView,
+//   Platform,
+//   KeyboardAvoidingView,
+//   FlatList,
+//   Alert,
+// } from 'react-native';
+// import Icon from 'react-native-vector-icons/Feather';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import styles from './AddBankDetailsStyles';
+// import {
+//   widthPercentageToDP as wp,
+//   heightPercentageToDP as hp,
+// } from 'react-native-responsive-screen';
+
+// const AddBankDetails = ({ navigation }) => {
+//   const banks = [
+//     'State Bank of India',
+//     'HDFC Bank',
+//     'ICICI Bank',
+//     'Axis Bank',
+//     'Punjab National Bank',
+//     'Bank of Baroda',
+//     'Canara Bank',
+//     'Union Bank of India',
+//     'Kotak Mahindra Bank',
+//     'IndusInd Bank',
+//     'IDBI Bank',
+//     'Yes Bank',
+//     'Central Bank of India',
+//     'Indian Bank',
+//     'UCO Bank',
+//     'Bank of India',
+//     'Federal Bank',
+//     'South Indian Bank',
+//     'RBL Bank',
+//     'Bandhan Bank',
+//   ];
+
+//   const [form, setForm] = useState({
+//     name: '',
+//     mobile: '',
+//     accountType: 'Savings',
+//     bank: '',
+//     account: '',
+//     confirmAccount: '',
+//     ifsc: '',
+//   });
+//   const [showDropdown, setShowDropdown] = useState(false);
+
+//   const handleChange = (name, value) => {
+//     setForm({ ...form, [name]: value });
+//   };
+
+//   const Label = ({ text }) => (
+//     <Text style={styles.label}>
+//       {text} <Text style={styles.required}>*</Text>
+//     </Text>
+//   );
+
+//   const validateForm = () => {
+//     const { name, mobile, bank, account, confirmAccount, ifsc } = form;
+
+//     if (!name) {
+//       Alert.alert('Validation Error', 'Account Holder Name is required.');
+//       return false;
+//     }
+//     if (!mobile || mobile.length !== 10) {
+//       Alert.alert('Validation Error', 'Mobile number must be 10 digits.');
+//       return false;
+//     }
+//     if (!bank) {
+//       Alert.alert('Validation Error', 'Please select a bank.');
+//       return false;
+//     }
+//     if (!account) {
+//       Alert.alert('Validation Error', 'Account number is required.');
+//       return false;
+//     }
+//     if (account !== confirmAccount) {
+//       Alert.alert('Validation Error', 'Account numbers do not match.');
+//       return false;
+//     }
+//     if (!ifsc || ifsc.length < 11) {
+//       Alert.alert('Validation Error', 'IFSC code must be at least 11 characters.');
+//       return false;
+//     }
+//     return true;
+//   };
+
+//   const handleSave = async () => {
+//     if (!validateForm()) return;
+//     try {
+//       await AsyncStorage.setItem('bankDetails', JSON.stringify(form));
+//       navigation.navigate('BankAddedScreen');
+//     } catch (error) {
+//       Alert.alert('Error', 'Failed to save bank details.');
+//     }
+//   };
+
+//   return (
+//     <SafeAreaView style={styles.safeArea}>
+//       <KeyboardAvoidingView
+//         style={{ flex: 1 }}
+//         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+//       >
+//         <ScrollView
+//           contentContainerStyle={styles.container}
+//           showsVerticalScrollIndicator={false}
+//           keyboardShouldPersistTaps="handled"
+//         >
+//           {/* Header */}
+//           <View style={styles.header}>
+//             <TouchableOpacity
+//               style={styles.iconButton}
+//               onPress={() => navigation?.goBack?.()}
+//             >
+//               <Icon name="chevron-left" size={24} color="#000" />
+//             </TouchableOpacity>
+
+//             <Text style={styles.title}>Add Bank Account</Text>
+
+//             <TouchableOpacity style={styles.iconButtonRight}>
+//               <Icon name="help-circle" size={22} color="#000" />
+//             </TouchableOpacity>
+//           </View>
+
+//           <Text style={styles.subtitle}>
+//             Securely link your bank account to send and receive money.
+//           </Text>
+
+//           {/* Account Holder Name */}
+//           <Label text="Account Holder Name" />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Enter Name"
+//             value={form.name}
+//             onChangeText={(text) => handleChange('name', text)}
+//           />
+
+//           {/* Mobile Number */}
+//           <Label text="Mobile Number" />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Enter Mobile Number"
+//             keyboardType="numeric"
+//             value={form.mobile}
+//             onChangeText={(text) => handleChange('mobile', text)}
+//           />
+
+//           {/* Account Type */}
+//           <Label text="Account Type" />
+//           <View style={styles.radioGroup}>
+//             {['Savings', 'Current'].map((type) => (
+//               <TouchableOpacity
+//                 key={type}
+//                 style={styles.radioRow}
+//                 onPress={() => handleChange('accountType', type)}
+//               >
+//                 <View
+//                   style={[
+//                     styles.radioOuter,
+//                     form.accountType === type && styles.radioOuterActive,
+//                   ]}
+//                 >
+//                   {form.accountType === type && <View style={styles.radioInner} />}
+//                 </View>
+//                 <Text style={styles.radioText}>{type} Account</Text>
+//               </TouchableOpacity>
+//             ))}
+//           </View>
+
+//           {/* Select Bank */}
+//           <Label text="Select Bank" />
+//           <TouchableOpacity
+//             style={styles.dropdown}
+//             onPress={() => setShowDropdown(!showDropdown)}
+//           >
+//             <Text style={styles.dropdownText}>
+//               {form.bank || 'Select Bank'}
+//             </Text>
+//             <Icon
+//               name={showDropdown ? 'chevron-up' : 'chevron-down'}
+//               size={18}
+//               color="#777"
+//             />
+//           </TouchableOpacity>
+
+//           {showDropdown && (
+//             <View style={styles.dropdownList}>
+//               <FlatList
+//                 data={banks}
+//                 keyExtractor={(item, index) => index.toString()}
+//                 renderItem={({ item }) => (
+//                   <TouchableOpacity
+//                     style={styles.dropdownItem}
+//                     onPress={() => {
+//                       handleChange('bank', item);
+//                       setShowDropdown(false);
+//                     }}
+//                   >
+//                     <Text style={styles.dropdownItemText}>{item}</Text>
+//                   </TouchableOpacity>
+//                 )}
+//                 scrollEnabled={true}
+//                 nestedScrollEnabled={true} // ✅ fixes nested scroll issue
+//               />
+//             </View>
+//           )}
+
+//           {/* Account Number */}
+//           <Label text="Account Number" />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Enter Account Number"
+//             keyboardType="numeric"
+//             value={form.account}
+//             onChangeText={(text) => handleChange('account', text)}
+//           />
+
+//           {/* Confirm Account Number */}
+//           <Label text="Confirm Account Number" />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Confirm Account Number"
+//             keyboardType="numeric"
+//             value={form.confirmAccount}
+//             onChangeText={(text) => handleChange('confirmAccount', text)}
+//           />
+
+//           {/* IFSC Code */}
+//           <Label text="IFSC Code" />
+//           <TextInput
+//             style={styles.input}
+//             placeholder="Enter IFSC Code"
+//             autoCapitalize="characters"
+//             value={form.ifsc}
+//             onChangeText={(text) => handleChange('ifsc', text)}
+//           />
+
+//           {/* Save Button */}
+//           <TouchableOpacity onPress={handleSave} style={styles.button}>
+//             <Text style={styles.buttonText}>
+//               Save and Continue <Icon name="arrow-right" size={16} color="#fff" />
+//             </Text>
+//           </TouchableOpacity>
+//         </ScrollView>
+//       </KeyboardAvoidingView>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default AddBankDetails;
+
+
+////////////////////////////////////////////////
+
+// AddBankDetails.js
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
-  KeyboardAvoidingView,
   ScrollView,
+  SafeAreaView,
   Platform,
-  Image,
+  KeyboardAvoidingView,
+  FlatList,
+  Alert,
 } from 'react-native';
-
-import { launchImageLibrary } from 'react-native-image-picker';
-
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
-import { useFocusEffect } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './AddBankDetailsStyles';
-import api from '../../api/axios';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 const AddBankDetails = ({ navigation }) => {
-  const [form, setForm] = useState({
-    name: '',
-    mobile: '',
-    bank: '',
-    account: '',
-    confirmAccount: '',
-    ifsc: '',
-    accountType: 'Savings',
-    bankProof: null,
-  });
-
-  const [showDropdown, setShowDropdown] =
-    useState(false);
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [banksList, setBanksList] =
-    useState([]);
-
   const banks = [
     'State Bank of India',
     'HDFC Bank',
@@ -64,589 +313,212 @@ const AddBankDetails = ({ navigation }) => {
     'Bandhan Bank',
   ];
 
-  const fetchBankListData =
-    async () => {
-      try {
-        const res = await api.get(
-          '/api/bank/all-banks',
-        );
+  const [form, setForm] = useState({
+    name: '',
+    mobile: '',
+    accountType: 'Savings',
+    bank: '',
+    account: '',
+    confirmAccount: '',
+    ifsc: '',
+  });
+  const [showDropdown, setShowDropdown] = useState(false);
 
-        setBanksList(
-          res?.data?.data || [],
-        );
-      } catch (err) {
-        console.log(
-          err.message,
-        );
-      }
-    };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchBankListData();
-    }, []),
-  );
-
-  const handleChange = (
-    name,
-    value,
-  ) => {
-    if (name === 'name') {
-      value =
-        value.replace(
-          /[^a-zA-Z ]/g,
-          '',
-        );
-
-      if (value.length > 25)
-        return;
-    }
-
-    if (
-      name === 'mobile' ||
-      name === 'account' ||
-      name ===
-      'confirmAccount'
-    ) {
-      value =
-        value.replace(
-          /[^0-9]/g,
-          '',
-        );
-    }
-
-    if (name === 'ifsc') {
-      value =
-        value.toUpperCase();
-    }
-
-    setForm({
-      ...form,
-      [name]: value,
-    });
+  const handleChange = (name, value) => {
+    setForm({ ...form, [name]: value });
   };
 
-  const pickBankProof = async () => {
-    const result = await launchImageLibrary({
-      mediaType: 'photo',
-      quality: 0.8,
-    });
-
-    if (!result.didCancel && result.assets?.length > 0) {
-      setForm({
-        ...form,
-        bankProof: result.assets[0],
-      });
-    }
-  };
-
-  const handleSubmit =
-    async () => {
-      if (loading) return;
-
-      const {
-        name,
-        mobile,
-        bank,
-        account,
-        confirmAccount,
-        ifsc,
-        accountType,
-        bankProof,
-      } = form;
-
-      if (
-        !name ||
-        !mobile ||
-        !bank ||
-        !account ||
-        !confirmAccount ||
-        !ifsc ||
-        !accountType ||
-        !bankProof
-      ) {
-        alert(
-          'All fields are required',
-        );
-        return;
-      }
-
-      if (
-        !/^[A-Za-z ]{1,25}$/.test(
-          name,
-        )
-      ) {
-        alert(
-          'Name must contain only alphabets and max 25 characters',
-        );
-        return;
-      }
-
-      if (
-        !/^[6-9]\d{9}$/.test(
-          mobile,
-        )
-      ) {
-        alert(
-          'Invalid mobile number',
-        );
-        return;
-      }
-
-      if (
-        account !==
-        confirmAccount
-      ) {
-        alert(
-          'Account number does not match',
-        );
-        return;
-      }
-
-      if (
-        account.length < 9 ||
-        account.length > 18
-      ) {
-        alert(
-          'Account number must be between 9 and 18 digits',
-        );
-        return;
-      }
-
-      const ifscRegex =
-        /^[A-Z]{4}0[A-Z0-9]{6}$/;
-
-      if (
-        !ifscRegex.test(ifsc)
-      ) {
-        alert(
-          'Invalid IFSC code',
-        );
-        return;
-      }
-
-      try {
-        setLoading(true);
-
-        const res =
-          await api.post(
-            'api/bank/add-bank',
-            {
-              name,
-              mobile,
-              bank,
-              account,
-              ifsc,
-              accountType,
-              confirmAccount,
-            },
-          );
-
-        if (
-          res?.data?.success
-        ) {
-          alert(
-            'Bank Details Saved Successfully!',
-          );
-
-          navigation.navigate(
-            'TpinScreen',
-            {
-              account:
-                account.trim(),
-              bankResponse:
-                res?.data?.data,
-            },
-          );
-        }
-      } catch (err) {
-        console.log(
-          'BANK API ERROR:',
-          err?.response
-            ?.data ||
-          err.message,
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-  const Label = ({
-    text,
-  }) => (
-    <Text
-      style={
-        styles.sectionTitle
-      }>
-      {text}{' '}
-      <Text
-        style={{
-          color: 'red',
-        }}>
-        *
-      </Text>
+  const Label = ({ text }) => (
+    <Text style={styles.label}>
+      {text} <Text style={styles.required}>*</Text>
     </Text>
   );
 
+  const validateForm = () => {
+    const { name, mobile, bank, account, confirmAccount, ifsc } = form;
+
+    if (!name) {
+      Alert.alert('Validation Error', 'Account Holder Name is required.');
+      return false;
+    }
+    if (!mobile || mobile.length !== 10) {
+      Alert.alert('Validation Error', 'Mobile number must be 10 digits.');
+      return false;
+    }
+    if (!bank) {
+      Alert.alert('Validation Error', 'Please select a bank.');
+      return false;
+    }
+    if (!account) {
+      Alert.alert('Validation Error', 'Account number is required.');
+      return false;
+    }
+    if (account !== confirmAccount) {
+      Alert.alert('Validation Error', 'Account numbers do not match.');
+      return false;
+    }
+    if (!ifsc || ifsc.length < 11) {
+      Alert.alert('Validation Error', 'IFSC code must be at least 11 characters.');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) return;
+    try {
+      await AsyncStorage.setItem('bankDetails', JSON.stringify(form));
+      navigation.navigate('BankAddedScreen');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save bank details.');
+    }
+  };
+
   return (
-    <SafeAreaView
-      style={{ flex: 1 }}
-      edges={[
-        'top',
-        'bottom',
-      ]}>
+    <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={
-          Platform.OS === 'ios'
-            ? 'padding'
-            : undefined
-        }>
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0} // ✅ offset so inputs aren’t hidden
+      >
         <ScrollView
-          showsVerticalScrollIndicator={
-            false
-          }
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={
-            styles.container
-          }>
-          {/* HEADER */}
-          <View
-            style={
-              styles.header
-            }>
+        >
+          {/* Header */}
+          <View style={styles.header }>
             <TouchableOpacity
-              style={
-                styles.backButton
-              }
-              onPress={() =>
-                navigation.navigate(
-                  'UserProfile',
-                )
-              }>
-              <Text
-                style={
-                  styles.back
-                }>
-                <Icon
-                  name="chevron-left"
-                  size={28}
-                  color="#000000"
-                />
-              </Text>
+              style={styles.iconButton}
+              onPress={() => navigation?.goBack?.()}
+            >
+              <Icon name="chevron-left" size={24} color="#000" />
             </TouchableOpacity>
 
-            <Text
-              style={
-                styles.title
-              }>
-              Add Bank
-              Account
-            </Text>
+            <Text style={styles.title}>Add Bank Account</Text>
+
+            <TouchableOpacity style={styles.iconButtonRight}>
+              <Icon name="help-circle" size={22} color="#000" />
+            </TouchableOpacity>
           </View>
 
-          {/* ACCOUNT HOLDER */}
-          <Label text="Account Holder Name" />
+          <Text style={styles.subtitle}>
+            Securely link your bank account to send and receive money.
+          </Text>
 
+          {/* Account Holder Name */}
+          <Label text="Account Holder Name" />
           <TextInput
-            style={
-              styles.input
-            }
+            style={styles.input}
             placeholder="Enter Name"
-            value={
-              form.name
-            }
-            maxLength={25}
-            onChangeText={(
-              text,
-            ) =>
-              handleChange(
-                'name',
-                text,
-              )
-            }
+            value={form.name}
+            onChangeText={(text) => handleChange('name', text)}
           />
 
-          {/* MOBILE */}
+          {/* Mobile Number */}
           <Label text="Mobile Number" />
-
           <TextInput
-            style={
-              styles.input
-            }
+            style={styles.input}
             placeholder="Enter Mobile Number"
             keyboardType="numeric"
-            maxLength={10}
-            value={
-              form.mobile
-            }
-            onChangeText={(
-              text,
-            ) =>
-              handleChange(
-                'mobile',
-                text,
-              )
-            }
+            value={form.mobile}
+            onChangeText={(text) => handleChange('mobile', text)}
           />
 
-          {/* ACCOUNT TYPE */}
+          {/* Account Type */}
           <Label text="Account Type" />
+          <View style={styles.radioGroup}>
+            {['Savings', 'Current'].map((type) => (
+              <TouchableOpacity
+                key={type}
+                style={styles.radioRow}
+                onPress={() => handleChange('accountType', type)}
+              >
+                <View
+                  style={[
+                    styles.radioOuter,
+                    form.accountType === type && styles.radioOuterActive,
+                  ]}
+                >
+                  {form.accountType === type && <View style={styles.radioInner} />}
+                </View>
+                <Text style={styles.radioText}>{type} Account</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
-          <TouchableOpacity
-            style={
-              styles.radioRow
-            }
-            onPress={() =>
-              handleChange(
-                'accountType',
-                'Savings',
-              )
-            }>
-            <View
-              style={[
-                styles.radioOuter,
-                form.accountType ===
-                'Savings' &&
-                styles.radioOuterActive,
-              ]}>
-              {form.accountType ===
-                'Savings' && (
-                  <View
-                    style={
-                      styles.radioInner
-                    }
-                  />
-                )}
-            </View>
-
-            <Text
-              style={
-                styles.radioText
-              }>
-              Savings
-              Account
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={
-              styles.radioRow
-            }
-            onPress={() =>
-              handleChange(
-                'accountType',
-                'Current',
-              )
-            }>
-            <View
-              style={[
-                styles.radioOuter,
-                form.accountType ===
-                'Current' &&
-                styles.radioOuterActive,
-              ]}>
-              {form.accountType ===
-                'Current' && (
-                  <View
-                    style={
-                      styles.radioInner
-                    }
-                  />
-                )}
-            </View>
-
-            <Text
-              style={
-                styles.radioText
-              }>
-              Current
-              Account
-            </Text>
-          </TouchableOpacity>
-
-          {/* BANK */}
+          {/* Select Bank */}
           <Label text="Select Bank" />
-
           <TouchableOpacity
-            style={
-              styles.dropdownInput
-            }
-            onPress={() =>
-              setShowDropdown(
-                !showDropdown,
-              )
-            }>
-            <Text
-              style={
-                styles.bankIcon
-              }>
-              🏦
+            style={styles.dropdown}
+            onPress={() => setShowDropdown(!showDropdown)}
+          >
+            <Text style={styles.dropdownText}>
+              {form.bank || 'Select Bank'}
             </Text>
-
-            <Text
-              style={
-                styles.dropdownText
-              }>
-              {form.bank ||
-                'Select Bank'}
-            </Text>
-
-            <Text
-              style={
-                styles.dropdownArrow
-              }>
-              {showDropdown
-                ? '⌃'
-                : '⌄'}
-            </Text>
+            <Icon
+              name={showDropdown ? 'chevron-up' : 'chevron-down'}
+              size={18}
+              color="#777"
+            />
           </TouchableOpacity>
 
           {showDropdown && (
-            <View
-              style={
-                styles.dropdown
-              }>
+            <View style={styles.dropdownList}>
               <FlatList
-                nestedScrollEnabled
                 data={banks}
-                keyExtractor={(
-                  item,
-                  index,
-                ) =>
-                  index.toString()
-                }
-                renderItem={({
-                  item,
-                }) => (
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
                   <TouchableOpacity
-                    style={
-                      styles.dropdownItem
-                    }
+                    style={styles.dropdownItem}
                     onPress={() => {
-                      handleChange(
-                        'bank',
-                        item,
-                      );
-
-                      setShowDropdown(
-                        false,
-                      );
-                    }}>
-                    <Text>
-                      {item}
-                    </Text>
+                      handleChange('bank', item);
+                      setShowDropdown(false);
+                    }}
+                  >
+                    <Text style={styles.dropdownItemText}>{item}</Text>
                   </TouchableOpacity>
                 )}
+                scrollEnabled={true}
+                nestedScrollEnabled={true}
               />
             </View>
           )}
 
-          {/* ACCOUNT */}
+          {/* Account Number */}
           <Label text="Account Number" />
-
           <TextInput
-            style={
-              styles.input
-            }
+            style={styles.input}
+            placeholder="Enter Account Number"
             keyboardType="numeric"
-            value={
-              form.account
-            }
-            onChangeText={(
-              text,
-            ) =>
-              handleChange(
-                'account',
-                text,
-              )
-            }
+            value={form.account}
+            onChangeText={(text) => handleChange('account', text)}
           />
 
-          {/* CONFIRM */}
+          {/* Confirm Account Number */}
           <Label text="Confirm Account Number" />
-
           <TextInput
-            style={
-              styles.input
-            }
+            style={styles.input}
+            placeholder="Confirm Account Number"
             keyboardType="numeric"
-            value={
-              form.confirmAccount
-            }
-            onChangeText={(
-              text,
-            ) =>
-              handleChange(
-                'confirmAccount',
-                text,
-              )
-            }
+            value={form.confirmAccount}
+            onChangeText={(text) => handleChange('confirmAccount', text)}
           />
 
-          {/* IFSC */}
+          {/* IFSC Code */}
           <Label text="IFSC Code" />
-
           <TextInput
-            style={
-              styles.input
-            }
+            style={styles.input}
+            placeholder="Enter IFSC Code"
             autoCapitalize="characters"
-            value={
-              form.ifsc
-            }
-            onChangeText={(
-              text,
-            ) =>
-              handleChange(
-                'ifsc',
-                text,
-              )
-            }
+            value={form.ifsc}
+            onChangeText={(text) => handleChange('ifsc', text)}
           />
 
-          {/* BANK PROOF */}
-          <Label text="Upload Passbook Image" />
-
-          <TouchableOpacity
-            style={styles.uploadBox}
-            onPress={pickBankProof}
-            activeOpacity={0.8}
-          >
-            {form.bankProof ? (
-              <Image
-                source={{ uri: form.bankProof.uri }}
-                style={styles.previewImage}
-                resizeMode="cover"
-              />
-            ) : (
-              <>
-                <Icon name="upload" size={24} color="#7b1fa2" />
-                <Text style={styles.uploadText}>
-                  Tap to upload bank proof
-                </Text>
-              </>
-            )}
-          </TouchableOpacity>
-
-          {/* BUTTON */}
-          <TouchableOpacity
-            style={
-              styles.button
-            }
-            activeOpacity={
-              0.8
-            }
-            onPress={
-              handleSubmit
-            }>
-            <Text
-              style={
-                styles.buttonText
-              }>
-              {loading
-                ? 'Saving...'
-                : 'Save & Continue'}
+          {/* Save Button */}
+          <TouchableOpacity onPress={handleSave} style={styles.button}>
+            <Text style={styles.buttonText}>
+              Save and Continue <Icon name="arrow-right" size={16} color="#fff" />
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -656,3 +528,4 @@ const AddBankDetails = ({ navigation }) => {
 };
 
 export default AddBankDetails;
+
