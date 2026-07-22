@@ -1181,7 +1181,8 @@ import Icon from 'react-native-vector-icons/Feather';
 import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
 import { NetworkInfo } from 'react-native-network-info';
 import DeviceInfo from 'react-native-device-info';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
+
 
 export default function OtpVerificationScreen({ route, navigation }) {
   // Destructured userId from parameters to align with the upload image payload signature
@@ -1339,6 +1340,8 @@ export default function OtpVerificationScreen({ route, navigation }) {
           navigation.replace('Main');
           // navigation.replace('WalletScreen');
           // navigation.replace('KYCVerification')
+
+           await AsyncStorage.setItem('hasCompletedOnboarding', 'true');
         } else {
           navigation.replace('OtpVerified');
         }
