@@ -1182,6 +1182,7 @@ import { moderateScale, verticalScale, windowWidth } from '../utils/responsive';
 import { NetworkInfo } from 'react-native-network-info';
 import DeviceInfo from 'react-native-device-info';
 import Geolocation from 'react-native-geolocation-service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function OtpVerificationScreen({ route, navigation }) {
@@ -1330,9 +1331,9 @@ export default function OtpVerificationScreen({ route, navigation }) {
 
       console.log("response.data.token")
       // Explicit status structural fallback matching image response status "200"
-      if (response.data?.token || response.data?.status === "200") {
-        if (response.data.token) {
-          await saveToken(response.data.token);
+      if (response?.data?.token || response?.data?.status === "200") {
+        if (response?.data?.token) {
+          await saveToken(response?.data?.token);
         }
         
         // Navigation branches dynamically based on flow initiation
