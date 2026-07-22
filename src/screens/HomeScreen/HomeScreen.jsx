@@ -1386,6 +1386,7 @@ import {
   Linking,
   Alert,
   StyleSheet,
+  BackHandler,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
@@ -1399,7 +1400,7 @@ import Header from '../components/header';
 export default function HomeScreen({ navigation }) {
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [available, setAvailable] = useState('0');
-  const [avbRuppee, setAvbRuppee] = useState('0');
+  const [avbRuppee, setAvbRuppee] = useState('10000');
   const [expertCoins, setExpertCoins] = useState([]);
   const [marketNews, setMarketNews] = useState([]);
   const [newsCount, setNewsCount] = useState(3);
@@ -1484,12 +1485,39 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  useFocusEffect(
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     fetchBalance();
+  //     fetchExpertCoins();
+  //     fetchMarketNews();
+  //   }, []),
+  // );
+useFocusEffect(
     useCallback(() => {
+      // 1. Fetch dashboard data
       fetchBalance();
       fetchExpertCoins();
       fetchMarketNews();
-    }, []),
+
+      // 2. Disable iOS swipe-to-go-back gesture
+      navigation.setOptions({
+        gestureEnabled: false,
+      });
+
+      // 3. Intercept Android Hardware Back Press and close the app
+      const onBackPress = () => {
+        BackHandler.exitApp(); // Closes the app completely
+        return true; // Prevents default navigation action
+      };
+
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress
+      );
+
+      // Cleanup listener when HomeScreen loses focus
+      return () => backHandler.remove();
+    }, [navigation])
   );
 
   const getCoinColor = (symbol) => {
