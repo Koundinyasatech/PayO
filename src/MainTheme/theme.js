@@ -10,7 +10,7 @@ export const theme = {
     bgLightPurple: '#F5F7FF',
     borderLight: '#E5E7EB',
     borderPurple: '#C7D2FE',
-    textMain: '#05070D',  ////// profile 
+    textMain: '#05070D',  ////// profileeeeeeeee 
     textMuted: '#414141', 
     statusSuccess: '#03B244',  ////// profile 
     statusDanger: '#ef4444',
