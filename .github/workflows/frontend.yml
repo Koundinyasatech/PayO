@@ -74,12 +74,9 @@ jobs:
           ls -lh "$APK_PATH"
 
       # ==========================================================
-      # 7. GitHub Repository / OIDC Diagnostic Information
+      # 7. Show GitHub Repository Information
       # ==========================================================
-      # TEMPORARY STEP
-      # This helps identify the exact GitHub repository identity
-      # required by the AWS IAM OIDC trust policy.
-      - name: Show GitHub OIDC Information
+      - name: Show GitHub Repository Information
         run: |
           echo "=========================================="
           echo "GitHub Repository Information"
@@ -93,7 +90,76 @@ jobs:
           echo "=========================================="
 
       # ==========================================================
-      # 8. Configure AWS using GitHub OIDC
+      # 8. Inspect Actual GitHub OIDC Claims
+      # ==========================================================
+      # TEMPORARY DIAGNOSTIC STEP
+      # This checks the actual OIDC token claims being sent
+      # to AWS.
+      - name: Inspect GitHub OIDC Claims
+        shell: bash
+        run: |
+          set -e
+
+          echo "=========================================="
+          echo "Requesting GitHub OIDC Token"
+          echo "=========================================="
+
+          OIDC_RESPONSE=$(curl -sS \
+            -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com")
+
+          OIDC_TOKEN=$(echo "$OIDC_RESPONSE" | jq -r '.value')
+
+          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" = "null" ]; then
+            echo "ERROR: Could not obtain GitHub OIDC token."
+            exit 1
+          fi
+
+          echo "OIDC token received successfully."
+
+          # Extract JWT payload
+          PAYLOAD=$(echo "$OIDC_TOKEN" | cut -d '.' -f 2)
+
+          # Convert Base64URL to Base64
+          PAYLOAD=$(echo "$PAYLOAD" | tr '_-' '/+')
+
+          # Add Base64 padding
+          MOD=$(( ${#PAYLOAD} % 4 ))
+
+          if [ "$MOD" -eq 2 ]; then
+            PAYLOAD="${PAYLOAD}=="
+          elif [ "$MOD" -eq 3 ]; then
+            PAYLOAD="${PAYLOAD}="
+          fi
+
+          # Decode payload
+          CLAIMS=$(echo "$PAYLOAD" | base64 -d 2>/dev/null)
+
+          if [ -z "$CLAIMS" ]; then
+            echo "ERROR: Could not decode OIDC claims."
+            exit 1
+          fi
+
+          echo "=========================================="
+          echo "Actual GitHub OIDC Claims"
+          echo "=========================================="
+
+          echo "$CLAIMS" | jq '{
+            iss,
+            aud,
+            sub,
+            repository,
+            repository_id,
+            repository_owner,
+            repository_owner_id,
+            ref,
+            workflow
+          }'
+
+          echo "=========================================="
+
+      # ==========================================================
+      # 9. Configure AWS using GitHub OIDC
       # ==========================================================
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -103,14 +169,14 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # ==========================================================
-      # 9. Verify AWS Authentication
+      # 10. Verify AWS Authentication
       # ==========================================================
       - name: Verify AWS Identity
         run: |
           aws sts get-caller-identity
 
       # ==========================================================
-      # 10. Get / Increment PAYO Version
+      # 11. Get / Increment PAYO Version
       # ==========================================================
       - name: Get / Increment Version
         run: |
@@ -152,7 +218,7 @@ jobs:
           echo "=========================================="
 
       # ==========================================================
-      # 11. Upload APK to Amazon S3
+      # 12. Upload APK to Amazon S3
       # ==========================================================
       - name: Upload APK to S3
         run: |
